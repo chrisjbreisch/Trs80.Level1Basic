@@ -15,6 +15,168 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Book\c2f.bas" />
+    <None Remove="Book\carmiles.bas" />
+    <None Remove="Book\circles.bas" />
+    <None Remove="Book\coin.bas" />
+    <None Remove="Book\coin2.bas" />
+    <None Remove="Book\commaTest.bas" />
+    <None Remove="Book\count.bas" />
+    <None Remove="Book\dataTest.bas" />
+    <None Remove="Book\distance.bas" />
+    <None Remove="Book\ex.bas" />
+    <None Remove="Book\fib.bas" />
+    <None Remove="Book\for.bas" />
+    <None Remove="Book\forMiles.bas" />
+    <None Remove="Book\go.bas" />
+    <None Remove="Book\ifthen.bas" />
+    <None Remove="Book\license.bas" />
+    <None Remove="Book\lockers.bas" />
+    <None Remove="Book\logicTest1.bas" />
+    <None Remove="Book\logicTest2.bas" />
+    <None Remove="Book\printAt.bas" />
+    <None Remove="Book\printTest.bas" />
+    <None Remove="Book\short.bas" />
+    <None Remove="Book\short2.bas" />
+    <None Remove="Book\stopTest.bas" />
+    <None Remove="Book\stringTest.bas" />
+    <None Remove="Book\t2.bas" />
+    <None Remove="Book\TEST.BAS" />
+    <None Remove="Book\testData2.bas" />
+    <None Remove="Book\testGosub.bas" />
+    <None Remove="Book\testGraphics1.bas" />
+    <None Remove="Book\testGraphics2.bas" />
+    <None Remove="Book\testInput.bas" />
+    <None Remove="Book\testOnGoto.bas" />
+    <None Remove="Book\testString2.bas" />
+    <None Remove="Book\testTab.bas" />
+    <None Remove="Book\testTab2.bas" />
+    <None Remove="Book\testTab3.bas" />
+    <None Remove="Book\tetTab2.bas" />
+    <None Remove="Book\vote.bas" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Book\c2f.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\carmiles.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\circles.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\coin.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\coin2.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\commaTest.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\count.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\dataTest.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\distance.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\ex.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\fib.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\for.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\forMiles.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\go.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\ifthen.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\license.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\lockers.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\logicTest1.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\logicTest2.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\printAt.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\printTest.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\short.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\short2.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\stopTest.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\stringTest.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\t2.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\TEST.BAS">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\testData2.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\testGosub.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\testGraphics1.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\testGraphics2.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\testInput.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\testOnGoto.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\testString2.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\testTab.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\testTab2.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\testTab3.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\tetTab2.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Book\vote.bas">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.8" />
   </ItemGroup>
 
