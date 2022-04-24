@@ -1,0 +1,92 @@
+﻿using System.Collections.Generic;
+
+namespace Trs80.Level1Basic.Services.Interpreter
+{
+    public class GlobalVariables
+    {
+        private readonly Dictionary<string, dynamic> _variables = new Dictionary<string, dynamic>();
+        private readonly Dictionary<string, Dictionary<int, dynamic>> _arrays = new Dictionary<string, Dictionary<int, dynamic>>();
+
+        internal dynamic Define(string name, dynamic value)
+        {
+            _variables.Add(GetVariableName(name), value);
+            return value;
+        }
+
+        private string GetVariableName(string name)
+        {
+            if (name.EndsWith("$"))
+                return name.Substring(0, 1).ToLower() + "$";
+
+            return name.ToLower().Substring(0, 1);
+        }
+        internal dynamic Assign(string name, dynamic value)
+        {
+            string lowerName = GetVariableName(name);
+            if (!_variables.ContainsKey(lowerName))
+                Define(lowerName, value);
+            else
+                _variables[lowerName] = value;
+
+            return value;
+        }
+
+
+        public dynamic AssignArray(string name, int index, dynamic value)
+        {
+            Dictionary<int, dynamic> array = GetArray(name);
+
+            if (!array.ContainsKey(index))
+                array.Add(index, value);
+            else
+                array[index] = value;
+
+            return value;
+        }
+
+        private Dictionary<int, dynamic> GetArray(string name)
+        {
+            string lowerName = GetVariableName(name);
+            if (!_arrays.ContainsKey(lowerName))
+                DefineArray(lowerName);
+            Dictionary<int, dynamic> array = _arrays[lowerName];
+            return array;
+        }
+
+        private void DefineArray(string lowerName)
+        {
+            _arrays.Add(lowerName, new Dictionary<int, dynamic>());
+        }
+
+
+        internal bool Exists(string name)
+        {
+            string lowerName = GetVariableName(name);
+            return _variables.ContainsKey(lowerName);
+        }
+
+        internal dynamic Get(string name)
+        {
+            string lowerName = GetVariableName(name);
+            if (_variables.ContainsKey(lowerName)) return _variables[lowerName];
+
+            return lowerName.EndsWith("$") ? Define(lowerName, "") : Define(lowerName, 0);
+        }
+
+        public void Clear()
+        {
+            _variables.Clear();
+            _arrays.Clear();
+        }
+
+        public dynamic GetArrayValue(string name, int index)
+        {
+            Dictionary<int, dynamic> array = GetArray(name);
+
+            if (!array.ContainsKey(index))
+                array.Add(index, 0);
+
+            return array[index];
+        }
+    }
+}
