@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.Graphics"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Radio Shack BASIC Computer Language", "Radio Shack BASIC Computer Language", "{71005317-8860-4F7C-A802-0A140C96AF1E}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\..\Users\cbreisch1546\Downloads\Basic_Computer_Language_Its_Easier_Than_You_Think_1978_Radio_Shack.pdf = ..\..\..\Users\cbreisch1546\Downloads\Basic_Computer_Language_Its_Easier_Than_You_Think_1978_Radio_Shack.pdf
+		Radio Shack BASIC Computer Language\Basic_Computer_Language_Its_Easier_Than_You_Think_1978_Radio_Shack.pdf = Radio Shack BASIC Computer Language\Basic_Computer_Language_Its_Easier_Than_You_Think_1978_Radio_Shack.pdf
 	EndProjectSection
 EndProject
 Global
