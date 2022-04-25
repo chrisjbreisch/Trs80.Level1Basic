@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Xml.Schema;
 
 using Trs80.Level1Basic.Domain;
 using Trs80.Level1Basic.Exceptions;
@@ -186,6 +184,7 @@ namespace Trs80.Level1Basic.Services.Interpreter
             if (!(literal.Value is int)) return literal.Value;
 
             if (literal.Value > short.MaxValue || literal.Value < short.MinValue)
+                // ReSharper disable once PossibleInvalidCastException
                 return (float)literal.Value;
 
             return literal.Value;
