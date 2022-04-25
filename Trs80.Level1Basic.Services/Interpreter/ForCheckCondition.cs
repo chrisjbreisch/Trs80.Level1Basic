@@ -1,5 +1,4 @@
-﻿using System;
-using Trs80.Level1Basic.Services.Parser.Expressions;
+﻿using Trs80.Level1Basic.Services.Parser.Expressions;
 using Trs80.Level1Basic.Services.Parser.Statements;
 
 namespace Trs80.Level1Basic.Services.Interpreter

@@ -4,6 +4,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>Trs80.Level1Basic</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,165 +16,81 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Book\c2f.bas" />
-    <None Remove="Book\carmiles.bas" />
-    <None Remove="Book\circles.bas" />
-    <None Remove="Book\coin.bas" />
-    <None Remove="Book\coin2.bas" />
-    <None Remove="Book\commaTest.bas" />
-    <None Remove="Book\count.bas" />
-    <None Remove="Book\dataTest.bas" />
-    <None Remove="Book\distance.bas" />
-    <None Remove="Book\ex.bas" />
-    <None Remove="Book\fib.bas" />
-    <None Remove="Book\for.bas" />
-    <None Remove="Book\forMiles.bas" />
-    <None Remove="Book\go.bas" />
-    <None Remove="Book\ifthen.bas" />
-    <None Remove="Book\license.bas" />
-    <None Remove="Book\lockers.bas" />
-    <None Remove="Book\logicTest1.bas" />
-    <None Remove="Book\logicTest2.bas" />
-    <None Remove="Book\printAt.bas" />
-    <None Remove="Book\printTest.bas" />
-    <None Remove="Book\short.bas" />
-    <None Remove="Book\short2.bas" />
-    <None Remove="Book\stopTest.bas" />
-    <None Remove="Book\stringTest.bas" />
-    <None Remove="Book\t2.bas" />
-    <None Remove="Book\TEST.BAS" />
-    <None Remove="Book\testData2.bas" />
-    <None Remove="Book\testGosub.bas" />
-    <None Remove="Book\testGraphics1.bas" />
-    <None Remove="Book\testGraphics2.bas" />
-    <None Remove="Book\testInput.bas" />
-    <None Remove="Book\testOnGoto.bas" />
-    <None Remove="Book\testString2.bas" />
-    <None Remove="Book\testTab.bas" />
-    <None Remove="Book\testTab2.bas" />
-    <None Remove="Book\testTab3.bas" />
-    <None Remove="Book\tetTab2.bas" />
-    <None Remove="Book\vote.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\c2f.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\carmiles.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch07\02-c2f.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch10\01-berserk.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch11\01-timer.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch13\01-nested-loop.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch14\01-int.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch14\02-neg-int.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch14\03-difference.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch14\04-digit.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch14\05-circle.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch15\01-if-goto.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch17\01-abs.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch19\01-rnd.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch19\02-rnd.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch19\03-rnd.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch20\01-set.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch20\02-blink.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch20\06-vertical.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch20\07-vertical.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch20\08-blocks.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch20\09-inverted.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch20\10-diagonal.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch20\11-triangle.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch20\12-broken-lines.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch20\13-scan-lines.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch20\14-moving-dot.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch20\15-moving-dot.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch20\16-moving-dot.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch20\17-moving-dot.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch20\18-stick-man.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch21\02-license.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch21\03-deck.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch21\03-license.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch21\04-deck.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch21\05-array-math.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\circles.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\coin.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\coin2.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\commaTest.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\count.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\dataTest.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\distance.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\ex.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\fib.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\for.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\forMiles.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\go.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\ifthen.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\license.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\lockers.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\logicTest1.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\logicTest2.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\printAt.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\printTest.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\short.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\short2.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\stopTest.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\stringTest.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\t2.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\TEST.BAS" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\testData2.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\testGosub.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\testGraphics1.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\testGraphics2.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\testInput.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\testOnGoto.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\testString2.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\testTab.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\testTab2.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\testTab3.bas" />
+    <None Remove="Samples\Radio Shack BASIC Computer Language\vote.bas" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Book\c2f.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\carmiles.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\circles.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\coin.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\coin2.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\commaTest.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\count.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\dataTest.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\distance.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\ex.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\fib.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\for.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\forMiles.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\go.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\ifthen.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\license.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\lockers.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\logicTest1.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\logicTest2.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\printAt.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\printTest.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\short.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\short2.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\stopTest.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\stringTest.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\t2.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\TEST.BAS">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\testData2.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\testGosub.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\testGraphics1.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\testGraphics2.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\testInput.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\testOnGoto.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\testString2.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\testTab.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\testTab2.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\testTab3.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\tetTab2.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Book\vote.bas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -183,6 +100,230 @@
   <ItemGroup>
     <ProjectReference Include="..\Trs80.Level1Basic.Graphics\Trs80.Level1Basic.Graphics.csproj" />
     <ProjectReference Include="..\Trs80.Level1Basic.Services\Trs80.Level1Basic.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Samples\Radio Shack BASIC Computer Language\Ch08\" />
+    <Folder Include="Samples\Radio Shack BASIC Computer Language\Ch09\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Samples\ParserTests\coin2.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="Samples\ParserTests\commaTest.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="Samples\ParserTests\fib.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="Samples\ParserTests\lockers.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="Samples\ParserTests\t2.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="Samples\ParserTests\TEST.BAS">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="Samples\Radio Shack BASIC Computer Language\Ch01\01.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="Samples\Radio Shack BASIC Computer Language\Ch02\01.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch05\01-c2f.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch07\02-c2f.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch10\01-berserk.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch11\01-timer.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch13\01-nested-loop.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch14\05-circle.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch14\04-digit.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch14\03-difference.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch14\02-neg-int.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch14\01-int.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch15\01-if-goto.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch17\01-abs.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch19\03-rnd.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch19\02-rnd.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch19\01-rnd.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch20\02-blink.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch20\01-set.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch20\08-blocks.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch20\07-vertical.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch20\06-vertical.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch20\18-stick-man.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch20\17-moving-dot.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch20\16-moving-dot.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch20\15-moving-dot.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch20\14-moving-dot.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch20\13-scan-lines.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch20\12-broken-lines.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch20\11-triangle.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch20\10-diagonal.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch20\09-inverted.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch21\05-array-math.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch21\04-deck.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch21\03-deck.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch21\03-license.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch21\02-license.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\circles.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch19\04-coin.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\count.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch16\01-data.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch06\02-compare.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\for.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch10\02-forMiles.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch06\03-go.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch06\01-ifthen.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch21\01-license.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\logicTest1.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\logicTest2.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch22\01-printAt.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\printTest.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch18\01-shorthand.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch18\02-shorthand.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\stopTest.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch16\03-string.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch16\02-data.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch15\03-gosub.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch20\03-graphics.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch20\04-graphics.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch07\01-input.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch15\02-on-goto.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch16\04-string-data.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch12\01-tab.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch12\02-tab.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch12\03-tab.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="Samples\Radio Shack BASIC Computer Language\Ch16\05-vote.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

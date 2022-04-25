@@ -17,6 +17,7 @@ namespace Trs80.Level1Basic.Extensions
 
             return words[0].Substring(0, 1).ToUpper() + words[0].Substring(1);
         }
+
         public static string ToCamelCase(this string text)
         {
             string result = ToPascalCase(text);

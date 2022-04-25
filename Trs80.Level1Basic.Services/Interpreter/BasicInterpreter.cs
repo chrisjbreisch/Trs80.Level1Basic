@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Xml.Schema;
+
 using Trs80.Level1Basic.Domain;
 using Trs80.Level1Basic.Exceptions;
 using Trs80.Level1Basic.Graphics;
@@ -93,20 +96,20 @@ namespace Trs80.Level1Basic.Services.Interpreter
 
         public dynamic VisitBasicArrayExpression(BasicArray root)
         {
-            var index = Evaluate(root.Index);
+            dynamic index = Evaluate(root.Index);
             return _environment.GetArrayValue(root.Name.Lexeme, index);
         }
 
         public dynamic VisitAssignExpression(Assign assign)
         {
-            var value = Evaluate(assign.Value);
+            dynamic value = Evaluate(assign.Value);
             return AssignVariable(assign, value);
         }
 
         public dynamic VisitBinaryExpression(Binary binary)
         {
-            var left = Evaluate(binary.Left);
-            var right = Evaluate(binary.Right);
+            dynamic left = Evaluate(binary.Left);
+            dynamic right = Evaluate(binary.Right);
 
             CheckForProperOperands(binary.OperatorType, left, right);
 
@@ -180,6 +183,11 @@ namespace Trs80.Level1Basic.Services.Interpreter
 
         public dynamic VisitLiteralExpression(Literal literal)
         {
+            if (!(literal.Value is int)) return literal.Value;
+
+            if (literal.Value > short.MaxValue || literal.Value < short.MinValue)
+                return (float)literal.Value;
+
             return literal.Value;
         }
 
@@ -190,7 +198,7 @@ namespace Trs80.Level1Basic.Services.Interpreter
 
         public dynamic VisitUnaryExpression(Unary unary)
         {
-            var right = Evaluate(unary.Right);
+            dynamic right = Evaluate(unary.Right);
 
             CheckForNumericOperand(unary.OperatorType, right);
             return -1 * right;
@@ -203,15 +211,34 @@ namespace Trs80.Level1Basic.Services.Interpreter
 
         private void WriteValue(dynamic value)
         {
-            if (value is null) return;
-
-            _sb.Append(value.ToString());
+            switch (value)
+            {
+                case null:
+                    return;
+                case float _:
+                    {
+                        if (value == 0)
+                            _sb.Append("0");
+                        else if (value < .1 && value > -.1)
+                            _sb.Append(value.ToString("0.#####E+00"));
+                        else if (value < 1 && value > -1)
+                            _sb.Append(value.ToString("0.######"));
+                        else if (value > 999999 || value < -999999)
+                            _sb.Append(value.ToString("0.#####E+00"));
+                        else
+                            _sb.Append(value.ToString());
+                        break;
+                    }
+                default:
+                    _sb.Append(value.ToString());
+                    break;
+            }
         }
 
         public void VisitNextStatement(Next root)
         {
             var checkCondition = GetCheckCondition(root);
-            var nextIndexerValue = IncrementIndexer(checkCondition);
+            dynamic nextIndexerValue = IncrementIndexer(checkCondition);
             if (EndOfLoop(checkCondition, nextIndexerValue)) return;
             Loop(checkCondition);
         }
@@ -235,8 +262,8 @@ namespace Trs80.Level1Basic.Services.Interpreter
 
         private dynamic IncrementIndexer(ForCheckCondition checkCondition)
         {
-            var indexerValue = GetVariable(checkCondition.Variable);
-            var nextIndexerValue = indexerValue + checkCondition.Step;
+            dynamic indexerValue = GetVariable(checkCondition.Variable);
+            dynamic nextIndexerValue = indexerValue + checkCondition.Step;
             AssignVariable(checkCondition.Variable, nextIndexerValue);
             return nextIndexerValue;
         }
@@ -249,11 +276,11 @@ namespace Trs80.Level1Basic.Services.Interpreter
                     _environment.AssignVariable(identifier.Name.Lexeme, value);
                     break;
                 case BasicArray array:
-                {
-                    var index = Evaluate(array.Index);
-                    _environment.AssignArray(array.Name.Lexeme, index, value);
-                    break;
-                }
+                    {
+                        dynamic index = Evaluate(array.Index);
+                        _environment.AssignArray(array.Name.Lexeme, index, value);
+                        break;
+                    }
                 default:
                     throw new RuntimeExpressionException(null, "Expected variable.");
             }
@@ -285,7 +312,7 @@ namespace Trs80.Level1Basic.Services.Interpreter
                         checkIdentifier = variable;
                     else
                         throw new RuntimeStatementException(next.LineNumber, "Expected variable after 'FOR'.");
-                } while (checkIdentifier.Name.Lexeme != nextIdentifier.Name.Lexeme) ;
+                } while (checkIdentifier.Name.Lexeme != nextIdentifier.Name.Lexeme);
             }
             return checkCondition;
         }
@@ -307,10 +334,8 @@ namespace Trs80.Level1Basic.Services.Interpreter
         public void VisitPrintStatement(Print printStatement)
         {
             _sb = new StringBuilder();
-            if (printStatement.AtPosition != null)
-            {
-                PrintAt(printStatement.AtPosition);
-            }
+            if (printStatement.AtPosition != null) PrintAt(printStatement.AtPosition);
+
             if (printStatement.Expressions != null && printStatement.Expressions.Count > 0)
             {
                 for (int i = 0; i < printStatement.Expressions.Count - 1; i++)
@@ -333,9 +358,9 @@ namespace Trs80.Level1Basic.Services.Interpreter
 
         private void PrintAt(Expression position)
         {
-            var value = Evaluate(position);
-            var column = value / 64;
-            var row = value - column * 64;
+            dynamic value = Evaluate(position);
+            dynamic column = value / 64;
+            dynamic row = value - column * 64;
 
             _console.SetCursorPosition(row, column);
         }
@@ -375,11 +400,11 @@ namespace Trs80.Level1Basic.Services.Interpreter
 
         public string PadQuadrant()
         {
-            var currentPosition = _printPosition + _sb.Length;
+            int currentPosition = _printPosition + _sb.Length;
 
-            var nextPosition = (currentPosition / 15 + 1) * 15;
+            int nextPosition = (currentPosition / 15 + 1) * 15;
             string padding = "".PadRight(nextPosition - currentPosition, ' ');
-            
+
             return padding;
         }
 
@@ -403,7 +428,7 @@ namespace Trs80.Level1Basic.Services.Interpreter
             bool isPositiveNumber = (value is int || value is float) && value > 0;
 
             if (first && !isPositiveNumber) return;
-            
+
             if (value is string str && str.StartsWith(" ")) return;
 
             string text = _sb.ToString();
@@ -413,7 +438,7 @@ namespace Trs80.Level1Basic.Services.Interpreter
         }
         private void WriteExpression(Expression expression, bool first)
         {
-            var value = Evaluate(expression);
+            dynamic value = Evaluate(expression);
             PrependSpaceIfNecessary(value, first);
             WriteValue(value);
         }
@@ -451,7 +476,7 @@ namespace Trs80.Level1Basic.Services.Interpreter
         private int GetStartingLineNumber(Expression startAtLineNumber)
         {
             int lineNumber = 0;
-            var value = Evaluate(startAtLineNumber);
+            dynamic value = Evaluate(startAtLineNumber);
             if (value != null)
                 lineNumber = (int)value;
             return lineNumber;
@@ -491,11 +516,11 @@ namespace Trs80.Level1Basic.Services.Interpreter
 
         public void VisitForStatement(For forStatement)
         {
-            var startValue = Evaluate(forStatement.StartValue);
+            dynamic startValue = Evaluate(forStatement.StartValue);
             AssignVariable(forStatement.Variable, startValue);
 
-            var endValue = Evaluate(forStatement.EndValue);
-            var stepValue = Evaluate(forStatement.StepValue);
+            dynamic endValue = Evaluate(forStatement.EndValue);
+            dynamic stepValue = Evaluate(forStatement.StepValue);
 
             _environment.ForChecks.Push(new ForCheckCondition
             {
@@ -509,20 +534,20 @@ namespace Trs80.Level1Basic.Services.Interpreter
 
         public void VisitGotoStatement(Goto gotoStatement)
         {
-            var nextLineNumber = Evaluate(gotoStatement.Location);
+            dynamic nextLineNumber = Evaluate(gotoStatement.Location);
             _environment.SetNextStatement(GetStatementByLineNumber(nextLineNumber));
         }
 
         public void VisitGosubStatement(Gosub gosub)
         {
             _environment.ProgramStack.Push(gosub.Next);
-            var nextLineNumber = Evaluate(gosub.Location);
+            dynamic nextLineNumber = Evaluate(gosub.Location);
             _environment.SetNextStatement(GetStatementByLineNumber(nextLineNumber));
         }
 
         public void VisitIfStatement(If ifStatement)
         {
-            var value = Evaluate(ifStatement.Condition);
+            dynamic value = Evaluate(ifStatement.Condition);
 
             if (!value) return;
 
@@ -602,13 +627,13 @@ namespace Trs80.Level1Basic.Services.Interpreter
                 AssignVariable(variable, floatValue);
             else if (_environment.VariableExists(value))
             {
-                var lookup = _environment.GetVariable(value);
+                dynamic lookup = _environment.GetVariable(value);
                 AssignVariable(variable, lookup);
 
             }
             else
                 AssignVariable(variable, value);
-        
+
         }
 
         private Statement GetStatementByLineNumber(int lineNumber)

@@ -1,5 +1,4 @@
 ﻿using System;
-using Trs80.Level1Basic.Domain;
 
 namespace Trs80.Level1Basic.Exceptions
 {

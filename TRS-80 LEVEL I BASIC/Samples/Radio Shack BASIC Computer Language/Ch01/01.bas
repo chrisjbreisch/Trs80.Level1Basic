@@ -1,0 +1,1 @@
+﻿10 print "Hello there. I am your new TRS-80 microcomputer."

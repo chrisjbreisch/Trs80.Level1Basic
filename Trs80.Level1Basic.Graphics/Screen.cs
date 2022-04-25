@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Linq;
 
 namespace Trs80.Level1Basic.Graphics
 {
@@ -18,10 +17,6 @@ namespace Trs80.Level1Basic.Graphics
         private double _pixelWidth;
         private double _pixelHeight;
         private readonly bool[,] _screen = new bool[128,48];
-
-        public Screen()
-        {
-        }
 
         private void Initialize()
         {

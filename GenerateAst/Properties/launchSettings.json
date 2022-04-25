@@ -2,7 +2,7 @@
   "profiles": {
     "GenerateAst": {
       "commandName": "Project",
-      "commandLineArgs": "\"C:\\Users\\Chris\\Source\\Repos\\TRS-80 LEVEL I BASIC\\Trs80.Level1Basic.Services\\Parser\""
+      "commandLineArgs": "\"E:\\Users\\Chris\\Source\\Repos\\TRS-80 LEVEL I BASIC\\Trs80.Level1Basic.Services\\Parser\""
     }
   }
 }

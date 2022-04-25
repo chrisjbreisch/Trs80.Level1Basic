@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.NetworkInformation;
 using Trs80.Level1Basic.Services.Parser;
 using Trs80.Level1Basic.Services.Parser.Statements;
 
@@ -27,9 +26,15 @@ namespace Trs80.Level1Basic.Services.Interpreter
             _console = console ?? throw new ArgumentNullException(nameof(console));
             _parser = parser ?? throw new ArgumentNullException(nameof(parser));
             _builtins = builtins ?? throw new ArgumentNullException(nameof(builtins));
+
+            Console.CancelKeyPress += delegate (object sender, ConsoleCancelEventArgs e)
+            {
+                e.Cancel = true;
+                Halted = true;
+            };
         }
 
-        public bool Halted => _runHalted;
+        public bool Halted { get; private set; }
 
         public dynamic AssignVariable(string name, dynamic value)
         {
@@ -79,7 +84,7 @@ namespace Trs80.Level1Basic.Services.Interpreter
             }
         }
 
-        private bool _sorted = false;
+        private bool _sorted;
         public void ReplaceProgramLine(Line line)
         {
             ProgramLines.RemoveAll(l => l.LineNumber == line.LineNumber);
@@ -130,13 +135,12 @@ namespace Trs80.Level1Basic.Services.Interpreter
             Initialize();
         }
 
-        private bool _runHalted = false;
         private Statement _nextStatement;
         public void RunProgram(Statement statement, IBasicInterpreter interpreter)
         {
-            _runHalted = false;
+            Halted = false;
 
-            while (statement != null && !_runHalted)
+            while (statement != null && !Halted)
             {
                 _nextStatement = statement.Next;
                 interpreter.Execute(statement);
@@ -158,7 +162,7 @@ namespace Trs80.Level1Basic.Services.Interpreter
 
         public void HaltRun()
         {
-            _runHalted = true;
+            Halted = true;
         }
 
         public void LoadData(IBasicInterpreter interpreter)

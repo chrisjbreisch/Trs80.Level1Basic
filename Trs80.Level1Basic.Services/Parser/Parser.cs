@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
 
 using Trs80.Level1Basic.Domain;
 using Trs80.Level1Basic.Exceptions;
@@ -142,7 +141,7 @@ namespace Trs80.Level1Basic.Services.Parser
 
         private Statement ReadStatement(Token lineNumber)
         {
-            List<Expression> variables = new List<Expression>();
+            var variables = new List<Expression>();
             do
             {
                 if (Peek().Type != TokenType.Identifier)
@@ -156,7 +155,7 @@ namespace Trs80.Level1Basic.Services.Parser
 
         private Statement DataStatement(Token lineNumber)
         {
-            List<Expression> elements = new List<Expression>();
+            var elements = new List<Expression>();
             do
             {
                 elements.Add(Expression());
@@ -165,20 +164,20 @@ namespace Trs80.Level1Basic.Services.Parser
             return StatementWrapper(new Data(elements), lineNumber);
         }
 
-        private Expression StringData()
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(Peek().Lexeme);
-            Advance();
+        //private Expression StringData()
+        //{
+        //    var sb = new StringBuilder();
+        //    sb.Append(Peek().Lexeme);
+        //    Advance();
 
-            while (!IsAtEnd() && Peek().Type != TokenType.Comma)
-            {
-                sb.Append(" ");
-                sb.Append(Peek().Lexeme);
-                Advance();
-            }
-            return new Literal(sb.ToString());
-        }
+        //    while (!IsAtEnd() && Peek().Type != TokenType.Comma)
+        //    {
+        //        sb.Append(" ");
+        //        sb.Append(Peek().Lexeme);
+        //        Advance();
+        //    }
+        //    return new Literal(sb.ToString());
+        //}
 
         private Statement ReturnStatement(Token lineNumber)
         {
@@ -457,7 +456,7 @@ namespace Trs80.Level1Basic.Services.Parser
         {
             if (lineNumber.Type != TokenType.Number) return lineNumber.LineNumber;
 
-            var line = lineNumber.Literal;
+            dynamic line = lineNumber.Literal;
             if (line > short.MaxValue)
                 throw new ParseException(lineNumber, $"Line number cannot exceed {short.MaxValue}.");
 
@@ -519,9 +518,9 @@ namespace Trs80.Level1Basic.Services.Parser
 
         private Expression Call()
         {
-            Token name = Peek();
+            var name = Peek();
 
-            Expression expression = Primary();
+            var expression = Primary();
 
             if (Match(TokenType.LeftParen) && name.Type == TokenType.Identifier)
                 return _builtins.Get(name.Lexeme) != null ? FinishCall(name) : FinishArray(name);
@@ -540,7 +539,7 @@ namespace Trs80.Level1Basic.Services.Parser
 
         private Expression FinishCall(Token name)
         {
-            List<Expression> arguments = new List<Expression>();
+            var arguments = new List<Expression>();
 
             if (!Check(TokenType.RightParen))
                 do
@@ -548,7 +547,7 @@ namespace Trs80.Level1Basic.Services.Parser
                     arguments.Add(Expression());
                 } while (Match(TokenType.Comma));
 
-            Token rightParen = Consume(TokenType.RightParen, "Expect ')' after arguments");
+            var rightParen = Consume(TokenType.RightParen, "Expect ')' after arguments");
 
             CheckArgs(name, arguments, rightParen);
 
@@ -557,14 +556,14 @@ namespace Trs80.Level1Basic.Services.Parser
 
         private Expression FinishArray(Token name)
         {
-            Expression index = Expression();
+            var index = Expression();
 
-            Token rightParen = Consume(TokenType.RightParen, "Expect ')' after arguments");
+            var rightParen = Consume(TokenType.RightParen, "Expect ')' after arguments");
+
+            CheckIndex(name, index, rightParen);
 
             return new BasicArray(name, index);
         }
-
-
 
         private void CheckArgs(Token name, List<Expression> arguments, Token rightParen)
         {
@@ -574,6 +573,17 @@ namespace Trs80.Level1Basic.Services.Parser
 
             if (arguments.Count != function.Arity)
                 throw new ParseException(rightParen, $"Invalid number of arguments passed to function '{name.Lexeme}'");
+        }
+
+        [SuppressMessage("ReSharper", "UnusedParameter.Local")]
+        private void CheckIndex(Token name, Expression index, Token rightParen)
+        {
+            //var function = _builtins.Get(name.Lexeme);
+            //if (function == null)
+            //    throw new ParseException(rightParen, $"Unknown function '{name.Lexeme}'");
+
+            //if (arguments.Count != function.Arity)
+            //    throw new ParseException(rightParen, $"Invalid number of arguments passed to function '{name.Lexeme}'");
         }
 
         private Expression Primary()

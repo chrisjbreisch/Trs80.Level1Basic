@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Trs80.Level1Basic.Services.Interpreter
 {
@@ -57,11 +55,11 @@ namespace Trs80.Level1Basic.Services.Interpreter
 
         }
 
-        Dictionary<int, dynamic> _theArray = new Dictionary<int, dynamic>();
-        public dynamic TheArray(int index)
-        {
-            throw new NotImplementedException();
-        }
+        //Dictionary<int, dynamic> _theArray = new Dictionary<int, dynamic>();
+        //public dynamic TheArray(int index)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public int Point(IBasicInterpreter interpreter, int x, int y)
         {
