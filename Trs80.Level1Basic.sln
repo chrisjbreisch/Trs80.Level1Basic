@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30204.135
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic", "TRS-80 LEVEL I BASIC\Trs80.Level1Basic.csproj", "{2E68DF59-417F-4025-A706-B31A0FBD0617}"
 EndProject
@@ -15,7 +15,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.Services"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.Extensions", "Trs80.Level1Basic.Extensions\Trs80.Level1Basic.Extensions.csproj", "{8877543F-ADDF-436D-BCDE-B03E30EF0460}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trs80.Level1Basic.Graphics", "Trs80.Level1Basic.Graphics\Trs80.Level1Basic.Graphics.csproj", "{62692606-F922-4887-B5E7-9ED592DBD9B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.Graphics", "Trs80.Level1Basic.Graphics\Trs80.Level1Basic.Graphics.csproj", "{62692606-F922-4887-B5E7-9ED592DBD9B9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Radio Shack BASIC Computer Language", "Radio Shack BASIC Computer Language", "{71005317-8860-4F7C-A802-0A140C96AF1E}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\Users\cbreisch1546\Downloads\Basic_Computer_Language_Its_Easier_Than_You_Think_1978_Radio_Shack.pdf = ..\..\..\Users\cbreisch1546\Downloads\Basic_Computer_Language_Its_Easier_Than_You_Think_1978_Radio_Shack.pdf
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
