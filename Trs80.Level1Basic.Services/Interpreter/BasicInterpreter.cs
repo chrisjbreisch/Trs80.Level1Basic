@@ -364,12 +364,12 @@ namespace Trs80.Level1Basic.Services.Interpreter
 
             if (printStatement.Expressions != null && printStatement.Expressions.Count > 0)
             {
-                for (var i = 0; i < printStatement.Expressions.Count - 1; i++)
+                for (var i = 0; i < printStatement.Expressions.Count; i++)
                     WriteExpression(printStatement.Expressions[i], i == 0);
 
-                WriteExpression(
-                    printStatement.Expressions[printStatement.Expressions.Count - 1],
-                    printStatement.Expressions.Count == 1);
+                //WriteExpression(
+                //    printStatement.Expressions[printStatement.Expressions.Count - 1],
+                //    printStatement.Expressions.Count == 1);
             }
 
             var text = _sb.ToString();
@@ -409,6 +409,7 @@ namespace Trs80.Level1Basic.Services.Interpreter
             if (currentText.Length + _printPosition > position) return;
 
             var padding = "".PadRight(position - (currentText.Length + _printPosition), ' ');
+
             _sb.Clear();
             _sb.Append(currentText);
             _sb.Append(padding);
@@ -567,9 +568,9 @@ namespace Trs80.Level1Basic.Services.Interpreter
 
             if (!value) return;
 
-            foreach (var statement in ifStatement.ThenStatements)
-                if (!_environment.Halted)
-                    Execute(statement);
+            foreach (var statement in ifStatement.ThenStatements.Where(statement => !_environment.Halted))
+                Execute(statement);
+
             //switch (ifStatement.ThenExpression)
             //{
             //    case Stop _:
@@ -605,12 +606,12 @@ namespace Trs80.Level1Basic.Services.Interpreter
         public void VisitInputStatement(Input inputStatement)
         {
             _sb = new StringBuilder();
-            for (var i = 0; i < inputStatement.Expressions.Count - 1; i++)
+            for (var i = 0; i < inputStatement.Expressions.Count; i++)
                 ProcessInputExpression(inputStatement.Expressions[i], inputStatement.WriteNewline);
 
-            ProcessInputExpression(
-                inputStatement.Expressions[inputStatement.Expressions.Count - 1],
-                inputStatement.WriteNewline);
+            //ProcessInputExpression(
+            //    inputStatement.Expressions[inputStatement.Expressions.Count - 1],
+            //    inputStatement.WriteNewline);
         }
 
         private void ProcessInputExpression(Expression expression, bool writeNewline)
