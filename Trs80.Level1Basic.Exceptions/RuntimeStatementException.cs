@@ -5,10 +5,12 @@ namespace Trs80.Level1Basic.Exceptions
     public class RuntimeStatementException : Exception
     {
         public int LineNumber { get;  }
+        public string Statement { get;  }
 
-        public RuntimeStatementException(int lineNumber, string message) : base(message)
+        public RuntimeStatementException(int lineNumber, string statement, string message) : base(message)
         {
             LineNumber = lineNumber;
+            Statement = statement;
         }
     }
 }

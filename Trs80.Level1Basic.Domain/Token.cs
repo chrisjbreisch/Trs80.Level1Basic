@@ -5,21 +5,19 @@
         public TokenType Type { get; set; }
         public string Lexeme { get; set; }
         public dynamic Literal { get; set; }
-        public int LineNumber { get; set; }
         public string SourceLine { get; set; }
 
-        public Token(TokenType type, string lexeme, dynamic literal, int lineNumber, string sourceLine)
+        public Token(TokenType type, string lexeme, dynamic literal, string sourceLine)
         {
             Type = type;
             Lexeme = lexeme;
             Literal = literal;
-            LineNumber = lineNumber;
             SourceLine = sourceLine;
         }
 
         public override string ToString()
         {
-            return $"{LineNumber}: {Type} {Lexeme} {Literal}";
+            return $"{Type} {Lexeme} {Literal}";
         }
     }
 }

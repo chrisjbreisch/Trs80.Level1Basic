@@ -27,7 +27,7 @@ namespace Trs80.Level1Basic
             {
 
                 Console.WriteLine("READY");
-                Console.Write("> ");
+                Console.Write(">");
 
                 string inputLine = GetInputLine();
                 
@@ -82,7 +82,7 @@ namespace Trs80.Level1Basic
 
         private static void InitializeWindow()
         {
-            Win32Api.SetCurrentFont("Lucida Console", 36);
+            Win32Api.SetCurrentFont("Courier New", 24);
             Console.SetWindowSize(64, 16);
             Console.SetBufferSize(64, 160);
         }

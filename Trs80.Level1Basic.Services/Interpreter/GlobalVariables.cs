@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Trs80.Level1Basic.Exceptions;
 
 namespace Trs80.Level1Basic.Services.Interpreter
 {
@@ -13,16 +14,22 @@ namespace Trs80.Level1Basic.Services.Interpreter
             return value;
         }
 
+        private bool IsStringName(string name)
+        {
+            return name.EndsWith("$");
+        }
         private string GetVariableName(string name)
         {
-            if (name.EndsWith("$"))
+            if (IsStringName(name))
                 return name.Substring(0, 1).ToLower() + "$";
 
             return name.ToLower().Substring(0, 1);
         }
         internal dynamic Assign(string name, dynamic value)
         {
-            string lowerName = GetVariableName(name);
+            value = ValidateValue(name, value);
+
+            var lowerName = GetVariableName(name);
             if (!_variables.ContainsKey(lowerName))
                 Define(lowerName, value);
             else
@@ -31,10 +38,21 @@ namespace Trs80.Level1Basic.Services.Interpreter
             return value;
         }
 
+        private dynamic ValidateValue(string name, dynamic value)
+        {
+            if (IsStringName(name)) return value;
+            
+            if (!(value is string)) return value;
+
+            if (value.Length == 1)
+                return 0;
+
+            throw new ValueOutOfRangeException(0, null);
+        }
 
         public dynamic AssignArray(string name, int index, dynamic value)
         {
-            Dictionary<int, dynamic> array = GetArray(name);
+            var array = GetArray(name);
 
             if (!array.ContainsKey(index))
                 array.Add(index, value);
@@ -46,10 +64,10 @@ namespace Trs80.Level1Basic.Services.Interpreter
 
         private Dictionary<int, dynamic> GetArray(string name)
         {
-            string lowerName = GetVariableName(name);
+            var lowerName = GetVariableName(name);
             if (!_arrays.ContainsKey(lowerName))
                 DefineArray(lowerName);
-            Dictionary<int, dynamic> array = _arrays[lowerName];
+            var array = _arrays[lowerName];
             return array;
         }
 
@@ -58,19 +76,18 @@ namespace Trs80.Level1Basic.Services.Interpreter
             _arrays.Add(lowerName, new Dictionary<int, dynamic>());
         }
 
-
         internal bool Exists(string name)
         {
-            string lowerName = GetVariableName(name);
+            var lowerName = GetVariableName(name);
             return _variables.ContainsKey(lowerName);
         }
 
         internal dynamic Get(string name)
         {
-            string lowerName = GetVariableName(name);
+            var lowerName = GetVariableName(name);
             if (_variables.ContainsKey(lowerName)) return _variables[lowerName];
 
-            return lowerName.EndsWith("$") ? Define(lowerName, "") : Define(lowerName, 0);
+            return IsStringName(lowerName) ? Define(lowerName, "") : Define(lowerName, 0);
         }
 
         public void Clear()
@@ -81,7 +98,7 @@ namespace Trs80.Level1Basic.Services.Interpreter
 
         public dynamic GetArrayValue(string name, int index)
         {
-            Dictionary<int, dynamic> array = GetArray(name);
+            var array = GetArray(name);
 
             if (!array.ContainsKey(index))
                 array.Add(index, 0);

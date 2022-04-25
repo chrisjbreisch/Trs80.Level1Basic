@@ -20,6 +20,7 @@ namespace Trs80.Level1Basic.Services.Parser
     {
         private List<Token> _tokens;
         private int _current;
+        private Line _currentLine;
         private readonly IScanner _tokenizer;
         private readonly IBuiltinFunctions _builtins;
 
@@ -39,11 +40,16 @@ namespace Trs80.Level1Basic.Services.Parser
 
         private Line Line()
         {
-            var line = new Line();
+            _currentLine = new Line();
             var lineNumber = Peek();
 
-            line.LineNumber = GetLineNumberValue(lineNumber);
-            line.SourceLine = lineNumber.SourceLine;
+            _currentLine.LineNumber = GetLineNumberValue(lineNumber);
+
+            if (_currentLine.LineNumber == 0 && char.IsLetter(lineNumber.SourceLine[0]))
+                _currentLine.SourceLine = lineNumber.SourceLine;
+            else
+                _currentLine.SourceLine = lineNumber.SourceLine.Replace(_currentLine.LineNumber.ToString(), "").TrimStart(' ');
+
 
             if (lineNumber.Type == TokenType.Number)
             {
@@ -51,13 +57,13 @@ namespace Trs80.Level1Basic.Services.Parser
                     Advance();
                 else
                 {
-                    line.Statements = new List<Statement> { DeleteStatement(lineNumber) };
-                    return line;
+                    _currentLine.Statements = new List<Statement> { DeleteStatement(lineNumber) };
+                    return _currentLine;
                 }
             }
 
-            line.Statements = Statements(lineNumber);
-            return line;
+            _currentLine.Statements = Statements(lineNumber);
+            return _currentLine;
         }
 
         private void Initialize()
@@ -145,7 +151,7 @@ namespace Trs80.Level1Basic.Services.Parser
             do
             {
                 if (Peek().Type != TokenType.Identifier)
-                    throw new ParseException(Peek(), "Expected variable after 'READ'.");
+                    throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, "Expected variable after 'READ'.");
 
                 variables.Add(Expression());
             } while (Match(TokenType.Comma));
@@ -193,7 +199,7 @@ namespace Trs80.Level1Basic.Services.Parser
         private Statement OnStatement(Token lineNumber)
         {
             var selector = Expression();
-            bool isGosub = false;
+            var isGosub = false;
             var locations = new List<Expression>();
             if (Match(TokenType.Goto))
             {
@@ -217,18 +223,22 @@ namespace Trs80.Level1Basic.Services.Parser
                     Advance();
             }
             else
-                throw new ParseException(Peek(), "Expected 'GOTO' or 'GOSUB' after 'ON'");
+                throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, 
+                    "Expected 'GOTO' or 'GOSUB' after 'ON'");
 
             return StatementWrapper(new On(selector, locations, isGosub), lineNumber);
         }
 
         private Statement StatementWrapper(Statement statement, Token lineNumber)
         {
-            int lineNumberValue = GetLineNumberValue(lineNumber);
+            var lineNumberValue = GetLineNumberValue(lineNumber);
             statement.LineNumber = lineNumberValue;
-            statement.SourceLine = lineNumber.SourceLine;
-            statement.UniqueIdentifier = Guid.NewGuid();
-
+            
+            if (lineNumberValue == 0 && char.IsLetter(lineNumber.SourceLine[0]))
+                statement.SourceLine = lineNumber.SourceLine;
+            else
+                statement.SourceLine = lineNumber.SourceLine.Replace(lineNumberValue.ToString(), "").TrimStart(' ');
+            
             return statement;
         }
         private Statement ContStatement(Token lineNumber)
@@ -249,8 +259,13 @@ namespace Trs80.Level1Basic.Services.Parser
 
         private Statement NextStatement(Token lineNumber)
         {
+            if (Peek().Type != TokenType.Identifier)
+                throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
+                    "Expected variable name after 'NEXT'.");
+
             var identifier = Identifier();
             Advance();
+            
             return StatementWrapper(new Next(identifier), lineNumber);
         }
 
@@ -278,7 +293,7 @@ namespace Trs80.Level1Basic.Services.Parser
 
         private Statement InputStatement(Token lineNumber)
         {
-            bool newline = true;
+            var newline = true;
             var values = new List<Expression>();
 
             while (!IsAtStatementEnd())
@@ -294,7 +309,6 @@ namespace Trs80.Level1Basic.Services.Parser
                                 TokenType.Identifier,
                                 "_padquadrant",
                                 "_padquadrant",
-                                0,
                                 null
                             ),
                             new List<Expression>()));
@@ -314,7 +328,7 @@ namespace Trs80.Level1Basic.Services.Parser
 
         private Statement DeleteStatement(Token lineNumber)
         {
-            int lineNumberValue = GetLineNumberValue(lineNumber);
+            var lineNumberValue = GetLineNumberValue(lineNumber);
             Advance();
             return new Delete(lineNumberValue);
         }
@@ -329,13 +343,15 @@ namespace Trs80.Level1Basic.Services.Parser
             var condition = Expression();
 
             if (!Match(TokenType.Then, TokenType.Goto) && Peek().Type == TokenType.Number)
-                throw new ParseException(Peek(), "Must have 'THEN' or 'GOTO' before line number in 'IF' statement.");
+                throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, 
+                    "Expected 'THEN' or 'GOTO' before line number in 'IF' statement.");
 
-            var thenStatements = new List<Statement>();
-            thenStatements.Add
-                (Peek().Type == TokenType.Number ? 
-                new Goto(Expression()) : 
-                Statement(lineNumber));
+            var thenStatements = new List<Statement>
+            {
+                Peek().Type == TokenType.Number ?
+                    new Goto(Expression()) :
+                    Statement(lineNumber)
+            };
 
             while (Match(TokenType.Colon))
                 thenStatements.Add(Statement(lineNumber));
@@ -385,7 +401,8 @@ namespace Trs80.Level1Basic.Services.Parser
             var peekNext = PeekNext();
 
             if (peek.Type != TokenType.Identifier)
-                throw new ParseException(Peek(), "Expected variable name or function call.");
+                throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, 
+                    "Expected variable name or function call.");
 
             if (peekNext.Type != TokenType.Equal && _builtins.Get(peek.Lexeme) != null) return StatementWrapper(new StatementExpression(Call()), lineNumber);
 
@@ -402,7 +419,8 @@ namespace Trs80.Level1Basic.Services.Parser
             var peek = Peek();
 
             if (peek.Type != TokenType.Identifier)
-                throw new ParseException(Peek(), "Expected variable name or function call.");
+                throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, 
+                    "Expected variable name or function call.");
 
             Advance();
 
@@ -419,7 +437,7 @@ namespace Trs80.Level1Basic.Services.Parser
         }
         private Statement PrintStatement(Token lineNumber)
         {
-            bool newline = true;
+            var newline = true;
             var values = new List<Expression>();
             Expression atPosition = null;
 
@@ -442,7 +460,6 @@ namespace Trs80.Level1Basic.Services.Parser
                                 TokenType.Identifier,
                                 "_padquadrant",
                                 "_padquadrant",
-                                0,
                                 null
                             ),
                             new List<Expression>()));
@@ -454,11 +471,12 @@ namespace Trs80.Level1Basic.Services.Parser
 
         private int GetLineNumberValue(Token lineNumber)
         {
-            if (lineNumber.Type != TokenType.Number) return lineNumber.LineNumber;
+            var line = lineNumber.Literal;
 
-            dynamic line = lineNumber.Literal;
+            if (line == null) return 0;
+
             if (line > short.MaxValue)
-                throw new ParseException(lineNumber, $"Line number cannot exceed {short.MaxValue}.");
+                throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, $"Line number cannot exceed {short.MaxValue}.");
 
             return line;
         }
@@ -471,7 +489,9 @@ namespace Trs80.Level1Basic.Services.Parser
         private Expression Comparison()
         {
             var left = Term();
-            while (Match(TokenType.LessThanOrEqual, TokenType.LessThan, TokenType.GreaterThanOrEqual, TokenType.GreaterThan, TokenType.NotEqual, TokenType.Equal))
+            while (Match(TokenType.LessThanOrEqual, TokenType.LessThan, 
+                       TokenType.GreaterThanOrEqual, TokenType.GreaterThan, 
+                       TokenType.NotEqual, TokenType.Equal))
             {
                 var operatorType = Previous();
                 var right = Term();
@@ -534,7 +554,8 @@ namespace Trs80.Level1Basic.Services.Parser
             if (function.Arity == 0)
                 return new Call(name, new List<Expression>());
 
-            throw new ParseException(previous, $"Invalid number of arguments passed to function '{previous.Lexeme}'");
+            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, 
+                $"Invalid number of arguments passed to function '{previous.Lexeme}'");
         }
 
         private Expression FinishCall(Token name)
@@ -547,9 +568,9 @@ namespace Trs80.Level1Basic.Services.Parser
                     arguments.Add(Expression());
                 } while (Match(TokenType.Comma));
 
-            var rightParen = Consume(TokenType.RightParen, "Expect ')' after arguments");
+            Consume(TokenType.RightParen, "Expected ')' after arguments");
 
-            CheckArgs(name, arguments, rightParen);
+            CheckArgs(name, arguments);
 
             return new Call(name, arguments);
         }
@@ -558,23 +579,26 @@ namespace Trs80.Level1Basic.Services.Parser
         {
             var index = Expression();
 
-            var rightParen = Consume(TokenType.RightParen, "Expect ')' after arguments");
+            var rightParen = Consume(TokenType.RightParen, 
+                "Expected ')' after arguments");
 
             CheckIndex(name, index, rightParen);
 
             return new BasicArray(name, index);
         }
 
-        private void CheckArgs(Token name, List<Expression> arguments, Token rightParen)
+        private void CheckArgs(Token name, List<Expression> arguments)
         {
             var function = _builtins.Get(name.Lexeme);
             if (function == null)
-                throw new ParseException(rightParen, $"Unknown function '{name.Lexeme}'");
+                throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, $"Unknown function '{name.Lexeme}'");
 
             if (arguments.Count != function.Arity)
-                throw new ParseException(rightParen, $"Invalid number of arguments passed to function '{name.Lexeme}'");
+                throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, 
+                    $"Invalid number of arguments passed to function '{name.Lexeme}'");
         }
 
+#pragma warning disable IDE0079
         [SuppressMessage("ReSharper", "UnusedParameter.Local")]
         private void CheckIndex(Token name, Expression index, Token rightParen)
         {
@@ -585,6 +609,7 @@ namespace Trs80.Level1Basic.Services.Parser
             //if (arguments.Count != function.Arity)
             //    throw new ParseException(rightParen, $"Invalid number of arguments passed to function '{name.Lexeme}'");
         }
+#pragma warning restore IDE0079
 
         private Expression Primary()
         {
@@ -594,7 +619,7 @@ namespace Trs80.Level1Basic.Services.Parser
             if (Match(TokenType.LeftParen))
             {
                 var expression = Expression();
-                Consume(TokenType.RightParen, "Expect ')' after expression.");
+                Consume(TokenType.RightParen, "Expected ')' after expression.");
                 return new Grouping(expression);
             }
 
@@ -607,12 +632,13 @@ namespace Trs80.Level1Basic.Services.Parser
             //if (Peek().Type == TokenType.Colon)
             //    return new Literal(string.Empty);
 
-            throw new ParseException(Peek(), "Expect expression.");
+            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, 
+                "Expected expression.");
         }
 
         private Token Consume(TokenType type, string message)
         {
-            if (!Check(type)) throw new ParseException(Peek(), message);
+            if (!Check(type)) throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, message);
 
             return Advance();
         }
