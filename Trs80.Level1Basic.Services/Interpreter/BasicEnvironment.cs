@@ -9,14 +9,14 @@ namespace Trs80.Level1Basic.Services.Interpreter
 {
     public class BasicEnvironment : IBasicEnvironment
     {
-        private readonly GlobalVariables _globals = new GlobalVariables();
+        private readonly GlobalVariables _globals = new();
 
-        public Stack<ForCheckCondition> ForChecks { get; } = new Stack<ForCheckCondition>();
-        public Stack<Statement> ProgramStack { get; } = new Stack<Statement>();
+        public Stack<ForCheckCondition> ForChecks { get; } = new();
+        public Stack<Statement> ProgramStack { get; } = new();
         private readonly IBuiltinFunctions _builtins;
-        public DataElements Data { get; } = new DataElements();
-        public List<Line> ProgramLines { get; set; } = new List<Line>();
-        public List<Statement> ProgramStatements { get; set; } = new List<Statement>();
+        public DataElements Data { get; } = new();
+        public List<Line> ProgramLines { get; set; } = new();
+        public List<Statement> ProgramStatements { get; set; } = new();
 
         private readonly ITrs80Console _console;
         private readonly IParser _parser;
@@ -27,7 +27,7 @@ namespace Trs80.Level1Basic.Services.Interpreter
             _parser = parser ?? throw new ArgumentNullException(nameof(parser));
             _builtins = builtins ?? throw new ArgumentNullException(nameof(builtins));
 
-            Console.CancelKeyPress += delegate (object sender, ConsoleCancelEventArgs e)
+            Console.CancelKeyPress += delegate (object _, ConsoleCancelEventArgs e)
             {
                 e.Cancel = true;
                 Halted = true;
@@ -105,18 +105,18 @@ namespace Trs80.Level1Basic.Services.Interpreter
             SortProgram();
 
             foreach (var line in ProgramLines.Where(s => s.LineNumber >= lineNumber))
-                _console.WriteLine($"{line.SourceLine}");
+                _console.WriteLine(line.LineNumber > 0 ? $" {line.LineNumber}  {line.SourceLine}" : $"{line.SourceLine}");
         }
 
         public void SaveProgram(string path)
         {
-            var oldWriter = _console.InternalWriter;
+            var oldWriter = _console.Out;
             using var newWriter = new StreamWriter(path);
-            _console.InternalWriter = newWriter;
+            _console.Out = newWriter;
 
             ListProgram(0);
 
-            _console.InternalWriter = oldWriter;
+            _console.Out = oldWriter;
         }
 
         public void LoadProgram(string path)

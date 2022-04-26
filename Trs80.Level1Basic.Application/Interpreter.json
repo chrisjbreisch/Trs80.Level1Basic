@@ -1,0 +1,10 @@
+{
+  "Id": "Interpreter",
+  "Version": 1,
+  "Steps": [
+    {
+      "Id": "InterpreterStep",
+      "StepType": "Trs80.Level1Basic.Workflow.IInterpreterStep, Trs80.Level1Basic.Workflow"
+    }
+  ]
+}

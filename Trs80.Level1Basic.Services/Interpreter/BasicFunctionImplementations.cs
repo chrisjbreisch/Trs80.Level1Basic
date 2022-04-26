@@ -28,7 +28,7 @@ namespace Trs80.Level1Basic.Services.Interpreter
             return Math.Abs((int) value);
         }
 
-        private static readonly Random Rand = new Random();
+        private static readonly Random Rand = new();
         public dynamic Rnd(int control)
         {
             if (control == 0)

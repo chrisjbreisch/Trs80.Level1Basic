@@ -5,8 +5,8 @@ namespace Trs80.Level1Basic.Services.Interpreter
 {
     public class GlobalVariables
     {
-        private readonly Dictionary<string, dynamic> _variables = new Dictionary<string, dynamic>();
-        private readonly Dictionary<string, Dictionary<int, dynamic>> _arrays = new Dictionary<string, Dictionary<int, dynamic>>();
+        private readonly Dictionary<string, dynamic> _variables = new();
+        private readonly Dictionary<string, Dictionary<int, dynamic>> _arrays = new();
 
         internal dynamic Define(string name, dynamic value)
         {

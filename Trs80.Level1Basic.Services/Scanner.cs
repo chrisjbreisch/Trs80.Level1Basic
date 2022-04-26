@@ -334,11 +334,9 @@ namespace Trs80.Level1Basic.Services
             else if (!KeywordsByLetter
                          .Select(d => d.Value)
                          .Any(kw => kw.ContainsKey(identifier)))
-            {
                 throw new ScanException(
                     _source.Substring(0, TokenStart + 1) + "?" +
                     _source.Substring(TokenStart + 1, _source.Length - TokenStart - 1));
-            }
         }
 
         private void Add6PlusCharsToken()

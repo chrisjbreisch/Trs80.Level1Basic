@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Trs80.Level1Basic.Services.Interpreter
 {
@@ -7,6 +8,7 @@ namespace Trs80.Level1Basic.Services.Interpreter
         FunctionDefinition Get(string name);
     }
 
+    [SuppressMessage("ReSharper", "UnusedParameter.Local")]
     public class BuiltinFunctions : IBuiltinFunctions
     {
         private readonly Dictionary<string, FunctionDefinition> _functions;

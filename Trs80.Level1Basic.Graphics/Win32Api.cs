@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -16,6 +15,10 @@ namespace Trs80.Level1Basic.Graphics
         // https://www.pinvoke.net/default.aspx/user32/GetClientRect.html
         [DllImport("user32.dll")]
         public static extern bool GetClientRect(IntPtr hWnd, out Rect lpRect);
+
+        // https://www.pinvoke.net/default.aspx/kernel32/GetConsoleMode.html
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
 
         // https://www.pinvoke.net/default.aspx/kernel32/GetConsoleTitle.html
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -39,6 +42,10 @@ namespace Trs80.Level1Basic.Graphics
         [DllImport("user32.dll", SetLastError = true)]
         static extern bool GetWindowRect(IntPtr hwnd, out Rect lpRect);
 
+        // https://www.pinvoke.net/default.aspx/kernel32/SetConsoleMode.html
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
+
         // https://www.pinvoke.net/default.aspx/kernel32/SetConsoleTitle.html
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool SetConsoleTitle(string lpConsoleTitle);
@@ -60,6 +67,7 @@ namespace Trs80.Level1Basic.Graphics
             public string FontName;
         }
 
+        
 
         public static IntPtr GetConsoleWindowHandle()
         {
@@ -111,55 +119,6 @@ namespace Trs80.Level1Basic.Graphics
             return info;
         }
 
-        private const int FixedWidthTrueType = 54;
-        private const int StandardOutputHandle = -11;
-
-        private static readonly IntPtr ConsoleOutputHandle = GetStdHandle(StandardOutputHandle);
-
-
-        public static FontInfo[] SetCurrentFont(string font, short fontSize = 0)
-        {
-            var before = new FontInfo
-            {
-                cbSize = Marshal.SizeOf<FontInfo>()
-            };
-
-            if (GetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref before))
-            {
-
-                var set = new FontInfo
-                {
-                    cbSize = Marshal.SizeOf<FontInfo>(),
-                    FontIndex = 0,
-                    FontFamily = FixedWidthTrueType,
-                    FontName = font,
-                    FontWeight = 400,
-                    FontSize = fontSize > 0 ? fontSize : before.FontSize
-                };
-
-                // Get some settings from current font.
-                if (!SetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref set))
-                {
-                    int ex = Marshal.GetLastWin32Error();
-                    Console.WriteLine("Set error " + ex);
-                    throw new Win32Exception(ex);
-                }
-
-                var after = new FontInfo
-                {
-                    cbSize = Marshal.SizeOf<FontInfo>()
-                };
-                GetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref after);
-
-                return new[] { before, set, after };
-            }
-            else
-            {
-                int er = Marshal.GetLastWin32Error();
-                Console.WriteLine("Get error " + er);
-                throw new Win32Exception(er);
-            }
-        }
     }
 
 

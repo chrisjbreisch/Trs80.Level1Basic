@@ -313,7 +313,7 @@ namespace Trs80.Level1Basic.Services.Parser
                             ),
                             new List<Expression>()));
 
-                if (IsAtStatementEnd() && values[values.Count - 1] is Identifier)
+                if (IsAtStatementEnd() && values[^1] is Identifier)
                     newline = false;
             }
 

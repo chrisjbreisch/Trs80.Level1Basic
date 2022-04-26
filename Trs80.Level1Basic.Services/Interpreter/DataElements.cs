@@ -5,7 +5,7 @@ namespace Trs80.Level1Basic.Services.Interpreter
 {
     public class DataElements
     {
-        private readonly List<dynamic> _dataElements = new List<dynamic>();
+        private readonly List<dynamic> _dataElements = new();
         private int _listIndex;
 
         public void Add(dynamic value)

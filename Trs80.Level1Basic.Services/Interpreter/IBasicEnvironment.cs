@@ -10,7 +10,6 @@ namespace Trs80.Level1Basic.Services.Interpreter
         Stack<Statement> ProgramStack { get; }
         DataElements Data { get; }
         List<Line> ProgramLines { get; set; }
-        List<Statement> ProgramStatements { get; set; }
         bool Halted { get; }
         dynamic AssignVariable(string name, dynamic value);
         dynamic AssignArray(string name, int index, dynamic value);
