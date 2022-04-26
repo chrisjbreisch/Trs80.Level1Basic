@@ -36,8 +36,8 @@ namespace Trs80.Level1Basic.Services
 
         private void GetCurrentLine()
         {
-            var currentString = _source.Substring(TokenStart);
-            var endOfLine = currentString.IndexOf("\r\n", StringComparison.Ordinal);
+            string currentString = _source.Substring(TokenStart);
+            int endOfLine = currentString.IndexOf("\r\n", StringComparison.Ordinal);
             _currentLine = endOfLine < 0 ? currentString : currentString.Substring(0, endOfLine);
         }
 
@@ -152,7 +152,7 @@ namespace Trs80.Level1Basic.Services
 
         private void ScanToken()
         {
-            var c = Advance();
+            char c = Advance();
 
             switch (c)
             {
@@ -165,9 +165,6 @@ namespace Trs80.Level1Basic.Services
                 case ',':
                     AddToken(TokenType.Comma);
                     break;
-                //case '.':
-                //    AddToken(TokenType.Period);
-                //    break;
                 case '-':
                     AddToken(TokenType.Minus);
                     break;
@@ -233,8 +230,7 @@ namespace Trs80.Level1Basic.Services
 
         private bool IsAlpha(char c)
         {
-            return (c >= 'a' && c <= 'z') ||
-                   (c >= 'A' && c <= 'Z');
+            return c is >= 'a' and <= 'z' or >= 'A' and <= 'Z';
         }
 
         private void GetKeywordOrIdentifier()
@@ -249,7 +245,7 @@ namespace Trs80.Level1Basic.Services
 
         private void AddIdentifierToken()
         {
-            var id = _source.Substring(TokenStart, 1).ToLower();
+            string id = _source.Substring(TokenStart, 1).ToLower();
             AddToken(TokenType.Identifier, id);
         }
 
@@ -327,7 +323,7 @@ namespace Trs80.Level1Basic.Services
 
         private void AddUnknownIdentifierToken()
         {
-            var identifier = _source.Substring(TokenStart, TokenLength);
+            string identifier = _source.Substring(TokenStart, TokenLength);
 
             if (TokenLength == 1)
                 AddToken(TokenType.Identifier, identifier);
@@ -434,7 +430,7 @@ namespace Trs80.Level1Basic.Services
 
         private TokenType GetKeywordAtPosition()
         {
-            var key = _source.Substring(TokenStart, TokenLength).ToLower();
+            string key = _source.Substring(TokenStart, TokenLength).ToLower();
             try
             {
                 var keyword = KeywordsByLetter[TokenLength][key];
@@ -460,7 +456,7 @@ namespace Trs80.Level1Basic.Services
         private void AddStringIdentifierToken()
         {
             Advance();
-            var id = _source.Substring(TokenStart, 2).ToLower();
+            string id = _source.Substring(TokenStart, 2).ToLower();
             AddToken(TokenType.Identifier, id);
         }
 
@@ -470,7 +466,7 @@ namespace Trs80.Level1Basic.Services
             TokenStart = ++_currentIndex;
             while (!IsAtEnd())
                 Advance();
-            var element = _source.Substring(TokenStart, TokenLength);
+            string element = _source.Substring(TokenStart, TokenLength);
             AddToken(TokenType.String, element);
             TokenStart = _currentIndex;
         }
@@ -483,10 +479,10 @@ namespace Trs80.Level1Basic.Services
             {
                 while (Peek() != ',' && !IsAtEnd())
                     Advance();
-                var element = _source.Substring(TokenStart, TokenLength);
-                if (int.TryParse(element, out var intValue))
+                string element = _source.Substring(TokenStart, TokenLength);
+                if (int.TryParse(element, out int intValue))
                     AddToken(TokenType.Number, intValue);
-                else if (float.TryParse(element, out var floatValue))
+                else if (float.TryParse(element, out float floatValue))
                     AddToken(TokenType.Number, floatValue);
                 else
                     AddToken(TokenType.String, element);
@@ -507,13 +503,13 @@ namespace Trs80.Level1Basic.Services
                 Advance();
             if (!IsAtEnd() && Peek() == '\n')
                 Advance();
-            var remark = _source.Substring(TokenStart + 4, TokenLength - 4);
+            string remark = _source.Substring(TokenStart + 4, TokenLength - 4);
             AddToken(keyword, remark);
         }
 
         private void GetNumber(char c)
         {
-            var isInt = c != '.';
+            bool isInt = c != '.';
 
             while (IsDigit(Peek()))
                 Advance();
@@ -555,7 +551,7 @@ namespace Trs80.Level1Basic.Services
 
         private bool IsDigit(char c)
         {
-            return c >= '0' && c <= '9';
+            return c is >= '0' and <= '9';
         }
 
         private void GetString()
@@ -568,7 +564,7 @@ namespace Trs80.Level1Basic.Services
 
             Advance();
 
-            var value = _source.Substring(TokenStart + 1, TokenLength - 2);
+            string value = _source.Substring(TokenStart + 1, TokenLength - 2);
             AddToken(TokenType.String, value);
         }
 
@@ -593,7 +589,7 @@ namespace Trs80.Level1Basic.Services
 
         private void AddToken(TokenType type, dynamic literal = null)
         {
-            var text = _source.Substring(TokenStart, TokenLength);
+            string text = _source.Substring(TokenStart, TokenLength);
             _tokens.Add(new Token(type, text, literal, CurrentLine));
         }
     }

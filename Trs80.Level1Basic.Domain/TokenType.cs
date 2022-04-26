@@ -7,7 +7,6 @@
         Comma,
         LeftParen,
         Minus,
-        Period,
         Plus,
         RightParen,
         Semicolon,
