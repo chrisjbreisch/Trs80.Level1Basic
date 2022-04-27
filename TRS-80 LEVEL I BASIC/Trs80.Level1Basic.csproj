@@ -19,8 +19,6 @@
     <None Remove="Interpreter.json" />
     <None Remove="Samples\Radio Shack BASIC Computer Language\c2f.bas" />
     <None Remove="Samples\Radio Shack BASIC Computer Language\carmiles.bas" />
-    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch07\02-c2f.bas" />
-    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch10\01-berserk.bas" />
     <None Remove="Samples\Radio Shack BASIC Computer Language\Ch11\01-timer.bas" />
     <None Remove="Samples\Radio Shack BASIC Computer Language\Ch13\01-nested-loop.bas" />
     <None Remove="Samples\Radio Shack BASIC Computer Language\Ch14\01-int.bas" />
@@ -137,13 +135,10 @@
     <None Update="Samples\Radio Shack BASIC Computer Language\Ch02\01.bas">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Include="Samples\Radio Shack BASIC Computer Language\Ch05\01-c2f.bas">
+    <None Update="Samples\Radio Shack BASIC Computer Language\Ch07\02.bas">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Include="Samples\Radio Shack BASIC Computer Language\Ch07\02-c2f.bas">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-    <None Include="Samples\Radio Shack BASIC Computer Language\Ch10\01-berserk.bas">
+    <None Update="Samples\Radio Shack BASIC Computer Language\Ch10\01.bas">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Include="Samples\Radio Shack BASIC Computer Language\Ch11\01-timer.bas">
@@ -254,19 +249,7 @@
     <None Include="Samples\Radio Shack BASIC Computer Language\Ch16\01-data.bas">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Include="Samples\Radio Shack BASIC Computer Language\Ch06\02-compare.bas">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
     <None Include="Samples\Radio Shack BASIC Computer Language\for.bas">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-    <None Include="Samples\Radio Shack BASIC Computer Language\Ch10\02-forMiles.bas">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-    <None Include="Samples\Radio Shack BASIC Computer Language\Ch06\03-go.bas">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-    <None Include="Samples\Radio Shack BASIC Computer Language\Ch06\01-ifthen.bas">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Include="Samples\Radio Shack BASIC Computer Language\Ch21\01-license.bas">
@@ -306,9 +289,6 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Include="Samples\Radio Shack BASIC Computer Language\Ch20\04-graphics.bas">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-    <None Include="Samples\Radio Shack BASIC Computer Language\Ch07\01-input.bas">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Include="Samples\Radio Shack BASIC Computer Language\Ch15\02-on-goto.bas">

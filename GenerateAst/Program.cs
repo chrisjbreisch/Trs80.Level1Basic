@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
 using Trs80.Level1Basic.Extensions;
 
-//using Trs80.Level1Basic.Services.Extensions;
+namespace Trs80.Level1Basic.GenerateAst;
 
-namespace GenerateAst;
 internal class Program
 {
     private static void Main(string[] args)
@@ -88,27 +86,26 @@ internal class Program
 
 
         WriteHeaders(baseName, writer);
-        writer.WriteLine($"    public abstract class {baseName}");
-        writer.WriteLine("    {");
+        writer.WriteLine($"public abstract class {baseName}");
+        writer.WriteLine("{");
         string returnType = "dynamic";
         if (baseName.Contains("Statement"))
         {
-            writer.WriteLine("        public int LineNumber { get; set; }");
-            writer.WriteLine("        public string SourceLine { get; set; }");
-            writer.WriteLine("        public Guid UniqueIdentifier { get; set; }");
-            writer.WriteLine("        public Statement Next { get; set; }");
+            writer.WriteLine("    public int LineNumber { get; set; }");
+            writer.WriteLine("    public string SourceLine { get; set; }");
+            writer.WriteLine("    public Guid UniqueIdentifier { get; set; }");
+            writer.WriteLine("    public Statement Next { get; set; }");
             writer.WriteLine();
             returnType = "void";
         }
 
-        writer.WriteLine($"        public abstract {returnType} Accept(I{baseName}Visitor visitor);");
-        writer.WriteLine("    }");
+        writer.WriteLine($"    public abstract {returnType} Accept(I{baseName}Visitor visitor);");
+        writer.WriteLine("}");
         WriteEnd(writer);
     }
 
     private static void WriteEnd(StreamWriter writer)
     {
-        writer.WriteLine("}");
         writer.Flush();
         writer.Close();
     }
@@ -126,8 +123,8 @@ internal class Program
 
         writer.WriteLine("using Trs80.Level1Basic.Domain;");
         writer.WriteLine();
-        writer.WriteLine($"namespace Trs80.Level1Basic.Services.Parser.{baseName}s");
-        writer.WriteLine("{");
+        writer.WriteLine($"namespace Trs80.Level1Basic.Services.Parser.{baseName}s;");
+        writer.WriteLine();
     }
 
     private static void WriteDisclaimer(StreamWriter writer)
@@ -144,19 +141,19 @@ internal class Program
 
         WriteDisclaimer(writer);
 
-        writer.WriteLine($"namespace Trs80.Level1Basic.Services.Parser.{baseName}s");
+        writer.WriteLine($"namespace Trs80.Level1Basic.Services.Parser.{baseName}s;");
+        writer.WriteLine();
+        writer.WriteLine($"public interface I{baseName}Visitor");
         writer.WriteLine("{");
-        writer.WriteLine($"    public interface I{baseName}Visitor");
-        writer.WriteLine("    {");
 
         foreach (string type in types)
         {
             string returnType = baseName.Contains("Statement") ? "void" : "dynamic";
 
             string typeName = type.Split(":")[0].Trim();
-            writer.WriteLine($"        {returnType} Visit{typeName}{baseName}({typeName} root);");
+            writer.WriteLine($"    {returnType} Visit{typeName}{baseName}({typeName} root);");
         }
-        writer.WriteLine("    }");
+        writer.WriteLine("}");
         WriteEnd(writer);
     }
 
@@ -167,35 +164,35 @@ internal class Program
 
         WriteHeaders(baseName, writer);
         string[] fields = fieldList.Split(", ");
-        writer.WriteLine($"    public class {className} : {baseName}");
-        writer.WriteLine("    {");
+        writer.WriteLine($"public class {className} : {baseName}");
+        writer.WriteLine("{");
 
         foreach (string field in fields.Where(s => !string.IsNullOrEmpty(s)))
         {
             string[] fieldPieces = field.Split(" ");
-            writer.WriteLine($"        public {fieldPieces[0]} {fieldPieces[1].ToPascalCase()} {{ get; }}");
+            writer.WriteLine($"    public {fieldPieces[0]} {fieldPieces[1].ToPascalCase()} {{ get; }}");
         }
 
         writer.WriteLine();
-        writer.WriteLine($"        public {className}({fieldList})");
-        writer.WriteLine("        {");
+        writer.WriteLine($"    public {className}({fieldList})");
+        writer.WriteLine("    {");
 
         foreach (string field in fields.Where(s => !string.IsNullOrEmpty(s)))
         {
             string name = field.Split(" ")[1];
-            writer.WriteLine($"            {name.ToPascalCase()} = {name};");
+            writer.WriteLine($"        {name.ToPascalCase()} = {name};");
         }
 
-        writer.WriteLine("        }");
+        writer.WriteLine("    }");
 
         string returnType = baseName.Contains("Statement") ? "void" : "dynamic";
         string returnStatement = baseName.Contains("Statement") ? "" : "return ";
         writer.WriteLine();
-        writer.WriteLine($"        public override {returnType} Accept(I{baseName}Visitor visitor)");
-        writer.WriteLine("        {");
-        writer.WriteLine($"            {returnStatement}visitor.Visit{className}{baseName}(this);");
-        writer.WriteLine("        }");
+        writer.WriteLine($"    public override {returnType} Accept(I{baseName}Visitor visitor)");
+        writer.WriteLine("    {");
+        writer.WriteLine($"        {returnStatement}visitor.Visit{className}{baseName}(this);");
         writer.WriteLine("    }");
+        writer.WriteLine("}");
         WriteEnd(writer);
     }
 }

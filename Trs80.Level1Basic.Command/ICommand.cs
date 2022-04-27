@@ -1,7 +1,6 @@
-﻿namespace Trs80.Level1Basic.Command
+﻿namespace Trs80.Level1Basic.Command;
+
+public interface ICommand<in TPo>
 {
-    public interface ICommand<in TPo>
-    {
-        void Execute(TPo parameterObject);
-    }
+    void Execute(TPo parameterObject);
 }

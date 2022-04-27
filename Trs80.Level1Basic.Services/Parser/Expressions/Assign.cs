@@ -6,22 +6,21 @@ using System;
 using System.Collections.Generic;
 using Trs80.Level1Basic.Domain;
 
-namespace Trs80.Level1Basic.Services.Parser.Expressions
+namespace Trs80.Level1Basic.Services.Parser.Expressions;
+
+public class Assign : Expression
 {
-    public class Assign : Expression
+    public Token Name { get; }
+    public Expression Value { get; }
+
+    public Assign(Token name, Expression value)
     {
-        public Token Name { get; }
-        public Expression Value { get; }
+        Name = name;
+        Value = value;
+    }
 
-        public Assign(Token name, Expression value)
-        {
-            Name = name;
-            Value = value;
-        }
-
-        public override dynamic Accept(IExpressionVisitor visitor)
-        {
-            return visitor.VisitAssignExpression(this);
-        }
+    public override dynamic Accept(IExpressionVisitor visitor)
+    {
+        return visitor.VisitAssignExpression(this);
     }
 }

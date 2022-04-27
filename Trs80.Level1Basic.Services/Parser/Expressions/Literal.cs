@@ -6,20 +6,19 @@ using System;
 using System.Collections.Generic;
 using Trs80.Level1Basic.Domain;
 
-namespace Trs80.Level1Basic.Services.Parser.Expressions
+namespace Trs80.Level1Basic.Services.Parser.Expressions;
+
+public class Literal : Expression
 {
-    public class Literal : Expression
+    public dynamic Value { get; }
+
+    public Literal(dynamic value)
     {
-        public dynamic Value { get; }
+        Value = value;
+    }
 
-        public Literal(dynamic value)
-        {
-            Value = value;
-        }
-
-        public override dynamic Accept(IExpressionVisitor visitor)
-        {
-            return visitor.VisitLiteralExpression(this);
-        }
+    public override dynamic Accept(IExpressionVisitor visitor)
+    {
+        return visitor.VisitLiteralExpression(this);
     }
 }

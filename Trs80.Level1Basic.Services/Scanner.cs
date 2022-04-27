@@ -5,251 +5,413 @@ using System.Linq;
 using Trs80.Level1Basic.Domain;
 using Trs80.Level1Basic.Exceptions;
 
-namespace Trs80.Level1Basic.Services
+namespace Trs80.Level1Basic.Services;
+
+public interface IScanner
 {
-    public interface IScanner
+    List<Token> ScanTokens(string source);
+}
+
+public class Scanner : IScanner
+{
+    private string _source;
+    private List<Token> _tokens;
+    private int TokenStart { get; set; }
+    private int TokenLength => _currentIndex - TokenStart;
+    private int _currentIndex;
+
+    private static readonly Dictionary<int, Dictionary<string, TokenType>> KeywordsByLetter =
+        CreateKeywordsByLetterDictionary();
+    private string _currentLine;
+
+    private string CurrentLine
     {
-        List<Token> ScanTokens(string source);
+        get
+        {
+            if (_currentLine == null)
+                GetCurrentLine();
+            return _currentLine;
+        }
     }
 
-    public class Scanner : IScanner
+    private void GetCurrentLine()
     {
-        private string _source;
-        private List<Token> _tokens;
-        private int TokenStart { get; set; }
-        private int TokenLength => _currentIndex - TokenStart;
-        private int _currentIndex;
+        string currentString = _source.Substring(TokenStart);
+        int endOfLine = currentString.IndexOf("\r\n", StringComparison.Ordinal);
+        _currentLine = endOfLine < 0 ? currentString : currentString.Substring(0, endOfLine);
+    }
 
-        private static readonly Dictionary<int, Dictionary<string, TokenType>> KeywordsByLetter =
-            CreateKeywordsByLetterDictionary();
-        private string _currentLine;
-
-        private string CurrentLine
+    private static Dictionary<int, Dictionary<string, TokenType>> CreateKeywordsByLetterDictionary()
+    {
+        return new Dictionary<int, Dictionary<string, TokenType>>
         {
-            get
             {
-                if (_currentLine == null)
-                    GetCurrentLine();
-                return _currentLine;
-            }
-        }
-
-        private void GetCurrentLine()
-        {
-            string currentString = _source.Substring(TokenStart);
-            int endOfLine = currentString.IndexOf("\r\n", StringComparison.Ordinal);
-            _currentLine = endOfLine < 0 ? currentString : currentString.Substring(0, endOfLine);
-        }
-
-        private static Dictionary<int, Dictionary<string, TokenType>> CreateKeywordsByLetterDictionary()
-        {
-            return new Dictionary<int, Dictionary<string, TokenType>>
-            {
+                2, new Dictionary<string, TokenType>
                 {
-                    2, new Dictionary<string, TokenType>
-                    {
-                        {"at", TokenType.At},
-                        {"d.", TokenType.Data},
-                        {"e.", TokenType.End},
-                        {"f.", TokenType.For},
-                        {"g.", TokenType.Goto},
-                        {"if", TokenType.If},
-                        {"l.", TokenType.List},
-                        {"n.", TokenType.N},
-                        {"on", TokenType.On},
-                        {"p.", TokenType.Print},
-                        {"r.", TokenType.Run},
-                        {"s.", TokenType.Step},
-                        {"to", TokenType.To},
-                        {"t.", TokenType.Then},
-                    }
-                },
-                {
-                    3, new Dictionary<string, TokenType>
-                    {
-                        {"cls", TokenType.Cls},
-                        {"end", TokenType.End},
-                        {"for", TokenType.For},
-                        {"in.", TokenType.Input},
-                        {"let", TokenType.Let},
-                        {"new", TokenType.New},
-                        {"rem", TokenType.Rem},
-                        {"run", TokenType.Run},
-                        {"st.", TokenType.Stop},
-                    }
-                },
-                {
-                    4, new Dictionary<string, TokenType>
-                    {
-                        {"cont", TokenType.Cont},
-                        {"data", TokenType.Data},
-                        {"goto", TokenType.Goto},
-                        {"list", TokenType.List},
-                        {"load", TokenType.Load},
-                        {"next", TokenType.Next},
-                        {"read", TokenType.Read},
-                        {"rea.", TokenType.Read},
-                        {"ret.", TokenType.Return},
-                        {"save", TokenType.Save},
-                        {"step", TokenType.Step},
-                        {"stop", TokenType.Stop},
-                        {"then", TokenType.Then},
-                    }
-                },
-                {
-                    5, new Dictionary<string, TokenType>
-                    {
-                        {"gosub", TokenType.Gosub},
-                        {"input", TokenType.Input},
-                        {"print", TokenType.Print},
-                        {"rest.", TokenType.Restore},
-                    }
-                },
-                {
-                    6, new Dictionary<string, TokenType>
-                    {
-                        {"return", TokenType.Return},
-                    }
-                },
-                {
-                    7, new Dictionary<string, TokenType>
-                    {
-                        {"restore", TokenType.Restore},
-                    }
+                    {"at", TokenType.At},
+                    {"d.", TokenType.Data},
+                    {"e.", TokenType.End},
+                    {"f.", TokenType.For},
+                    {"g.", TokenType.Goto},
+                    {"if", TokenType.If},
+                    {"l.", TokenType.List},
+                    {"n.", TokenType.N},
+                    {"on", TokenType.On},
+                    {"p.", TokenType.Print},
+                    {"r.", TokenType.Run},
+                    {"s.", TokenType.Step},
+                    {"to", TokenType.To},
+                    {"t.", TokenType.Then},
                 }
-            };
-        }
-
-        public List<Token> ScanTokens(string source)
-        {
-            Initialize();
-
-            _source = source;
-
-            while (!IsAtEnd())
+            },
             {
-                TokenStart = _currentIndex;
-                ScanToken();
-            }
-
-            _tokens.Add(new Token(TokenType.EndOfLine, "", null, CurrentLine));
-            return _tokens;
-        }
-
-        private void Initialize()
-        {
-            _source = null;
-            _currentLine = null;
-            _tokens = new List<Token>();
-            TokenStart = 0;
-            _currentIndex = 0;
-        }
-
-        private bool IsAtEnd()
-        {
-            return _currentIndex >= _source.Length;
-        }
-
-        private void ScanToken()
-        {
-            char c = Advance();
-
-            switch (c)
+                3, new Dictionary<string, TokenType>
+                {
+                    {"cls", TokenType.Cls},
+                    {"end", TokenType.End},
+                    {"for", TokenType.For},
+                    {"in.", TokenType.Input},
+                    {"let", TokenType.Let},
+                    {"new", TokenType.New},
+                    {"rem", TokenType.Rem},
+                    {"run", TokenType.Run},
+                    {"st.", TokenType.Stop},
+                }
+            },
             {
-                case '(':
-                    AddToken(TokenType.LeftParen);
-                    break;
-                case ')':
-                    AddToken(TokenType.RightParen);
-                    break;
-                case ',':
-                    AddToken(TokenType.Comma);
-                    break;
-                case '-':
-                    AddToken(TokenType.Minus);
-                    break;
-                case '+':
-                    AddToken(TokenType.Plus);
-                    break;
-                case ';':
-                    AddToken(TokenType.Semicolon);
-                    break;
-                case ':':
-                    AddToken(TokenType.Colon);
-                    break;
-                case '*':
-                    AddToken(TokenType.Star);
-                    break;
-                case '/':
-                    AddToken(TokenType.Slash);
-                    break;
-                case '=':
-                    if (Match('>'))
-                        AddToken(TokenType.GreaterThanOrEqual);
-                    else if (Match('<'))
-                        AddToken(TokenType.LessThanOrEqual);
-                    else
-                        AddToken(TokenType.Equal);
-                    break;
-                case '"':
-                    GetString();
-                    break;
-                case '<':
-                    if (Match('='))
-                        AddToken(TokenType.LessThanOrEqual);
-                    else if (Match('>'))
-                        AddToken(TokenType.NotEqual);
-                    else
-                        AddToken(TokenType.LessThan);
-                    break;
-                case '>':
-                    if (Match('='))
-                        AddToken(TokenType.GreaterThanOrEqual);
-                    else if (Match('<'))
-                        AddToken(TokenType.NotEqual);
-                    else
-                        AddToken(TokenType.GreaterThan);
-                    break;
-                case ' ':
-                case '\t':
-                    break;
-                case '\r':
-                    if (Match('\n'))
-                        _currentLine = null;
-                    break;
-                default:
-                    if (IsDigit(c) || c == '.')
-                        GetNumber(c);
-                    else if (IsAlpha(c))
-                        GetKeywordOrIdentifier();
-                    else
-                        throw new ScanException("Unexpected character.");
-                    break;
+                4, new Dictionary<string, TokenType>
+                {
+                    {"cont", TokenType.Cont},
+                    {"data", TokenType.Data},
+                    {"goto", TokenType.Goto},
+                    {"list", TokenType.List},
+                    {"load", TokenType.Load},
+                    {"next", TokenType.Next},
+                    {"read", TokenType.Read},
+                    {"rea.", TokenType.Read},
+                    {"ret.", TokenType.Return},
+                    {"save", TokenType.Save},
+                    {"step", TokenType.Step},
+                    {"stop", TokenType.Stop},
+                    {"then", TokenType.Then},
+                }
+            },
+            {
+                5, new Dictionary<string, TokenType>
+                {
+                    {"gosub", TokenType.Gosub},
+                    {"input", TokenType.Input},
+                    {"print", TokenType.Print},
+                    {"rest.", TokenType.Restore},
+                }
+            },
+            {
+                6, new Dictionary<string, TokenType>
+                {
+                    {"return", TokenType.Return},
+                }
+            },
+            {
+                7, new Dictionary<string, TokenType>
+                {
+                    {"restore", TokenType.Restore},
+                }
+            }
+        };
+    }
+
+    public List<Token> ScanTokens(string source)
+    {
+        Initialize();
+
+        _source = source;
+
+        while (!IsAtEnd())
+        {
+            TokenStart = _currentIndex;
+            ScanToken();
+        }
+
+        _tokens.Add(new Token(TokenType.EndOfLine, "", null, CurrentLine));
+        return _tokens;
+    }
+
+    private void Initialize()
+    {
+        _source = null;
+        _currentLine = null;
+        _tokens = new List<Token>();
+        TokenStart = 0;
+        _currentIndex = 0;
+    }
+
+    private bool IsAtEnd()
+    {
+        return _currentIndex >= _source.Length;
+    }
+
+    private void ScanToken()
+    {
+        char c = Advance();
+
+        switch (c)
+        {
+            case '(':
+                AddToken(TokenType.LeftParen);
+                break;
+            case ')':
+                AddToken(TokenType.RightParen);
+                break;
+            case ',':
+                AddToken(TokenType.Comma);
+                break;
+            case '-':
+                AddToken(TokenType.Minus);
+                break;
+            case '+':
+                AddToken(TokenType.Plus);
+                break;
+            case ';':
+                AddToken(TokenType.Semicolon);
+                break;
+            case ':':
+                AddToken(TokenType.Colon);
+                break;
+            case '*':
+                AddToken(TokenType.Star);
+                break;
+            case '/':
+                AddToken(TokenType.Slash);
+                break;
+            case '=':
+                if (Match('>'))
+                    AddToken(TokenType.GreaterThanOrEqual);
+                else if (Match('<'))
+                    AddToken(TokenType.LessThanOrEqual);
+                else
+                    AddToken(TokenType.Equal);
+                break;
+            case '"':
+                GetString();
+                break;
+            case '<':
+                if (Match('='))
+                    AddToken(TokenType.LessThanOrEqual);
+                else if (Match('>'))
+                    AddToken(TokenType.NotEqual);
+                else
+                    AddToken(TokenType.LessThan);
+                break;
+            case '>':
+                if (Match('='))
+                    AddToken(TokenType.GreaterThanOrEqual);
+                else if (Match('<'))
+                    AddToken(TokenType.NotEqual);
+                else
+                    AddToken(TokenType.GreaterThan);
+                break;
+            case ' ':
+            case '\t':
+                break;
+            case '\r':
+                if (Match('\n'))
+                    _currentLine = null;
+                break;
+            default:
+                if (IsDigit(c) || c == '.')
+                    GetNumber(c);
+                else if (IsAlpha(c))
+                    GetKeywordOrIdentifier();
+                else
+                    throw new ScanException("Unexpected character.");
+                break;
+        }
+    }
+
+    private bool IsAlpha(char c)
+    {
+        return c is >= 'a' and <= 'z' or >= 'A' and <= 'Z';
+    }
+
+    private void GetKeywordOrIdentifier()
+    {
+        if (Peek() == '$')
+            AddStringIdentifierToken();
+        else if (IsAlpha(Peek()) || Peek() == '.')
+            Add2PlusCharsToken();
+        else
+            AddIdentifierToken();
+    }
+
+    private void AddIdentifierToken()
+    {
+        string id = _source.Substring(TokenStart, 1).ToLower();
+        AddToken(TokenType.Identifier, id);
+    }
+
+    private void Add2PlusCharsToken()
+    {
+        Advance();
+        try
+        {
+            AddKeywordToken();
+        }
+        catch
+        {
+            Add3PlusCharsToken();
+        }
+    }
+
+    private void Add3PlusCharsToken()
+    {
+        if (AtIdentifierEnd())
+            AddUnknownIdentifierToken();
+        else
+        {
+            Advance();
+            try
+            {
+                Add3CharToken();
+            }
+            catch
+            {
+                Add4PlusCharsToken();
             }
         }
+    }
 
-        private bool IsAlpha(char c)
+    private void Add4PlusCharsToken()
+    {
+        if (AtIdentifierEnd())
+            AddUnknownIdentifierToken();
+        else
         {
-            return c is >= 'a' and <= 'z' or >= 'A' and <= 'Z';
+            Advance();
+            try
+            {
+                Add4CharToken();
+            }
+            catch
+            {
+                Add5PlusCharsToken();
+            }
         }
+    }
 
-        private void GetKeywordOrIdentifier()
+    private void Add5PlusCharsToken()
+    {
+        if (AtIdentifierEnd())
+            AddUnknownIdentifierToken();
+        else
         {
-            if (Peek() == '$')
-                AddStringIdentifierToken();
-            else if (IsAlpha(Peek()) || Peek() == '.')
-                Add2PlusCharsToken();
-            else
-                AddIdentifierToken();
+            Advance();
+            try
+            {
+                Add5CharToken();
+            }
+            catch
+            {
+                Add6PlusCharsToken();
+            }
         }
+    }
 
-        private void AddIdentifierToken()
+    private bool AtIdentifierEnd()
+    {
+        return IsAtEnd() || (!IsAlpha(Peek()) && Peek() != '.');
+    }
+
+    private void AddUnknownIdentifierToken()
+    {
+        string identifier = _source.Substring(TokenStart, TokenLength);
+
+        if (TokenLength == 1)
+            AddToken(TokenType.Identifier, identifier);
+        else if (!KeywordsByLetter
+                     .Select(d => d.Value)
+                     .Any(kw => kw.ContainsKey(identifier)))
+            throw new ScanException(
+                _source.Substring(0, TokenStart + 1) + "?" +
+                _source.Substring(TokenStart + 1, _source.Length - TokenStart - 1));
+    }
+
+    private void Add6PlusCharsToken()
+    {
+        if (AtIdentifierEnd())
+            AddUnknownIdentifierToken();
+        else
         {
-            string id = _source.Substring(TokenStart, 1).ToLower();
-            AddToken(TokenType.Identifier, id);
+            Advance();
+            try
+            {
+                Add6CharToken();
+            }
+            catch
+            {
+                Add7CharToken();
+            }
         }
+    }
 
-        private void Add2PlusCharsToken()
+    private void AddKeywordToken()
+    {
+        var keyword = GetKeywordAtPosition();
+        if (keyword == TokenType.Backup) return;
+
+        AddToken(keyword);
+    }
+
+    private void Add3CharToken()
+    {
+        var keyword = GetKeywordAtPosition();
+        if (keyword == TokenType.Backup) return;
+
+        switch (keyword)
+        {
+            case TokenType.Rem:
+                CreateRemarkToken(keyword);
+                break;
+            default:
+                AddToken(keyword);
+                break;
+        }
+    }
+
+    private void Add4CharToken()
+    {
+        var keyword = GetKeywordAtPosition();
+        if (keyword == TokenType.Backup) return;
+
+        switch (keyword)
+        {
+            case TokenType.Data:
+                CreateDataTokens(keyword);
+                break;
+            case TokenType.Load:
+            case TokenType.Save:
+                CreateLoadSaveTokens(keyword);
+                break;
+            default:
+                AddToken(keyword);
+                break;
+        }
+    }
+
+    private void Add5CharToken()
+    {
+        AddKeywordToken();
+    }
+
+    private void Add6CharToken()
+    {
+        AddKeywordToken();
+    }
+
+    private void Add7CharToken()
+    {
+        if (AtIdentifierEnd())
+            AddUnknownIdentifierToken();
+        else
         {
             Advance();
             try
@@ -258,339 +420,176 @@ namespace Trs80.Level1Basic.Services
             }
             catch
             {
-                Add3PlusCharsToken();
+                // try backing up
+                AddToken(TokenType.Identifier, _source.Substring(TokenStart, 1));
+                _currentIndex = TokenStart + 1;
+                GetKeywordOrIdentifier();
             }
         }
+    }
 
-        private void Add3PlusCharsToken()
+    private TokenType GetKeywordAtPosition()
+    {
+        string key = _source.Substring(TokenStart, TokenLength).ToLower();
+        try
         {
-            if (AtIdentifierEnd())
-                AddUnknownIdentifierToken();
-            else
+            var keyword = KeywordsByLetter[TokenLength][key];
+            return keyword;
+        }
+        catch
+        {
+            if (!IsAlpha(Peek()))
             {
-                Advance();
-                try
-                {
-                    Add3CharToken();
-                }
-                catch
-                {
-                    Add4PlusCharsToken();
-                }
+                // try backing up
+                key = _source.Substring(TokenStart + 1, TokenLength - 1).ToLower();
+                if (!KeywordsByLetter[TokenLength - 1].ContainsKey(key)) throw;
+
+                AddToken(TokenType.Identifier, _source.Substring(TokenStart, 1));
+                _currentIndex = TokenStart + 1;
+                return TokenType.Backup;
             }
+
+            throw;
         }
+    }
 
-        private void Add4PlusCharsToken()
-        {
-            if (AtIdentifierEnd())
-                AddUnknownIdentifierToken();
-            else
-            {
-                Advance();
-                try
-                {
-                    Add4CharToken();
-                }
-                catch
-                {
-                    Add5PlusCharsToken();
-                }
-            }
-        }
+    private void AddStringIdentifierToken()
+    {
+        Advance();
+        string id = _source.Substring(TokenStart, 2).ToLower();
+        AddToken(TokenType.Identifier, id);
+    }
 
-        private void Add5PlusCharsToken()
-        {
-            if (AtIdentifierEnd())
-                AddUnknownIdentifierToken();
-            else
-            {
-                Advance();
-                try
-                {
-                    Add5CharToken();
-                }
-                catch
-                {
-                    Add6PlusCharsToken();
-                }
-            }
-        }
-
-        private bool AtIdentifierEnd()
-        {
-            return IsAtEnd() || (!IsAlpha(Peek()) && Peek() != '.');
-        }
-
-        private void AddUnknownIdentifierToken()
-        {
-            string identifier = _source.Substring(TokenStart, TokenLength);
-
-            if (TokenLength == 1)
-                AddToken(TokenType.Identifier, identifier);
-            else if (!KeywordsByLetter
-                         .Select(d => d.Value)
-                         .Any(kw => kw.ContainsKey(identifier)))
-                throw new ScanException(
-                    _source.Substring(0, TokenStart + 1) + "?" +
-                    _source.Substring(TokenStart + 1, _source.Length - TokenStart - 1));
-        }
-
-        private void Add6PlusCharsToken()
-        {
-            if (AtIdentifierEnd())
-                AddUnknownIdentifierToken();
-            else
-            {
-                Advance();
-                try
-                {
-                    Add6CharToken();
-                }
-                catch
-                {
-                    Add7CharToken();
-                }
-            }
-        }
-
-        private void AddKeywordToken()
-        {
-            var keyword = GetKeywordAtPosition();
-            if (keyword == TokenType.Backup) return;
-
-            AddToken(keyword);
-        }
-
-        private void Add3CharToken()
-        {
-            var keyword = GetKeywordAtPosition();
-            if (keyword == TokenType.Backup) return;
-
-            switch (keyword)
-            {
-                case TokenType.Rem:
-                    CreateRemarkToken(keyword);
-                    break;
-                default:
-                    AddToken(keyword);
-                    break;
-            }
-        }
-
-        private void Add4CharToken()
-        {
-            var keyword = GetKeywordAtPosition();
-            if (keyword == TokenType.Backup) return;
-
-            switch (keyword)
-            {
-                case TokenType.Data:
-                    CreateDataTokens(keyword);
-                    break;
-                case TokenType.Load:
-                case TokenType.Save:
-                    CreateLoadSaveTokens(keyword);
-                    break;
-                default:
-                    AddToken(keyword);
-                    break;
-            }
-        }
-
-        private void Add5CharToken()
-        {
-            AddKeywordToken();
-        }
-
-        private void Add6CharToken()
-        {
-            AddKeywordToken();
-        }
-
-        private void Add7CharToken()
-        {
-            if (AtIdentifierEnd())
-                AddUnknownIdentifierToken();
-            else
-            {
-                Advance();
-                try
-                {
-                    AddKeywordToken();
-                }
-                catch
-                {
-                    // try backing up
-                    AddToken(TokenType.Identifier, _source.Substring(TokenStart, 1));
-                    _currentIndex = TokenStart + 1;
-                    GetKeywordOrIdentifier();
-                }
-            }
-        }
-
-        private TokenType GetKeywordAtPosition()
-        {
-            string key = _source.Substring(TokenStart, TokenLength).ToLower();
-            try
-            {
-                var keyword = KeywordsByLetter[TokenLength][key];
-                return keyword;
-            }
-            catch
-            {
-                if (!IsAlpha(Peek()))
-                {
-                    // try backing up
-                    key = _source.Substring(TokenStart + 1, TokenLength - 1).ToLower();
-                    if (!KeywordsByLetter[TokenLength - 1].ContainsKey(key)) throw;
-
-                    AddToken(TokenType.Identifier, _source.Substring(TokenStart, 1));
-                    _currentIndex = TokenStart + 1;
-                    return TokenType.Backup;
-                }
-
-                throw;
-            }
-        }
-
-        private void AddStringIdentifierToken()
-        {
+    private void CreateLoadSaveTokens(TokenType keyword)
+    {
+        AddToken(keyword);
+        TokenStart = ++_currentIndex;
+        while (!IsAtEnd())
             Advance();
-            string id = _source.Substring(TokenStart, 2).ToLower();
-            AddToken(TokenType.Identifier, id);
-        }
+        string element = _source.Substring(TokenStart, TokenLength);
+        AddToken(TokenType.String, element);
+        TokenStart = _currentIndex;
+    }
 
-        private void CreateLoadSaveTokens(TokenType keyword)
+    private void CreateDataTokens(TokenType keyword)
+    {
+        AddToken(keyword);
+        TokenStart = ++_currentIndex;
+        while (!IsAtEnd())
         {
-            AddToken(keyword);
-            TokenStart = ++_currentIndex;
-            while (!IsAtEnd())
+            while (Peek() != ',' && !IsAtEnd())
                 Advance();
             string element = _source.Substring(TokenStart, TokenLength);
-            AddToken(TokenType.String, element);
+            if (int.TryParse(element, out int intValue))
+                AddToken(TokenType.Number, intValue);
+            else if (float.TryParse(element, out float floatValue))
+                AddToken(TokenType.Number, floatValue);
+            else
+                AddToken(TokenType.String, element);
+            if (!IsAtEnd())
+            {
+                AddToken(TokenType.Comma);
+                while (Peek() == ',' || Peek() == ' ' || Peek() == '\t')
+                    Advance();
+            }
+
             TokenStart = _currentIndex;
         }
+    }
 
-        private void CreateDataTokens(TokenType keyword)
+    private void CreateRemarkToken(TokenType keyword)
+    {
+        while (Peek() != '\r' && !IsAtEnd())
+            Advance();
+        if (!IsAtEnd() && Peek() == '\n')
+            Advance();
+        string remark = _source.Substring(TokenStart + 4, TokenLength - 4);
+        AddToken(keyword, remark);
+    }
+
+    private void GetNumber(char c)
+    {
+        bool isInt = c != '.';
+
+        while (IsDigit(Peek()))
+            Advance();
+
+        if (Peek() == '.' && IsDigit(PeekNext()) && isInt)
         {
-            AddToken(keyword);
-            TokenStart = ++_currentIndex;
-            while (!IsAtEnd())
-            {
-                while (Peek() != ',' && !IsAtEnd())
-                    Advance();
-                string element = _source.Substring(TokenStart, TokenLength);
-                if (int.TryParse(element, out int intValue))
-                    AddToken(TokenType.Number, intValue);
-                else if (float.TryParse(element, out float floatValue))
-                    AddToken(TokenType.Number, floatValue);
-                else
-                    AddToken(TokenType.String, element);
-                if (!IsAtEnd())
-                {
-                    AddToken(TokenType.Comma);
-                    while (Peek() == ',' || Peek() == ' ' || Peek() == '\t')
-                        Advance();
-                }
-
-                TokenStart = _currentIndex;
-            }
-        }
-
-        private void CreateRemarkToken(TokenType keyword)
-        {
-            while (Peek() != '\r' && !IsAtEnd())
-                Advance();
-            if (!IsAtEnd() && Peek() == '\n')
-                Advance();
-            string remark = _source.Substring(TokenStart + 4, TokenLength - 4);
-            AddToken(keyword, remark);
-        }
-
-        private void GetNumber(char c)
-        {
-            bool isInt = c != '.';
+            isInt = false;
+            Advance();
 
             while (IsDigit(Peek()))
                 Advance();
-
-            if (Peek() == '.' && IsDigit(PeekNext()) && isInt)
-            {
-                isInt = false;
-                Advance();
-
-                while (IsDigit(Peek()))
-                    Advance();
-            }
-
-            if ((Peek() == 'E' || Peek() == 'e') &&
-                (IsDigit(PeekNext()) || PeekNext() == '+' || PeekNext() == '-'))
-            {
-                isInt = false;
-                Advance();
-                if (!IsDigit(Peek()))
-                    Advance();
-
-                while (IsDigit(Peek()))
-                    Advance();
-            }
-
-            object value;
-            if (isInt)
-                value = int.Parse(_source.Substring(TokenStart, TokenLength));
-            else
-                value = float.Parse(_source.Substring(TokenStart, TokenLength));
-
-            AddToken(TokenType.Number, value);
         }
 
-        private char PeekNext()
+        if ((Peek() == 'E' || Peek() == 'e') &&
+            (IsDigit(PeekNext()) || PeekNext() == '+' || PeekNext() == '-'))
         {
-            return _currentIndex + 1 >= _source.Length ? '\0' : _source[_currentIndex + 1];
-        }
-
-        private bool IsDigit(char c)
-        {
-            return c is >= '0' and <= '9';
-        }
-
-        private void GetString()
-        {
-            while (Peek() != '"' && !IsAtEnd())
+            isInt = false;
+            Advance();
+            if (!IsDigit(Peek()))
                 Advance();
 
-            if (IsAtEnd())
-                throw new ScanException("Unterminated string.");
+            while (IsDigit(Peek()))
+                Advance();
+        }
 
+        object value;
+        if (isInt)
+            value = int.Parse(_source.Substring(TokenStart, TokenLength));
+        else
+            value = float.Parse(_source.Substring(TokenStart, TokenLength));
+
+        AddToken(TokenType.Number, value);
+    }
+
+    private char PeekNext()
+    {
+        return _currentIndex + 1 >= _source.Length ? '\0' : _source[_currentIndex + 1];
+    }
+
+    private bool IsDigit(char c)
+    {
+        return c is >= '0' and <= '9';
+    }
+
+    private void GetString()
+    {
+        while (Peek() != '"' && !IsAtEnd())
             Advance();
 
-            string value = _source.Substring(TokenStart + 1, TokenLength - 2);
-            AddToken(TokenType.String, value);
-        }
+        if (IsAtEnd())
+            throw new ScanException("Unterminated string.");
 
-        private bool Match(char expected)
-        {
-            if (IsAtEnd()) return false;
-            if (_source[_currentIndex] != expected) return false;
+        Advance();
 
-            _currentIndex++;
-            return true;
-        }
+        string value = _source.Substring(TokenStart + 1, TokenLength - 2);
+        AddToken(TokenType.String, value);
+    }
 
-        private char Peek()
-        {
-            return IsAtEnd() ? '\0' : _source[_currentIndex];
-        }
+    private bool Match(char expected)
+    {
+        if (IsAtEnd()) return false;
+        if (_source[_currentIndex] != expected) return false;
 
-        private char Advance()
-        {
-            return _source[_currentIndex++];
-        }
+        _currentIndex++;
+        return true;
+    }
 
-        private void AddToken(TokenType type, dynamic literal = null)
-        {
-            string text = _source.Substring(TokenStart, TokenLength);
-            _tokens.Add(new Token(type, text, literal, CurrentLine));
-        }
+    private char Peek()
+    {
+        return IsAtEnd() ? '\0' : _source[_currentIndex];
+    }
+
+    private char Advance()
+    {
+        return _source[_currentIndex++];
+    }
+
+    private void AddToken(TokenType type, dynamic literal = null)
+    {
+        string text = _source.Substring(TokenStart, TokenLength);
+        _tokens.Add(new Token(type, text, literal, CurrentLine));
     }
 }

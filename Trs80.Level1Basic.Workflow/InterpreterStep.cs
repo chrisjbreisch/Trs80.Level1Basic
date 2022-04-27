@@ -3,22 +3,21 @@ using Trs80.Level1Basic.CommandModels;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
-namespace Trs80.Level1Basic.Workflow
+namespace Trs80.Level1Basic.Workflow;
+
+public class InterpreterStep : StepBody, IInterpreterStep
 {
-    public class InterpreterStep : StepBody, IInterpreterStep
+    private readonly ICommand<InterpreterModel> _command;
+
+    public InterpreterStep(ICommand<InterpreterModel> inboundCommand)
     {
-        private readonly ICommand<InterpreterModel> _command;
+        _command = inboundCommand ?? throw new ArgumentNullException(nameof(inboundCommand));
+    }
 
-        public InterpreterStep(ICommand<InterpreterModel> inboundCommand)
-        {
-            _command = inboundCommand ?? throw new ArgumentNullException(nameof(inboundCommand));
-        }
+    public override ExecutionResult Run(IStepExecutionContext context)
+    {
+        _command.Execute(new InterpreterModel());
 
-        public override ExecutionResult Run(IStepExecutionContext context)
-        {
-            _command.Execute(new InterpreterModel());
-
-            return ExecutionResult.Next();
-        }
+        return ExecutionResult.Next();
     }
 }

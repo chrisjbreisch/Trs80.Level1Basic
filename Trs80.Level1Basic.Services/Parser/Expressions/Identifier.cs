@@ -6,20 +6,19 @@ using System;
 using System.Collections.Generic;
 using Trs80.Level1Basic.Domain;
 
-namespace Trs80.Level1Basic.Services.Parser.Expressions
+namespace Trs80.Level1Basic.Services.Parser.Expressions;
+
+public class Identifier : Expression
 {
-    public class Identifier : Expression
+    public Token Name { get; }
+
+    public Identifier(Token name)
     {
-        public Token Name { get; }
+        Name = name;
+    }
 
-        public Identifier(Token name)
-        {
-            Name = name;
-        }
-
-        public override dynamic Accept(IExpressionVisitor visitor)
-        {
-            return visitor.VisitIdentifierExpression(this);
-        }
+    public override dynamic Accept(IExpressionVisitor visitor)
+    {
+        return visitor.VisitIdentifierExpression(this);
     }
 }

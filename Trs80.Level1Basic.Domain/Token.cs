@@ -1,23 +1,22 @@
-﻿namespace Trs80.Level1Basic.Domain
+﻿namespace Trs80.Level1Basic.Domain;
+
+public sealed class Token
 {
-    public sealed class Token
+    public TokenType Type { get; set; }
+    public string Lexeme { get; set; }
+    public dynamic Literal { get; set; }
+    public string SourceLine { get; set; }
+
+    public Token(TokenType type, string lexeme, dynamic literal, string sourceLine)
     {
-        public TokenType Type { get; set; }
-        public string Lexeme { get; set; }
-        public dynamic Literal { get; set; }
-        public string SourceLine { get; set; }
+        Type = type;
+        Lexeme = lexeme;
+        Literal = literal;
+        SourceLine = sourceLine;
+    }
 
-        public Token(TokenType type, string lexeme, dynamic literal, string sourceLine)
-        {
-            Type = type;
-            Lexeme = lexeme;
-            Literal = literal;
-            SourceLine = sourceLine;
-        }
-
-        public override string ToString()
-        {
-            return $"{Type} {Lexeme} {Literal}";
-        }
+    public override string ToString()
+    {
+        return $"{Type} {Lexeme} {Literal}";
     }
 }
