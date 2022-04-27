@@ -20,6 +20,7 @@ public class BuiltinFunctions : IBuiltinFunctions
             {"_padquadrant", new FunctionDefinition {Arity = 0, Call = (i,a) => i.Functions.PadQuadrant(i)}},
             {"abs", new FunctionDefinition {Arity = 1, Call = (i, a) => i.Functions.Abs(a[0])}},
             {"a.", new FunctionDefinition {Arity = 1, Call = (i, a) => i.Functions.Abs(a[0])}},
+            {"chr", new FunctionDefinition {Arity = 1, Call = (i, a) => i.Functions.Chr(a[0])}},
             {"int", new FunctionDefinition {Arity = 1, Call = (i, a) => i.Functions.Int(a[0])}},
             {"i.", new FunctionDefinition {Arity = 1, Call = (i, a) => i.Functions.Int(a[0])}},
             {"mem", new FunctionDefinition {Arity = 0, Call = (i, a) => i.Functions.Mem()}},

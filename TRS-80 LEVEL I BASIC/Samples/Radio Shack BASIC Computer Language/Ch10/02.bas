@@ -1,7 +1,7 @@
 10 rem * time vs. rate flight chart *
 20 cls
 30 d = 3000
-40 print "    B O S T O N  T O  S A N  D I E G O "
+40 print "    B O S T O N   T O   S A N   D I E G O "
 50 print
 60 print "RATE(MPH)", "TIME (HOURS)","DISTANCE (MILES)"
 70 print

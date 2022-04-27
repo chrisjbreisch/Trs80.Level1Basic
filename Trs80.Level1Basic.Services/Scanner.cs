@@ -4,6 +4,7 @@ using System.Linq;
 
 using Trs80.Level1Basic.Domain;
 using Trs80.Level1Basic.Exceptions;
+using Trs80.Level1Basic.Services.Interpreter;
 
 namespace Trs80.Level1Basic.Services;
 
@@ -19,11 +20,16 @@ public class Scanner : IScanner
     private int TokenStart { get; set; }
     private int TokenLength => _currentIndex - TokenStart;
     private int _currentIndex;
+    private readonly IBuiltinFunctions _builtins;
 
     private static readonly Dictionary<int, Dictionary<string, TokenType>> KeywordsByLetter =
         CreateKeywordsByLetterDictionary();
     private string _currentLine;
 
+    public Scanner(IBuiltinFunctions builtins)
+    {
+        _builtins = builtins ?? throw new ArgumentNullException(nameof(builtins));
+    }
     private string CurrentLine
     {
         get
@@ -325,7 +331,7 @@ public class Scanner : IScanner
     {
         string identifier = _source.Substring(TokenStart, TokenLength);
 
-        if (TokenLength == 1)
+        if (TokenLength == 1 || _builtins.Get(identifier) != null)
             AddToken(TokenType.Identifier, identifier);
         else if (!KeywordsByLetter
                      .Select(d => d.Value)
@@ -438,18 +444,15 @@ public class Scanner : IScanner
         }
         catch
         {
-            if (!IsAlpha(Peek()))
-            {
-                // try backing up
-                key = _source.Substring(TokenStart + 1, TokenLength - 1).ToLower();
-                if (!KeywordsByLetter[TokenLength - 1].ContainsKey(key)) throw;
+            if (IsAlpha(Peek())) throw;
 
-                AddToken(TokenType.Identifier, _source.Substring(TokenStart, 1));
-                _currentIndex = TokenStart + 1;
-                return TokenType.Backup;
-            }
+            // try backing up
+            key = _source.Substring(TokenStart + 1, TokenLength - 1).ToLower();
+            if (!KeywordsByLetter[TokenLength - 1].ContainsKey(key)) throw;
 
-            throw;
+            AddToken(TokenType.Identifier, _source.Substring(TokenStart, 1));
+            _currentIndex = TokenStart + 1;
+            return TokenType.Backup;
         }
     }
 

@@ -28,6 +28,11 @@ public class BasicFunctionImplementations
         return Math.Abs((int) value);
     }
 
+    public dynamic Chr(dynamic value)
+    {
+        return (char)value;
+    }
+
     private static readonly Random Rand = new();
     public dynamic Rnd(int control)
     {
