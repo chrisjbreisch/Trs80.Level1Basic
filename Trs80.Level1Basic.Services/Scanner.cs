@@ -331,6 +331,12 @@ public class Scanner : IScanner
     {
         string identifier = _source.Substring(TokenStart, TokenLength);
 
+        if (TokenLength > 1 && Peek() == '$')
+        {
+            Advance();
+            identifier = _source.Substring(TokenStart, TokenLength);
+        }
+
         if (TokenLength == 1 || _builtins.Get(identifier) != null)
             AddToken(TokenType.Identifier, identifier);
         else if (!KeywordsByLetter
