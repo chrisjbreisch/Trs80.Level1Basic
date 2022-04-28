@@ -1,11 +1,12 @@
-﻿using Trs80.Level1Basic.Services.Parser.Expressions;
+﻿using Trs80.Level1Basic.Services.Parser;
+using Trs80.Level1Basic.Services.Parser.Expressions;
 using Trs80.Level1Basic.Services.Parser.Statements;
 
 namespace Trs80.Level1Basic.Services.Interpreter;
 
 public interface IBasicInterpreter : IExpressionVisitor, IStatementVisitor
 {
-    void Interpret(string source);
+    void Interpret(Line line);
     void Execute(Statement statement);
 
     BasicFunctionImplementations Functions { get; }

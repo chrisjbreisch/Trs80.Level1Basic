@@ -3,8 +3,18 @@
   "Version": 1,
   "Steps": [
     {
+      "Id": "SetupConsoleStep",
+      "StepType": "Trs80.Level1Basic.Workflow.ISetupConsoleStep, Trs80.Level1Basic.Workflow",
+      "NextStepId": "InterpreterStep"
+    },
+    {
       "Id": "InterpreterStep",
-      "StepType": "Trs80.Level1Basic.Workflow.IInterpreterStep, Trs80.Level1Basic.Workflow"
+      "StepType": "Trs80.Level1Basic.Workflow.IInterpreterStep, Trs80.Level1Basic.Workflow",
+      "NextStepId": "ShutdownConsoleStepStep"
+    },
+    {
+      "Id": "ShutdownConsoleStepStep",
+      "StepType": "Trs80.Level1Basic.Workflow.IShutdownConsoleStep, Trs80.Level1Basic.Workflow"
     }
   ]
 }

@@ -123,7 +123,7 @@ public class BasicEnvironment : IBasicEnvironment
     {
         using var reader = new StreamReader(path);
         while (!reader.EndOfStream)
-            ProgramLines.Add(_parser.Parse(reader.ReadLine()));
+            ProgramLines.Add(_parser.GetParsedProgramLine(reader.ReadLine()));
 
         _sorted = false;
         SortProgram();

@@ -30,21 +30,15 @@ public class BasicInterpreter : IBasicInterpreter
         _screen = screen ?? throw new ArgumentNullException(nameof(screen));
     }
 
-    public void Interpret(string source)
+    public void Interpret(Line line)
     {
-        var line = Parse(source);
         if (line.LineNumber > 0)
             Execute(new Replace(line));
         else
             foreach (var statement in line.Statements)
                 Execute(statement);
     }
-
-    private Line Parse(string source)
-    {
-        return _parser.Parse(source);
-    }
-
+    
     public void Execute(Statement statement)
     {
         try
@@ -154,7 +148,7 @@ public class BasicInterpreter : IBasicInterpreter
 
     public dynamic VisitLiteralExpression(Literal literal)
     {
-        if (!(literal.Value is int)) return literal.Value;
+        if (literal.Value is not int) return literal.Value;
 
         if (literal.Value > short.MaxValue || literal.Value < short.MinValue)
             // ReSharper disable once PossibleInvalidCastException
@@ -283,7 +277,7 @@ public class BasicInterpreter : IBasicInterpreter
             checkCondition = _environment.ForChecks.Pop();
         else
         {
-            if (!(next.Variable is Identifier nextIdentifier))
+            if (next.Variable is not Identifier nextIdentifier)
                 throw new ParseException(next.LineNumber, next.SourceLine,
                     "Expected variable name after 'NEXT'.");
             Identifier checkIdentifier;

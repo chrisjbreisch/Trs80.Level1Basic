@@ -8,6 +8,7 @@ using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Trs80.Level1Basic.Command.Commands;
+using Trs80.Level1Basic.CommandModels;
 using Trs80.Level1Basic.Graphics;
 using Trs80.Level1Basic.Services;
 using Trs80.Level1Basic.Services.Interpreter;
@@ -192,6 +193,7 @@ public sealed class Bootstrapper : IDisposable
             .AddSingleton<IBasicEnvironment, BasicEnvironment>()
             .AddTransient<ITrs80Console, Trs80Console>()
             .AddSingleton<IScreen, Screen>()
+            .AddSingleton<ISharedDataModel, SharedDataModel>()
             .BuildServiceProvider();
     }
 

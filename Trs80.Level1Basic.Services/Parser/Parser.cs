@@ -13,7 +13,8 @@ namespace Trs80.Level1Basic.Services.Parser;
 
 public interface IParser
 {
-    Line Parse(string source);
+    Line Parse(List<Token> tokens);
+    Line GetParsedProgramLine(string source);
 }
 
 public class Parser : IParser
@@ -30,7 +31,15 @@ public class Parser : IParser
         _builtins = builtins ?? throw new ArgumentNullException(nameof(builtins));
     }
 
-    public Line Parse(string source)
+    public Line Parse(List<Token> tokens)
+    {
+        Initialize();
+        _tokens = tokens;
+
+        return IsAtEnd() ? new Line() : Line();
+    }
+
+    public Line GetParsedProgramLine(string source)
     {
         Initialize();
         _tokens = _tokenizer.ScanTokens(source);

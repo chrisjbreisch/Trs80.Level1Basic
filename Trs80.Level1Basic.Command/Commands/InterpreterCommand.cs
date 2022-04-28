@@ -3,9 +3,11 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 
 using Trs80.Level1Basic.CommandModels;
+using Trs80.Level1Basic.Domain;
 using Trs80.Level1Basic.Exceptions;
 using Trs80.Level1Basic.Services;
 using Trs80.Level1Basic.Services.Interpreter;
+using Trs80.Level1Basic.Services.Parser;
 
 namespace Trs80.Level1Basic.Command.Commands;
 
@@ -13,24 +15,23 @@ namespace Trs80.Level1Basic.Command.Commands;
 public class InterpreterCommand : ICommand<InterpreterModel>
 {
     private readonly ILogger _logger;
+    private readonly IScanner _scanner;
+    private readonly IParser _parser;
     private readonly IBasicInterpreter _interpreter;
     private readonly ITrs80Console _console;
-    private readonly ConsoleFont _originalConsoleFont;
-    public InterpreterCommand(ILoggerFactory logFactory, IBasicInterpreter interpreter, ITrs80Console console)
+
+    public InterpreterCommand(ILoggerFactory logFactory, IScanner scanner, IParser parser,
+        IBasicInterpreter interpreter, ITrs80Console console)
     {
         _logger = logFactory.CreateLogger<InterpreterCommand>();
+        _scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
+        _parser = parser ?? throw new ArgumentNullException(nameof(parser));
         _interpreter = interpreter ?? throw new ArgumentNullException(nameof(interpreter));
         _console = console ?? throw new ArgumentNullException(nameof(console));
-        _originalConsoleFont = _console.GetCurrentFont();
     }
 
     public void Execute(InterpreterModel parameterObject)
     {
-        InitializeWindow();
-
-        _console.WriteLine("Enter TRS-80 LEVEL 1 BASIC Commands or Type EXIT to Exit.");
-        WritePrompt();
-        
         while (true)
         {
             _console.Write(">");
@@ -40,19 +41,8 @@ public class InterpreterCommand : ICommand<InterpreterModel>
             if (string.IsNullOrEmpty(inputLine)) continue;
             if (inputLine.ToLower() == "exit") break;
 
-            ExecuteLine(inputLine);
+            ExecuteInput(inputLine);
         }
-
-        _console.SetCurrentFont(_originalConsoleFont);
-    }
-
-
-    private void InitializeWindow()
-    {
-        _console.SetCurrentFont(new ConsoleFont { FontName = "Another Mans Treasure MIB 64C 2X3Y", FontSize = 36 });
-        _console.DisableCursorBlink();
-        _console.SetWindowSize(64, 16);
-        _console.SetBufferSize(64, 160);
     }
 
     private void WritePrompt()
@@ -89,18 +79,21 @@ public class InterpreterCommand : ICommand<InterpreterModel>
         return charCount <= 0 ? string.Empty : new string(input, 0, charCount);
     }
 
-    private void ExecuteLine(string inputLine)
+    private void ExecuteInput(string input)
+    {
+        List<Token>? tokens = ScanLine(input);
+        var parsedLine = ParseTokens(tokens);
+        InterpretParsedLine(parsedLine);
+    }
+
+    private void InterpretParsedLine(Line? parsedLine)
     {
         bool errorOccurred = true;
+
         try
         {
-            _interpreter.Interpret(inputLine);
+            _interpreter.Interpret(parsedLine);
             errorOccurred = false;
-        }
-        catch (ScanException se)
-        {
-            _console.WriteLine("WHAT?");
-            ScanError(se);
         }
         catch (ParseException pe)
         {
@@ -120,7 +113,6 @@ public class InterpreterCommand : ICommand<InterpreterModel>
         catch (ValueOutOfRangeException)
         {
             _console.WriteLine("HOW?");
-            //RuntimeStatementError(rse);
         }
         catch (Exception ex)
         {
@@ -131,8 +123,41 @@ public class InterpreterCommand : ICommand<InterpreterModel>
                 _console.WriteLine(ex.StackTrace);
             }
         }
+
         if (errorOccurred)
             WritePrompt();
+    }
+
+    private Line? ParseTokens(List<Token>? tokens)
+    {
+        Line? parsedLine = null;
+        try
+        {
+            parsedLine = _parser.Parse(tokens);
+        }
+        catch (ParseException pe)
+        {
+            _console.WriteLine("WHAT?");
+            ParseError(pe);
+            WritePrompt();
+        }
+        return parsedLine;
+    }
+
+    private List<Token>? ScanLine(string sourceLine)
+    {
+        List<Token>? tokens = null;
+        try
+        {
+            tokens = _scanner.ScanTokens(sourceLine);
+        }
+        catch (ScanException se)
+        {
+            _console.WriteLine("WHAT?");
+            ScanError(se);
+        }
+
+        return tokens;
     }
 
     private void ScanError(ScanException se)
