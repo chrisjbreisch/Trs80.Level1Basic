@@ -3,7 +3,7 @@ using Trs80.Level1Basic.Services.Parser.Statements;
 
 namespace Trs80.Level1Basic.Services.Parser;
 
-public class Line
+public class ParsedLine
 {
     public int LineNumber { get; set; }
     public string SourceLine { get; set; }

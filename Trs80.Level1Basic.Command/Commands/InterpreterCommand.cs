@@ -32,16 +32,12 @@ public class InterpreterCommand : ICommand<InterpreterModel>
 
     public void Execute(InterpreterModel parameterObject)
     {
-        while (true)
+        bool done = false;
+        while (!done)
         {
             _console.Write(">");
-
             string inputLine = GetInputLine();
-
-            if (string.IsNullOrEmpty(inputLine)) continue;
-            if (inputLine.ToLower() == "exit") break;
-
-            ExecuteInput(inputLine);
+            done = ExecuteInput(inputLine);
         }
     }
 
@@ -65,28 +61,31 @@ public class InterpreterCommand : ICommand<InterpreterModel>
                 _console.WriteLine();
                 break;
             }
-
             if (key.Key == ConsoleKey.Backspace)
             {
                 _console.Write(" \b");
                 input[charCount--] = '\0';
-                continue;
             }
-
-            input[charCount++] = key.KeyChar;
+            else
+                input[charCount++] = key.KeyChar;
         }
 
         return charCount <= 0 ? string.Empty : new string(input, 0, charCount);
     }
 
-    private void ExecuteInput(string input)
+    private bool ExecuteInput(string input)
     {
+        if (string.IsNullOrEmpty(input)) return false;
+        if (input.ToLower() == "exit") return true;
+
         List<Token>? tokens = ScanLine(input);
         var parsedLine = ParseTokens(tokens);
         InterpretParsedLine(parsedLine);
+
+        return false;
     }
 
-    private void InterpretParsedLine(Line? parsedLine)
+    private void InterpretParsedLine(ParsedLine? parsedLine)
     {
         bool errorOccurred = true;
 
@@ -128,9 +127,9 @@ public class InterpreterCommand : ICommand<InterpreterModel>
             WritePrompt();
     }
 
-    private Line? ParseTokens(List<Token>? tokens)
+    private ParsedLine? ParseTokens(List<Token>? tokens)
     {
-        Line? parsedLine = null;
+        ParsedLine? parsedLine = null;
         try
         {
             parsedLine = _parser.Parse(tokens);

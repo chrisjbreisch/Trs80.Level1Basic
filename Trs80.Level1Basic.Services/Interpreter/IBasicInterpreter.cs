@@ -6,7 +6,7 @@ namespace Trs80.Level1Basic.Services.Interpreter;
 
 public interface IBasicInterpreter : IExpressionVisitor, IStatementVisitor
 {
-    void Interpret(Line line);
+    void Interpret(ParsedLine line);
     void Execute(Statement statement);
 
     BasicFunctionImplementations Functions { get; }

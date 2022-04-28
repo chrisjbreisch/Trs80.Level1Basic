@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Trs80.Level1Basic.Domain;
 using Trs80.Level1Basic.Services.Parser;
 using Trs80.Level1Basic.Services.Parser.Statements;
 
@@ -15,26 +16,34 @@ public class BasicEnvironment : IBasicEnvironment
     public Stack<Statement> ProgramStack { get; } = new();
     private readonly IBuiltinFunctions _builtins;
     public DataElements Data { get; } = new();
-    public List<Line> ProgramLines { get; set; } = new();
-    public List<Statement> ProgramStatements { get; set; } = new();
 
     private readonly ITrs80Console _console;
     private readonly IParser _parser;
+    private readonly IScanner _scanner;
 
-    public BasicEnvironment(ITrs80Console console, IParser parser, IBuiltinFunctions builtins)
+    public BasicEnvironment(ITrs80Console console, IParser parser, IScanner scanner, IBuiltinFunctions builtins, IProgram program)
     {
         _console = console ?? throw new ArgumentNullException(nameof(console));
         _parser = parser ?? throw new ArgumentNullException(nameof(parser));
         _builtins = builtins ?? throw new ArgumentNullException(nameof(builtins));
+        _scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
+        Program = program ?? throw new ArgumentNullException(nameof(program));
 
         Console.CancelKeyPress += delegate (object _, ConsoleCancelEventArgs e)
         {
             e.Cancel = true;
-            Halted = true;
+            ExecutionHalted = true;
         };
     }
 
-    public bool Halted { get; private set; }
+    public void InitializeProgram()
+    {
+        Program.Initialize();
+    }
+
+    public IProgram Program { get; }
+
+    public bool ExecutionHalted { get; private set; }
 
     public dynamic AssignVariable(string name, dynamic value)
     {
@@ -68,43 +77,9 @@ public class BasicEnvironment : IBasicEnvironment
         }
     }
 
-    public void GetProgramStatements()
-    {
-        ProgramStatements.Clear();
-        _sorted = false;
-        SortProgram();
-
-        Statement last = null;
-        foreach (var statement in ProgramLines.SelectMany(line => line.Statements))
-        {
-            if (last != null)
-                last.Next = statement;
-            ProgramStatements.Add(statement);
-            last = statement;
-        }
-    }
-
-    private bool _sorted;
-    public void ReplaceProgramLine(Line line)
-    {
-        ProgramLines.RemoveAll(l => l.LineNumber == line.LineNumber);
-        ProgramLines.Add(line);
-        _sorted = false;
-    }
-
-    public void SortProgram()
-    {
-        if (_sorted) return;
-
-        ProgramLines = ProgramLines.OrderBy(l => l.LineNumber).ToList();
-        _sorted = true;
-    }
-
     public void ListProgram(int lineNumber)
     {
-        SortProgram();
-
-        foreach (var line in ProgramLines.Where(s => s.LineNumber >= lineNumber))
+        foreach (var line in Program.List().Where(s => s.LineNumber >= lineNumber))
             _console.WriteLine(line.LineNumber > 0 ? $" {line.LineNumber}  {line.SourceLine}" : $"{line.SourceLine}");
     }
 
@@ -123,43 +98,42 @@ public class BasicEnvironment : IBasicEnvironment
     {
         using var reader = new StreamReader(path);
         while (!reader.EndOfStream)
-            ProgramLines.Add(_parser.GetParsedProgramLine(reader.ReadLine()));
-
-        _sorted = false;
-        SortProgram();
+        {
+            List<Token> tokens = _scanner.ScanTokens(reader.ReadLine());
+            var line = _parser.Parse(tokens);
+            Program.AddLine(line);
+        }
     }
 
     public void NewProgram()
     {
-        ProgramLines.Clear();
+        Program.Clear();
         Initialize();
     }
 
     private Statement _nextStatement;
     public void RunProgram(Statement statement, IBasicInterpreter interpreter)
     {
-        Halted = false;
+        ExecutionHalted = false;
 
-        while (statement != null && !Halted)
+        while (statement != null && !ExecutionHalted)
         {
             _nextStatement = statement.Next;
             interpreter.Execute(statement);
             statement = _nextStatement;
         }
     }
-
-
+    
     public int MemoryInUse()
     {
-        return ProgramLines.Sum(statement => 4 + statement.SourceLine.Length);
+        return Program.Size();
     }
 
     public Statement GetStatementByLineNumber(int lineNumber)
     {
-        return ProgramStatements.FirstOrDefault(s => s.LineNumber >= lineNumber && s is not Parser.Statements.Data);
+        return Program.GetStatement(lineNumber);
     }
-
-
+    
     public void SetNextStatement(Statement statement)
     {
         _nextStatement = statement;
@@ -167,14 +141,14 @@ public class BasicEnvironment : IBasicEnvironment
 
     public void HaltRun()
     {
-        Halted = true;
+        ExecutionHalted = true;
     }
 
     public void LoadData(IBasicInterpreter interpreter)
     {
         Data.Clear();
 
-        foreach (var dataStatement in ProgramLines.SelectMany(s => s.Statements).Where(s => s is Data))
+        foreach (var dataStatement in Program.List().SelectMany(s => s.Statements).Where(s => s is Data))
             interpreter.Execute(dataStatement);
     }
 
@@ -187,7 +161,6 @@ public class BasicEnvironment : IBasicEnvironment
     {
         _globals.Clear();
         Data.MoveFirst();
-        SortProgram();
     }
 
     public dynamic GetArrayValue(string name, int index)

@@ -9,16 +9,17 @@ public interface IBasicEnvironment
     Stack<ForCheckCondition> ForChecks { get; }
     Stack<Statement> ProgramStack { get; }
     DataElements Data { get; }
-    List<Line> ProgramLines { get; set; }
-    bool Halted { get; }
+    IProgram Program { get; }
+    //List<ParsedLine> ProgramLines { get; set; }
+    bool ExecutionHalted { get; }
     dynamic AssignVariable(string name, dynamic value);
     dynamic AssignArray(string name, int index, dynamic value);
     dynamic GetVariable(string name);
     bool VariableExists(string name);
 
     FunctionDefinition GetFunctionDefinition(string name);
-    void GetProgramStatements();
-    void ReplaceProgramLine(Line line);
+    void InitializeProgram();
+    //void ReplaceProgramLine(ParsedLine line);
     void ListProgram(int lineNumber);
     void SaveProgram(string path);
     void LoadProgram(string path);

@@ -11,9 +11,9 @@ namespace Trs80.Level1Basic.Services.Parser.Statements;
 
 public class Replace : Statement
 {
-    public Line Line { get; }
+    public ParsedLine Line { get; }
 
-    public Replace(Line line)
+    public Replace(ParsedLine line)
     {
         Line = line;
     }

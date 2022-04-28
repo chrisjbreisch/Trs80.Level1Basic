@@ -11,17 +11,11 @@ using Trs80.Level1Basic.Services.Parser.Statements;
 
 namespace Trs80.Level1Basic.Services.Parser;
 
-public interface IParser
-{
-    Line Parse(List<Token> tokens);
-    Line GetParsedProgramLine(string source);
-}
-
 public class Parser : IParser
 {
     private List<Token> _tokens;
     private int _current;
-    private Line _currentLine;
+    private ParsedLine _currentLine;
     private readonly IScanner _tokenizer;
     private readonly IBuiltinFunctions _builtins;
 
@@ -31,25 +25,17 @@ public class Parser : IParser
         _builtins = builtins ?? throw new ArgumentNullException(nameof(builtins));
     }
 
-    public Line Parse(List<Token> tokens)
+    public ParsedLine Parse(List<Token> tokens)
     {
         Initialize();
         _tokens = tokens;
 
-        return IsAtEnd() ? new Line() : Line();
+        return IsAtEnd() ? new ParsedLine() : Line();
     }
 
-    public Line GetParsedProgramLine(string source)
+    private ParsedLine Line()
     {
-        Initialize();
-        _tokens = _tokenizer.ScanTokens(source);
-
-        return IsAtEnd() ? new Line() : Line();
-    }
-
-    private Line Line()
-    {
-        _currentLine = new Line();
+        _currentLine = new ParsedLine();
         var lineNumber = Peek();
 
         _currentLine.LineNumber = GetLineNumberValue(lineNumber);

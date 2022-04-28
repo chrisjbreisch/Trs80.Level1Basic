@@ -28,7 +28,7 @@ public class BasicInterpreter : IBasicInterpreter
         _screen = screen ?? throw new ArgumentNullException(nameof(screen));
     }
 
-    public void Interpret(Line line)
+    public void Interpret(ParsedLine line)
     {
         if (line.LineNumber > 0)
             Execute(new Replace(line));
@@ -341,7 +341,7 @@ public class BasicInterpreter : IBasicInterpreter
 
     public void VisitReplaceStatement(Replace root)
     {
-        _environment.ReplaceProgramLine(root.Line);
+        _environment.Program.ReplaceLine(root.Line);
     }
 
     public void VisitReadStatement(Read root)
@@ -436,7 +436,7 @@ public class BasicInterpreter : IBasicInterpreter
 
     public void VisitRunStatement(Run runStatement)
     {
-        _environment.GetProgramStatements();
+        _environment.InitializeProgram();
 
         int lineNumber = GetStartingLineNumber(runStatement.StartAtLineNumber);
 
@@ -526,7 +526,7 @@ public class BasicInterpreter : IBasicInterpreter
 
         if (!value) return;
 
-        foreach (var statement in ifStatement.ThenStatements.Where(_ => !_environment.Halted))
+        foreach (var statement in ifStatement.ThenStatements.Where(_ => !_environment.ExecutionHalted))
             Execute(statement);
 
         //switch (ifStatement.ThenExpression)
@@ -660,13 +660,13 @@ public class BasicInterpreter : IBasicInterpreter
 
     public void VisitDeleteStatement(Delete root)
     {
-        var programLine = _environment.ProgramLines.FirstOrDefault(l => l.LineNumber == root.LineToDelete);
+        var programLine = _environment.Program.List().FirstOrDefault(l => l.LineNumber == root.LineToDelete);
         if (programLine != null)
-            _environment.ProgramLines.Remove(programLine);
+            _environment.Program.RemoveLine(programLine);
     }
 
     private void NewProgram()
     {
-        _environment.ProgramLines = new List<Line>();
+        _environment.Program.Clear();
     }
 }

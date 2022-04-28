@@ -191,6 +191,7 @@ public sealed class Bootstrapper : IDisposable
             .AddTransient<ITrs80Console, Trs80Console>()
             .AddSingleton<IScreen, Screen>()
             .AddSingleton<ISharedDataModel, SharedDataModel>()
+            .AddSingleton<IProgram, Program>()
             .BuildServiceProvider();
     }
 
