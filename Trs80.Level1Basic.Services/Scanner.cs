@@ -469,16 +469,16 @@ public class Scanner : IScanner
         AddToken(TokenType.Identifier, id);
     }
 
-    private void CreateLoadSaveTokens(TokenType keyword)
-    {
-        AddToken(keyword);
-        TokenStart = ++_currentIndex;
-        while (!IsAtEnd())
-            Advance();
-        string element = _source.Substring(TokenStart, TokenLength);
-        AddToken(TokenType.String, element);
-        TokenStart = _currentIndex;
-    }
+    //private void CreateLoadSaveTokens(TokenType keyword)
+    //{
+    //    AddToken(keyword);
+    //    TokenStart = ++_currentIndex;
+    //    while (!IsAtEnd())
+    //        Advance();
+    //    string element = _source.Substring(TokenStart, TokenLength);
+    //    AddToken(TokenType.String, element);
+    //    TokenStart = _currentIndex;
+    //}
 
     private void CreateDataTokens(TokenType keyword)
     {

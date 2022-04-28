@@ -15,16 +15,14 @@ namespace Trs80.Level1Basic.Services.Interpreter;
 
 public class BasicInterpreter : IBasicInterpreter
 {
-    private readonly IParser _parser;
     private readonly ITrs80Console _console;
     private readonly IBasicEnvironment _environment;
     private readonly IScreen _screen;
 
     public BasicFunctionImplementations Functions { get; } = new();
 
-    public BasicInterpreter(IParser parser, ITrs80Console console, IBasicEnvironment environment, IScreen screen)
+    public BasicInterpreter(ITrs80Console console, IBasicEnvironment environment, IScreen screen)
     {
-        _parser = parser ?? throw new ArgumentNullException(nameof(parser));
         _console = console ?? throw new ArgumentNullException(nameof(console));
         _environment = environment ?? throw new ArgumentNullException(nameof(environment));
         _screen = screen ?? throw new ArgumentNullException(nameof(screen));

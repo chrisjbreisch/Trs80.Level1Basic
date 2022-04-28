@@ -1,9 +1,7 @@
-﻿using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 
 using Trs80.Level1Basic.CommandModels;
-using Trs80.Level1Basic.Exceptions;
 using Trs80.Level1Basic.Services;
 
 namespace Trs80.Level1Basic.Command.Commands;

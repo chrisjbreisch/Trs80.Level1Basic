@@ -1,5 +1,4 @@
-﻿using Trs80.Level1Basic.Domain;
-using Trs80.Level1Basic.Services;
+﻿using Trs80.Level1Basic.Services;
 
 namespace Trs80.Level1Basic.CommandModels;
 

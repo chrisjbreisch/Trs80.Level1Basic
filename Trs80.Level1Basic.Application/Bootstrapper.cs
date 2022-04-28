@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -34,8 +33,6 @@ public sealed class Bootstrapper : IDisposable
     public IWorkflowHost WorkflowHost => ScopedServiceProvider.GetRequiredService<IWorkflowHost>();
     public ISyncWorkflowRunner WorkflowRunner => ScopedServiceProvider.GetRequiredService<ISyncWorkflowRunner>();
     private IDefinitionLoader WorkflowLoader => ScopedServiceProvider.GetRequiredService<IDefinitionLoader>();
-
-
 
     public Bootstrapper(string workflowFileName)
     {
