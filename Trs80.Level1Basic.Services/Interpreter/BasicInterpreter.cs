@@ -188,19 +188,29 @@ public class BasicInterpreter : IBasicInterpreter
             case null:
                 return;
             case float:
-            {
-                if (value == 0)
-                    _sb.Append("0");
-                else if (value < .1 && value > -.1)
-                    _sb.Append(value.ToString("0.#####E+00"));
-                else if (value < 1 && value > -1)
-                    _sb.Append(value.ToString("0.######"));
-                else if (value > 999999 || value < -999999)
-                    _sb.Append(value.ToString("0.#####E+00"));
-                else
-                    _sb.Append(value.ToString());
-                break;
-            }
+                {
+                    if (value == 0)
+                        _sb.Append("0");
+                    else if (value < .1 && value > -.1)
+                        _sb.Append(value.ToString("0.#####E+00"));
+                    else if (value < 1 && value > -1)
+                        _sb.Append(value.ToString("0.######"));
+                    else if (value > 999999 || value < -999999)
+                        _sb.Append(value.ToString("0.#####E+00"));
+                    else if (value > -10 && value < 10)
+                        _sb.Append(value.ToString("#.#####"));
+                    else if (value > -100 && value < 100)
+                        _sb.Append(value.ToString("##.####"));
+                    else if (value > -1000 && value < 1000)
+                        _sb.Append(value.ToString("###.###"));
+                    else if (value > -10000 && value < 10000)
+                        _sb.Append(value.ToString("####.##"));
+                    else if (value > -100000 && value < 100000)
+                        _sb.Append(value.ToString("#####.#"));
+                    else
+                        _sb.Append(value.ToString("######"));
+                    break;
+                }
             default:
                 _sb.Append(value.ToString());
                 break;
@@ -248,11 +258,11 @@ public class BasicInterpreter : IBasicInterpreter
                 _environment.AssignVariable(identifier.Name.Lexeme, value);
                 break;
             case BasicArray array:
-            {
-                dynamic index = Evaluate(array.Index);
-                _environment.AssignArray(array.Name.Lexeme, index, value);
-                break;
-            }
+                {
+                    dynamic index = Evaluate(array.Index);
+                    _environment.AssignArray(array.Name.Lexeme, index, value);
+                    break;
+                }
             default:
                 throw new RuntimeExpressionException(null, "Expected variable.");
         }
@@ -386,6 +396,11 @@ public class BasicInterpreter : IBasicInterpreter
         return _screen.Point(x, y);
     }
 
+    public int MemoryInUse()
+    {
+        return _environment.MemoryInUse();
+    }
+
     private void PrependSpaceIfNecessary(dynamic value, bool first)
     {
         bool isNonNegativeNumber = (value is int || value is float) && value >= 0;
@@ -413,6 +428,7 @@ public class BasicInterpreter : IBasicInterpreter
 
     public void VisitStopStatement(Stop root)
     {
+        _console.WriteLine($"BREAK AT {root.LineNumber}");
         _environment.HaltRun();
     }
 
@@ -433,7 +449,7 @@ public class BasicInterpreter : IBasicInterpreter
         int lineNumber = GetStartingLineNumber(runStatement.StartAtLineNumber);
 
         _environment.LoadData(this);
-        RunProgram(GetStatementByLineNumber(lineNumber));
+        RunProgram(GetStatementByLineNumber(lineNumber), true);
     }
 
     private int GetStartingLineNumber(Expression startAtLineNumber)
@@ -445,9 +461,11 @@ public class BasicInterpreter : IBasicInterpreter
         return lineNumber;
     }
 
-    public void RunProgram(Statement statement)
+    public void RunProgram(Statement statement, bool initialize)
     {
-        _environment.Initialize();
+        if (initialize)
+            _environment.Initialize();
+
         _environment.RunProgram(statement, this);
         _console.WriteLine();
         _console.WriteLine("READY");
@@ -490,9 +508,9 @@ public class BasicInterpreter : IBasicInterpreter
         _environment.ForChecks.Push(new ForCheckCondition
         {
             Variable = forStatement.Variable,
-            Start = startValue,
-            End = endValue,
-            Step = stepValue,
+            Start = (int)startValue,
+            End = (int)endValue,
+            Step = (int)stepValue,
             Next = forStatement.Next
         });
     }
@@ -639,7 +657,7 @@ public class BasicInterpreter : IBasicInterpreter
 
     public void VisitContStatement(Cont root)
     {
-        RunProgram(_environment.GetNextStatement());
+        RunProgram(_environment.GetNextStatement(), false);
     }
 
     public void VisitDataStatement(Data data)

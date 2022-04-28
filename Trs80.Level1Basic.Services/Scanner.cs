@@ -399,10 +399,10 @@ public class Scanner : IScanner
             case TokenType.Data:
                 CreateDataTokens(keyword);
                 break;
-            case TokenType.Load:
-            case TokenType.Save:
-                CreateLoadSaveTokens(keyword);
-                break;
+            //case TokenType.Load:
+            //case TokenType.Save:
+            //    CreateLoadSaveTokens(keyword);
+            //    break;
             default:
                 AddToken(keyword);
                 break;

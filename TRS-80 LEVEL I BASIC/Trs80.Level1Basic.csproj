@@ -19,7 +19,6 @@
     <None Remove="Interpreter.json" />
     <None Remove="Samples\Radio Shack BASIC Computer Language\c2f.bas" />
     <None Remove="Samples\Radio Shack BASIC Computer Language\carmiles.bas" />
-    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch11\01-timer.bas" />
     <None Remove="Samples\Radio Shack BASIC Computer Language\Ch13\01-nested-loop.bas" />
     <None Remove="Samples\Radio Shack BASIC Computer Language\Ch14\01-int.bas" />
     <None Remove="Samples\Radio Shack BASIC Computer Language\Ch14\02-neg-int.bas" />
@@ -141,7 +140,7 @@
     <None Update="Samples\Radio Shack BASIC Computer Language\Ch10\01.bas">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Include="Samples\Radio Shack BASIC Computer Language\Ch11\01-timer.bas">
+    <None Update="Samples\Radio Shack BASIC Computer Language\Ch11\01.bas">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Include="Samples\Radio Shack BASIC Computer Language\Ch13\01-nested-loop.bas">

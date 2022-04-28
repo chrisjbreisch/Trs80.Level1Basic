@@ -16,9 +16,9 @@ public class BasicFunctionImplementations
         return string.Empty;
     }
 
-    public dynamic Mem()
+    public dynamic Mem(IBasicInterpreter interpreter)
     {
-        return int.MaxValue;
+        return 3583 + 44 * 1024 - interpreter.MemoryInUse();
     }
 
     public dynamic Abs(dynamic value)

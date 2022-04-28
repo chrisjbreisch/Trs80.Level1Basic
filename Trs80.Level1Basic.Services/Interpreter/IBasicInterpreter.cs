@@ -14,4 +14,5 @@ public interface IBasicInterpreter : IExpressionVisitor, IStatementVisitor
     void Set(int x, int y);
     void Reset(int x, int y);
     bool Point(int x, int y);
+    int MemoryInUse();
 }

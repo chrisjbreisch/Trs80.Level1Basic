@@ -29,7 +29,7 @@ public class GlobalVariables
     {
         value = ValidateValue(name, value);
 
-        var lowerName = GetVariableName(name);
+        string lowerName = GetVariableName(name);
         if (!_variables.ContainsKey(lowerName))
             Define(lowerName, value);
         else
@@ -52,7 +52,7 @@ public class GlobalVariables
 
     public dynamic AssignArray(string name, int index, dynamic value)
     {
-        var array = GetArray(name);
+        Dictionary<int, dynamic> array = GetArray(name);
 
         if (!array.ContainsKey(index))
             array.Add(index, value);
@@ -64,10 +64,10 @@ public class GlobalVariables
 
     private Dictionary<int, dynamic> GetArray(string name)
     {
-        var lowerName = GetVariableName(name);
+        string lowerName = GetVariableName(name);
         if (!_arrays.ContainsKey(lowerName))
             DefineArray(lowerName);
-        var array = _arrays[lowerName];
+        Dictionary<int, dynamic> array = _arrays[lowerName];
         return array;
     }
 
@@ -78,13 +78,13 @@ public class GlobalVariables
 
     internal bool Exists(string name)
     {
-        var lowerName = GetVariableName(name);
+        string lowerName = GetVariableName(name);
         return _variables.ContainsKey(lowerName);
     }
 
     internal dynamic Get(string name)
     {
-        var lowerName = GetVariableName(name);
+        string lowerName = GetVariableName(name);
         if (_variables.ContainsKey(lowerName)) return _variables[lowerName];
 
         return IsStringName(lowerName) ? Define(lowerName, "") : Define(lowerName, 0);
@@ -98,7 +98,7 @@ public class GlobalVariables
 
     public dynamic GetArrayValue(string name, int index)
     {
-        var array = GetArray(name);
+        Dictionary<int, dynamic> array = GetArray(name);
 
         if (!array.ContainsKey(index))
             array.Add(index, 0);

@@ -26,6 +26,7 @@ public interface IBasicEnvironment
     void RunProgram(Statement statement, IBasicInterpreter interpreter);
     void SetNextStatement(Statement statement);
     void HaltRun();
+    int MemoryInUse();
     Statement GetStatementByLineNumber(int lineNumber);
     void LoadData(IBasicInterpreter interpreter);
     Statement GetNextStatement();

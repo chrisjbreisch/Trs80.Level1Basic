@@ -199,7 +199,7 @@ public class Parser : IParser
     private Statement OnStatement(Token lineNumber)
     {
         var selector = Expression();
-        var isGosub = false;
+        bool isGosub = false;
         var locations = new List<Expression>();
         if (Match(TokenType.Goto))
         {
@@ -231,7 +231,7 @@ public class Parser : IParser
 
     private Statement StatementWrapper(Statement statement, Token lineNumber)
     {
-        var lineNumberValue = GetLineNumberValue(lineNumber);
+        int lineNumberValue = GetLineNumberValue(lineNumber);
         statement.LineNumber = lineNumberValue;
             
         if (lineNumberValue == 0 && char.IsLetter(lineNumber.SourceLine[0]))
@@ -293,7 +293,7 @@ public class Parser : IParser
 
     private Statement InputStatement(Token lineNumber)
     {
-        var newline = true;
+        bool newline = true;
         var values = new List<Expression>();
 
         while (!IsAtStatementEnd())
@@ -328,7 +328,7 @@ public class Parser : IParser
 
     private Statement DeleteStatement(Token lineNumber)
     {
-        var lineNumberValue = GetLineNumberValue(lineNumber);
+        int lineNumberValue = GetLineNumberValue(lineNumber);
         Advance();
         return new Delete(lineNumberValue);
     }
@@ -437,7 +437,7 @@ public class Parser : IParser
     }
     private Statement PrintStatement(Token lineNumber)
     {
-        var newline = true;
+        bool newline = true;
         var values = new List<Expression>();
         Expression atPosition = null;
 
@@ -471,7 +471,7 @@ public class Parser : IParser
 
     private int GetLineNumberValue(Token lineNumber)
     {
-        var line = lineNumber.Literal;
+        dynamic line = lineNumber.Literal;
 
         if (line == null) return 0;
 

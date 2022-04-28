@@ -149,9 +149,14 @@ public class BasicEnvironment : IBasicEnvironment
     }
 
 
+    public int MemoryInUse()
+    {
+        return ProgramLines.Sum(statement => 4 + statement.SourceLine.Length);
+    }
+
     public Statement GetStatementByLineNumber(int lineNumber)
     {
-        return ProgramStatements.FirstOrDefault(s => s.LineNumber >= lineNumber && !(s is Data));
+        return ProgramStatements.FirstOrDefault(s => s.LineNumber >= lineNumber && s is not Parser.Statements.Data);
     }
 
 
