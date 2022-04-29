@@ -296,12 +296,6 @@
     <None Include="Samples\Radio Shack BASIC Computer Language\Ch16\04-string-data.bas">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Include="Samples\Radio Shack BASIC Computer Language\Ch12\02-tab.bas">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-    <None Include="Samples\Radio Shack BASIC Computer Language\Ch12\03-tab.bas">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
     <None Include="Samples\Radio Shack BASIC Computer Language\Ch16\05-vote.bas">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
