@@ -16,21 +16,21 @@ public class Parser : IParser
     private List<Token> _tokens;
     private int _current;
     private ParsedLine _currentLine;
-    private readonly IScanner _tokenizer;
     private readonly IBuiltinFunctions _builtins;
 
-    public Parser(IScanner tokenizer, IBuiltinFunctions builtins)
+    public Parser(IBuiltinFunctions builtins)
     {
-        _tokenizer = tokenizer ?? throw new ArgumentNullException(nameof(tokenizer));
         _builtins = builtins ?? throw new ArgumentNullException(nameof(builtins));
     }
 
     public ParsedLine Parse(List<Token> tokens)
     {
+        if (tokens == null) return null;
+
         Initialize();
         _tokens = tokens;
 
-        return IsAtEnd() ? new ParsedLine() : Line();
+        return IsAtEnd() ? null : Line();
     }
 
     private ParsedLine Line()
@@ -43,8 +43,11 @@ public class Parser : IParser
         if (_currentLine.LineNumber == 0 && char.IsLetter(lineNumber.SourceLine[0]))
             _currentLine.SourceLine = lineNumber.SourceLine;
         else
-            _currentLine.SourceLine = lineNumber.SourceLine.Replace(_currentLine.LineNumber.ToString(), "").TrimStart(' ');
-
+        {
+            int lineNumberLength = _currentLine.LineNumber.ToString().Length;
+            _currentLine.SourceLine = lineNumber.SourceLine
+                .Substring(lineNumberLength, lineNumber.SourceLine.Length - lineNumberLength).TrimStart(' ');
+        }
 
         if (lineNumber.Type == TokenType.Number)
         {

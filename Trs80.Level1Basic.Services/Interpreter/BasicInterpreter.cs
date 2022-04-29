@@ -313,8 +313,8 @@ public class BasicInterpreter : IBasicInterpreter
         if (printStatement.AtPosition != null) PrintAt(printStatement.AtPosition);
 
         if (printStatement.Expressions is { Count: > 0 })
-            for (int i = 0; i < printStatement.Expressions.Count; i++)
-                WriteExpression(printStatement.Expressions[i], i == 0);
+            foreach (var expression in printStatement.Expressions)
+                WriteExpression(expression, _printPosition);
 
         //WriteExpression(
         //    printStatement.Expressions[printStatement.Expressions.Count - 1],
@@ -367,7 +367,7 @@ public class BasicInterpreter : IBasicInterpreter
     {
         int currentPosition = _printPosition + _sb.Length;
 
-        int nextPosition = (currentPosition / 15 + 1) * 15 + 1;
+        int nextPosition = (currentPosition / 16 + 1) * 16;
         string padding = "".PadRight(nextPosition - currentPosition, ' ');
 
         return padding;
@@ -393,11 +393,11 @@ public class BasicInterpreter : IBasicInterpreter
         return _environment.MemoryInUse();
     }
 
-    private void PrependSpaceIfNecessary(dynamic value, bool first)
+    private void PrependSpaceIfNecessary(dynamic value, int position)
     {
-        bool isNonNegativeNumber = (value is int || value is float) && value >= 0;
+        bool isNonNegativeNumber = value is int or float && value >= 0;
 
-        if (first && !isNonNegativeNumber) return;
+        if (position == 0 && !isNonNegativeNumber) return;
 
         if (value is string str && str.StartsWith(" ")) return;
 
@@ -406,10 +406,11 @@ public class BasicInterpreter : IBasicInterpreter
 
         _sb.Append(" ");
     }
-    private void WriteExpression(Expression expression, bool first)
+
+    private void WriteExpression(Expression expression, int position)
     {
         dynamic value = Evaluate(expression);
-        PrependSpaceIfNecessary(value, first);
+        PrependSpaceIfNecessary(value, position);
         WriteValue(value);
     }
 
@@ -577,7 +578,7 @@ public class BasicInterpreter : IBasicInterpreter
         switch (expression)
         {
             case Literal:
-                WriteValue(Evaluate(expression));
+                WriteExpression(expression, _printPosition);
                 break;
             case Identifier variable:
                 GetInputValue(variable, writeNewline);

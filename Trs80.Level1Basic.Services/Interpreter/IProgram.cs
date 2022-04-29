@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
+using Trs80.Level1Basic.Services.Parser;
 using Trs80.Level1Basic.Services.Parser.Statements;
 
-namespace Trs80.Level1Basic.Services.Parser;
+namespace Trs80.Level1Basic.Services.Interpreter;
 
 public interface IProgram
 {
     void Initialize();
-    Statement GetStatement(int lineNumber);
+    Statement GetExecutableStatement(int lineNumber);
     List<ParsedLine> List();
     void Clear();
     void RemoveLine(ParsedLine line);

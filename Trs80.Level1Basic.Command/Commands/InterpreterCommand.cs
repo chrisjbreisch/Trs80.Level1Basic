@@ -87,6 +87,8 @@ public class InterpreterCommand : ICommand<InterpreterModel>
 
     private void InterpretParsedLine(ParsedLine? parsedLine)
     {
+        if (parsedLine == null) return;
+
         bool errorOccurred = true;
 
         try
@@ -129,6 +131,8 @@ public class InterpreterCommand : ICommand<InterpreterModel>
 
     private ParsedLine? ParseTokens(List<Token>? tokens)
     {
+        if (tokens == null) return null;
+
         ParsedLine? parsedLine = null;
         try
         {

@@ -131,7 +131,7 @@ public class BasicEnvironment : IBasicEnvironment
 
     public Statement GetStatementByLineNumber(int lineNumber)
     {
-        return Program.GetStatement(lineNumber);
+        return Program.GetExecutableStatement(lineNumber);
     }
     
     public void SetNextStatement(Statement statement)

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-
+using Trs80.Level1Basic.Services.Parser;
 using Trs80.Level1Basic.Services.Parser.Statements;
 
-namespace Trs80.Level1Basic.Services.Parser;
+namespace Trs80.Level1Basic.Services.Interpreter;
 
 public class Program : IProgram
 {
@@ -26,7 +26,7 @@ public class Program : IProgram
         }
     }
 
-    public Statement GetStatement(int lineNumber)
+    public Statement GetExecutableStatement(int lineNumber)
     {
         return _programStatements
             .FirstOrDefault(s => s.LineNumber >= lineNumber && s is not Data);
@@ -62,10 +62,15 @@ public class Program : IProgram
     private bool _sorted;
     public void ReplaceLine(ParsedLine line)
     {
-        _programLines.RemoveAll(l => l.LineNumber == line.LineNumber);
-        _programLines.Add(line);
-        _sorted = false;
-        Sort();
+        var programLine = _programLines.FirstOrDefault(l => l.LineNumber == line.LineNumber);
+        if (programLine != null)
+            programLine.SourceLine = line.SourceLine;
+        else
+        {
+            _programLines.Add(line);
+            _sorted = false;
+            Sort();
+        }
     }
 
     public void Sort()
