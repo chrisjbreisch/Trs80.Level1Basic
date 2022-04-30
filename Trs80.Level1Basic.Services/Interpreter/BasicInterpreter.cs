@@ -28,6 +28,8 @@ public class BasicInterpreter : IBasicInterpreter
         _screen = screen ?? throw new ArgumentNullException(nameof(screen));
     }
 
+    public Statement CurrentStatement { get; private set; }
+
     public void Interpret(ParsedLine line)
     {
         if (line.LineNumber > 0)
@@ -36,9 +38,10 @@ public class BasicInterpreter : IBasicInterpreter
             foreach (var statement in line.Statements)
                 Execute(statement);
     }
-    
+
     public void Execute(Statement statement)
     {
+        CurrentStatement = statement;
         try
         {
             statement.Accept(this);
@@ -80,7 +83,7 @@ public class BasicInterpreter : IBasicInterpreter
         {
             TokenType.Plus => (left is bool && right is bool) ? left || right : left + right,
             TokenType.Minus => left - right,
-            TokenType.Slash => right == 0 ? throw new ValueOutOfRangeException(0, "Divide by zero") : (float)left / right,
+            TokenType.Slash => right == 0 ? throw new ValueOutOfRangeException(0, "","Divide by zero") : (float)left / right,
             TokenType.Star => (left is bool && right is bool) ? left && right : left * right,
             TokenType.GreaterThan => left > right,
             TokenType.GreaterThanOrEqual => left >= right,
@@ -269,26 +272,31 @@ public class BasicInterpreter : IBasicInterpreter
 
     private ForCheckCondition GetCheckCondition(Next next)
     {
-        ForCheckCondition checkCondition;
+        ForCheckCondition checkCondition = null;
 
         if (next.Variable != null)
-            checkCondition = _environment.ForChecks.Pop();
-        else
         {
-            if (next.Variable is not Identifier nextIdentifier)
-                throw new ParseException(next.LineNumber, next.SourceLine,
-                    "Expected variable name after 'NEXT'.");
             Identifier checkIdentifier;
-
+            var nextIdentifier = next.Variable as Identifier;
             do
             {
+                if (_environment.ForChecks.Count == 0)
+                    throw new ParseException(next.LineNumber, next.SourceLine,
+                        "'NEXT' variable mismatch with 'FOR'");
+
                 checkCondition = _environment.ForChecks.Pop();
                 if (checkCondition.Variable is Identifier variable)
                     checkIdentifier = variable;
                 else
                     throw new ParseException(next.LineNumber, next.SourceLine,
                         "Expected variable name after 'FOR'.");
-            } while (checkIdentifier.Name.Lexeme != nextIdentifier.Name.Lexeme);
+            } while (checkIdentifier.Name.Lexeme != nextIdentifier?.Name.Lexeme);
+        }
+        else
+        {
+            if (next.Variable is not Identifier)
+                throw new ParseException(next.LineNumber, next.SourceLine,
+                    "Expected variable name after 'NEXT'.");
         }
         return checkCondition;
     }
@@ -341,7 +349,10 @@ public class BasicInterpreter : IBasicInterpreter
 
     public void VisitReplaceStatement(Replace root)
     {
-        _environment.Program.ReplaceLine(root.Line);
+        if (string.IsNullOrEmpty(root.Line.SourceLine))
+            DeleteStatement(root.Line.LineNumber);
+        else
+            _environment.Program.ReplaceLine(root.Line);
     }
 
     public void VisitReadStatement(Read root)
@@ -659,11 +670,15 @@ public class BasicInterpreter : IBasicInterpreter
             _environment.Data.Add(Evaluate(element));
     }
 
-    public void VisitDeleteStatement(Delete root)
+    private void DeleteStatement(int lineNumber)
     {
-        var programLine = _environment.Program.List().FirstOrDefault(l => l.LineNumber == root.LineToDelete);
+        var programLine = _environment.Program.List().FirstOrDefault(l => l.LineNumber == lineNumber);
         if (programLine != null)
             _environment.Program.RemoveLine(programLine);
+    }
+    public void VisitDeleteStatement(Delete root)
+    {
+        DeleteStatement(root.LineToDelete);
     }
 
     private void NewProgram()

@@ -165,7 +165,7 @@ public class InterpreterCommand : ICommand<InterpreterModel>
 
     private void ScanError(ScanException se)
     {
-        _console.Error.WriteLine($"{se.Message}");
+        _console.Error.WriteLine($"[{se.Message}]");
     }
 
     private void ParseError(ParseException pe)

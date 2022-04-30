@@ -5,8 +5,10 @@ namespace Trs80.Level1Basic.Exceptions;
 public class ValueOutOfRangeException : Exception
 {
     public int LineNumber { get; }
-    public ValueOutOfRangeException(int lineNumber, string message) : base(message)
+    public string SourceLine { get;  }
+    public ValueOutOfRangeException(int lineNumber, string sourceLine, string message) : base(message)
     {
         LineNumber = lineNumber;
+        SourceLine = sourceLine;
     }
 }

@@ -1,11 +1,15 @@
 ﻿using System;
+using Trs80.Level1Basic.Exceptions;
 
 namespace Trs80.Level1Basic.Services.Interpreter;
 
 public class BasicFunctionImplementations
 {
-    public int Int(dynamic value)
+    public int Int(IBasicInterpreter interpreter, dynamic value)
     {
+        if (Math.Abs(value) > short.MaxValue)
+            throw new ValueOutOfRangeException(interpreter.CurrentStatement.LineNumber, interpreter.CurrentStatement.SourceLine,
+                $"{value} is out of range for int().");
         return (int)Math.Floor((float)value);
     }
 

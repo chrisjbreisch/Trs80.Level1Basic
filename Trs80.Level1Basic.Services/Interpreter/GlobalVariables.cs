@@ -42,12 +42,12 @@ public class GlobalVariables
     {
         if (IsStringName(name)) return value;
             
-        if (!(value is string)) return value;
+        if (value is not string) return value;
 
         if (value.Length == 1)
             return 0;
 
-        throw new ValueOutOfRangeException(0, null);
+        throw new ValueOutOfRangeException(0, "", null);
     }
 
     public dynamic AssignArray(string name, int index, dynamic value)

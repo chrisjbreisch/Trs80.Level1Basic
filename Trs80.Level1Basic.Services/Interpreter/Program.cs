@@ -9,6 +9,7 @@ public class Program : IProgram
 {
     private List<ParsedLine> _programLines = new();
     private readonly List<Statement> _programStatements = new();
+    private bool _sorted;
 
     public void Initialize()
     {
@@ -45,6 +46,11 @@ public class Program : IProgram
 
     public void RemoveLine(ParsedLine line)
     {
+        IEnumerable<Statement> previousLines = _programLines.SelectMany(s => s.Statements).Where(p => p?.Next?.LineNumber == line.LineNumber);
+
+        foreach (var previousLine in previousLines)
+            previousLine.Next = line.Statements[0].Next;
+
         _programLines.Remove(line);
     }
 
@@ -55,16 +61,20 @@ public class Program : IProgram
 
     public void AddLine(ParsedLine line)
     {
+        if (line == null) return;
+
         _programLines.Add(line);
         _sorted = false;
     }
 
-    private bool _sorted;
     public void ReplaceLine(ParsedLine line)
     {
         var programLine = _programLines.FirstOrDefault(l => l.LineNumber == line.LineNumber);
         if (programLine != null)
+        {
             programLine.SourceLine = line.SourceLine;
+            programLine.Statements = line.Statements;
+        }
         else
         {
             _programLines.Add(line);

@@ -19,12 +19,6 @@
     <None Remove="Interpreter.json" />
     <None Remove="Samples\Radio Shack BASIC Computer Language\c2f.bas" />
     <None Remove="Samples\Radio Shack BASIC Computer Language\carmiles.bas" />
-    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch13\01-nested-loop.bas" />
-    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch14\01-int.bas" />
-    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch14\02-neg-int.bas" />
-    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch14\03-difference.bas" />
-    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch14\04-digit.bas" />
-    <None Remove="Samples\Radio Shack BASIC Computer Language\Ch14\05-circle.bas" />
     <None Remove="Samples\Radio Shack BASIC Computer Language\Ch15\01-if-goto.bas" />
     <None Remove="Samples\Radio Shack BASIC Computer Language\Ch17\01-abs.bas" />
     <None Remove="Samples\Radio Shack BASIC Computer Language\Ch19\01-rnd.bas" />
@@ -143,22 +137,22 @@
     <None Update="Samples\Radio Shack BASIC Computer Language\Ch11\01.bas">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Include="Samples\Radio Shack BASIC Computer Language\Ch13\01-nested-loop.bas">
+    <None Update="Samples\Radio Shack BASIC Computer Language\Ch13\01.bas">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Include="Samples\Radio Shack BASIC Computer Language\Ch14\05-circle.bas">
+    <None Update="Samples\Radio Shack BASIC Computer Language\Ch14\01.bas">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Include="Samples\Radio Shack BASIC Computer Language\Ch14\04-digit.bas">
+    <None Update="Samples\Radio Shack BASIC Computer Language\Ch14\02.bas">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Include="Samples\Radio Shack BASIC Computer Language\Ch14\03-difference.bas">
+    <None Update="Samples\Radio Shack BASIC Computer Language\Ch14\03.bas">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Include="Samples\Radio Shack BASIC Computer Language\Ch14\02-neg-int.bas">
+    <None Update="Samples\Radio Shack BASIC Computer Language\Ch14\06.bas">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Include="Samples\Radio Shack BASIC Computer Language\Ch14\01-int.bas">
+    <None Update="Samples\Radio Shack BASIC Computer Language\Ch14\07.bas">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Include="Samples\Radio Shack BASIC Computer Language\Ch15\01-if-goto.bas">
