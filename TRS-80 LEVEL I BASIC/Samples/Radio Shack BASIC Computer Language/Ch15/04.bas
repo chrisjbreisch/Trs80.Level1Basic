@@ -1,6 +1,6 @@
-10 input "type any number";x
+10 input "Type any number";x
 20 gosub 30800
-30 on t+2 goto 50, 60, 70
+30 on t+2 goto 50,60,70
 45 end
 50 print "The number is negative."
 55 end

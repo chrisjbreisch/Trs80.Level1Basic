@@ -10,9 +10,9 @@ namespace Trs80.Level1Basic.Command.Commands;
 public class SetupConsoleCommand : ICommand<SetupConsoleModel>
 {
     private readonly ILogger _logger;
-    private readonly ITrs80Console _console;
+    private readonly IConsole _console;
 
-    public SetupConsoleCommand(ILoggerFactory logFactory, ITrs80Console console, ISharedDataModel sharedDataModel)
+    public SetupConsoleCommand(ILoggerFactory logFactory, IConsole console, ISharedDataModel sharedDataModel)
     {
         _logger = logFactory.CreateLogger<SetupConsoleCommand>();
         _console = console ?? throw new ArgumentNullException(nameof(console));

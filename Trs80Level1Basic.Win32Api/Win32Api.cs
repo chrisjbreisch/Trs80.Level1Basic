@@ -1,10 +1,8 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
 
-namespace Trs80.Level1Basic.Graphics;
+namespace Trs80Level1Basic.Win32Api;
 
 public static class Win32Api
 {
@@ -66,9 +64,7 @@ public static class Win32Api
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
         public string FontName;
     }
-
-        
-
+    
     public static IntPtr GetConsoleWindowHandle()
     {
         var sb = new StringBuilder(1024);
@@ -118,9 +114,7 @@ public static class Win32Api
         GetWindowInfo(hWnd, ref info);
         return info;
     }
-
 }
-
 
 [StructLayout(LayoutKind.Sequential)]
 public struct Rect
@@ -144,9 +138,4 @@ public struct WindowInfo
     public uint cyWindowBorders;
     public ushort atomWindowType;
     public ushort wCreatorVersion;
-
-    //public WindowInfo(Boolean? filler) : this()   // Allows automatic initialization of "cbSize" with "new WINDOWINFO(null/true/false)".
-    //{
-    //    cbSize = (UInt32)(Marshal.SizeOf(typeof(WindowInfo)));
-    //}
 }

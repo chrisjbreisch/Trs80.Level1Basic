@@ -18,10 +18,10 @@ public class InterpreterCommand : ICommand<InterpreterModel>
     private readonly IScanner _scanner;
     private readonly IParser _parser;
     private readonly IBasicInterpreter _interpreter;
-    private readonly ITrs80Console _console;
+    private readonly IConsole _console;
 
     public InterpreterCommand(ILoggerFactory logFactory, IScanner scanner, IParser parser,
-        IBasicInterpreter interpreter, ITrs80Console console)
+        IBasicInterpreter interpreter, IConsole console)
     {
         _logger = logFactory.CreateLogger<InterpreterCommand>();
         _scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));

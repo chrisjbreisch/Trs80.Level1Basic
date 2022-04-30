@@ -6,5 +6,5 @@
 60 h=h+1:g.80
 70 t=t+1
 80 n.n:P.:P.:P.:P.
-90 P."Heads","Tails","Total Flips":p.:p.h,t,flip
+90 P."Heads","Tails","Total Flips":p.:p.h,t,f
 100 p.100*h/f;"%",100*t/f;"%":p.:p.:p.

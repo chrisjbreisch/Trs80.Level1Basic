@@ -1,8 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
-using Trs80.Level1Basic.Graphics;
+using Trs80Level1Basic.Win32Api;
 
 namespace Trs80.Level1Basic.Services;
 
@@ -11,35 +12,31 @@ public class ConsoleFont
     public string FontName { get; set; }
     public short FontSize { get; set; }
 }
-public interface ITrs80Console
-{
-    TextWriter Out { get; set; }
-    TextReader In { get; set; }
-    TextWriter Error { get; set; }
-    void WriteLine(string text = "");
-    void Write(string text);
-    string ReadLine();
-    void Clear();
-    void SetCursorPosition(int row, int column);
-    ConsoleFont GetCurrentFont();
-    void SetCurrentFont(ConsoleFont font);
-    ConsoleKeyInfo ReadKey();
-    void SetWindowSize(int width, int height);
-    void SetBufferSize(int width, int height);
-    void DisableCursorBlink();
-}
 
-public class Trs80Console : ITrs80Console
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
+public class Console : IConsole
 {
+    private readonly double _pixelWidth;
+    private readonly double _pixelHeight;
+    private readonly bool[,] _screen = new bool[128, 48];
+    private readonly System.Drawing.Graphics _graphics;
+
     public TextWriter Out { get; set;  }
     public TextReader In { get; set; }
     public TextWriter Error { get; set; }
 
-    public Trs80Console()
+
+    public Console()
     {
-        Out = Console.Out;
-        In = Console.In;
-        Error = Console.Error;
+        var hwnd = Win32Api.GetConsoleWindowHandle();
+        var clientRect = Win32Api.GetClientRect(hwnd);
+        _pixelHeight = clientRect.Bottom / 48.0;
+        _pixelWidth = clientRect.Right / 128.0;
+        _graphics = System.Drawing.Graphics.FromHwnd(hwnd);
+
+        Out = System.Console.Out;
+        In = System.Console.In;
+        Error = System.Console.Error;
     }
 
     public void WriteLine(string text = "") => Out.WriteLine(text);
@@ -48,9 +45,13 @@ public class Trs80Console : ITrs80Console
 
     public string ReadLine() => In.ReadLine();
 
-    public void Clear() => Console.Clear();
+    public void Clear()
+    {
+        System.Console.Clear();
+        //Fill(0, 0, 127, 47, false);
+    }
 
-    public void SetCursorPosition(int row, int column) => Console.SetCursorPosition(row, column);
+    public void SetCursorPosition(int row, int column) => System.Console.SetCursorPosition(row, column);
 
     private const uint EnableVirtualTerminalProcessing = 4;
     private const int FixedWidthTrueType = 54;
@@ -115,18 +116,18 @@ public class Trs80Console : ITrs80Console
         }
     }
 
-    public ConsoleKeyInfo ReadKey() => Console.ReadKey();
+    public ConsoleKeyInfo ReadKey() => System.Console.ReadKey();
 
     public void SetWindowSize(int width, int height)
     {
         if (OperatingSystem.IsWindows())
-            Console.SetWindowSize(width, height);
+            System.Console.SetWindowSize(width, height);
     }
 
     public void SetBufferSize(int width, int height)
     {
         if (OperatingSystem.IsWindows())
-            Console.SetBufferSize(width, height);
+            System.Console.SetBufferSize(width, height);
     }
         
     public void DisableCursorBlink()
@@ -144,5 +145,37 @@ public class Trs80Console : ITrs80Console
             throw new Win32Exception(ex);
         }
         Out.Write("\u001b[?12l");
+    }
+
+    private void Fill(int x, int y, int width, int height, bool turnOn)
+    {
+        for (int xIndex = x; xIndex < x + width; xIndex++)
+        for (int yIndex = y; yIndex < y + height; yIndex++)
+            _screen[xIndex, yIndex] = turnOn;
+        //if (_hwnd == IntPtr.Zero) Initialize();
+
+        //using var graphics = System.Drawing.Graphics.FromHwnd(_hwnd);
+        _graphics.FillRectangle(
+            turnOn ? Brushes.White : Brushes.Black,
+            (int)Math.Round(x * _pixelWidth),
+            (int)Math.Round(y * _pixelHeight),
+            (int)Math.Round(width * _pixelWidth),
+            (int)Math.Round(height * _pixelHeight)
+        );
+    }
+
+    public void Set(int x, int y)
+    {
+        Fill(x, y, 1, 1, true);
+    }
+
+    public void Reset(int x, int y)
+    {
+        Fill(x, y, 1, 1, false);
+    }
+
+    public bool Point(int x, int y)
+    {
+        return _screen[x, y];
     }
 }

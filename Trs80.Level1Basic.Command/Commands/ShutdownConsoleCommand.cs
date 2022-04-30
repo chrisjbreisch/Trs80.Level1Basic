@@ -10,9 +10,9 @@ namespace Trs80.Level1Basic.Command.Commands;
 public class ShutdownConsoleCommand : ICommand<ShutdownConsoleModel>
 {
     private readonly ILogger _logger;
-    private readonly ITrs80Console _console;
+    private readonly IConsole _console;
     private readonly ISharedDataModel _sharedDataModel;
-    public ShutdownConsoleCommand(ILoggerFactory logFactory, ITrs80Console console, ISharedDataModel sharedDataModel)
+    public ShutdownConsoleCommand(ILoggerFactory logFactory, IConsole console, ISharedDataModel sharedDataModel)
     {
         _logger = logFactory.CreateLogger<ShutdownConsoleCommand>();
         _console = console ?? throw new ArgumentNullException(nameof(console));

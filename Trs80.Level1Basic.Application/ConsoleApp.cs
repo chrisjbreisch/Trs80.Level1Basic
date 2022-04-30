@@ -10,7 +10,7 @@ public class ConsoleApp
     private IServiceProvider _serviceProvider;
     private Bootstrapper _bootstrapper;
     private ILogger _logger;
-    private ITrs80Console _console;
+    private IConsole _console;
 
     public void Run(string workflowFileName, string workflow)
     {
@@ -49,14 +49,14 @@ public class ConsoleApp
             _bootstrapper = new Bootstrapper(workflow);
             _serviceProvider = _bootstrapper.ScopedServiceProvider;
             _logger = _bootstrapper.LogFactory.CreateLogger<ConsoleApp>();
-            _console = _serviceProvider.GetRequiredService<ITrs80Console>();
+            _console = _serviceProvider.GetRequiredService<IConsole>();
 
             _logger.LogInformation($"{_bootstrapper.ApplicationName} started.");
 
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            System.Console.WriteLine(e);
             throw;
         }
     }

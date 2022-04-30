@@ -6,7 +6,6 @@ using System.Threading;
 
 using Trs80.Level1Basic.Domain;
 using Trs80.Level1Basic.Exceptions;
-using Trs80.Level1Basic.Graphics;
 using Trs80.Level1Basic.Services.Parser;
 using Trs80.Level1Basic.Services.Parser.Expressions;
 using Trs80.Level1Basic.Services.Parser.Statements;
@@ -15,17 +14,15 @@ namespace Trs80.Level1Basic.Services.Interpreter;
 
 public class BasicInterpreter : IBasicInterpreter
 {
-    private readonly ITrs80Console _console;
+    private readonly IConsole _console;
     private readonly IBasicEnvironment _environment;
-    private readonly IScreen _screen;
 
     public BasicFunctionImplementations Functions { get; } = new();
 
-    public BasicInterpreter(ITrs80Console console, IBasicEnvironment environment, IScreen screen)
+    public BasicInterpreter(IConsole console, IBasicEnvironment environment)
     {
         _console = console ?? throw new ArgumentNullException(nameof(console));
         _environment = environment ?? throw new ArgumentNullException(nameof(environment));
-        _screen = screen ?? throw new ArgumentNullException(nameof(screen));
     }
 
     public Statement CurrentStatement { get; private set; }
@@ -157,11 +154,6 @@ public class BasicInterpreter : IBasicInterpreter
 
         return literal.Value;
     }
-
-    //public dynamic VisitStopExpression(Stop stop)
-    //{
-    //    return null;
-    //}
 
     public dynamic VisitUnaryExpression(Unary unary)
     {
@@ -315,6 +307,7 @@ public class BasicInterpreter : IBasicInterpreter
     }
 
     private int _printPosition;
+    private bool _lastCharIsSpace = false;
     public void VisitPrintStatement(Print printStatement)
     {
         _sb = new StringBuilder();
@@ -324,18 +317,20 @@ public class BasicInterpreter : IBasicInterpreter
             foreach (var expression in printStatement.Expressions)
                 WriteExpression(expression, _printPosition);
 
-        //WriteExpression(
-        //    printStatement.Expressions[printStatement.Expressions.Count - 1],
-        //    printStatement.Expressions.Count == 1);
-
         string text = _sb.ToString();
         _printPosition += text.Length;
 
         _console.Write(text);
-        if (!printStatement.WriteNewline) return;
+        if (!printStatement.WriteNewline)
+        {
+            if (text.EndsWith(" "))
+                _lastCharIsSpace = true;
+            return;
+        }
 
         _console.WriteLine();
         _printPosition = 0;
+        _lastCharIsSpace = false;
     }
 
     private void PrintAt(Expression position)
@@ -386,17 +381,17 @@ public class BasicInterpreter : IBasicInterpreter
 
     public void Set(int x, int y)
     {
-        _screen.Set(x, y);
+        _console.Set(x, y);
     }
 
     public void Reset(int x, int y)
     {
-        _screen.Reset(x, y);
+        _console.Reset(x, y);
     }
 
     public bool Point(int x, int y)
     {
-        return _screen.Point(x, y);
+        return _console.Point(x, y);
     }
 
     public int MemoryInUse()
@@ -406,16 +401,17 @@ public class BasicInterpreter : IBasicInterpreter
 
     private void PrependSpaceIfNecessary(dynamic value, int position)
     {
-        bool isNonNegativeNumber = value is int or float && value >= 0;
+        bool isNegativeNumber = value is int or float && value < 0;
 
-        if (position == 0 && !isNonNegativeNumber) return;
+        if (_lastCharIsSpace) return;
+
+        if (position == 0 && isNegativeNumber) return;
 
         if (value is string str && str.StartsWith(" ")) return;
 
-        string text = _sb.ToString();
-        if (text.EndsWith(" ") && !isNonNegativeNumber) return;
+        if (_sb.Length > 0 && _sb[^1] == ' ') return;
 
-        _sb.Append(" ");
+        _sb.Append(' ');
     }
 
     private void WriteExpression(Expression expression, int position)
@@ -538,39 +534,7 @@ public class BasicInterpreter : IBasicInterpreter
 
         if (!value) return;
 
-        foreach (var statement in ifStatement.ThenStatements.Where(_ => !_environment.ExecutionHalted))
-            Execute(statement);
-
-        //switch (ifStatement.ThenExpression)
-        //{
-        //    case Stop _:
-        //        _console.WriteLine($"BREAK AT {ifStatement.LineNumber}");
-        //        _environment.HaltRun();
-        //        break;
-        //    case Literal _:
-        //        {
-        //            var lineNumber = Evaluate(ifStatement.ThenExpression);
-        //            _environment.SetNextStatement(GetStatementByLineNumber(lineNumber));
-        //            break;
-        //        }
-        //    case Binary assignment:
-        //        {
-        //            if (assignment.OperatorType.Type != TokenType.Equal)
-        //                throw new RuntimeStatementException(ifStatement.LineNumber, "Expected assignment after 'THEN'");
-
-        //            var newValue = Evaluate(assignment.Right);
-        //            AssignVariable(assignment.Left, newValue);
-        //            break;
-        //        }
-        //    //case Return _:
-        //    //{
-        //    //    var statement = _environment.ProgramStack.Pop();
-        //    //    _environment.SetNextStatement(statement);
-        //    //    break;
-        //    //}
-        //    default:
-        //        throw new RuntimeStatementException(ifStatement.LineNumber, "Unknown expression type after 'THEN'");
-        //}
+        Execute(ifStatement.ThenStatements.First());
     }
 
     public void VisitInputStatement(Input inputStatement)
@@ -655,7 +619,6 @@ public class BasicInterpreter : IBasicInterpreter
     public void VisitClsStatement(Cls root)
     {
         _console.Clear();
-        _screen.Clear();
         Thread.Sleep(500);
     }
 

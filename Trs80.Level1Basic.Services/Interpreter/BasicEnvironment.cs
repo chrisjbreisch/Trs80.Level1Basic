@@ -17,11 +17,11 @@ public class BasicEnvironment : IBasicEnvironment
     private readonly IBuiltinFunctions _builtins;
     public DataElements Data { get; } = new();
 
-    private readonly ITrs80Console _console;
+    private readonly IConsole _console;
     private readonly IParser _parser;
     private readonly IScanner _scanner;
 
-    public BasicEnvironment(ITrs80Console console, IParser parser, IScanner scanner, IBuiltinFunctions builtins, IProgram program)
+    public BasicEnvironment(IConsole console, IParser parser, IScanner scanner, IBuiltinFunctions builtins, IProgram program)
     {
         _console = console ?? throw new ArgumentNullException(nameof(console));
         _parser = parser ?? throw new ArgumentNullException(nameof(parser));
@@ -29,7 +29,7 @@ public class BasicEnvironment : IBasicEnvironment
         _scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
         Program = program ?? throw new ArgumentNullException(nameof(program));
 
-        Console.CancelKeyPress += delegate (object _, ConsoleCancelEventArgs e)
+        System.Console.CancelKeyPress += delegate (object _, ConsoleCancelEventArgs e)
         {
             e.Cancel = true;
             ExecutionHalted = true;

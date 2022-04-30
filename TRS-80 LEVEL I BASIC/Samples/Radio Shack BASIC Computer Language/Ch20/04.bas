@@ -4,4 +4,4 @@
 40     set (x, y)
 50   next y
 60 next x
-99 input a$
+99 goto 99

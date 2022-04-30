@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.Services"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.Extensions", "Trs80.Level1Basic.Extensions\Trs80.Level1Basic.Extensions.csproj", "{8877543F-ADDF-436D-BCDE-B03E30EF0460}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.Graphics", "Trs80.Level1Basic.Graphics\Trs80.Level1Basic.Graphics.csproj", "{62692606-F922-4887-B5E7-9ED592DBD9B9}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Radio Shack BASIC Computer Language", "Radio Shack BASIC Computer Language", "{71005317-8860-4F7C-A802-0A140C96AF1E}"
 	ProjectSection(SolutionItems) = preProject
 		Radio Shack BASIC Computer Language\Basic_Computer_Language_Its_Easier_Than_You_Think_1978_Radio_Shack.pdf = Radio Shack BASIC Computer Language\Basic_Computer_Language_Its_Easier_Than_You_Think_1978_Radio_Shack.pdf
@@ -29,6 +27,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.Command", "Trs80.Level1Basic.Command\Trs80.Level1Basic.Command.csproj", "{D17B31C5-3403-4607-A252-153111B983A3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.CommandModels", "Trs80.Level1Basic.CommandModels\Trs80.Level1Basic.CommandModels.csproj", "{CCB8AE4F-0807-4428-8303-A24AA7FA2847}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trs80Level1Basic.Win32Api", "Trs80Level1Basic.Win32Api\Trs80Level1Basic.Win32Api.csproj", "{BB84BECC-7862-4A47-9125-82E85ED03AEF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,10 +60,6 @@ Global
 		{8877543F-ADDF-436D-BCDE-B03E30EF0460}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8877543F-ADDF-436D-BCDE-B03E30EF0460}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8877543F-ADDF-436D-BCDE-B03E30EF0460}.Release|Any CPU.Build.0 = Release|Any CPU
-		{62692606-F922-4887-B5E7-9ED592DBD9B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{62692606-F922-4887-B5E7-9ED592DBD9B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{62692606-F922-4887-B5E7-9ED592DBD9B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{62692606-F922-4887-B5E7-9ED592DBD9B9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D5843BC2-85DC-438F-BEE7-F52234B68A03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D5843BC2-85DC-438F-BEE7-F52234B68A03}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5843BC2-85DC-438F-BEE7-F52234B68A03}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -80,6 +76,10 @@ Global
 		{CCB8AE4F-0807-4428-8303-A24AA7FA2847}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CCB8AE4F-0807-4428-8303-A24AA7FA2847}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CCB8AE4F-0807-4428-8303-A24AA7FA2847}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB84BECC-7862-4A47-9125-82E85ED03AEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB84BECC-7862-4A47-9125-82E85ED03AEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB84BECC-7862-4A47-9125-82E85ED03AEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB84BECC-7862-4A47-9125-82E85ED03AEF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

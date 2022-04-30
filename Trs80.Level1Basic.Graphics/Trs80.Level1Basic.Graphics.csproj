@@ -8,4 +8,8 @@
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Trs80Level1Basic.Win32Api\Trs80Level1Basic.Win32Api.csproj" />
+  </ItemGroup>
+
 </Project>
