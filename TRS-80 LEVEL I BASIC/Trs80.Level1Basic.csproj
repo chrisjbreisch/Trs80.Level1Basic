@@ -19,7 +19,6 @@
     <None Remove="Interpreter.json" />
     <None Remove="Samples\Radio Shack BASIC Computer Language\c2f.bas" />
     <None Remove="Samples\Radio Shack BASIC Computer Language\carmiles.bas" />
-    <None Remove="Samples\Radio Shack BASIC Computer Language\circles.bas" />
     <None Remove="Samples\Radio Shack BASIC Computer Language\coin.bas" />
     <None Remove="Samples\Radio Shack BASIC Computer Language\coin2.bas" />
     <None Remove="Samples\Radio Shack BASIC Computer Language\commaTest.bas" />
@@ -84,10 +83,22 @@
     <None Update="Samples\ParserTests\commaTest.bas">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
+    <None Update="Samples\ParserTests\count.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
     <None Update="Samples\ParserTests\fib.bas">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
+    <None Update="Samples\ParserTests\for.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
     <None Update="Samples\ParserTests\lockers.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="Samples\ParserTests\printTest.bas">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="Samples\ParserTests\stopTest.bas">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Update="Samples\ParserTests\t2.bas">
@@ -202,21 +213,6 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Update="Samples\Radio Shack BASIC Computer Language\Ch21\11.bas">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-    <None Include="Samples\Radio Shack BASIC Computer Language\circles.bas">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-    <None Include="Samples\Radio Shack BASIC Computer Language\count.bas">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-    <None Include="Samples\Radio Shack BASIC Computer Language\for.bas">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-    <None Include="Samples\Radio Shack BASIC Computer Language\printTest.bas">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-    <None Include="Samples\Radio Shack BASIC Computer Language\stopTest.bas">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
   </ItemGroup>
