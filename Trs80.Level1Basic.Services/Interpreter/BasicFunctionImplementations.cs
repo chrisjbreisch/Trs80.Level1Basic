@@ -64,8 +64,8 @@ public class BasicFunctionImplementations
 
     }
 
-    public int Point(IBasicInterpreter interpreter, int x, int y)
+    public bool Point(IBasicInterpreter interpreter, int x, int y)
     {
-        return interpreter.Point(x, y) ? 1 : 0;
+        return interpreter.Point(x, y);// ? 1 : 0;
     }
 }

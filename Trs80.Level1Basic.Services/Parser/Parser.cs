@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Windows.Forms;
 using Trs80.Level1Basic.Domain;
@@ -470,7 +469,10 @@ public class Parser : IParser
         if (Match(TokenType.At))
         {
             atPosition = Expression();
-            Consume(TokenType.Comma, "Expected ',' after AT clause.");
+            if (Match(TokenType.Comma) || Match(TokenType.Semicolon))
+                Advance();
+            else
+                throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, "Expected ',' or ';' after AT clause.");
         }
 
         while (!IsAtStatementEnd())
@@ -501,8 +503,8 @@ public class Parser : IParser
 
         if (line == null) return 0;
 
-        if (line is not short)
-            throw new ParseException(0, lineNumber.SourceLine, $"Invalid text at ${line}");
+        if (line is not int)
+            throw new ParseException(0, lineNumber.SourceLine, $"Invalid text at {line}");
         if (line > short.MaxValue)
             throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, $"Line number cannot exceed {short.MaxValue}.");
 
@@ -607,7 +609,7 @@ public class Parser : IParser
     {
         var index = Expression();
 
-        var rightParen = Consume(TokenType.RightParen, 
+        Consume(TokenType.RightParen, 
             "Expected ')' after arguments");
 
         return new BasicArray(name, index);
@@ -643,11 +645,11 @@ public class Parser : IParser
             "Expected expression.");
     }
 
-    private Token Consume(TokenType type, string message)
+    private void Consume(TokenType type, string message)
     {
         if (!Check(type)) throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, message);
 
-        return Advance();
+        Advance();
     }
 
     private bool Match(params TokenType[] types)
@@ -663,12 +665,12 @@ public class Parser : IParser
         return Peek().Type == type;
     }
 
-    private Token Advance()
+    private void Advance()
     {
         if (!IsAtEnd())
             _current++;
 
-        return Previous();
+        Previous();
     }
 
     private bool IsAtEnd()

@@ -67,7 +67,7 @@ public class Scanner : IScanner
                     {"r.", TokenType.Run},
                     {"s.", TokenType.Step},
                     {"to", TokenType.To},
-                    {"t.", TokenType.Then},
+                   // {"t.", TokenType.T},
                 }
             },
             {
@@ -344,9 +344,10 @@ public class Scanner : IScanner
         else if (!KeywordsByLetter
                      .Select(d => d.Value)
                      .Any(kw => kw.ContainsKey(identifier)))
-            throw new ScanException(
-                _source.Substring(0, TokenStart + 1) + "?" +
-                _source.Substring(TokenStart + 1, _source.Length - TokenStart - 1));
+            AddToken(TokenType.String, identifier);
+            //throw new ScanException(
+            //    _source.Substring(0, TokenStart + 1) + "?" +
+            //    _source.Substring(TokenStart + 1, _source.Length - TokenStart - 1));
     }
 
     private void Add6PlusCharsToken()

@@ -7,7 +7,7 @@ using Trs80.Level1Basic.Services;
 namespace Trs80.Level1Basic.Command.Commands;
 
 [SuppressMessage("ReSharper", "NotAccessedField.Local")]
-public class SetupConsoleCommand : ICommand
+public class SetupConsoleCommand : ICommand<SetupConsoleModel>
 {
     private readonly ILogger _logger;
     private readonly IConsole _console;
@@ -21,7 +21,7 @@ public class SetupConsoleCommand : ICommand
         sharedDataModel.OriginalConsoleFont = _console.GetCurrentFont();
     }
 
-    public void Execute()
+    public void Execute(SetupConsoleModel parameterObject)
     {
         InitializeWindow();
         WritePrompt();
