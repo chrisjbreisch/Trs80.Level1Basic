@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic", "TRS-80 LEVEL I BASIC\Trs80.Level1Basic.csproj", "{2E68DF59-417F-4025-A706-B31A0FBD0617}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.GenerateAst", "GenerateAst\Trs80.Level1Basic.GenerateAst.csproj", "{C692EE3C-1AF8-4B14-BE49-FB3FC6D97265}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.Exceptions", "Trs80.Level1Basic.Exceptions\Trs80.Level1Basic.Exceptions.csproj", "{07B72B04-235C-4DEF-8C49-31E32A9DE57B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.Domain", "Trs80.Level1Basic.Domain\Trs80.Level1Basic.Domain.csproj", "{15AADFF3-5F54-46B0-9037-7B1C8E422681}"
@@ -30,20 +26,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.Command",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.CommandModels", "Trs80.Level1Basic.CommandModels\Trs80.Level1Basic.CommandModels.csproj", "{CCB8AE4F-0807-4428-8303-A24AA7FA2847}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic", "Trs80.Level1Basic\Trs80.Level1Basic.csproj", "{AA8B72DA-86B5-410F-91CD-D31EBAF3562C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.GenerateAst", "Trs80.Level1Basic.GenerateAst\Trs80.Level1Basic.GenerateAst.csproj", "{552F8DE5-C7C5-4E3A-A497-849EDF1CE652}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80Level1Basic.Win32Api", "Trs80Level1Basic.Win32Api\Trs80Level1Basic.Win32Api.csproj", "{3FE41959-8FC3-434F-AE71-D91C9E901A3F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2E68DF59-417F-4025-A706-B31A0FBD0617}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2E68DF59-417F-4025-A706-B31A0FBD0617}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2E68DF59-417F-4025-A706-B31A0FBD0617}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2E68DF59-417F-4025-A706-B31A0FBD0617}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C692EE3C-1AF8-4B14-BE49-FB3FC6D97265}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C692EE3C-1AF8-4B14-BE49-FB3FC6D97265}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C692EE3C-1AF8-4B14-BE49-FB3FC6D97265}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C692EE3C-1AF8-4B14-BE49-FB3FC6D97265}.Release|Any CPU.Build.0 = Release|Any CPU
 		{07B72B04-235C-4DEF-8C49-31E32A9DE57B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{07B72B04-235C-4DEF-8C49-31E32A9DE57B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07B72B04-235C-4DEF-8C49-31E32A9DE57B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -80,6 +74,18 @@ Global
 		{CCB8AE4F-0807-4428-8303-A24AA7FA2847}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CCB8AE4F-0807-4428-8303-A24AA7FA2847}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CCB8AE4F-0807-4428-8303-A24AA7FA2847}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA8B72DA-86B5-410F-91CD-D31EBAF3562C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA8B72DA-86B5-410F-91CD-D31EBAF3562C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA8B72DA-86B5-410F-91CD-D31EBAF3562C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA8B72DA-86B5-410F-91CD-D31EBAF3562C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{552F8DE5-C7C5-4E3A-A497-849EDF1CE652}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{552F8DE5-C7C5-4E3A-A497-849EDF1CE652}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{552F8DE5-C7C5-4E3A-A497-849EDF1CE652}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{552F8DE5-C7C5-4E3A-A497-849EDF1CE652}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FE41959-8FC3-434F-AE71-D91C9E901A3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FE41959-8FC3-434F-AE71-D91C9E901A3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FE41959-8FC3-434F-AE71-D91C9E901A3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FE41959-8FC3-434F-AE71-D91C9E901A3F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

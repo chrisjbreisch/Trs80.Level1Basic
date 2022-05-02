@@ -66,6 +66,7 @@ public class Scanner : IScanner
                     {"p.", TokenType.Print},
                     {"r.", TokenType.Run},
                     {"s.", TokenType.Step},
+                    {"t.", TokenType.T},
                     {"to", TokenType.To},
                    // {"t.", TokenType.T},
                 }

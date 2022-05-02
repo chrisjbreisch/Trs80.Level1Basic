@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+
 using Trs80.Level1Basic.Domain;
 using Trs80.Level1Basic.Exceptions;
 using Trs80.Level1Basic.Services.Interpreter;
@@ -44,8 +45,7 @@ public class Parser : IParser
         else
         {
             int lineNumberLength = _currentLine.LineNumber.ToString().Length;
-            _currentLine.SourceLine = lineNumber.SourceLine
-                .Substring(lineNumberLength, lineNumber.SourceLine.Length - lineNumberLength).TrimStart(' ');
+            _currentLine.SourceLine = lineNumber.SourceLine[lineNumberLength..].TrimStart(' ');
         }
 
         if (lineNumber.Type == TokenType.Number)
@@ -168,7 +168,7 @@ public class Parser : IParser
 
         return StatementWrapper(new Data(elements), lineNumber);
     }
-    
+
     private Statement ReturnStatement(Token lineNumber)
     {
         return StatementWrapper(new Return(), lineNumber);
@@ -208,7 +208,7 @@ public class Parser : IParser
                 Advance();
         }
         else
-            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, 
+            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
                 "Expected 'GOTO' or 'GOSUB' after 'ON'");
 
         return StatementWrapper(new On(selector, locations, isGosub), lineNumber);
@@ -218,12 +218,12 @@ public class Parser : IParser
     {
         int lineNumberValue = GetLineNumberValue(lineNumber);
         statement.LineNumber = lineNumberValue;
-            
+
         if (lineNumberValue == 0 && char.IsLetter(lineNumber.SourceLine[0]))
             statement.SourceLine = lineNumber.SourceLine;
         else
             statement.SourceLine = lineNumber.SourceLine.Replace(lineNumberValue.ToString(), "").TrimStart(' ');
-            
+
         return statement;
     }
 
@@ -250,7 +250,7 @@ public class Parser : IParser
                 "Expected variable name after 'NEXT'.");
 
         var identifier = Identifier();
-            
+
         return StatementWrapper(new Next(identifier), lineNumber);
     }
 
@@ -326,11 +326,11 @@ public class Parser : IParser
     {
         var condition = Expression();
 
-        if (!Match(TokenType.Then, TokenType.Goto) && Peek().Type == TokenType.Number)
-            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, 
+        if (!Match(TokenType.Then, TokenType.Goto, TokenType.T, TokenType.Gosub) && Peek().Type == TokenType.Number)
+            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
                 "Expected 'THEN' or 'GOTO' before line number in 'IF' statement.");
 
-        var thenStatement = 
+        var thenStatement =
             Peek().Type == TokenType.Number ?
                 new Goto(Expression()) :
                 Statement(lineNumber);
@@ -391,7 +391,7 @@ public class Parser : IParser
             CheckFileExists = true,
             Multiselect = false,
         };
-        
+
         return dialog.ShowDialog() == DialogResult.OK ? new Literal(dialog.FileName) : null;
     }
 
@@ -425,7 +425,7 @@ public class Parser : IParser
         var peekNext = PeekNext();
 
         if (peek.Type != TokenType.Identifier)
-            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, 
+            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
                 "Expected variable name or function call.");
 
         if (peekNext.Type != TokenType.Equal && _builtins.Get(peek.Lexeme) != null) return StatementWrapper(new StatementExpression(Call()), lineNumber);
@@ -443,7 +443,7 @@ public class Parser : IParser
         var peek = Peek();
 
         if (peek.Type != TokenType.Identifier)
-            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, 
+            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
                 "Expected variable name or function call.");
 
         Advance();
@@ -473,6 +473,12 @@ public class Parser : IParser
                 Advance();
             else
                 throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, "Expected ',' or ';' after AT clause.");
+        }
+
+        if (Match(TokenType.T) && Match(TokenType.LeftParen))
+        {
+            var t = new Token(TokenType.Identifier, "tab", "tab", _currentLine.SourceLine);
+            values.Add(FinishCall(t));
         }
 
         while (!IsAtStatementEnd())
@@ -519,8 +525,8 @@ public class Parser : IParser
     private Expression Comparison()
     {
         var left = Term();
-        while (Match(TokenType.LessThanOrEqual, TokenType.LessThan, 
-                   TokenType.GreaterThanOrEqual, TokenType.GreaterThan, 
+        while (Match(TokenType.LessThanOrEqual, TokenType.LessThan,
+                   TokenType.GreaterThanOrEqual, TokenType.GreaterThan,
                    TokenType.NotEqual, TokenType.Equal))
         {
             var operatorType = Previous();
@@ -584,7 +590,7 @@ public class Parser : IParser
         if (function.Arity == 0)
             return new Call(name, new List<Expression>());
 
-        throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, 
+        throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
             $"Invalid number of arguments passed to function '{previous.Lexeme}'");
     }
 
@@ -609,7 +615,7 @@ public class Parser : IParser
     {
         var index = Expression();
 
-        Consume(TokenType.RightParen, 
+        Consume(TokenType.RightParen,
             "Expected ')' after arguments");
 
         return new BasicArray(name, index);
@@ -622,7 +628,7 @@ public class Parser : IParser
             throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, $"Unknown function '{name.Lexeme}'");
 
         if (arguments.Count != function.Arity)
-            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, 
+            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
                 $"Invalid number of arguments passed to function '{name.Lexeme}'");
     }
 
@@ -641,7 +647,7 @@ public class Parser : IParser
         if (Match(TokenType.Identifier))
             return new Identifier(Previous());
 
-        throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, 
+        throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
             "Expected expression.");
     }
 

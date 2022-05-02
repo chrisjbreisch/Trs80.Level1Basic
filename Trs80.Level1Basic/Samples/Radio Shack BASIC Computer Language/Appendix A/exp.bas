@@ -3,14 +3,12 @@
 30245 rem also uses l,a internally
 30247 rem Added unit tests to original. Use: run 32000
 30250 l=int(1.4427*x)+1 : if l<127 t. 30265
-30255 if x>0 t. p. "Overflow " : stop
+30255 if x>0 t. p. "Overflow " : Stop
 30260 e=0 : ret.
 30265 e=.693147*l-x : a=1.32988e-3-1.41316e-4*e
 30275 e=(((a-.166665)*e+.5)*e-1)*e+1 : a=2
 30280 if l<=0 t. a=.5 : l=-l : if l=0 t. ret.
-30285 f. x=1 to l : e=a*e : n. x : ret.
-
-
+30285 f. x=1 to l : e = a * e : n.x : ret.
 
 31999 end
 32000 cls
