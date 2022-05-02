@@ -13,13 +13,6 @@ public class BasicFunctionImplementations
         return (int)Math.Floor((float)value);
     }
 
-    public string Tab(IBasicInterpreter interpreter, dynamic value)
-    {
-        interpreter.WriteToPosition(value);
-
-        return string.Empty;
-    }
-
     public dynamic Mem(IBasicInterpreter interpreter)
     {
         return 3583 + 12 * 1024 - interpreter.MemoryInUse();

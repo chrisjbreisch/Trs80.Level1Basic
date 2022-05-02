@@ -465,6 +465,7 @@ public class Parser : IParser
         bool newline = true;
         var values = new List<Expression>();
         Expression atPosition = null;
+        Expression tabPosition = null;
 
         if (Match(TokenType.At))
         {
@@ -475,10 +476,10 @@ public class Parser : IParser
                 throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, "Expected ',' or ';' after AT clause.");
         }
 
-        if (Match(TokenType.T) && Match(TokenType.LeftParen))
+        if ((Match(TokenType.T) || Match(TokenType.Tab)) && Match(TokenType.LeftParen))
         {
-            var t = new Token(TokenType.Identifier, "tab", "tab", _currentLine.SourceLine);
-            values.Add(FinishCall(t));
+            tabPosition = Expression();
+            Consume(TokenType.RightParen, "Expected ')' after 'TAB' argument.");
         }
 
         while (!IsAtStatementEnd())
@@ -500,7 +501,7 @@ public class Parser : IParser
 
         }
 
-        return StatementWrapper(new Print(atPosition, values, newline), lineNumber);
+        return StatementWrapper(new Print(atPosition, tabPosition, values, newline), lineNumber);
     }
 
     private int GetLineNumberValue(Token lineNumber)

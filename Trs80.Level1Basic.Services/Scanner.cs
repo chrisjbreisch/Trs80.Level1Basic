@@ -83,6 +83,7 @@ public class Scanner : IScanner
                     {"rem", TokenType.Rem},
                     {"run", TokenType.Run},
                     {"st.", TokenType.Stop},
+                    {"tab", TokenType.Tab},
                 }
             },
             {

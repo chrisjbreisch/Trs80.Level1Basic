@@ -48,7 +48,7 @@ internal class Program
             "New",
             "Next                   : Expression variable",
             "On                     : Expression selector, List<Expression> locations, bool isGosub",
-            "Print                  : Expression atPosition, List<Expression> expressions, bool writeNewline",
+            "Print                  : Expression atPosition, Expression tabPosition, List<Expression> expressions, bool writeNewline",
             "Replace                : ParsedLine line",
             "Read                   : List<Expression> variables",
             "Rem                    : Literal remark",

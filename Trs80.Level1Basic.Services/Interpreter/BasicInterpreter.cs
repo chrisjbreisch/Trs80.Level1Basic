@@ -318,6 +318,7 @@ public class BasicInterpreter : IBasicInterpreter
         _inPrintAt = false;
         _sb = new StringBuilder();
         if (printStatement.AtPosition != null) PrintAt(printStatement.AtPosition);
+        if (printStatement.TabPosition != null) PrintTab(printStatement.TabPosition);
 
         if (printStatement.Expressions is { Count: > 0 })
             foreach (var expression in printStatement.Expressions)
@@ -346,6 +347,15 @@ public class BasicInterpreter : IBasicInterpreter
         dynamic column = value % 64;
 
         _console.SetCursorPosition(column, row);
+        _inPrintAt = true;
+    }
+
+    private void PrintTab(Expression position)
+    {
+        dynamic value = Evaluate(position);
+        var (_, row) = _console.GetCursorPosition();
+        
+        _console.SetCursorPosition(value, row);
         _inPrintAt = true;
     }
 

@@ -29,8 +29,6 @@ public class BuiltinFunctions : IBuiltinFunctions
             {"rnd", new FunctionDefinition {Arity = 1, Call = (i, a) => i.Functions.Rnd(a[0])}},
             {"reset", new FunctionDefinition {Arity = 2, Call = (i, a) => i.Functions.Reset(i, a[0], a[1])}},
             {"set", new FunctionDefinition {Arity = 2, Call = (i, a) => i.Functions.Set(i, a[0], a[1])}},
-            {"tab", new FunctionDefinition {Arity = 1, Call = (i, a) => i.Functions.Tab(i, a[0])}},
-            {"t.", new FunctionDefinition {Arity = 1, Call = (i, a) => i.Functions.Tab(i, a[0])}},
         };
     }
 

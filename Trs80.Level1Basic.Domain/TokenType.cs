@@ -54,6 +54,7 @@ public enum TokenType
     Save,
     Step,
     Stop,
+    Tab,
     T,
     Then,
     To,
