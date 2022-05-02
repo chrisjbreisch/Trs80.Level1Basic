@@ -3,11 +3,11 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 
 using Trs80.Level1Basic.CommandModels;
-using Trs80.Level1Basic.Domain;
-using Trs80.Level1Basic.Exceptions;
-using Trs80.Level1Basic.Services;
-using Trs80.Level1Basic.Services.Interpreter;
-using Trs80.Level1Basic.Services.Parser;
+using Trs80.Level1Basic.Interpreter;
+using Trs80.Level1Basic.Interpreter.Exceptions;
+using Trs80.Level1Basic.Interpreter.Interpreter;
+using Trs80.Level1Basic.Interpreter.Parser;
+using Trs80.Level1Basic.Interpreter.Scanner;
 
 namespace Trs80.Level1Basic.Command.Commands;
 

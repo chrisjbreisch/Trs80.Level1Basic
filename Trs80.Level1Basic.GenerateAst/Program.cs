@@ -120,11 +120,11 @@ internal class Program
         writer.WriteLine("using System.Collections.Generic;");
 
         if (baseName.Contains("Statement"))
-            writer.WriteLine("using Trs80.Level1Basic.Services.Parser.Expressions;");
+            writer.WriteLine("using Trs80.Level1Basic.Interpreter.Parser.Expressions;");
 
         writer.WriteLine("using Trs80.Level1Basic.Domain;");
         writer.WriteLine();
-        writer.WriteLine($"namespace Trs80.Level1Basic.Services.Parser.{baseName}s;");
+        writer.WriteLine($"namespace Trs80.Level1Basic.Interpreter.Parser.{baseName}s;");
         writer.WriteLine();
     }
 
@@ -144,7 +144,7 @@ internal class Program
 
         WriteDisclaimer(writer);
 
-        writer.WriteLine($"namespace Trs80.Level1Basic.Services.Parser.{baseName}s;");
+        writer.WriteLine($"namespace Trs80.Level1Basic.Interpreter.Parser.{baseName}s;");
         writer.WriteLine();
         writer.WriteLine($"public interface I{baseName}Visitor");
         writer.WriteLine("{");

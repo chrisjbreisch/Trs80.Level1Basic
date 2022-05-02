@@ -1,8 +1,27 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>8.0</LangVersion>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Parser\Expression\**" />
+    <Compile Remove="Parser\Statement\**" />
+    <EmbeddedResource Remove="Parser\Expression\**" />
+    <EmbeddedResource Remove="Parser\Statement\**" />
+    <None Remove="Parser\Expression\**" />
+    <None Remove="Parser\Statement\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Trs80.Level1Basic.Console\Trs80.Level1Basic.Console.csproj" />
+    <ProjectReference Include="..\Trs80Level1Basic.Win32Api\Trs80Level1Basic.Win32Api.csproj" />
+  </ItemGroup>
 
 </Project>

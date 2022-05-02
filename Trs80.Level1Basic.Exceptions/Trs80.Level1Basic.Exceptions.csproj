@@ -4,8 +4,4 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Trs80.Level1Basic.Domain\Trs80.Level1Basic.Domain.csproj" />
-  </ItemGroup>
-
 </Project>

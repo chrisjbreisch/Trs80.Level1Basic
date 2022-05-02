@@ -1,5 +1,5 @@
 ﻿using System;
-using Trs80.Level1Basic.Domain;
+using Trs80.Level1Basic.Services.Scanner;
 
 namespace Trs80.Level1Basic.Exceptions;
 

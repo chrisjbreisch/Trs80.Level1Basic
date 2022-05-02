@@ -8,9 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Trs80.Level1Basic.Command.Commands;
 using Trs80.Level1Basic.CommandModels;
-using Trs80.Level1Basic.Services;
-using Trs80.Level1Basic.Services.Interpreter;
-using Trs80.Level1Basic.Services.Parser;
+using Trs80.Level1Basic.Interpreter;
+using Trs80.Level1Basic.Interpreter.Interpreter;
+using Trs80.Level1Basic.Interpreter.Parser;
+using Trs80.Level1Basic.Interpreter.Scanner;
 using Trs80.Level1Basic.Workflow;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
@@ -181,7 +182,7 @@ public sealed class Bootstrapper : IDisposable
             .AddSingleton<IBuiltinFunctions, BuiltinFunctions>()
             .AddSingleton<IBasicInterpreter, BasicInterpreter>()
             .AddSingleton<IBasicEnvironment, BasicEnvironment>()
-            .AddTransient<IConsole, Services.Console>()
+            .AddTransient<IConsole, Interpreter.Console>()
             .AddSingleton<ISharedDataModel, SharedDataModel>()
             .AddSingleton<IProgram, Program>()
             .BuildServiceProvider();

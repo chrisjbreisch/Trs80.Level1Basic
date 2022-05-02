@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Trs80.Level1Basic.CommandModels\Trs80.Level1Basic.CommandModels.csproj" />
-    <ProjectReference Include="..\Trs80.Level1Basic.Services\Trs80.Level1Basic.Services.csproj" />
+    <ProjectReference Include="..\Trs80.Level1Basic.Interpreter\Trs80.Level1Basic.Interpreter.csproj" />
   </ItemGroup>
 
 </Project>

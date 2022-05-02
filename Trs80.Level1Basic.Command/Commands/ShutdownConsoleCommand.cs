@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 
 using Trs80.Level1Basic.CommandModels;
-using Trs80.Level1Basic.Services;
+using Trs80.Level1Basic.Interpreter;
 
 namespace Trs80.Level1Basic.Command.Commands;
 
