@@ -22,7 +22,7 @@ public class BasicFunctionImplementations
 
     public dynamic Mem(IBasicInterpreter interpreter)
     {
-        return 3583 + 44 * 1024 - interpreter.MemoryInUse();
+        return 3583 + 12 * 1024 - interpreter.MemoryInUse();
     }
 
     public dynamic Abs(dynamic value)
@@ -51,24 +51,18 @@ public class BasicFunctionImplementations
         return interpreter.PadQuadrant();
     }
 
-    public object Set(IBasicInterpreter interpreter, int x, int y)
+    public object Set(IBasicInterpreter interpreter, float x, float y)
     {
-        interpreter.Set(x, y);
+        interpreter.Set((int)x, (int)y);
         return null;
     }
 
-    public object Reset(IBasicInterpreter interpreter, int x, int y)
+    public object Reset(IBasicInterpreter interpreter, float x, float y)
     {
-        interpreter.Reset(x, y);
+        interpreter.Reset((int)x, (int)y);
         return null;
 
     }
-
-    //Dictionary<int, dynamic> _theArray = new Dictionary<int, dynamic>();
-    //public dynamic TheArray(int index)
-    //{
-    //    throw new NotImplementedException();
-    //}
 
     public int Point(IBasicInterpreter interpreter, int x, int y)
     {

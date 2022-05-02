@@ -40,6 +40,7 @@ public enum TokenType
     Let,
     List,
     Load,
+    Merge,
     N,
     New,
     Next,

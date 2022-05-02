@@ -11,15 +11,16 @@ namespace Trs80.Level1Basic.Services.Interpreter;
 public class BasicEnvironment : IBasicEnvironment
 {
     private readonly GlobalVariables _globals = new();
-
-    public Stack<ForCheckCondition> ForChecks { get; } = new();
-    public Stack<Statement> ProgramStack { get; } = new();
-    private readonly IBuiltinFunctions _builtins;
-    public DataElements Data { get; } = new();
-
     private readonly IConsole _console;
     private readonly IParser _parser;
     private readonly IScanner _scanner;
+    private readonly IBuiltinFunctions _builtins;
+
+    public Stack<ForCheckCondition> ForChecks { get; } = new();
+    public Stack<Statement> ProgramStack { get; } = new();
+    public DataElements Data { get; } = new();
+    public IProgram Program { get; }
+    public bool ExecutionHalted { get; private set; }
 
     public BasicEnvironment(IConsole console, IParser parser, IScanner scanner, IBuiltinFunctions builtins, IProgram program)
     {
@@ -40,10 +41,6 @@ public class BasicEnvironment : IBasicEnvironment
     {
         Program.Initialize();
     }
-
-    public IProgram Program { get; }
-
-    public bool ExecutionHalted { get; private set; }
 
     public dynamic AssignVariable(string name, dynamic value)
     {

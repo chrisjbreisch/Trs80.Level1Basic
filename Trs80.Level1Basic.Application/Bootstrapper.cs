@@ -127,7 +127,6 @@ public sealed class Bootstrapper : IDisposable
         ConfigureGeneralServices();
         ConfigureWorkflowSteps();
         ConfigureCommands();
-        ConfigureStrategies();
         ConfigureDecorators();
     }
 
@@ -138,12 +137,7 @@ public sealed class Bootstrapper : IDisposable
         //    .Decorate<ICommand<OutboundModel>, LogCommandDecorator<OutboundModel>>()
         //    .Decorate<ICommand<WorkingConsoleModel>, LogCommandDecorator<WorkingConsoleModel>>();
     }
-
-    private void ConfigureStrategies()
-    {
-        // no strategies as of yet
-    }
-
+    
     private void ConfigureCommands()
     {
         var commandAssembly = typeof(InterpreterCommand).Assembly;
@@ -220,6 +214,7 @@ public sealed class Bootstrapper : IDisposable
     public void Dispose()
     {
         Dispose(true);
+        GC.SuppressFinalize(this);
     }
 
     ~Bootstrapper()

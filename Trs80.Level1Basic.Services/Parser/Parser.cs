@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-
+using System.Windows.Forms;
 using Trs80.Level1Basic.Domain;
 using Trs80.Level1Basic.Exceptions;
 using Trs80.Level1Basic.Services.Interpreter;
@@ -105,6 +105,8 @@ public class Parser : IParser
             return ListStatement();
         if (Match(TokenType.Load))
             return LoadStatement();
+        if (Match(TokenType.Merge))
+            return MergeStatement();
         if (Match(TokenType.N))
             return lineNumber.Type == TokenType.Number ? NextStatement(lineNumber) : NewStatement(lineNumber);
         if (Match(TokenType.New))
@@ -167,22 +169,7 @@ public class Parser : IParser
 
         return StatementWrapper(new Data(elements), lineNumber);
     }
-
-    //private Expression StringData()
-    //{
-    //    var sb = new StringBuilder();
-    //    sb.Append(Peek().Lexeme);
-    //    Advance();
-
-    //    while (!IsAtEnd() && Peek().Type != TokenType.Comma)
-    //    {
-    //        sb.Append(" ");
-    //        sb.Append(Peek().Lexeme);
-    //        Advance();
-    //    }
-    //    return new Literal(sb.ToString());
-    //}
-
+    
     private Statement ReturnStatement(Token lineNumber)
     {
         return StatementWrapper(new Return(), lineNumber);
@@ -199,6 +186,7 @@ public class Parser : IParser
         var selector = Expression();
         bool isGosub = false;
         var locations = new List<Expression>();
+
         if (Match(TokenType.Goto))
         {
             do
@@ -239,6 +227,7 @@ public class Parser : IParser
             
         return statement;
     }
+
     private Statement ContStatement(Token lineNumber)
     {
         return StatementWrapper(new Cont(), lineNumber);
@@ -262,7 +251,6 @@ public class Parser : IParser
                 "Expected variable name after 'NEXT'.");
 
         var identifier = Identifier();
-        Advance();
             
         return StatementWrapper(new Next(identifier), lineNumber);
     }
@@ -315,7 +303,6 @@ public class Parser : IParser
                 newline = false;
         }
 
-
         return StatementWrapper(new Input(values, newline), lineNumber);
     }
 
@@ -344,29 +331,69 @@ public class Parser : IParser
             throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, 
                 "Expected 'THEN' or 'GOTO' before line number in 'IF' statement.");
 
-        var thenStatements = new List<Statement>
-        {
+        var thenStatement = 
             Peek().Type == TokenType.Number ?
                 new Goto(Expression()) :
-                Statement(lineNumber)
-        };
+                Statement(lineNumber);
+
+        var savedThenStatement = thenStatement;
 
         while (Match(TokenType.Colon))
-            thenStatements.Add(Statement(lineNumber));
+        {
+            thenStatement.Next = Statement(lineNumber);
+            thenStatement = thenStatement.Next;
+        }
 
-        return StatementWrapper(new If(condition, thenStatements), lineNumber);
+        return StatementWrapper(new If(condition, savedThenStatement), lineNumber);
     }
 
     private Statement SaveStatement()
     {
-        var path = Expression();
+        var path = !IsAtEnd() ? Expression() : SaveFileDialog();
+
         return new Save(path);
+    }
+
+    private const string Filter = "BASIC files (*.bas)|*.bas|All files (*.*)|*.*";
+    private const string Title = "TRS-80 Level I BASIC File";
+    private Expression SaveFileDialog()
+    {
+        var dialog = new SaveFileDialog
+        {
+            AddExtension = true,
+            DefaultExt = "bas",
+            Filter = Filter,
+            Title = $"Save {Title}",
+            OverwritePrompt = true
+        };
+
+        return dialog.ShowDialog() == DialogResult.OK ? new Literal(dialog.FileName) : null;
     }
 
     private Statement LoadStatement()
     {
-        var path = Expression();
+        var path = !IsAtEnd() ? Expression() : OpenFileDialog();
         return new Load(path);
+    }
+
+    private Statement MergeStatement()
+    {
+        var path = !IsAtEnd() ? Expression() : OpenFileDialog();
+        return new Merge(path);
+    }
+
+    private Expression OpenFileDialog()
+    {
+        var dialog = new OpenFileDialog
+        {
+            DefaultExt = "bas",
+            Filter = Filter,
+            Title = $"Open {Title}",
+            CheckFileExists = true,
+            Multiselect = false,
+        };
+        
+        return dialog.ShowDialog() == DialogResult.OK ? new Literal(dialog.FileName) : null;
     }
 
     private Statement RemarkStatement(Token lineNumber)
@@ -433,6 +460,7 @@ public class Parser : IParser
     {
         return IsAtEnd() || Peek().Type == TokenType.Colon;
     }
+
     private Statement PrintStatement(Token lineNumber)
     {
         bool newline = true;
@@ -473,6 +501,8 @@ public class Parser : IParser
 
         if (line == null) return 0;
 
+        if (line is not short)
+            throw new ParseException(0, lineNumber.SourceLine, $"Invalid text at ${line}");
         if (line > short.MaxValue)
             throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, $"Line number cannot exceed {short.MaxValue}.");
 
@@ -580,8 +610,6 @@ public class Parser : IParser
         var rightParen = Consume(TokenType.RightParen, 
             "Expected ')' after arguments");
 
-        CheckIndex(name, index, rightParen);
-
         return new BasicArray(name, index);
     }
 
@@ -595,19 +623,6 @@ public class Parser : IParser
             throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, 
                 $"Invalid number of arguments passed to function '{name.Lexeme}'");
     }
-
-#pragma warning disable IDE0079
-    [SuppressMessage("ReSharper", "UnusedParameter.Local")]
-    private void CheckIndex(Token name, Expression index, Token rightParen)
-    {
-        //var function = _builtins.Get(name.Lexeme);
-        //if (function == null)
-        //    throw new ParseException(rightParen, $"Unknown function '{name.Lexeme}'");
-
-        //if (arguments.Count != function.Arity)
-        //    throw new ParseException(rightParen, $"Invalid number of arguments passed to function '{name.Lexeme}'");
-    }
-#pragma warning restore IDE0079
 
     private Expression Primary()
     {
@@ -623,12 +638,6 @@ public class Parser : IParser
 
         if (Match(TokenType.Identifier))
             return new Identifier(Previous());
-
-        //if (Match(TokenType.Stop))
-        //    return new Stop();
-
-        //if (Peek().Type == TokenType.Colon)
-        //    return new Literal(string.Empty);
 
         throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, 
             "Expected expression.");

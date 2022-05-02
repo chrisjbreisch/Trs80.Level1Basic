@@ -4,3 +4,8 @@ public interface ICommand<in TPo>
 {
     void Execute(TPo parameterObject);
 }
+
+public interface ICommand
+{
+    void Execute();
+}

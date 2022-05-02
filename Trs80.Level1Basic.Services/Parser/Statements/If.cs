@@ -12,12 +12,12 @@ namespace Trs80.Level1Basic.Services.Parser.Statements;
 public class If : Statement
 {
     public Expression Condition { get; }
-    public List<Statement> ThenStatements { get; }
+    public Statement ThenStatement { get; }
 
-    public If(Expression condition, List<Statement> thenStatements)
+    public If(Expression condition, Statement thenStatement)
     {
         Condition = condition;
-        ThenStatements = thenStatements;
+        ThenStatement = thenStatement;
     }
 
     public override void Accept(IStatementVisitor visitor)

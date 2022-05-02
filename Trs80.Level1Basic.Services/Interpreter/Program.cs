@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+
 using Trs80.Level1Basic.Services.Parser;
 using Trs80.Level1Basic.Services.Parser.Statements;
 
@@ -23,6 +25,7 @@ public class Program : IProgram
             if (last != null)
                 last.Next = statement;
             _programStatements.Add(statement);
+            Debug.WriteLine($"{statement.LineNumber} {statement.SourceLine}: {statement.GetType()}");
             last = statement;
         }
     }
@@ -62,14 +65,27 @@ public class Program : IProgram
     public void AddLine(ParsedLine line)
     {
         if (line == null) return;
+        var programLine = GetProgramLine(line);
+        
+        if (programLine != null)
+            ReplaceLine(line);
+        else
+            _programLines.Add(line);
 
-        _programLines.Add(line);
         _sorted = false;
+    }
+
+    private ParsedLine GetProgramLine(ParsedLine line)
+    {
+        var programLine = _programLines.FirstOrDefault(l => l.LineNumber == line.LineNumber);
+        return programLine;
     }
 
     public void ReplaceLine(ParsedLine line)
     {
-        var programLine = _programLines.FirstOrDefault(l => l.LineNumber == line.LineNumber);
+        if (line == null) return;
+        var programLine = GetProgramLine(line);
+
         if (programLine != null)
         {
             programLine.SourceLine = line.SourceLine;
@@ -77,8 +93,7 @@ public class Program : IProgram
         }
         else
         {
-            _programLines.Add(line);
-            _sorted = false;
+            AddLine(line);
             Sort();
         }
     }

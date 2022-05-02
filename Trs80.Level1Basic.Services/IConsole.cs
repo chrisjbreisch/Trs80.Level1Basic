@@ -12,14 +12,12 @@ namespace Trs80.Level1Basic.Services
         void Write(string text);
         string ReadLine();
         void Clear();
-        void SetCursorPosition(int row, int column);
+        void SetCursorPosition(int column, int row);
+        (int Left, int Top) GetCursorPosition();
         ConsoleFont GetCurrentFont();
         void SetCurrentFont(ConsoleFont font);
         ConsoleKeyInfo ReadKey();
-        void SetWindowSize(int width, int height);
-        void SetBufferSize(int width, int height);
-        void DisableCursorBlink();
-
+        void InitializeWindow();
         void Set(int x, int y);
         void Reset(int x, int y);
         bool Point(int x, int y);

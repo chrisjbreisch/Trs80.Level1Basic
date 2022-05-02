@@ -14,5 +14,4 @@ public interface IProgram
     int Size();
     void AddLine(ParsedLine line);
     void ReplaceLine(ParsedLine line);
-    void Sort();
 }

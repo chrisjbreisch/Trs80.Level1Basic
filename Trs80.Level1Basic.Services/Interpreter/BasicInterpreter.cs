@@ -43,6 +43,10 @@ public class BasicInterpreter : IBasicInterpreter
         {
             statement.Accept(this);
         }
+        catch (ScanException)
+        {
+            throw;
+        }
         catch (ParseException)
         {
             throw;
@@ -80,7 +84,7 @@ public class BasicInterpreter : IBasicInterpreter
         {
             TokenType.Plus => (left is bool && right is bool) ? left || right : left + right,
             TokenType.Minus => left - right,
-            TokenType.Slash => right == 0 ? throw new ValueOutOfRangeException(0, "","Divide by zero") : (float)left / right,
+            TokenType.Slash => right == 0 ? throw new ValueOutOfRangeException(0, "", "Divide by zero") : (float)left / right,
             TokenType.Star => (left is bool && right is bool) ? left && right : left * right,
             TokenType.GreaterThan => left > right,
             TokenType.GreaterThanOrEqual => left >= right,
@@ -307,9 +311,11 @@ public class BasicInterpreter : IBasicInterpreter
     }
 
     private int _printPosition;
-    private bool _lastCharIsSpace = false;
+    private bool _lastCharacterIsSpace;
+    private bool _inPrintAt;
     public void VisitPrintStatement(Print printStatement)
     {
+        _inPrintAt = false;
         _sb = new StringBuilder();
         if (printStatement.AtPosition != null) PrintAt(printStatement.AtPosition);
 
@@ -324,22 +330,23 @@ public class BasicInterpreter : IBasicInterpreter
         if (!printStatement.WriteNewline)
         {
             if (text.EndsWith(" "))
-                _lastCharIsSpace = true;
+                _lastCharacterIsSpace = true;
             return;
         }
 
         _console.WriteLine();
         _printPosition = 0;
-        _lastCharIsSpace = false;
+        _lastCharacterIsSpace = false;
     }
 
     private void PrintAt(Expression position)
     {
         dynamic value = Evaluate(position);
-        dynamic column = value / 64;
-        dynamic row = value - column * 64;
+        dynamic row = value / 64;
+        dynamic column = value % 64;
 
-        _console.SetCursorPosition(row, column);
+        _console.SetCursorPosition(column, row);
+        _inPrintAt = true;
     }
 
     public void VisitReplaceStatement(Replace root)
@@ -403,7 +410,7 @@ public class BasicInterpreter : IBasicInterpreter
     {
         bool isNegativeNumber = value is int or float && value < 0;
 
-        if (_lastCharIsSpace) return;
+        if (_lastCharacterIsSpace) return;
 
         if (position == 0 && isNegativeNumber) return;
 
@@ -417,8 +424,19 @@ public class BasicInterpreter : IBasicInterpreter
     private void WriteExpression(Expression expression, int position)
     {
         dynamic value = Evaluate(expression);
-        PrependSpaceIfNecessary(value, position);
+        if (_inPrintAt)
+            AdjustPositionIfNecessary(value);
+        else
+            PrependSpaceIfNecessary(value, position);
         WriteValue(value);
+    }
+
+    private void AdjustPositionIfNecessary(dynamic value)
+    {
+        if (value is not (int or float) || value < 0) return;
+
+        (int left, int top) = _console.GetCursorPosition();
+        _console.SetCursorPosition(left + 1, top);
     }
 
     public void VisitStatementExpressionStatement(StatementExpression statement)
@@ -439,7 +457,7 @@ public class BasicInterpreter : IBasicInterpreter
 
     public void VisitReturnStatement(Return returnStatement)
     {
-        _environment.SetNextStatement(_environment.ProgramStack.Pop());
+        _environment.SetNextStatement(null);
     }
 
     public void VisitRunStatement(Run runStatement)
@@ -488,6 +506,11 @@ public class BasicInterpreter : IBasicInterpreter
         _environment.LoadProgram(Evaluate(loadStatement.Path));
     }
 
+    public void VisitMergeStatement(Merge mergeStatement)
+    {
+        _environment.LoadProgram(Evaluate(mergeStatement.Path));
+    }
+
     public void VisitSaveStatement(Save saveStatement)
     {
         _environment.SaveProgram(Evaluate(saveStatement.Path));
@@ -517,15 +540,39 @@ public class BasicInterpreter : IBasicInterpreter
 
     public void VisitGotoStatement(Goto gotoStatement)
     {
-        dynamic nextLineNumber = Evaluate(gotoStatement.Location);
-        _environment.SetNextStatement(GetStatementByLineNumber(nextLineNumber));
+        var jumpToStatement = GetJumpToStatement(gotoStatement, gotoStatement.Location, "GOTO");
+        _environment.SetNextStatement(jumpToStatement);
     }
 
-    public void VisitGosubStatement(Gosub gosub)
+    private Statement GetJumpToStatement(Statement statement, Expression location, string jumpType)
     {
-        _environment.ProgramStack.Push(gosub.Next);
-        dynamic nextLineNumber = Evaluate(gosub.Location);
-        _environment.SetNextStatement(GetStatementByLineNumber(nextLineNumber));
+        dynamic jumpToLineNumber = Evaluate(location);
+
+        if (GetStatementByLineNumber(jumpToLineNumber) is not Statement jumpToStatement)
+            throw new RuntimeStatementException(statement.LineNumber, statement.SourceLine,
+                $"Can't {jumpType} line {jumpToLineNumber}");
+
+        if (jumpToStatement.LineNumber != jumpToLineNumber)
+            throw new RuntimeStatementException(statement.LineNumber, statement.SourceLine,
+                $"Can't {jumpType} line {jumpToLineNumber}");
+
+        return jumpToStatement;
+    }
+
+    public void VisitGosubStatement(Gosub gosubStatement)
+    {
+        if (gosubStatement.Next != null)
+            _environment.ProgramStack.Push(gosubStatement.Next);
+        else
+        {
+            var currentStatement = GetStatementByLineNumber(gosubStatement.LineNumber);
+            _environment.ProgramStack.Push(currentStatement.Next);
+        }
+
+        var jumpToStatement = GetJumpToStatement(gosubStatement, gosubStatement.Location, "GOSUB");
+        _environment.RunProgram(jumpToStatement, this);
+
+        _environment.SetNextStatement(_environment.ProgramStack.Pop());
     }
 
     public void VisitIfStatement(If ifStatement)
@@ -534,7 +581,29 @@ public class BasicInterpreter : IBasicInterpreter
 
         if (!value) return;
 
-        Execute(ifStatement.ThenStatements.First());
+        switch (ifStatement.ThenStatement)
+        {
+            case Goto gotoStatement:
+                VisitGotoStatement(gotoStatement);
+                break;
+            case Gosub gosubStatement:
+                VisitGosubStatement(gosubStatement);
+                break;
+            default:
+                VisitThenStatement(ifStatement);
+                break;
+        }
+    }
+
+    private void VisitThenStatement(If ifStatement)
+    {
+        var nextStatement = ifStatement.ThenStatement;
+        while (nextStatement != null)
+        {
+            Execute(nextStatement);
+            if (nextStatement is Goto) break;
+            nextStatement = nextStatement.Next;
+        }
     }
 
     public void VisitInputStatement(Input inputStatement)
@@ -542,10 +611,6 @@ public class BasicInterpreter : IBasicInterpreter
         _sb = new StringBuilder();
         foreach (var expression in inputStatement.Expressions)
             ProcessInputExpression(expression, inputStatement.WriteNewline);
-
-        //ProcessInputExpression(
-        //    inputStatement.Expressions[inputStatement.Expressions.Count - 1],
-        //    inputStatement.WriteNewline);
     }
 
     private void ProcessInputExpression(Expression expression, bool writeNewline)
@@ -572,7 +637,9 @@ public class BasicInterpreter : IBasicInterpreter
             _console.WriteLine();
 
         string value = _console.ReadLine();
-        if (int.TryParse(value, out int intValue))
+        if (value is null)
+            AssignVariable(variable, null);
+        else if (int.TryParse(value, out int intValue))
             AssignVariable(variable, intValue);
         else if (float.TryParse(value, out float floatValue))
             AssignVariable(variable, floatValue);
@@ -580,7 +647,6 @@ public class BasicInterpreter : IBasicInterpreter
         {
             dynamic lookup = _environment.GetVariable(value);
             AssignVariable(variable, lookup);
-
         }
         else
         {

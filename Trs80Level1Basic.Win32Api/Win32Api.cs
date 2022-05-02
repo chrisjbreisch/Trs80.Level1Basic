@@ -7,7 +7,7 @@ namespace Trs80Level1Basic.Win32Api;
 public static class Win32Api
 {
     // https://www.pinvoke.net/default.aspx/user32/FindWindow.html
-    [DllImport("user32.dll", EntryPoint = "FindWindow", SetLastError = true)]
+    [DllImport("user32.dll", EntryPoint = "FindWindow", SetLastError = true, CharSet = CharSet.Unicode)]
     public static extern IntPtr FindWindowFromWindowName(IntPtr zeroOnly, string lpWindowName);
 
     // https://www.pinvoke.net/default.aspx/user32/GetClientRect.html
@@ -19,7 +19,7 @@ public static class Win32Api
     public static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
 
     // https://www.pinvoke.net/default.aspx/kernel32/GetConsoleTitle.html
-    [DllImport("kernel32.dll", SetLastError = true)]
+    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
     public static extern uint GetConsoleTitle([Out] StringBuilder lpConsoleTitle, uint nSize);
 
     // https://www.pinvoke.net/default.aspx/kernel32/GetCurrentConsoleFontEx.html
@@ -45,7 +45,7 @@ public static class Win32Api
     public static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
 
     // https://www.pinvoke.net/default.aspx/kernel32/SetConsoleTitle.html
-    [DllImport("kernel32.dll", SetLastError = true)]
+    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
     public static extern bool SetConsoleTitle(string lpConsoleTitle);
 
     [return: MarshalAs(UnmanagedType.Bool)]
@@ -64,11 +64,36 @@ public static class Win32Api
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
         public string FontName;
     }
-    
+
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Rect
+    {
+        public int Left;        // x position of upper-left corner
+        public int Top;         // y position of upper-left corner
+        public int Right;       // x position of lower-right corner
+        public int Bottom;      // y position of lower-right corner
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct WindowInfo
+    {
+        public uint cbSize;
+        public Rect rcWindow;
+        public Rect rcClient;
+        public uint dwStyle;
+        public uint dwExStyle;
+        public uint dwWindowStatus;
+        public uint cxWindowBorders;
+        public uint cyWindowBorders;
+        public ushort atomWindowType;
+        public ushort wCreatorVersion;
+    }
+
     public static IntPtr GetConsoleWindowHandle()
     {
         var sb = new StringBuilder(1024);
-        GetConsoleTitle(sb, 1024);
+        _ = GetConsoleTitle(sb, 1024);
 
         string originalTitle = sb.ToString();
 
@@ -95,15 +120,13 @@ public static class Win32Api
 
     public static Rect GetClientRect(IntPtr hWnd)
     {
-        Rect result;
-        GetClientRect(hWnd, out result);
+        GetClientRect(hWnd, out var result);
         return result;
     }
 
     public static Rect GetWindowRect(IntPtr hWnd)
     {
-        Rect result;
-        GetWindowRect(hWnd, out result);
+        GetWindowRect(hWnd, out var result);
         return result;
     }
         
@@ -114,28 +137,4 @@ public static class Win32Api
         GetWindowInfo(hWnd, ref info);
         return info;
     }
-}
-
-[StructLayout(LayoutKind.Sequential)]
-public struct Rect
-{
-    public int Left;        // x position of upper-left corner
-    public int Top;         // y position of upper-left corner
-    public int Right;       // x position of lower-right corner
-    public int Bottom;      // y position of lower-right corner
-}
-
-[StructLayout(LayoutKind.Sequential)]
-public struct WindowInfo
-{
-    public uint cbSize;
-    public Rect rcWindow;
-    public Rect rcClient;
-    public uint dwStyle;
-    public uint dwExStyle;
-    public uint dwWindowStatus;
-    public uint cxWindowBorders;
-    public uint cyWindowBorders;
-    public ushort atomWindowType;
-    public ushort wCreatorVersion;
 }

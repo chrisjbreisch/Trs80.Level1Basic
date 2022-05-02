@@ -7,7 +7,7 @@ using Trs80.Level1Basic.Services;
 namespace Trs80.Level1Basic.Command.Commands;
 
 [SuppressMessage("ReSharper", "NotAccessedField.Local")]
-public class SetupConsoleCommand : ICommand<SetupConsoleModel>
+public class SetupConsoleCommand : ICommand
 {
     private readonly ILogger _logger;
     private readonly IConsole _console;
@@ -21,20 +21,15 @@ public class SetupConsoleCommand : ICommand<SetupConsoleModel>
         sharedDataModel.OriginalConsoleFont = _console.GetCurrentFont();
     }
 
-    public void Execute(SetupConsoleModel parameterObject)
+    public void Execute()
     {
         InitializeWindow();
-
-        _console.WriteLine("Enter TRS-80 LEVEL 1 BASIC Commands or Type EXIT to Exit.");
         WritePrompt();
     }
     
     private void InitializeWindow()
     {
-        _console.SetCurrentFont(new ConsoleFont { FontName = "Another Mans Treasure MIB 64C 2X3Y", FontSize = 48 });
-        _console.DisableCursorBlink();
-        _console.SetWindowSize(64, 16);
-        _console.SetBufferSize(64, 160);
+        _console.InitializeWindow();
     }
 
     private void WritePrompt()

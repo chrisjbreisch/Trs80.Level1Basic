@@ -89,6 +89,7 @@ public class Scanner : IScanner
                 {
                     {"cont", TokenType.Cont},
                     {"data", TokenType.Data},
+                    {"gos.", TokenType.Gosub},
                     {"goto", TokenType.Goto},
                     {"list", TokenType.List},
                     {"load", TokenType.Load},
@@ -107,6 +108,7 @@ public class Scanner : IScanner
                 {
                     {"gosub", TokenType.Gosub},
                     {"input", TokenType.Input},
+                    {"merge", TokenType.Merge},
                     {"print", TokenType.Print},
                     {"rest.", TokenType.Restore},
                 }
@@ -399,10 +401,6 @@ public class Scanner : IScanner
             case TokenType.Data:
                 CreateDataTokens(keyword);
                 break;
-            //case TokenType.Load:
-            //case TokenType.Save:
-            //    CreateLoadSaveTokens(keyword);
-            //    break;
             default:
                 AddToken(keyword);
                 break;
@@ -468,17 +466,6 @@ public class Scanner : IScanner
         string id = _source.Substring(TokenStart, 2).ToLower();
         AddToken(TokenType.Identifier, id);
     }
-
-    //private void CreateLoadSaveTokens(TokenType keyword)
-    //{
-    //    AddToken(keyword);
-    //    TokenStart = ++_currentIndex;
-    //    while (!IsAtEnd())
-    //        Advance();
-    //    string element = _source.Substring(TokenStart, TokenLength);
-    //    AddToken(TokenType.String, element);
-    //    TokenStart = _currentIndex;
-    //}
 
     private void CreateDataTokens(TokenType keyword)
     {

@@ -13,26 +13,30 @@ public class ConsoleFont
     public short FontSize { get; set; }
 }
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", 
+    Justification = "It's fine if these pieces don't work on non-Windows devices")]
 public class Console : IConsole
 {
     private readonly double _pixelWidth;
     private readonly double _pixelHeight;
-    private readonly bool[,] _screen = new bool[128, 48];
+    private const int ScreenCharWidth = 64;
+    private const int ScreenCharHeight = 16;
+    private const int ScreenPixelWidth = 2 * ScreenCharWidth;
+    private const int ScreenPixelHeight = 3 * ScreenCharHeight;
+    private readonly bool[,] _screen = new bool[ScreenPixelWidth, ScreenPixelHeight];
     private readonly System.Drawing.Graphics _graphics;
 
     public TextWriter Out { get; set;  }
     public TextReader In { get; set; }
     public TextWriter Error { get; set; }
-
-
+    
     public Console()
     {
         var hwnd = Win32Api.GetConsoleWindowHandle();
         var clientRect = Win32Api.GetClientRect(hwnd);
-        _pixelHeight = clientRect.Bottom / 48.0;
-        _pixelWidth = clientRect.Right / 128.0;
-        _graphics = System.Drawing.Graphics.FromHwnd(hwnd);
+        _pixelHeight = clientRect.Bottom / (double)ScreenPixelHeight;
+        _pixelWidth = clientRect.Right / (double)ScreenPixelWidth;
+        _graphics = Graphics.FromHwnd(hwnd);
 
         Out = System.Console.Out;
         In = System.Console.In;
@@ -48,10 +52,14 @@ public class Console : IConsole
     public void Clear()
     {
         System.Console.Clear();
-        //Fill(0, 0, 127, 47, false);
+        Fill(0, 0, ScreenPixelWidth - 1, ScreenPixelHeight - 1, false);
     }
 
-    public void SetCursorPosition(int row, int column) => System.Console.SetCursorPosition(row, column);
+    public void SetCursorPosition(int column, int row) => System.Console.SetCursorPosition(column, row);
+    public (int Left, int Top) GetCursorPosition()
+    {
+        return System.Console.GetCursorPosition();
+    }
 
     private const uint EnableVirtualTerminalProcessing = 4;
     private const int FixedWidthTrueType = 54;
@@ -96,7 +104,6 @@ public class Console : IConsole
                 FontSize = font.FontSize > 0 ? font.FontSize : before.FontSize
             };
 
-            // Get some settings from current font.
             if (!Win32Api.SetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref set))
             {
                 int ex = Marshal.GetLastWin32Error();
@@ -117,20 +124,27 @@ public class Console : IConsole
     }
 
     public ConsoleKeyInfo ReadKey() => System.Console.ReadKey();
+    public void InitializeWindow()
+    {
+        SetCurrentFont(new ConsoleFont { FontName = "Another Mans Treasure MIB 64C 2X3Y", FontSize = 48 });
+        DisableCursorBlink();
+        SetWindowSize(ScreenCharWidth, ScreenCharHeight);
+        SetBufferSize(ScreenCharWidth, ScreenPixelHeight * 10);
+    }
 
-    public void SetWindowSize(int width, int height)
+    private void SetWindowSize(int width, int height)
     {
         if (OperatingSystem.IsWindows())
             System.Console.SetWindowSize(width, height);
     }
 
-    public void SetBufferSize(int width, int height)
+    private void SetBufferSize(int width, int height)
     {
         if (OperatingSystem.IsWindows())
             System.Console.SetBufferSize(width, height);
     }
         
-    public void DisableCursorBlink()
+    private void DisableCursorBlink()
     {
         if (!Win32Api.GetConsoleMode(ConsoleOutputHandle, out uint lpMode))
         {
@@ -152,30 +166,28 @@ public class Console : IConsole
         for (int xIndex = x; xIndex < x + width; xIndex++)
         for (int yIndex = y; yIndex < y + height; yIndex++)
             _screen[xIndex, yIndex] = turnOn;
-        //if (_hwnd == IntPtr.Zero) Initialize();
 
-        //using var graphics = System.Drawing.Graphics.FromHwnd(_hwnd);
         _graphics.FillRectangle(
             turnOn ? Brushes.White : Brushes.Black,
-            (int)Math.Round(x * _pixelWidth),
-            (int)Math.Round(y * _pixelHeight),
-            (int)Math.Round(width * _pixelWidth),
-            (int)Math.Round(height * _pixelHeight)
+            (int)(x * _pixelWidth),
+            (int)(y * _pixelHeight),
+            (int)Math.Round(width * _pixelWidth + .5),
+            (int)Math.Round(height * _pixelHeight + .5)
         );
     }
 
     public void Set(int x, int y)
     {
-        Fill(x, y, 1, 1, true);
+        Fill(x % ScreenPixelWidth, y % ScreenPixelHeight, 1, 1, true);
     }
 
     public void Reset(int x, int y)
     {
-        Fill(x, y, 1, 1, false);
+        Fill(x % ScreenPixelWidth, y % ScreenPixelHeight, 1, 1, false);
     }
 
     public bool Point(int x, int y)
     {
-        return _screen[x, y];
+        return _screen[x % ScreenPixelWidth, y % ScreenPixelHeight];
     }
 }

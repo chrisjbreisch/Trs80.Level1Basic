@@ -12,12 +12,13 @@ public interface IStatementVisitor
     void VisitEndStatement(End root);
     void VisitForStatement(For root);
     void VisitGotoStatement(Goto root);
-    void VisitGosubStatement(Gosub root);
+    void VisitGosubStatement(Gosub gosubStatement);
     void VisitIfStatement(If root);
     void VisitInputStatement(Input root);
     void VisitLetStatement(Let root);
     void VisitListStatement(List root);
     void VisitLoadStatement(Load root);
+    void VisitMergeStatement(Merge root);
     void VisitNewStatement(New root);
     void VisitNextStatement(Next root);
     void VisitOnStatement(On root);

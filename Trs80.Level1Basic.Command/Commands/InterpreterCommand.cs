@@ -63,8 +63,13 @@ public class InterpreterCommand : ICommand<InterpreterModel>
             }
             if (key.Key == ConsoleKey.Backspace)
             {
-                _console.Write(" \b");
-                input[charCount--] = '\0';
+                if (charCount > 0)
+                {
+                    _console.Write(" \b");
+                    input[charCount--] = '\0';
+                }
+                else
+                    _console.Write(">");
             }
             else
                 input[charCount++] = key.KeyChar;
@@ -89,44 +94,57 @@ public class InterpreterCommand : ICommand<InterpreterModel>
     {
         if (parsedLine == null) return;
 
-        bool errorOccurred = true;
-
         try
         {
             _interpreter.Interpret(parsedLine);
-            errorOccurred = false;
-        }
-        catch (ParseException pe)
-        {
-            _console.WriteLine("WHAT?");
-            ParseError(pe);
-        }
-        catch (RuntimeExpressionException ree)
-        {
-            _console.WriteLine("HOW?");
-            RuntimeExpressionError(ree);
-        }
-        catch (RuntimeStatementException rse)
-        {
-            _console.WriteLine("HOW?");
-            RuntimeStatementError(rse);
-        }
-        catch (ValueOutOfRangeException)
-        {
-            _console.WriteLine("HOW?");
         }
         catch (Exception ex)
         {
-            _console.WriteLine("SORRY");
-            if (Debugger.IsAttached)
-            {
-                _console.WriteLine(ex.Message);
-                _console.WriteLine(ex.StackTrace);
-            }
-        }
-
-        if (errorOccurred)
+            HandleError(ex);
             WritePrompt();
+        }
+    }
+
+    private void HandleError(Exception ex)
+    {
+        switch (ex)
+        {
+            case ScanException se:
+                _console.WriteLine("WHAT?");
+                ScanError(se);
+                break;
+            case ParseException pe:
+                _console.WriteLine("WHAT?");
+                ParseError(pe);
+                break;
+            case RuntimeExpressionException ree:
+                _console.WriteLine("HOW?");
+                RuntimeExpressionError(ree);
+                break;
+            case RuntimeStatementException rse:
+                _console.WriteLine("HOW?");
+                RuntimeStatementError(rse);
+                break;
+            case ValueOutOfRangeException voore:
+                _console.WriteLine("HOW?");
+                ValueOutOfRangeError(voore);
+                break;
+            default:
+                _console.WriteLine("SORRY");
+                if (Debugger.IsAttached)
+                {
+                    _console.WriteLine(ex.Message);
+                    _console.WriteLine(ex.StackTrace);
+                }
+                break;
+        }
+    }
+
+    private void ValueOutOfRangeError(ValueOutOfRangeException voore)
+    {
+        _console.Error.WriteLine(voore.LineNumber > 0
+            ? $" {voore.LineNumber}  {voore.Statement}?\r\n[{voore.Message}]"
+            : $" {voore.Statement}?\r\n[{voore.Message}]");
     }
 
     private ParsedLine? ParseTokens(List<Token>? tokens)
@@ -138,10 +156,9 @@ public class InterpreterCommand : ICommand<InterpreterModel>
         {
             parsedLine = _parser.Parse(tokens);
         }
-        catch (ParseException pe)
+        catch (Exception ex)
         {
-            _console.WriteLine("WHAT?");
-            ParseError(pe);
+            HandleError(ex);
             WritePrompt();
         }
         return parsedLine;
@@ -154,10 +171,9 @@ public class InterpreterCommand : ICommand<InterpreterModel>
         {
             tokens = _scanner.ScanTokens(sourceLine);
         }
-        catch (ScanException se)
+        catch (Exception ex)
         {
-            _console.WriteLine("WHAT?");
-            ScanError(se);
+            HandleError(ex);
         }
 
         return tokens;
@@ -165,14 +181,14 @@ public class InterpreterCommand : ICommand<InterpreterModel>
 
     private void ScanError(ScanException se)
     {
-        _console.Error.WriteLine($"[{se.Message}]");
+        _console.Error.WriteLine($"{se.Message}");
     }
 
     private void ParseError(ParseException pe)
     {
         _console.Error.WriteLine(pe.LineNumber > 0
             ? $" {pe.LineNumber}  {pe.Statement}?\r\n[{pe.Message}]"
-            : $" {pe.Statement}\r\n[{pe.Message}]");
+            : $" {pe.Statement}?\r\n[{pe.Message}]");
     }
 
     private void RuntimeExpressionError(RuntimeExpressionException ree)
@@ -184,6 +200,6 @@ public class InterpreterCommand : ICommand<InterpreterModel>
     {
         _console.Error.WriteLine(re.LineNumber > 0
             ? $" {re.LineNumber}  {re.Statement}?\r\n[{re.Message}]"
-            : $" {re.Statement}\r\n[{re.Message}]");
+            : $" {re.Statement}?\r\n[{re.Message}]");
     }
 }
