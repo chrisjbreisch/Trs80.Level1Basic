@@ -74,15 +74,11 @@ public class Console : IConsole
             cbSize = Marshal.SizeOf<Win32Api.FontInfo>()
         };
 
-        if (Win32Api.GetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref font))
-        {
+        if (Win32Api.GetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref font)) 
             return new ConsoleFont { FontName = font.FontName, FontSize = font.FontSize };
-        }
-        else
-        {
-            int er = Marshal.GetLastWin32Error();
-            throw new Win32Exception(er);
-        }
+
+        int er = Marshal.GetLastWin32Error();
+        throw new Win32Exception(er);
     }
 
     public void SetCurrentFont(ConsoleFont font)

@@ -11,5 +11,4 @@ public class ParseException : Exception
         LineNumber = lineNumber;
         Statement = statement;
     }
-
 }

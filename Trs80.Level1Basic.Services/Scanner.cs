@@ -42,9 +42,9 @@ public class Scanner : IScanner
 
     private void GetCurrentLine()
     {
-        string currentString = _source.Substring(TokenStart);
+        string currentString = _source[TokenStart..];
         int endOfLine = currentString.IndexOf("\r\n", StringComparison.Ordinal);
-        _currentLine = endOfLine < 0 ? currentString : currentString.Substring(0, endOfLine);
+        _currentLine = endOfLine < 0 ? currentString : currentString[..endOfLine];
     }
 
     private static Dictionary<int, Dictionary<string, TokenType>> CreateKeywordsByLetterDictionary()

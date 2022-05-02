@@ -9,7 +9,6 @@ public interface IBasicInterpreter : IExpressionVisitor, IStatementVisitor
     Statement CurrentStatement { get; }
     void Interpret(ParsedLine line);
     void Execute(Statement statement);
-
     BasicFunctionImplementations Functions { get; }
     void WriteToPosition(int position);
     string PadQuadrant();

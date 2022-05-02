@@ -21,9 +21,9 @@ public class GlobalVariables
     private string GetVariableName(string name)
     {
         if (IsStringName(name))
-            return name.Substring(0, 1).ToLower() + "$";
+            return name[..1].ToLower() + "$";
 
-        return name.ToLower().Substring(0, 1);
+        return name.ToLower()[..1];
     }
     internal dynamic Assign(string name, dynamic value)
     {
