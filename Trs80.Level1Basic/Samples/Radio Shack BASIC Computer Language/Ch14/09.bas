@@ -1,17 +1,17 @@
-30 x = 3.14159
-40 y = int (x)
-50 z = x - y
-60 print "X = "; x
-70 print "Y = "; y
-80 print "Z = "; z
-90 m = z * 10
-92 print " ", " #92 M = ";m
-95 for a = 1 to 6
-97    print " ", " #97 A = ";a
-100   l = int (m)
-110   print "L = ";l
-120   m = m - l
-125   print " ", " ", " #125 M = ";m
-130   m = m * 10
-135   print " ", " ", " #135 M = ";m
-130 next a
+30 X = 3.14159
+40 Y = INT (X)
+50 Z = X - Y
+60 PRINT "X = "; X
+70 PRINT "Y = "; Y
+80 PRINT "Z = "; Z
+90 M = Z * 10
+92 PRINT " ", " #92 M = ";M
+95 FOR A = 1 TO 6
+97    PRINT " ", " #97 A = ";A
+100   L = INT (M)
+110   PRINT "L = ";L
+120   M = M - L
+125   PRINT " ", " ", " #125 M = ";M
+130   M = M * 10
+135   PRINT " ", " ", " #135 M = ";M
+130 NEXT A

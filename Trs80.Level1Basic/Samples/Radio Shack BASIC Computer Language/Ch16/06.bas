@@ -1,2 +1,2 @@
-10 input "What is your name";A$
-20 print "Hello there, ";A$
+10 INPUT "WHAT IS YOUR NAME";A$
+20 PRINT "HELLO THERE, ";A$

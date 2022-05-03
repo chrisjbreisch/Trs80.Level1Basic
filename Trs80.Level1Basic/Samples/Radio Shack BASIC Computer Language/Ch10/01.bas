@@ -1,2 +1,2 @@
-10 print "HELP --- My computer has gone berserk!"
-20 goto 10
+10 PRINT "HELP --- MY COMPUTER HAS GONE BERSERK!"
+20 GOTO 10

@@ -1,3 +1,3 @@
-10 print tab(5);"THE";tab(20);"TOTAL";tab(35);"SPENT"
-20 print tab(5);"BUDGET";tab(20);"YEAR'S";tab(35);"THIS"
-30 print tab(5);"CATEGORY";tab(20);"BUDGET";tab(35);"MONTH"
+10 PRINT TAB(5);"THE";TAB(20);"TOTAL";TAB(35);"SPENT"
+20 PRINT TAB(5);"BUDGET";TAB(20);"YEAR'S";TAB(35);"THIS"
+30 PRINT TAB(5);"CATEGORY";TAB(20);"BUDGET";TAB(35);"MONTH"

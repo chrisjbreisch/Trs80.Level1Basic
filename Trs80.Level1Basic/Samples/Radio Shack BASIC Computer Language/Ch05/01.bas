@@ -1,4 +1,4 @@
-10 rem * celsius to fahrenheit conversion *
-20 c = 26
-30 f = (9/5) * c + 32
-40 print c;"degrees celsius ="; f; "degrees farhenheit."
+10 REM * CELSIUS TO FAHRENHEIT CONVERSION *
+20 C = 26
+30 F = (9/5) * C + 32
+40 PRINT C;"DEGREES CELSIUS ="; F; "DEGREES FARHENHEIT."

@@ -1,3 +1,3 @@
-5 data RADIO SHACK TRS-80
-10 read a$
-30 print "See my foxy";a$
+5 DATA RADIO SHACK TRS-80
+10 READ A$
+30 PRINT "SEE MY FOXY";A$

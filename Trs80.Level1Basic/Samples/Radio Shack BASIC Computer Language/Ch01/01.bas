@@ -1,1 +1,1 @@
-﻿10 print "Hello there. I am your new TRS-80 microcomputer."
+﻿10 PRINT "HELLO THERE. I AM YOUR NEW TRS-80 MICROCOMPUTER."

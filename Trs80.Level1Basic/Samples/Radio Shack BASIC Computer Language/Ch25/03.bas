@@ -1,21 +1,21 @@
-10 cls
-20 for r=2 to 22 step 4
-30    for a=-r to r
-40       x=r*r-a*a : gosub 30030 : y=int(y-.5)
-50       set(a+60,23+y)
-60       set(a+60,23-y)
-70    next a
-80 next r
-90 goto 90
+10 CLS
+20 FOR R=2 TO 22 STEP 4
+30    FOR A=-R TO R
+40       X=R*R-A*A : GOSUB 30030 : Y=INT(Y-.5)
+50       SET(A+60,23+Y)
+60       SET(A+60,23-Y)
+70    NEXT A
+80 NEXT R
+90 GOTO 90
 
 
-30000 end
-30010 rem * square root* input x, output y
-30020 rem also uses w & z internally
-30030 if x = 0 t. y = 0: ret.
-30040 if x>0 t. 30060
-30050 p. "Root of negative number?": stop
-30060 y=x*.5 : z = 0
-30070 w=(x/y-y)*.5
-30080 if (w=0) + (w=z) t. ret.
-30090 y=y+w : z=w : g.30070
+30000 END
+30010 REM * SQUARE ROOT* INPUT X, OUTPUT Y
+30020 REM ALSO USES W & Z INTERNALLY
+30030 IF X = 0 T. Y = 0: RET.
+30040 IF X>0 T. 30060
+30050 P. "ROOT OF NEGATIVE NUMBER?": STOP
+30060 Y=X*.5 : Z = 0
+30070 W=(X/Y-Y)*.5
+30080 IF (W=0) + (W=Z) T. RET.
+30090 Y=Y+W : Z=W : G.30070

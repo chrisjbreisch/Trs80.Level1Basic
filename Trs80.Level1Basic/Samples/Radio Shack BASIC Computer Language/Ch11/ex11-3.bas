@@ -1,14 +1,14 @@
-5 cls
-10 print "     ***   S A L A R Y  R A T E  C H A R T   ***"
-20 print
-30 print "YEAR ", "MONTH ", "WEEK ", "DAY "
-40 print
-50 for y = 5000 to 25000 step 1000
-55   rem *convert yearly income into monthly*
-60   m=y/12
-65   rem *convert yearly income into weekly*
-70   w=y/52
-75   rem *convert weekly income into daily*
-80   d=w/5
-100  print y, m, w, d
-110 next y
+5 CLS
+10 PRINT "     ***   S A L A R Y  R A T E  C H A R T   ***"
+20 PRINT
+30 PRINT "YEAR ", "MONTH ", "WEEK ", "DAY "
+40 PRINT
+50 FOR Y = 5000 TO 25000 STEP 1000
+55   REM *CONVERT YEARLY INCOME INTO MONTHLY*
+60   M=Y/12
+65   REM *CONVERT YEARLY INCOME INTO WEEKLY*
+70   W=Y/52
+75   REM *CONVERT WEEKLY INCOME INTO DAILY*
+80   D=W/5
+100  PRINT Y, M, W, D
+110 NEXT Y

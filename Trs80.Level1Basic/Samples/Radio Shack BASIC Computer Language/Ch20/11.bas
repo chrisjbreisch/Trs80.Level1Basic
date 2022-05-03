@@ -1,11 +1,11 @@
-10 input "Horizontal address (0 to 127)"; x
-12 in. "The starting vertical address #(0 to 47) is";v
-14 in. "How many vertical blocks do you wish to fill"; a
-16 if v+1<48 goto 20
-18 print "Too many vertical blocks. Would wrap-around!"
-19 end
-20 cls
-30 for y = v to v+a
-40   set(x,y)
-50 next y
-99 goto 99
+10 INPUT "HORIZONTAL ADDRESS (0 TO 127)"; X
+12 IN. "THE STARTING VERTICAL ADDRESS #(0 TO 47) IS";V
+14 IN. "HOW MANY VERTICAL BLOCKS DO YOU WISH TO FILL"; A
+16 IF V+1<48 GOTO 20
+18 PRINT "TOO MANY VERTICAL BLOCKS. WOULD WRAP-AROUND!"
+19 END
+20 CLS
+30 FOR Y = V TO V+A
+40   SET(X,Y)
+50 NEXT Y
+99 GOTO 99

@@ -1,13 +1,13 @@
-10 in. "Which car's engine & color do you want to know";w
-50 for l = 1 to 10
-55  read a(l)
-60 next l
-80 for s=101 to 110
-90   read a(s)
-90 next s
-100 data 300,200,500,300,200
-110 data 300,400,400,300,500
-170 print
-180 p. "LICENSE #", "ENGINE SIZE", "COLOR CODE"
-210 print w, a(w), a(w+100)
-300 data 3,1,4,3,2,4,3,2,1,3
+10 IN. "WHICH CAR'S ENGINE & COLOR DO YOU WANT TO KNOW";W
+50 FOR L = 1 TO 10
+55  READ A(L)
+60 NEXT L
+80 FOR S=101 TO 110
+90   READ A(S)
+90 NEXT S
+100 DATA 300,200,500,300,200
+110 DATA 300,400,400,300,500
+170 PRINT
+180 P. "LICENSE #", "ENGINE SIZE", "COLOR CODE"
+210 PRINT W, A(W), A(W+100)
+300 DATA 3,1,4,3,2,4,3,2,1,3

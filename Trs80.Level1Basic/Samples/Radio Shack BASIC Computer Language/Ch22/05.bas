@@ -1,16 +1,16 @@
-10 rem * demonstration of graphics 'point' statement *
-20 p=15:l=119
-30 cls
-40 p.at5,"This is a demonstration of the point statement---";
-50 p.at56,"X     Y";
-100 f.i=1to p:set(rnd(113),rnd(45)+2):n.i
-110 f.x=0 to 111;f.y=0 to 47
-120    if point(x,y) = 0 goto 160
-130    p.at l,x;:p.at l+4,y;
-140    l=l+64
-150    g.170
-160    set(x,y):reset(x,y)
-170 n.y:n.x
-180 p.at4,"The coordinates of the graphics block are >>-->>";
-190 p.at 0;
-200 g.200
+10 REM * DEMONSTRATION OF GRAPHICS 'POINT' STATEMENT *
+20 P=15:L=119
+30 CLS
+40 P.AT5,"THIS IS A DEMONSTRATION OF THE POINT STATEMENT---";
+50 P.AT56,"X     Y";
+100 F.I=1TO P:SET(RND(113),RND(45)+2):N.I
+110 F.X=0 TO 111;F.Y=0 TO 47
+120    IF POINT(X,Y) = 0 GOTO 160
+130    P.AT L,X;:P.AT L+4,Y;
+140    L=L+64
+150    G.170
+160    SET(X,Y):RESET(X,Y)
+170 N.Y:N.X
+180 P.AT4,"THE COORDINATES OF THE GRAPHICS BLOCK ARE >>-->>";
+190 P.AT 0;
+200 G.200

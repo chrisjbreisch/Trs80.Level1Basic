@@ -1,21 +1,21 @@
-10 cls
-20 for m=0 to 127
-30    set(m,0)
-40    set(m,47)
-50 next m
-60 y = 14
-70 d = 1
-80 reset (64, y+48-d)
-90 set(64,y)
-100 y = y+d
-105 if y=46 then 180
-110 if y=48 then 130
-115 if y=1 then 180
-120 if y<>-1 then 80
-130 y=y-2*d
-140 d=-d
-150 print at y*64+32, "    "
-160 g. 90
-180 print at y*64+32, "PING"
-190 g. 90
-999 goto 999
+10 CLS
+20 FOR M=0 TO 127
+30    SET(M,0)
+40    SET(M,47)
+50 NEXT M
+60 Y = 14
+70 D = 1
+80 RESET (64, Y+48-D)
+90 SET(64,Y)
+100 Y = Y+D
+105 IF Y=46 THEN 180
+110 IF Y=48 THEN 130
+115 IF Y=1 THEN 180
+120 IF Y<>-1 THEN 80
+130 Y=Y-2*D
+140 D=-D
+150 PRINT AT Y*64+32, "    "
+160 G. 90
+180 PRINT AT Y*64+32, "PING"
+190 G. 90
+999 GOTO 999

@@ -1,5 +1,5 @@
-10 rem * distance, rate, time problem *
-20 r = 500
-30 t = 6
-40 d = r * t
-50 print d
+10 REM * DISTANCE, RATE, TIME PROBLEM *
+20 R = 500
+30 T = 6
+40 D = R * T
+50 PRINT D

@@ -1,5 +1,5 @@
-10 rem * circumference solution *
-20 p = 3.14
-30 d = 35
-40 c = p * d
-50 print "The circle's circumference is";c;"feet."
+10 REM * CIRCUMFERENCE SOLUTION *
+20 P = 3.14
+30 D = 35
+40 C = P * D
+50 PRINT "THE CIRCLE'S CIRCUMFERENCE IS";C;"FEET."

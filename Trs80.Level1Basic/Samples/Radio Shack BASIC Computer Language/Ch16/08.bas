@@ -1,4 +1,4 @@
-10 read a$
-15 read b$
-20 data RADIO SHACK, TRS-80
-30 print "See my foxy";A$;" ";B$
+10 READ A$
+15 READ B$
+20 DATA RADIO SHACK, TRS-80
+30 PRINT "SEE MY FOXY";A$;" ";B$

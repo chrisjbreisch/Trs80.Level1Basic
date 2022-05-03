@@ -1,5 +1,5 @@
-10 a = 5
-20 if a = 5 then 50
-30 print "a does not equal 5."
-40 end
-50 print "a equals 5."
+10 A = 5
+20 IF A = 5 THEN 50
+30 PRINT "A DOES NOT EQUAL 5."
+40 END
+50 PRINT "A EQUALS 5."

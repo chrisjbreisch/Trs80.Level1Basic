@@ -190,7 +190,7 @@ public sealed class Bootstrapper : IDisposable
             .AddSingleton<IBuiltinFunctions, BuiltinFunctions>()
             .AddSingleton<IBasicInterpreter, BasicInterpreter>()
             .AddSingleton<IBasicEnvironment, BasicEnvironment>()
-            .AddTransient<IConsole, Interpreter.Console>()
+            .AddSingleton<IConsole, Interpreter.Console>()
             .AddSingleton<IConsoleDataModel, ConsoleDataModel>()
             .AddSingleton<IProgram, Program>()
             .BuildServiceProvider();

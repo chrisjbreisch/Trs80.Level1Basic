@@ -1,15 +1,15 @@
-10 input "Horizontal starting point (0 to 127)"; x
-20 input "Vertical starting point (0 to 47)"; y
-30 input "Lower barrier";k
-40 cls
-50 for m=0 to 127
-60   set (m,k)
-70 next m
-80 reset (x,y+47)
-90 set(x,y)
-100 y=y+1
-110 if y<48 then 130
-120 y=y-48
-130 if y<>k then 80
-999 goto 999
+10 INPUT "HORIZONTAL STARTING POINT (0 TO 127)"; X
+20 INPUT "VERTICAL STARTING POINT (0 TO 47)"; Y
+30 INPUT "LOWER BARRIER";K
+40 CLS
+50 FOR M=0 TO 127
+60   SET (M,K)
+70 NEXT M
+80 RESET (X,Y+47)
+90 SET(X,Y)
+100 Y=Y+1
+110 IF Y<48 THEN 130
+120 Y=Y-48
+130 IF Y<>K THEN 80
+999 GOTO 999
     

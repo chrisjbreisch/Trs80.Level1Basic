@@ -1,9 +1,9 @@
-10 input "First number is";x
-20 input "Second number is";y
-30 if (x>=0) * (y>=0) then 70
-40 if (x<0) * (y<0) then 90
-50 print "Opposite signs"
-60 end
-70 print "Both positive or zero"
-80 end
-90 print "Both negative"
+10 INPUT "FIRST NUMBER IS";X
+20 INPUT "SECOND NUMBER IS";Y
+30 IF (X>=0) * (Y>=0) THEN 70
+40 IF (X<0) * (Y<0) THEN 90
+50 PRINT "OPPOSITE SIGNS"
+60 END
+70 PRINT "BOTH POSITIVE OR ZERO"
+80 END
+90 PRINT "BOTH NEGATIVE"

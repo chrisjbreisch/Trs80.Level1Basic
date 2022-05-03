@@ -1,3 +1,3 @@
-40 for n = 1 to 90
-50 print rnd(0);
-60 next n
+40 FOR N = 1 TO 90
+50 PRINT RND(0);
+60 NEXT N

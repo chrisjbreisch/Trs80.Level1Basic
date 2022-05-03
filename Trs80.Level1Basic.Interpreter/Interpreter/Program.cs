@@ -25,7 +25,6 @@ public class Program : IProgram
             if (last != null)
                 last.Next = statement;
             _programStatements.Add(statement);
-            Debug.WriteLine($"{statement.LineNumber} {statement.SourceLine}: {statement.GetType()}");
             last = statement;
         }
     }

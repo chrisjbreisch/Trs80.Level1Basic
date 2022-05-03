@@ -1,8 +1,8 @@
-10 p=3.14159
-20 print "RADIUS", "AREA"
-30 print
-40 for r=1 to 10
-50   a = p * r * r
-55   a = int(a)
-60   print r, a
-70 next r
+10 P=3.14159
+20 PRINT "RADIUS", "AREA"
+30 PRINT
+40 FOR R=1 TO 10
+50   A = P * R * R
+55   A = INT(A)
+60   PRINT R, A
+70 NEXT R

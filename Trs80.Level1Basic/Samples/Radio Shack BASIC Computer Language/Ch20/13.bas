@@ -1,11 +1,11 @@
-10 input "Vertical position (0 to 47)"; y
-20 cls
-30 for x = 0 to 127
-40   for j = 0 to 47
-50     set(x,j)
-60   next j
-70 next x
-80 for x = 0 to 127
-90   reset(x,y)
-100 next x
-999 goto 999
+10 INPUT "VERTICAL POSITION (0 TO 47)"; Y
+20 CLS
+30 FOR X = 0 TO 127
+40   FOR J = 0 TO 47
+50     SET(X,J)
+60   NEXT J
+70 NEXT X
+80 FOR X = 0 TO 127
+90   RESET(X,Y)
+100 NEXT X
+999 GOTO 999

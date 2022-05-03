@@ -1,22 +1,22 @@
-1 cls
-10 for a=1 to 360
-20    x=a:gosub 30370
-30    y=y*20
-40    set(a/3,y+22)
-50 next a
-60 goto 60
+1 CLS
+10 FOR A=1 TO 360
+20    X=A:GOSUB 30370
+30    Y=Y*20
+40    SET(A/3,Y+22)
+50 NEXT A
+60 GOTO 60
 
-30000 end
-30370 rem * sin * input x in degrees, output y
-30371 rem also uses z internally
-30376 z=abs(x)/x:x=z*x
-30380 if x>360 t. x=x/360 : x=(x-int(x))*360
-30390 if x>90t.x=x/90:y=int(x):x=(x-y)*90:onyg.30410,30420,30430
-30400 x=x/57.29578 : if abs(x)<2.48616e-4 y=0: ret.
-30405 g.30440
-30410 x=90-x : g.30400
-30420 x=-x : g.30400
-30430 x=x-90 : g.30400
-30440 y=x-x*x*x/6+x*x*x*x/120-x*x*x*x*x*x/5040
-30450 y=y+x*x*x*x*x*x*x*x*x/362880 : if z=-1t. y=-y
-30455 ret.
+30000 END
+30370 REM * SIN * INPUT X IN DEGREES, OUTPUT Y
+30371 REM ALSO USES Z INTERNALLY
+30376 Z=ABS(X)/X:X=Z*X
+30380 IF X>360 T. X=X/360 : X=(X-INT(X))*360
+30390 IF X>90T.X=X/90:Y=INT(X):X=(X-Y)*90:ONYG.30410,30420,30430
+30400 X=X/57.29578 : IF ABS(X)<2.48616E-4 Y=0: RET.
+30405 G.30440
+30410 X=90-X : G.30400
+30420 X=-X : G.30400
+30430 X=X-90 : G.30400
+30440 Y=X-X*X*X/6+X*X*X*X/120-X*X*X*X*X*X/5040
+30450 Y=Y+X*X*X*X*X*X*X*X*X/362880 : IF Z=-1T. Y=-Y
+30455 RET.

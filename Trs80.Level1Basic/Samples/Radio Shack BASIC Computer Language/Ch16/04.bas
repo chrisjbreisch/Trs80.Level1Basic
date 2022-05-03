@@ -1,6 +1,6 @@
-10 data 1, 2, 3, 4, 5
-20 for n = 1 to 4
-30    read a
-40    print a;
-50 next n
-60 print
+10 DATA 1, 2, 3, 4, 5
+20 FOR N = 1 TO 4
+30    READ A
+40    PRINT A;
+50 NEXT N
+60 PRINT

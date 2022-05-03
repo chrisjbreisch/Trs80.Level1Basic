@@ -1,36 +1,36 @@
-10 input "Type a number between 1 and 15"; n
-20 on n goto 110,130,150,170,190
-25 on n-5 goto 210,230,250,270,290
-30 on n-10 goto 310,330,350,370,390
-70 print "The number you typed was not betwen 1 and 15 --- dummy!"
-99 end
-110 print "n = 1"
-120 end
-130 print "n = 2"
-140 end
-150 print "n = 3"
-160 end
-170 print "n = 4"
-180 end
-190 print "n = 5"
-200 end
-210 print "n = 6"
-220 end
-230 print "n = 7"
-240 end
-250 print "n = 8"
-260 end
-270 print "n = 9"
-280 end
-290 print "n = 10"
-300 end
-310 print "n = 11"
-320 end
-330 print "n = 12"
-340 end
-350 print "n = 13"
-360 end
-370 print "n = 14"
-380 end
-390 print "n = 15"
-400 end
+10 INPUT "TYPE A NUMBER BETWEEN 1 AND 15"; N
+20 ON N GOTO 110,130,150,170,190
+25 ON N-5 GOTO 210,230,250,270,290
+30 ON N-10 GOTO 310,330,350,370,390
+70 PRINT "THE NUMBER YOU TYPED WAS NOT BETWEN 1 AND 15 --- DUMMY!"
+99 END
+110 PRINT "N = 1"
+120 END
+130 PRINT "N = 2"
+140 END
+150 PRINT "N = 3"
+160 END
+170 PRINT "N = 4"
+180 END
+190 PRINT "N = 5"
+200 END
+210 PRINT "N = 6"
+220 END
+230 PRINT "N = 7"
+240 END
+250 PRINT "N = 8"
+260 END
+270 PRINT "N = 9"
+280 END
+290 PRINT "N = 10"
+300 END
+310 PRINT "N = 11"
+320 END
+330 PRINT "N = 12"
+340 END
+350 PRINT "N = 13"
+360 END
+370 PRINT "N = 14"
+380 END
+390 PRINT "N = 15"
+400 END

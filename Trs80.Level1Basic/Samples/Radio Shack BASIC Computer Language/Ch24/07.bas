@@ -1,14 +1,14 @@
-10 cls
-20 y=1:n=0
-30 p. "Answer these questions with 'YES' or 'NO'.":P.
-40 in. "Has the cat been put out";a
-50 in. "Is the porch light turned off";b
-60 in. "Are all doors and windows locked";c
-70 in. "Is the television turned off";d
-80 in. "Did you turn the thermostat down";e
-90 p.:p.
-100 if (a=n)+(b=n)+(c=n)+(d=n)+(e=n) then 130
-120 p."             GOODNIGHT":end
-130 p."Something has not been done. Do not go to bed"
-140 p."until you find the problem!"
-150 goto 40
+10 CLS
+20 Y=1:N=0
+30 P. "ANSWER THESE QUESTIONS WITH 'YES' OR 'NO'.":P.
+40 IN. "HAS THE CAT BEEN PUT OUT";A
+50 IN. "IS THE PORCH LIGHT TURNED OFF";B
+60 IN. "ARE ALL DOORS AND WINDOWS LOCKED";C
+70 IN. "IS THE TELEVISION TURNED OFF";D
+80 IN. "DID YOU TURN THE THERMOSTAT DOWN";E
+90 P.:P.
+100 IF (A=N)+(B=N)+(C=N)+(D=N)+(E=N) THEN 130
+120 P."             GOODNIGHT":END
+130 P."SOMETHING HAS NOT BEEN DONE. DO NOT GO TO BED"
+140 P."UNTIL YOU FIND THE PROBLEM!"
+150 GOTO 40

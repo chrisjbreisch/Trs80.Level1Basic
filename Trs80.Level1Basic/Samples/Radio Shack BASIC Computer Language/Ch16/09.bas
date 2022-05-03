@@ -1,10 +1,10 @@
-10 y = 1
-20 n = 0
-30 input "Are you old enough to vote (y/n)";a
-40 if a = 1 then 60
-45 if a = 0 then 50
-47 print "Please answer with either a y or n!"
-49 end
-50 print "Don't fret. The time will pass soon enough."
-59 end
-60 print "Swell. Don't forget to register!"
+10 Y = 1
+20 N = 0
+30 INPUT "ARE YOU OLD ENOUGH TO VOTE (Y/N)";A
+40 IF A = 1 THEN 60
+45 IF A = 0 THEN 50
+47 PRINT "PLEASE ANSWER WITH EITHER A Y OR N!"
+49 END
+50 PRINT "DON'T FRET. THE TIME WILL PASS SOON ENOUGH."
+59 END
+60 PRINT "SWELL. DON'T FORGET TO REGISTER!"

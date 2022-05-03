@@ -1,8 +1,8 @@
-10 cls
-20 for x=1 to 126
-30    for y=1 to 46
-40      if ((int(x/16) * 16-x)<>0) * ((int(y/6) * 6-y)<>0)then 60
-50      set(x,y)
-60    next y
-70 next x
-99 goto 99
+10 CLS
+20 FOR X=1 TO 126
+30    FOR Y=1 TO 46
+40      IF ((INT(X/16) * 16-X)<>0) * ((INT(Y/6) * 6-Y)<>0)THEN 60
+50      SET(X,Y)
+60    NEXT Y
+70 NEXT X
+99 GOTO 99

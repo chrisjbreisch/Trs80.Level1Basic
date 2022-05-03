@@ -1,9 +1,9 @@
-10 for a = 1 to 5
-20   print " A loop"
-30   for b = 1 to 4
-40     print " ", " B loop"
-50   next b
-55   if a = 2 goto 100
-60 next a
-99 end
-100 print "A equalled 2. Run ended."
+10 FOR A = 1 TO 5
+20   PRINT " A LOOP"
+30   FOR B = 1 TO 4
+40     PRINT " ", " B LOOP"
+50   NEXT B
+55   IF A = 2 GOTO 100
+60 NEXT A
+99 END
+100 PRINT "A EQUALLED 2. RUN ENDED."

@@ -1,13 +1,13 @@
-10 r = .01
-20 d = 1
-30 t = .01
-35 cls
-40 print "DAY ", "DAILY ", "TOTAL "
-50 print "  #", "RATE ", "EARNED "
-60 print
-70 print d, r, t
-80 if r > 1e6 end
-90 r = r * 2
-100 d = d + 1
-110 t = t + r
-120 goto 70
+10 R = .01
+20 D = 1
+30 T = .01
+35 CLS
+40 PRINT "DAY ", "DAILY ", "TOTAL "
+50 PRINT "  #", "RATE ", "EARNED "
+60 PRINT
+70 PRINT D, R, T
+80 IF R > 1E6 END
+90 R = R * 2
+100 D = D + 1
+110 T = T + R
+120 GOTO 70

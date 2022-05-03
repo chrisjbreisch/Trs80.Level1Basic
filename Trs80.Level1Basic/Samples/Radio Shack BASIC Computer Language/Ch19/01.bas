@@ -1,1 +1,1 @@
-50 print rnd(0)
+50 PRINT RND(0)

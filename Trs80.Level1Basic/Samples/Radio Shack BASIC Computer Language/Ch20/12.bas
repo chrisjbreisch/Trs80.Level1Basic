@@ -1,13 +1,13 @@
-10 input "Horizontal starting point (0 to 127)";x
-20 input "Vertical starting point (0 to 47)";y
-30 input "Length of each side (in blocks) -- (0 to 47)";k
-40 cls
-50 for l = x to x+k
-60   set(l,y)
-70   set(l,y+k)
-80 next l
-90 for m = y to y+k
-100   set(x,m)
-110   set(x+k,m)
-120 next m
-999 goto 999
+10 INPUT "HORIZONTAL STARTING POINT (0 TO 127)";X
+20 INPUT "VERTICAL STARTING POINT (0 TO 47)";Y
+30 INPUT "LENGTH OF EACH SIDE (IN BLOCKS) -- (0 TO 47)";K
+40 CLS
+50 FOR L = X TO X+K
+60   SET(L,Y)
+70   SET(L,Y+K)
+80 NEXT L
+90 FOR M = Y TO Y+K
+100   SET(X,M)
+110   SET(X+K,M)
+120 NEXT M
+999 GOTO 999

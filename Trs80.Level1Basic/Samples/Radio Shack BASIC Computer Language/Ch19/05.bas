@@ -1,10 +1,10 @@
-10 H=0:t=0:P.
-20 in."How many times shall we flip the coin";f:cls
-30 p."You stand by while I do the flipping - - - -"
-40 f.n=1tof:x=rnd(2):onxg. 60, 70
-50 p."IT BOMBED. Was neither a 1 nor a 2. X is";X:End
-60 h=h+1:g.80
-70 t=t+1
-80 n.n:P.:P.:P.:P.
-90 P."Heads","Tails","Total Flips":p.:p.h,t,f
-100 p.100*h/f;"%",100*t/f;"%":p.:p.:p.
+10 H=0:T=0:P.
+20 IN."HOW MANY TIMES SHALL WE FLIP THE COIN";F:CLS
+30 P."YOU STAND BY WHILE I DO THE FLIPPING - - - -"
+40 F.N=1TOF:X=RND(2):ONXG. 60, 70
+50 P."IT BOMBED. WAS NEITHER A 1 NOR A 2. X IS";X:END
+60 H=H+1:G.80
+70 T=T+1
+80 N.N:P.:P.:P.:P.
+90 P."HEADS","TAILS","TOTAL FLIPS":P.:P.H,T,F
+100 P.100*H/F;"%",100*T/F;"%":P.:P.:P.

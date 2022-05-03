@@ -1,6 +1,6 @@
-3 print "See my foxy";
-5 for n = 1 to 2
-10   read a$
-20 data RADIO SHACK,TRS-80
-30   print a$;" ";
-40 next n
+3 PRINT "SEE MY FOXY";
+5 FOR N = 1 TO 2
+10   READ A$
+20 DATA RADIO SHACK,TRS-80
+30   PRINT A$;" ";
+40 NEXT N

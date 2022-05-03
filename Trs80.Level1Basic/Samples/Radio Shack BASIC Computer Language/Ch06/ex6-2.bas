@@ -1,11 +1,11 @@
-10 a = 6
-20 if a <> 5 then 50
-30 print "a equals 5"
-40 goto 99
-50 print "a does not equal 5"
-60 if a < 5 then 90
-70 print "a is larger than 5"
-80 goto 99
-90 print "a is smaller than 5"
-99 print "this is the end"
-100 end
+10 A = 6
+20 IF A <> 5 THEN 50
+30 PRINT "A EQUALS 5"
+40 GOTO 99
+50 PRINT "A DOES NOT EQUAL 5"
+60 IF A < 5 THEN 90
+70 PRINT "A IS LARGER THAN 5"
+80 GOTO 99
+90 PRINT "A IS SMALLER THAN 5"
+99 PRINT "THIS IS THE END"
+100 END

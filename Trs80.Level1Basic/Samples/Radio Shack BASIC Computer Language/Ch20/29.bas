@@ -1,25 +1,25 @@
-10 cls
-20 x=64
-30 for k=0 to 7
-40   set(x+k, 40+k)
-45   reset(x+k-1, 40+k)
-50   set(x-k, 40+k)
-55   reset(x-k-1,40+k)
-60 next k
-70 for k=0 to 5
-80   set(x+k,34+k)
-85   reset(x+k-1,34+k)
-90   set(x,34+k)
-95   reset(x-1,34+k)
-100  set(x-k,34+k)
-105  reset(x-k-1,34+k)
-110 next k
-120 set(x,32)
-125 reset(x-1,32)
-130 set(x+1,33)
-135 reset(x,33)
-140 set(x-1,33)
-145 reset(x-2, 33)
-150 x=x+1
-160 goto 30
-999 goto 999
+10 CLS
+20 X=64
+30 FOR K=0 TO 7
+40   SET(X+K, 40+K)
+45   RESET(X+K-1, 40+K)
+50   SET(X-K, 40+K)
+55   RESET(X-K-1,40+K)
+60 NEXT K
+70 FOR K=0 TO 5
+80   SET(X+K,34+K)
+85   RESET(X+K-1,34+K)
+90   SET(X,34+K)
+95   RESET(X-1,34+K)
+100  SET(X-K,34+K)
+105  RESET(X-K-1,34+K)
+110 NEXT K
+120 SET(X,32)
+125 RESET(X-1,32)
+130 SET(X+1,33)
+135 RESET(X,33)
+140 SET(X-1,33)
+145 RESET(X-2, 33)
+150 X=X+1
+160 GOTO 30
+999 GOTO 999

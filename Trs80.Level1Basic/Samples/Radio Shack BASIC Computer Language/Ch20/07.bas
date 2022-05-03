@@ -1,7 +1,7 @@
-10 cls
-20 for y = 47 to 0 step-1
-30   for x = 0 to 127
-40     set (x, y)
-50   next x
-60 next y
-99 goto 99
+10 CLS
+20 FOR Y = 47 TO 0 STEP-1
+30   FOR X = 0 TO 127
+40     SET (X, Y)
+50   NEXT X
+60 NEXT Y
+99 GOTO 99

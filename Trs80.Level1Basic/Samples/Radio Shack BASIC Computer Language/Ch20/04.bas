@@ -1,4 +1,4 @@
-10 input "Horizontal address (0 to 127)"; x
-20 input "Vertical address (0 to 47)"; y
-30 cls
-40 set (x, y)
+10 INPUT "HORIZONTAL ADDRESS (0 TO 127)"; X
+20 INPUT "VERTICAL ADDRESS (0 TO 47)"; Y
+30 CLS
+40 SET (X, Y)

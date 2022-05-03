@@ -1,7 +1,7 @@
-10 input "Vertical Address (0 to 47)"; y
-20 input "Step size"; s
-30 cls
-40 for x = 0 to 127 step s
-50   set(x, y)
-60 next x
-99 goto 99
+10 INPUT "VERTICAL ADDRESS (0 TO 47)"; Y
+20 INPUT "STEP SIZE"; S
+30 CLS
+40 FOR X = 0 TO 127 STEP S
+50   SET(X, Y)
+60 NEXT X
+99 GOTO 99

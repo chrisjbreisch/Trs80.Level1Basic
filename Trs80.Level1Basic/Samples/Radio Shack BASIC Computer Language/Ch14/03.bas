@@ -1,6 +1,6 @@
-30 x = 3.14159
-40 y = int(x)
-50 z = x - y
-60 print "X = "; x
-70 print "Y = "; y
-80 print "Z = "; z
+30 X = 3.14159
+40 Y = INT(X)
+50 Z = X - Y
+60 PRINT "X = "; X
+70 PRINT "Y = "; Y
+80 PRINT "Z = "; Z

@@ -1,5 +1,5 @@
-10 rem * car miles solution program *
-20 n = 1000000
-30 d = 10000
-40 t = n * d
-50 print "The total number of miles driven is"; t
+10 REM * CAR MILES SOLUTION PROGRAM *
+20 N = 1000000
+30 D = 10000
+40 T = N * D
+50 PRINT "THE TOTAL NUMBER OF MILES DRIVEN IS"; T

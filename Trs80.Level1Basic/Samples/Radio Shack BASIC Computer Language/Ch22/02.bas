@@ -1,10 +1,10 @@
-10 cls
-20 print at 407, "H  M   S"
-30 for h = 0 to 23
-40    for m = 0 to 59
-50       for s = 0 to 59
-60          print at 470, h;":";m;":";s;" "
-70          for n = 1 to 2000000: next n
-80       next s
-90    next m
-100 next h
+10 CLS
+20 PRINT AT 407, "H  M   S"
+30 FOR H = 0 TO 23
+40    FOR M = 0 TO 59
+50       FOR S = 0 TO 59
+60          PRINT AT 470, H;":";M;":";S;" "
+70          FOR N = 1 TO 2000000: NEXT N
+80       NEXT S
+90    NEXT M
+100 NEXT H

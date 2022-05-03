@@ -1,6 +1,6 @@
-10 input "Horizontal address (0 to 127)"; x
-20 cls
-30 for y = 0 to 47
-40   set(x,y)
-50 next y
-99 goto 99
+10 INPUT "HORIZONTAL ADDRESS (0 TO 127)"; X
+20 CLS
+30 FOR Y = 0 TO 47
+40   SET(X,Y)
+50 NEXT Y
+99 GOTO 99

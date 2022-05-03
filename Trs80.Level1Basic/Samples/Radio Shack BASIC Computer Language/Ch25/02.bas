@@ -1,17 +1,17 @@
-10 rem * square root solution with subroutine *
-20 in. "The length of side A = ";a
-30 in. "The length of sise B = ";b
-40 x = a*a+b*b: gosub 30030
-45 l = y
-50 p."A","B","L"
-60 p. a,b,l
-30000 end
-30010 rem * square root* input x, output y
-30020 rem also uses w & z internally
-30030 if x = 0 t. y = 0: ret.
-30040 if x>0 t. 30060
-30050 p. "Root of negative number?": stop
-30060 y=x*.5 : z = 0
-30070 w=(x/y-y)*.5
-30080 if (w=0) + (w=z) t. ret.
-30090 y=y+w : z=w : g.30070
+10 REM * SQUARE ROOT SOLUTION WITH SUBROUTINE *
+20 IN. "THE LENGTH OF SIDE A = ";A
+30 IN. "THE LENGTH OF SISE B = ";B
+40 X = A*A+B*B: GOSUB 30030
+45 L = Y
+50 P."A","B","L"
+60 P. A,B,L
+30000 END
+30010 REM * SQUARE ROOT* INPUT X, OUTPUT Y
+30020 REM ALSO USES W & Z INTERNALLY
+30030 IF X = 0 T. Y = 0: RET.
+30040 IF X>0 T. 30060
+30050 P. "ROOT OF NEGATIVE NUMBER?": STOP
+30060 Y=X*.5 : Z = 0
+30070 W=(X/Y-Y)*.5
+30080 IF (W=0) + (W=Z) T. RET.
+30090 Y=Y+W : Z=W : G.30070

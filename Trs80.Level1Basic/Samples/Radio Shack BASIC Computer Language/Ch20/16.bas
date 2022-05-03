@@ -1,10 +1,10 @@
-10 input "Horizontal starting point (0 to 127)";x
-20 input "Vertical starting point (0 to 47)";y
-30 input "Diagonal length";k
-40 cls
-50 for l = 0 to k
-60   set(x+l,y+l)
-70   set(x+k,y+l)
-80   set(x+l,y)
-90 next l
-99 goto 99
+10 INPUT "HORIZONTAL STARTING POINT (0 TO 127)";X
+20 INPUT "VERTICAL STARTING POINT (0 TO 47)";Y
+30 INPUT "DIAGONAL LENGTH";K
+40 CLS
+50 FOR L = 0 TO K
+60   SET(X+L,Y+L)
+70   SET(X+K,Y+L)
+80   SET(X+L,Y)
+90 NEXT L
+99 GOTO 99

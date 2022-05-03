@@ -1,5 +1,5 @@
-10 rem * improved celsius to fahrenheit conversion program *
-20 input "What is the temperature in degrees celsius"; c
-30 f = (9/5) * c + 32
-40 print c;"degrees celsius ="; f; "degrees farhenheit."
-50 goto 20
+10 REM * IMPROVED CELSIUS TO FAHRENHEIT CONVERSION PROGRAM *
+20 INPUT "WHAT IS THE TEMPERATURE IN DEGREES CELSIUS"; C
+30 F = (9/5) * C + 32
+40 PRINT C;"DEGREES CELSIUS ="; F; "DEGREES FARHENHEIT."
+50 GOTO 20

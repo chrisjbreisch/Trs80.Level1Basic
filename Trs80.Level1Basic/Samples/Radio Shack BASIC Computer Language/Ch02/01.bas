@@ -1,6 +1,6 @@
-﻿5 rem *this is my first computer program*
-10 print "Hello there. I am your new TRS-80 microcomputer."
-15 print
-20 print "You called, master. Do you have a command?"
-98 print "The end"
-32767 end
+﻿5 REM *THIS IS MY FIRST COMPUTER PROGRAM*
+10 PRINT "HELLO THERE. I AM YOUR NEW TRS-80 MICROCOMPUTER."
+15 PRINT
+20 PRINT "YOU CALLED, MASTER. DO YOU HAVE A COMMAND?"
+98 PRINT "THE END"
+32767 END

@@ -1,4 +1,4 @@
-1a(0)=0
-10f.x=1to3947:a(x)=x:n.x:f.y=1to3947:p.a(y);
-20ifa(y)-a(y-1)<>1p."BAD"
-30n.y
+1A(0)=0
+10F.X=1TO3947:A(X)=X:N.X:F.Y=1TO3947:P.A(Y);
+20IFA(Y)-A(Y-1)<>1P."BAD"
+30N.Y

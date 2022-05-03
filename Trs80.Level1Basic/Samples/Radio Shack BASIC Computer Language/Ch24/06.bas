@@ -1,8 +1,8 @@
-10 cls
-20 for x=0 to 127
-30    for y=0 to 47
-40      if (x=64) * (y=24) then 60
-50      set(x,y)
-60    next y
-70 next x
-99 goto 99
+10 CLS
+20 FOR X=0 TO 127
+30    FOR Y=0 TO 47
+40      IF (X=64) * (Y=24) THEN 60
+50      SET(X,Y)
+60    NEXT Y
+70 NEXT X
+99 GOTO 99

@@ -1,10 +1,10 @@
-10 input " Horizontal starting point (0 to 127)"; x
-20 input " Vertical starting oint (0 to 47)";y
-30 cls
-40 reset (x+1,y)
-50 set (x,y)
-60 x = x-1
-70 if x>= 0 then 40
-80 x = x + 128
-90 goto 40
-99 goto 99
+10 INPUT " HORIZONTAL STARTING POINT (0 TO 127)"; X
+20 INPUT " VERTICAL STARTING OINT (0 TO 47)";Y
+30 CLS
+40 RESET (X+1,Y)
+50 SET (X,Y)
+60 X = X-1
+70 IF X>= 0 THEN 40
+80 X = X + 128
+90 GOTO 40
+99 GOTO 99

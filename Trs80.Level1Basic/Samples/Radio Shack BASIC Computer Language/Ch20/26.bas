@@ -1,7 +1,7 @@
-10 cls
-20 x=64
-30 for k=0 to 7
-40   set(x+k, 40+k)
-50   set(x-k, 40+k)
-60 next k
-999 goto 999
+10 CLS
+20 X=64
+30 FOR K=0 TO 7
+40   SET(X+K, 40+K)
+50   SET(X-K, 40+K)
+60 NEXT K
+999 GOTO 999

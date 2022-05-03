@@ -1,36 +1,36 @@
-10 rem * sample answer 23-2 *
-100 cls
-110 p.:p.
-120 p."Enter the number of one of the following investments"
-130 p.
-140 p."   1 - Certificate of Deposit"
-150 p."   2 - Bank Savings Account"
-160 p."   3 - Credit Union"
-170 p."   4 - Mortgage Loan"
-180 p.:in. " Investment";f
-190 on f goto 1000,2000,3000,4000
-200 goto 100: rem used if number not between 1 and 4
-1000 rem * certificate of deposit program goes here *
-1010 p."The C.D. program has yet to be written."
-1020 gos.10000:g.100
-2000 rem * bank savings account *
-2010 cls:p.:p."This routine calculates simple interest on"
-2020 p."dollars held in deposit for a specified period"
-2030 p."using a specified percentage of interest.":p.
-2040 p.:in."How large is the deposit (in dollars)";p
-2050 in."How long will you leavfe it in (in days)";d
-2060 in."What interest rate to you expect (in %)";r
-2070 cls:p.:p.:p."For a starting principal of $";p;" at a"
-2080 p."rate of ";r;" % for ";d;" days, the interest "
-2090 p."amounts to $";
-2100 rem interest = (% / yr) / (days/yr) * days * principal
-2200 i = r/100 / 365 * d * p
-2300 p.:p."    ", " $";i
-2400 end
-3000 rem * credit union program goes here *
-3010 p."The C.U. program has yet to be written."
-3020 gos.10000:g.100
-4000 rem * mortgage loan program goes here *
-4010 p."The M.L. program has yet to be written."
-4020 gos.10000:g.100
-10000 f.i=1to8000000:n.i:ret.
+10 REM * SAMPLE ANSWER 23-2 *
+100 CLS
+110 P.:P.
+120 P."ENTER THE NUMBER OF ONE OF THE FOLLOWING INVESTMENTS"
+130 P.
+140 P."   1 - CERTIFICATE OF DEPOSIT"
+150 P."   2 - BANK SAVINGS ACCOUNT"
+160 P."   3 - CREDIT UNION"
+170 P."   4 - MORTGAGE LOAN"
+180 P.:IN. " INVESTMENT";F
+190 ON F GOTO 1000,2000,3000,4000
+200 GOTO 100: REM USED IF NUMBER NOT BETWEEN 1 AND 4
+1000 REM * CERTIFICATE OF DEPOSIT PROGRAM GOES HERE *
+1010 P."THE C.D. PROGRAM HAS YET TO BE WRITTEN."
+1020 GOS.10000:G.100
+2000 REM * BANK SAVINGS ACCOUNT *
+2010 CLS:P.:P."THIS ROUTINE CALCULATES SIMPLE INTEREST ON"
+2020 P."DOLLARS HELD IN DEPOSIT FOR A SPECIFIED PERIOD"
+2030 P."USING A SPECIFIED PERCENTAGE OF INTEREST.":P.
+2040 P.:IN."HOW LARGE IS THE DEPOSIT (IN DOLLARS)";P
+2050 IN."HOW LONG WILL YOU LEAVFE IT IN (IN DAYS)";D
+2060 IN."WHAT INTEREST RATE TO YOU EXPECT (IN %)";R
+2070 CLS:P.:P.:P."FOR A STARTING PRINCIPAL OF $";P;" AT A"
+2080 P."RATE OF ";R;" % FOR ";D;" DAYS, THE INTEREST "
+2090 P."AMOUNTS TO $";
+2100 REM INTEREST = (% / YR) / (DAYS/YR) * DAYS * PRINCIPAL
+2200 I = R/100 / 365 * D * P
+2300 P.:P."    ", " $";I
+2400 END
+3000 REM * CREDIT UNION PROGRAM GOES HERE *
+3010 P."THE C.U. PROGRAM HAS YET TO BE WRITTEN."
+3020 GOS.10000:G.100
+4000 REM * MORTGAGE LOAN PROGRAM GOES HERE *
+4010 P."THE M.L. PROGRAM HAS YET TO BE WRITTEN."
+4020 GOS.10000:G.100
+10000 F.I=1TO8000000:N.I:RET.

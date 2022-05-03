@@ -1,2 +1,2 @@
-50 a=rnd(6):b=rnd(6):n=a+b
-60 p.n
+50 A=RND(6):B=RND(6):N=A+B
+60 P.N

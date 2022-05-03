@@ -1,5 +1,5 @@
-10 b=225
-20 c=17+35+225
-30 d=40+200
-40 n=b-c+d
-50 print "Your new balance is $";n
+10 B=225
+20 C=17+35+225
+30 D=40+200
+40 N=B-C+D
+50 PRINT "YOUR NEW BALANCE IS $";N

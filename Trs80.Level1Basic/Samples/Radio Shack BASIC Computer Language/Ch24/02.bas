@@ -1,7 +1,7 @@
-10 input "Final Grade";F
-20 input "Midterm Grade";M
-30 input "Homework Grade";H
-40 if (f>60) + ((m > 70) * (h>75)) then 70
-50 print "FAILED"
-60 end
-70 print "PASSED"
+10 INPUT "FINAL GRADE";F
+20 INPUT "MIDTERM GRADE";M
+30 INPUT "HOMEWORK GRADE";H
+40 IF (F>60) + ((M > 70) * (H>75)) THEN 70
+50 PRINT "FAILED"
+60 END
+70 PRINT "PASSED"

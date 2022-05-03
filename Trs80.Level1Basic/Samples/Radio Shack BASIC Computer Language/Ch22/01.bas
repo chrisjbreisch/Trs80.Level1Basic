@@ -1,2 +1,2 @@
-10 cls
-20 print at 200, "Hello there 200, wherever you are."
+10 CLS
+20 PRINT AT 200, "HELLO THERE 200, WHEREVER YOU ARE."

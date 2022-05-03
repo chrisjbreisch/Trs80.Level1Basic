@@ -1,6 +1,6 @@
-10 input "Vertical address (0 to 47)"; y
-20 cls
-30 for x = 0 to 127
-40   set(x,y)
-50 next x
-99 goto 99
+10 INPUT "VERTICAL ADDRESS (0 TO 47)"; Y
+20 CLS
+30 FOR X = 0 TO 127
+40   SET(X,Y)
+50 NEXT X
+99 GOTO 99

@@ -1,6 +1,6 @@
-10 rem * square root solution with subroutine *
-20 in. "The length of side A = ";a
-30 in. "The length of sise B = ";b
-40 l = sqr(a*a + b*b)
-50 p."A","B","L"
-60 p. a,b,l
+10 REM * SQUARE ROOT SOLUTION WITH SUBROUTINE *
+20 IN. "THE LENGTH OF SIDE A = ";A
+30 IN. "THE LENGTH OF SISE B = ";B
+40 L = SQR(A*A + B*B)
+50 P."A","B","L"
+60 P. A,B,L

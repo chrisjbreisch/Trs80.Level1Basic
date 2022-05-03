@@ -1,6 +1,6 @@
-10 cls
-20 x = 60
-30 y = 25
-40 set(x,y)
-50 reset(x,y)
-60 goto 40
+10 CLS
+20 X = 60
+30 Y = 25
+40 SET(X,Y)
+50 RESET(X,Y)
+60 GOTO 40

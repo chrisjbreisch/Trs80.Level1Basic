@@ -1,12 +1,12 @@
-10 for a = 1 to 3
-20   print " A loop"
-30   for b = 1 to 2
-40     print " ", " B loop"
-42     for c = 1 to 4
-44        print " ", " ", " C Loop"
-45        for d = 1 to 5
-46           print " ", " ", " ", " D Loop"
-47        next d
-48     next c
-50   next b
-60 next a
+10 FOR A = 1 TO 3
+20   PRINT " A LOOP"
+30   FOR B = 1 TO 2
+40     PRINT " ", " B LOOP"
+42     FOR C = 1 TO 4
+44        PRINT " ", " ", " C LOOP"
+45        FOR D = 1 TO 5
+46           PRINT " ", " ", " ", " D LOOP"
+47        NEXT D
+48     NEXT C
+50   NEXT B
+60 NEXT A

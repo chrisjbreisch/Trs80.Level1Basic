@@ -1,20 +1,20 @@
-10 rem * test grader *
-20 cls
-30 p. "This is a test grading program"
-40 p. "Enter the student's five answers as requested"
-50 restore
-60 n=0
-70 for i=1 to 5
-80    print "Answer number";i;
-90    input a
-100   read b
-110   print a,b;
-120   if a=b then print "Correct";:n=n+1
-130   print
-140 next i
-150 print n;"right out of 5";
-160 print n/5*100;"% "
-170 p. "Any more tests to grade";
-180 in."  --1=YES, 2=NO";z
-190 if z=1 goto 50
-200 data 65,23,17,56,39
+10 REM * TEST GRADER *
+20 CLS
+30 P. "THIS IS A TEST GRADING PROGRAM"
+40 P. "ENTER THE STUDENT'S FIVE ANSWERS AS REQUESTED"
+50 RESTORE
+60 N=0
+70 FOR I=1 TO 5
+80    PRINT "ANSWER NUMBER";I;
+90    INPUT A
+100   READ B
+110   PRINT A,B;
+120   IF A=B THEN PRINT "CORRECT";:N=N+1
+130   PRINT
+140 NEXT I
+150 PRINT N;"RIGHT OUT OF 5";
+160 PRINT N/5*100;"% "
+170 P. "ANY MORE TESTS TO GRADE";
+180 IN."  --1=YES, 2=NO";Z
+190 IF Z=1 GOTO 50
+200 DATA 65,23,17,56,39

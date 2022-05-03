@@ -1,11 +1,11 @@
-10 rem * time vs. rate flight chart *
-20 cls
-30 d = 3000
-40 print "    B O S T O N   T O   S A N   D I E G O "
-50 print
-60 print "RATE (MPH)", "TIME (HOURS)","DISTANCE (MILES)"
-70 print
-80 for r = 200 to 1000 step 100
-90 t = d / r
-100 print r, t, d
-110 next r
+10 REM * TIME VS. RATE FLIGHT CHART *
+20 CLS
+30 D = 3000
+40 PRINT "    B O S T O N   T O   S A N   D I E G O "
+50 PRINT
+60 PRINT "RATE (MPH)", "TIME (HOURS)","DISTANCE (MILES)"
+70 PRINT
+80 FOR R = 200 TO 1000 STEP 100
+90 T = D / R
+100 PRINT R, T, D
+110 NEXT R

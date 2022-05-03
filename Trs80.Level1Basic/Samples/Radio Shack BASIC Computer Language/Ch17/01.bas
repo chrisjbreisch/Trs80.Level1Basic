@@ -1,4 +1,4 @@
-10 input "Type any positive or negarive number";x
-20 y = abs(x)
-30 print "X", "Y"
-40 print x,y
+10 INPUT "TYPE ANY POSITIVE OR NEGARIVE NUMBER";X
+20 Y = ABS(X)
+30 PRINT "X", "Y"
+40 PRINT X,Y

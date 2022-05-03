@@ -1,8 +1,8 @@
-10 input "Horizontal starting point (0 to 127)"; x
-20 input "Vertical starting point (0 to 47)"; y
-30 cls
-40 reset (x, y-1)
-50 set (x, y)
-60 y=y+1
-70 goto 40
-99 goto 99
+10 INPUT "HORIZONTAL STARTING POINT (0 TO 127)"; X
+20 INPUT "VERTICAL STARTING POINT (0 TO 47)"; Y
+30 CLS
+40 RESET (X, Y-1)
+50 SET (X, Y)
+60 Y=Y+1
+70 GOTO 40
+99 GOTO 99

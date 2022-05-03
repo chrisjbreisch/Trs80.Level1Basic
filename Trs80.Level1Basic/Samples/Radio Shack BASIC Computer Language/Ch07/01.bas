@@ -1,9 +1,9 @@
-5 input "The value I wish to give A is"; a
-20 if a <> 5 then 50
-30 print "a equals 5"
-40 end
-50 print "a does not equal 5"
-60 if a < 5 then 90
-70 print "a is larger than 5"
-80 end
-90 print "a is smaller than 5"
+5 INPUT "THE VALUE I WISH TO GIVE A IS"; A
+20 IF A <> 5 THEN 50
+30 PRINT "A EQUALS 5"
+40 END
+50 PRINT "A DOES NOT EQUAL 5"
+60 IF A < 5 THEN 90
+70 PRINT "A IS LARGER THAN 5"
+80 END
+90 PRINT "A IS SMALLER THAN 5"

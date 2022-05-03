@@ -1,6 +1,6 @@
-8 for n = 1 to 5
-10 print "HELP --- My computer has gone berserk!"
-20 next n
-25 for m = 1 to 3
-30 print "No --- it's under control."
-40 next m
+8 FOR N = 1 TO 5
+10 PRINT "HELP --- MY COMPUTER HAS GONE BERSERK!"
+20 NEXT N
+25 FOR M = 1 TO 3
+30 PRINT "NO --- IT'S UNDER CONTROL."
+40 NEXT M

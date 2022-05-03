@@ -1,20 +1,20 @@
-5 cls
-9 rem *set maximum area at zero*
-10 m=0
-14 rem *set desired length at zero*
-15 n=0
-19 rem *f is total fee of fence available*
-20 f=1000
-24 rem *l is length of one side of rectangle*
-25 for l=0 to 500 step 50
-29   rem *w is width of one side of rectangle*
-30   w=(f-2*l)/2
-35   a=w*l
-39   rem *compare a with current maximum, replace if necessary*
-40   if a<=m then goto 55
-45   m=a
-49   rem *also update current desired length*
-50   n=l
-55 next l
-60 print "FOR LARGEST AREA USE THESE DIMENSIONS:"
-65 print n; "FT. BY";500-N;"FT. FOR TOTAL AREA OF";m;"SQ. FT."
+5 CLS
+9 REM *SET MAXIMUM AREA AT ZERO*
+10 M=0
+14 REM *SET DESIRED LENGTH AT ZERO*
+15 N=0
+19 REM *F IS TOTAL FEE OF FENCE AVAILABLE*
+20 F=1000
+24 REM *L IS LENGTH OF ONE SIDE OF RECTANGLE*
+25 FOR L=0 TO 500 STEP 50
+29   REM *W IS WIDTH OF ONE SIDE OF RECTANGLE*
+30   W=(F-2*L)/2
+35   A=W*L
+39   REM *COMPARE A WITH CURRENT MAXIMUM, REPLACE IF NECESSARY*
+40   IF A<=M THEN GOTO 55
+45   M=A
+49   REM *ALSO UPDATE CURRENT DESIRED LENGTH*
+50   N=L
+55 NEXT L
+60 PRINT "FOR LARGEST AREA USE THESE DIMENSIONS:"
+65 PRINT N; "FT. BY";500-N;"FT. FOR TOTAL AREA OF";M;"SQ. FT."

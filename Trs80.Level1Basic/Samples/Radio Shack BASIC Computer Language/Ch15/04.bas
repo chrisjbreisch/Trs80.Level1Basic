@@ -1,16 +1,16 @@
-10 input "Type any number";x
-20 gosub 30800
-30 on t+2 goto 50,60,70
-45 end
-50 print "The number is negative."
-55 end
-60 print "The number is zero."
-65 end
-70 print "The number is positive."
-75 end
-30000 end
-30800 rem * sgn(x) input x, output t = -1, 0, 1
-30810 if x < 0 then t = -1
-30820 if x = 0 then t = 0
-30830 if x > 0 then t = 1
-30840 return
+10 INPUT "TYPE ANY NUMBER";X
+20 GOSUB 30800
+30 ON T+2 GOTO 50,60,70
+45 END
+50 PRINT "THE NUMBER IS NEGATIVE."
+55 END
+60 PRINT "THE NUMBER IS ZERO."
+65 END
+70 PRINT "THE NUMBER IS POSITIVE."
+75 END
+30000 END
+30800 REM * SGN(X) INPUT X, OUTPUT T = -1, 0, 1
+30810 IF X < 0 THEN T = -1
+30820 IF X = 0 THEN T = 0
+30830 IF X > 0 THEN T = 1
+30840 RETURN
