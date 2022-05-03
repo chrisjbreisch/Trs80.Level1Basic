@@ -6,7 +6,7 @@ using Trs80.Level1Basic.Extensions;
 
 namespace Trs80.Level1Basic.GenerateAst;
 
-internal class Program
+internal static class Program
 {
     private static void Main(string[] args)
     {
@@ -122,7 +122,7 @@ internal class Program
         if (baseName.Contains("Statement"))
             writer.WriteLine("using Trs80.Level1Basic.Interpreter.Parser.Expressions;");
 
-        writer.WriteLine("using Trs80.Level1Basic.Domain;");
+        writer.WriteLine("using Trs80.Level1Basic.Interpreter.Scanner;");
         writer.WriteLine();
         writer.WriteLine($"namespace Trs80.Level1Basic.Interpreter.Parser.{baseName}s;");
         writer.WriteLine();

@@ -23,6 +23,7 @@ public class SetupConsoleCommand : ICommand<SetupConsoleModel>
 
     public void Execute(SetupConsoleModel parameterObject)
     {
+        _logger.LogInformation("SetupConsoleCommand.Execute()");
         InitializeWindow();
         WritePrompt();
     }
