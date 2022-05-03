@@ -238,7 +238,7 @@ public class Scanner : IScanner
 
     private bool IsAlpha(char c)
     {
-        return c is >= 'a' and <= 'z' or >= 'A' and <= 'Z';
+        return char.IsLetter(c);
     }
 
     private void GetKeywordOrIdentifier()
@@ -548,7 +548,7 @@ public class Scanner : IScanner
 
     private bool IsDigit(char c)
     {
-        return c is >= '0' and <= '9';
+        return char.IsDigit(c);
     }
 
     private void GetString()
