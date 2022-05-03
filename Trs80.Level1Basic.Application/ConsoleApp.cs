@@ -65,7 +65,7 @@ public class ConsoleApp
 
     private string GetWorkflow(string workflow)
     {
-        _logger.LogTrace($"{workflow}");
+        _logger.LogTrace($"({workflow})");
             
         if (string.IsNullOrEmpty(workflow))
             workflow = "Interpreter";
@@ -76,7 +76,7 @@ public class ConsoleApp
     }
     private void RunWorkflow(string workflow)
     {
-        _logger.LogDebug($"{workflow}");
+        _logger.LogDebug($"({workflow})");
 
         _bootstrapper
             .WorkflowRunner

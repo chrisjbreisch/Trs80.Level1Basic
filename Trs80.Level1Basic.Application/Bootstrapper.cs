@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
+using Trs80.Level1Basic.Command;
 using Trs80.Level1Basic.Command.Commands;
 using Trs80.Level1Basic.CommandModels;
 using Trs80.Level1Basic.Interpreter;
@@ -84,27 +86,33 @@ public sealed class Bootstrapper : IDisposable
 
     private void ConfigureLogging()
     {
+        var config = new ConfigurationBuilder()
+            .SetBasePath(System.IO.Directory.GetCurrentDirectory())
+            .AddJsonFile("appSettings.json", optional: true, reloadOnChange: true)
+            .Build();
+
         LogFactory = LoggerFactory.Create(
             builder =>
                 builder
                     .ClearProviders()
                     .AddDebug()
-                    .SetMinimumLevel(LogLevel.Trace)
+                    .AddNLog()
+                    .SetMinimumLevel(LogLevel.Debug)
         );
     }
 
     private void LogConfiguredServices()
     {
-        _logger.LogDebug("Configured services = ");
+        _logger.LogTrace("Configured services = ");
         if (_services == null || _services.Count == 0)
-            _logger.LogDebug("null");
+            _logger.LogTrace("null");
         else
         {
             int penultimateIndex = _services.Count - 1;
             for (int index = 0; index < _services.Count; index++)
             {
                 string separator = index < penultimateIndex ? "," : "";
-                _logger.LogDebug(
+                _logger.LogTrace(
                     $"{_services[index].ServiceType}: {_services[index].ImplementationType ?? _services[index].ImplementationInstance}{separator}");
             }
         }
@@ -133,10 +141,10 @@ public sealed class Bootstrapper : IDisposable
 
     private void ConfigureDecorators()
     {
-        //_services
-        //    .Decorate<ICommand<InboundModel>, LogCommandDecorator<InboundModel>>()
-        //    .Decorate<ICommand<OutboundModel>, LogCommandDecorator<OutboundModel>>()
-        //    .Decorate<ICommand<WorkingConsoleModel>, LogCommandDecorator<WorkingConsoleModel>>();
+        _services
+            .Decorate<ICommand<SetupConsoleModel>, LogCommandDecorator<SetupConsoleModel>>()
+            .Decorate<ICommand<InterpreterModel>, LogCommandDecorator<InterpreterModel>>()
+            .Decorate<ICommand<ShutdownConsoleModel>, LogCommandDecorator<ShutdownConsoleModel>>();
     }
     
     private void ConfigureCommands()
@@ -183,7 +191,7 @@ public sealed class Bootstrapper : IDisposable
             .AddSingleton<IBasicInterpreter, BasicInterpreter>()
             .AddSingleton<IBasicEnvironment, BasicEnvironment>()
             .AddTransient<IConsole, Interpreter.Console>()
-            .AddSingleton<ISharedDataModel, SharedDataModel>()
+            .AddSingleton<IConsoleDataModel, ConsoleDataModel>()
             .AddSingleton<IProgram, Program>()
             .BuildServiceProvider();
     }

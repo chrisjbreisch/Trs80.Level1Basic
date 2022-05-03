@@ -12,7 +12,7 @@ public class SetupConsoleCommand : ICommand<SetupConsoleModel>
     private readonly ILogger _logger;
     private readonly IConsole _console;
 
-    public SetupConsoleCommand(ILoggerFactory logFactory, IConsole console, ISharedDataModel sharedDataModel)
+    public SetupConsoleCommand(ILoggerFactory logFactory, IConsole console, IConsoleDataModel sharedDataModel)
     {
         _logger = logFactory.CreateLogger<SetupConsoleCommand>();
         _console = console ?? throw new ArgumentNullException(nameof(console));

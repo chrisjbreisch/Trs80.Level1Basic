@@ -76,6 +76,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="nLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Samples\ParserTests\coin2.bas">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>

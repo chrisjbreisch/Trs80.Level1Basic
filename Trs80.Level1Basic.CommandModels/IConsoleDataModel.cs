@@ -2,7 +2,7 @@
 
 namespace Trs80.Level1Basic.CommandModels;
 
-public interface ISharedDataModel
+public interface IConsoleDataModel
 {
     ConsoleFont? OriginalConsoleFont { get; set; }
 }
