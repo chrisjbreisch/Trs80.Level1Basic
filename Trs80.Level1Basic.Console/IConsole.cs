@@ -1,8 +1,7 @@
 ﻿using System;
 using System.IO;
-using Trs80.Level1Basic.Console;
 
-namespace Trs80.Level1Basic.Interpreter
+namespace Trs80.Level1Basic.Console
 {
     public interface IConsole
     {
@@ -11,6 +10,7 @@ namespace Trs80.Level1Basic.Interpreter
         TextWriter Error { get; set; }
         void WriteLine(string text = "");
         void Write(string text);
+        void Write(char c);
         string ReadLine();
         void Clear();
         void SetCursorPosition(int column, int row);

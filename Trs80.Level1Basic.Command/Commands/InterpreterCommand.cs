@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 
 using Trs80.Level1Basic.CommandModels;
-using Trs80.Level1Basic.Interpreter;
+using Trs80.Level1Basic.Console;
 using Trs80.Level1Basic.Interpreter.Exceptions;
 using Trs80.Level1Basic.Interpreter.Interpreter;
 using Trs80.Level1Basic.Interpreter.Parser;

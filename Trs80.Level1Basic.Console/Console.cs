@@ -4,8 +4,6 @@ using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 
-using Trs80.Level1Basic.Interpreter;
-
 namespace Trs80.Level1Basic.Console;
 
 public class ConsoleFont
@@ -48,6 +46,8 @@ public class Console : IConsole
 
     public void Write(string text) => Out.Write(text);
 
+    public void Write(char c) => Out.Write(c);
+
     public string ReadLine() => In.ReadLine();
 
     public void Clear()
@@ -56,7 +56,11 @@ public class Console : IConsole
         Fill(0, 0, ScreenPixelWidth - 1, ScreenPixelHeight - 1, false);
     }
 
-    public void SetCursorPosition(int column, int row) => System.Console.SetCursorPosition(column, row);
+    public void SetCursorPosition(int column, int row)
+    {
+        System.Console.SetCursorPosition(column, row);
+    }
+
     public (int Left, int Top) GetCursorPosition()
     {
         return System.Console.GetCursorPosition();

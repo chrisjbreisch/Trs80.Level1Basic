@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 using System.Threading;
-
+using Trs80.Level1Basic.Console;
 using Trs80.Level1Basic.Interpreter.Exceptions;
 using Trs80.Level1Basic.Interpreter.Parser;
 using Trs80.Level1Basic.Interpreter.Parser.Expressions;

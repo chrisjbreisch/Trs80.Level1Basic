@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
+using Trs80.Level1Basic.Console;
 using Trs80.Level1Basic.Interpreter.Parser;
 using Trs80.Level1Basic.Interpreter.Parser.Statements;
 using Trs80.Level1Basic.Interpreter.Scanner;
@@ -77,8 +77,37 @@ public class BasicEnvironment : IBasicEnvironment
 
     public void ListProgram(int lineNumber)
     {
+        int index = 0;
+        bool exitList = false;
         foreach (ParsedLine line in Program.List().Where(s => s.LineNumber >= lineNumber))
+        {
             _console.WriteLine(line.LineNumber > 0 ? $" {line.LineNumber}  {line.SourceLine}" : $"{line.SourceLine}");
+            index++;
+            if (index < 12) continue;
+
+            bool readAnotherKey = true;
+            while (readAnotherKey)
+            {
+                ConsoleKeyInfo key = _console.ReadKey();
+
+                if (key.Key == ConsoleKey.Enter)
+                {
+                    _console.WriteLine();
+                    exitList = true;
+                    break;
+                }
+
+                if (key.Key == ConsoleKey.UpArrow)
+                {
+                    readAnotherKey = false;
+                    continue;
+                }
+                _console.Write(key.KeyChar);
+            }
+
+            if (exitList)
+                break;
+        }
     }
 
     public void SaveProgram(string path)
@@ -87,7 +116,8 @@ public class BasicEnvironment : IBasicEnvironment
         using var newWriter = new StreamWriter(path);
         _console.Out = newWriter;
 
-        ListProgram(0);
+        foreach (ParsedLine line in Program.List())
+            _console.WriteLine(line.LineNumber > 0 ? $" {line.LineNumber}  {line.SourceLine}" : $"{line.SourceLine}");
 
         _console.Out = oldWriter;
     }

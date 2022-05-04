@@ -12,6 +12,7 @@ using NLog.Extensions.Logging;
 using Trs80.Level1Basic.Command;
 using Trs80.Level1Basic.Command.Commands;
 using Trs80.Level1Basic.CommandModels;
+using Trs80.Level1Basic.Console;
 using Trs80.Level1Basic.Interpreter;
 using Trs80.Level1Basic.Interpreter.Interpreter;
 using Trs80.Level1Basic.Interpreter.Parser;
