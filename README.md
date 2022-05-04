@@ -78,3 +78,30 @@ Which will of course output:
 >  
 > READY  
 > \>_
+
+## Contents
+- Visual Studio 2022 Solution with all the code. I'm sure it can be built in Visual Studio Code, but I've not attempted it. If I get the time, I'll work 
+on that and supply directions.
+- David Lien's book in PDF form.
+- All of the samples and exercises from the book, excluding the progams in Appendix B, which are mostly worthless. I will tell you that programs that
+depend on timing are likely not going to work very well. On the original TRS-80, the book advises you to create a tight loop in BASIC counting to 500, and that
+will take about a second. Even in my interpreter, I was about to create a tight loop that counted to 2,000,000 that ran in about a second. YMMV. I have replaced
+the delays in the code in most places, but for some it just doesn't work. And the graphics programs just expect your computer to be slow. There are no delays
+built in.
+
+If you don't want to read the book, and just want to play, I'm mimicking the final page of the book here, which should be just enough to get you started
+
+## ** Summary of LEVEL 1 BASIC **
+| **Command** | **Purpose**                                                 | **Example**                    | **Detailed in |
+|             |                                                             |                                | Chapter(s)**  |
+|-------------|--------------------------------------------------------------------------------------------------------------|
+| NEW         | Clears out all program lines stored in memory               | NEW (not part of program)      | 1             |
+| RUN         | Starts program execution at lowest-numbered line            | RUN (not part of program)      | 1             |
+| RUN ###     | Starts program execution at specified line number.          | RUN 300 (not part of program)  | 11            |
+| LIST        | Displays the first 12 program lines stored in               |                                |               |
+|             | memory, starting at lowest numbered line. Use up            |                                |               |
+|             | arrow key to display higher numbered lines (if any)         | LIST (not part of program)     | 2             |
+| LIST ###    | Same as LIST, but starts at specific line number            | LIST 300 (not part of program) | 11            |
+| CONT        | Continues program execution when BREAK AT ### is displayed  | CONT (not part of program)     | 11            |
+
+
