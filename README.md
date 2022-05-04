@@ -67,17 +67,19 @@ it looks like one. You get the standard READY prompt, and you just start typing 
 
 It looks like this:
 
-> READY  
-> \>_
+>READY  
+>\>_
 
 And, for exmple, here's the first program from the book:
-> \>10 PRINT "HELLO THERE. I AM YOUR NEW TRS-80 MICROCOMPUTER."
+>\>10 PRINT "HELLO THERE. I AM YOUR NEW TRS-80 MICROCOMPUTER."
 
-Which will of course output:
+To run the program, just type `RUN`. Which will produce the following:
+>RUN
+>
 > HELLO THERE. I AM YOUR NEW TRS-80 MICROCOMPUTER.  
 >  
-> READY  
-> \>_
+>READY  
+>\>_
 
 ## Contents
 - Visual Studio 2022 Solution with all the code. I'm sure it can be built in Visual Studio Code, but I've not attempted it. If I get the time, I'll work 
@@ -93,13 +95,16 @@ If you don't want to read the book, and just want to play, I'm mimicking the fin
 
 ## Summary of LEVEL 1 BASIC
 
-|   **Command**   |   **Purpose**                                                   |   **Exanple**                 |   **Detailed in Chapter(s)**   |
-|-------------|-------------------------------------------------------------|--------------------------------|:--------------------------:|
-| NEW         | Clears out all program lines stored in memory               | NEW (not part of program)      | 1                          |
-| RUN         | Starts program execution at lowest-numbered line            | RUN (not part of program)      | 1                          |
-| RUN ###     | Starts program execution at specified line number.          | RUN 300 (not part of program)  | 11                         |
+|   **Command**   |   **Purpose**                                          |   **Exanple**                 |   **Detailed in Chapter(s)**   |
+|-------------|----------------------------------------------------|--------------------------------|:--------------------------:|
+| NEW         | Clears out all program lines stored in memory      | NEW (not part of program)      | 1                          |
+| RUN         | Starts program execution at lowest-numbered line   | RUN (not part of program)      | 1                          |
+| RUN ###     | Starts program execution at specified line number. | RUN 300 (not part of program)  | 11                         |
 | LIST        | Displays the first 12 program lines stored in memory, starting at lowest numbered line. Use up arrow key to display higher numbered lines (if any)  | LIST (not part of program)     | 2                          |
-| LIST ###    | Same as LIST, but starts at specific line number            | LIST 300 (not part of program) | 11                         |
-| CONT        | Continues program execution when BREAK AT ### is displayed  | CONT (not part of program)     | 11                         |
+| LIST ###    | Same as LIST, but starts at specific line number   | LIST 300 (not part of program) | 11                         |
+| CONT        | Continues program execution when BREAK AT ### is displayed | CONT (not part of program)     | 11                         |
 
 
+|   **Statement**   |   **Purpose**                                          |   **Exanple**                 |   **Detailed in Chapter(s)**   |
+|-------------|----------------------------------------------------|--------------------------------|:--------------------------:|
+| PRINT       | Print value of a variable or expression; also prints whatever is inside quotes | 10 PRINT "A+B=";A+B              | 1,2,3                      |

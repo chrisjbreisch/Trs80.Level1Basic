@@ -37,6 +37,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EB5F1053-2F8B-439E-ABF0-303B782EDAB9}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.Win32Api", "Trs80.Level1Basic.Win32Api\Trs80.Level1Basic.Win32Api.csproj", "{78871EF1-A433-4018-BF31-AA3C40EFC6D8}"
