@@ -93,9 +93,9 @@ If you don't want to read the book, and just want to play, I'm mimicking the fin
 
 ## Summary of LEVEL 1 BASIC
 
-|   Command   |   Purpose                                      |   Exanple   |   Detailed in Chapter(s)   |
-|-------------|------------------------------------------------|-------------|----------------------------|
-| NEW         | Clears out all program lines stored in memory  | test        | test                       |
+|   Command   |   Purpose                                      |   Exanple                 |   Detailed in Chapter(s)   |
+|-------------|------------------------------------------------|---------------------------|:--------------------------:|
+| NEW         | Clears out all program lines stored in memory  | NEW (not part of program) | 1                          |
 
 
 | **Command** | **Purpose**                                                 | **Example**                    | **Detailed in<br />Chapters** |
