@@ -23,6 +23,6 @@ code off and on for about two years, and it's just now in a state where I feel l
 
 After I got David Lien's book, and decided I wanted to write an interpreter, I dug up some of my old textbooks on the subject, but they seemed inadequeate.
 They weren't written in the days of Object Oriented programming and were in C (or even Pascal!), and really showed their age. So, I started perusing the net
-and came across this wonderful website [Crafting Interpreters] (http://craftinginterpreters.com/) owned and created by Robert Nystrom. There's a book, too: 
-[Crafting Interpreters] (https://smile.amazon.com/gp/product/0990582930/ref=ppx_od_dt_b_asin_title_s00?ie=UTF8&psc=1), currently the #1 Best Seller in 
-[Software Programming Compilers] (https://smile.amazon.com/gp/bestsellers/books/3971/ref=zg_b_bs_3971_1) on (Amazon) [https://www.amazon.com].
+and came across this wonderful website [Crafting Interpreters](http://craftinginterpreters.com/) owned and created by Robert Nystrom. There's a book, too: 
+[Crafting Interpreters](https://smile.amazon.com/gp/product/0990582930/ref=ppx_od_dt_b_asin_title_s00?ie=UTF8&psc=1), currently the #1 Best Seller in 
+[Software Programming Compilers](https://smile.amazon.com/gp/bestsellers/books/3971/ref=zg_b_bs_3971_1) on (Amazon) [https://www.amazon.com].
