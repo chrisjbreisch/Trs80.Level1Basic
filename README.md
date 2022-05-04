@@ -93,7 +93,7 @@ If you don't want to read the book, and just want to play, I'm mimicking the fin
 
 ## Summary of LEVEL 1 BASIC
 
-| foo | bar |
+| **foo** | **bar** |
 |-----|-----|
 | baz | bim |
 
