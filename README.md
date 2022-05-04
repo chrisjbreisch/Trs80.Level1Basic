@@ -74,9 +74,8 @@ And, for exmple, here's the first program from the book:
 >\>10 PRINT "HELLO THERE. I AM YOUR NEW TRS-80 MICROCOMPUTER."
 
 To run the program, just type `RUN`. Which will produce the following:
->RUN
->
-> HELLO THERE. I AM YOUR NEW TRS-80 MICROCOMPUTER.  
+>\>RUN
+>HELLO THERE. I AM YOUR NEW TRS-80 MICROCOMPUTER.  
 >  
 >READY  
 >\>_

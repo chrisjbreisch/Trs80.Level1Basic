@@ -13,7 +13,7 @@ public interface IBasicEnvironment
     dynamic AssignArray(string name, int index, dynamic value);
     dynamic GetVariable(string name);
     bool VariableExists(string name);
-    FunctionDefinition GetFunctionDefinition(string name);
+    List<FunctionDefinition> GetFunctionDefinition(string name);
     void InitializeProgram();
     void ListProgram(int lineNumber);
     void SaveProgram(string path);

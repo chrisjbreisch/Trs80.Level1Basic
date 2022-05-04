@@ -54,6 +54,8 @@ public class Scanner : IScanner
                 2, new Dictionary<string, TokenType>
                 {
                     {"at", TokenType.At},
+                    {"a.", TokenType.At},
+                    {"c.", TokenType.Cont},
                     {"d.", TokenType.Data},
                     {"e.", TokenType.End},
                     {"f.", TokenType.For},
@@ -67,7 +69,6 @@ public class Scanner : IScanner
                     {"s.", TokenType.Step},
                     {"t.", TokenType.T},
                     {"to", TokenType.To},
-                   // {"t.", TokenType.T},
                 }
             },
             {

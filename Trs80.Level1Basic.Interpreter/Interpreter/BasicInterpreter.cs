@@ -99,7 +99,8 @@ public class BasicInterpreter : IBasicInterpreter
     {
         var arguments = call.Arguments.Select(argument => Evaluate(argument)).ToList();
 
-        FunctionDefinition function = _environment.GetFunctionDefinition(call.Name.Lexeme);
+        FunctionDefinition function = _environment
+            .GetFunctionDefinition(call.Name.Lexeme).First(f => f.Arity == arguments.Count);
 
         return function.Call(this, arguments);
     }
@@ -406,11 +407,11 @@ public class BasicInterpreter : IBasicInterpreter
 
     private void PrependSpaceIfNecessary(dynamic value, int position)
     {
-        bool isNegativeNumber = value is int or float && value < 0;
+        bool isNotNegativeNumber = value is not (int or float) || value >= 0;
 
         if (_lastCharacterIsSpace) return;
 
-        if (position == 0 && isNegativeNumber) return;
+        if (position == 0 || isNotNegativeNumber) return;
 
         if (value is string str && str.StartsWith(" ")) return;
 

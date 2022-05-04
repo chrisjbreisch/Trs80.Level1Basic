@@ -29,12 +29,16 @@ public class InterpreterCommand : ICommand<InterpreterModel>
 
     public void Execute(InterpreterModel parameterObject)
     {
-        bool done = false;
-        while (!done)
+        while (true)
         {
             _console.Write(">");
             string inputLine = GetInputLine();
-            done = ExecuteInput(inputLine);
+            if (string.IsNullOrEmpty(inputLine)) continue;
+            if (inputLine.ToLower() == "exit") break;
+
+            List<Token>? tokens = ScanLine(inputLine);
+            ParsedLine? parsedLine = ParseTokens(tokens);
+            InterpretParsedLine(parsedLine);
         }
     }
 
@@ -74,19 +78,7 @@ public class InterpreterCommand : ICommand<InterpreterModel>
 
         return charCount <= 0 ? string.Empty : new string(input, 0, charCount);
     }
-
-    private bool ExecuteInput(string input)
-    {
-        if (string.IsNullOrEmpty(input)) return false;
-        if (input.ToLower() == "exit") return true;
-
-        List<Token>? tokens = ScanLine(input);
-        ParsedLine? parsedLine = ParseTokens(tokens);
-        InterpretParsedLine(parsedLine);
-
-        return false;
-    }
-
+    
     private void InterpretParsedLine(ParsedLine? parsedLine)
     {
         if (parsedLine == null) return;

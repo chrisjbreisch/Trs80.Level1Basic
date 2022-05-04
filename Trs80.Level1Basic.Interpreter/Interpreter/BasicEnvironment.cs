@@ -63,7 +63,7 @@ public class BasicEnvironment : IBasicEnvironment
         return _globals.Exists(name);
     }
 
-    public FunctionDefinition GetFunctionDefinition(string name)
+    public List<FunctionDefinition> GetFunctionDefinition(string name)
     {
         try
         {

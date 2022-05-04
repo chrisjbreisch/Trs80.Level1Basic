@@ -582,10 +582,10 @@ public class Parser : IParser
         Token previous = Previous();
         if (previous.Type != TokenType.Identifier) return expression;
 
-        FunctionDefinition function = _builtins.Get(previous.Lexeme);
-        if (function == null) return expression;
+        List<FunctionDefinition> functions = _builtins.Get(previous.Lexeme);
+        if (functions == null) return expression;
 
-        if (function.Arity == 0)
+        if (functions.Any(f => f.Arity == 0))
             return new Call(name, new List<Expression>());
 
         throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
@@ -620,13 +620,12 @@ public class Parser : IParser
 
     private void CheckArgs(Token name, List<Expression> arguments)
     {
-        FunctionDefinition function = _builtins.Get(name.Lexeme);
-        if (function == null)
-            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, $"Unknown function '{name.Lexeme}'");
+        FunctionDefinition function =
+            _builtins.Get(name.Lexeme).FirstOrDefault(f => f.Arity == arguments.Count);
 
-        if (arguments.Count != function.Arity)
-            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
-                $"Invalid number of arguments passed to function '{name.Lexeme}'");
+        if (function == null)
+            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, 
+                $"Unknown function '{name.Lexeme}' with argument count {arguments.Count}");
     }
 
     private Expression Primary()
