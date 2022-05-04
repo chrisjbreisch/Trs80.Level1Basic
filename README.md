@@ -93,9 +93,9 @@ If you don't want to read the book, and just want to play, I'm mimicking the fin
 
 ## Summary of LEVEL 1 BASIC
 
-| **foo** | **bar** |
-|-----|-----|
-| baz | bim |
+|   Command   |   Purpose   |   Exanple   |   Detailed in Chapter(s)   |
+|-------------|-------------|-------------|----------------------------|
+| baz         | bim         | test        | test                       |
 
 
 | **Command** | **Purpose**                                                 | **Example**                    | **Detailed in<br />Chapters** |
