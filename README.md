@@ -93,20 +93,13 @@ If you don't want to read the book, and just want to play, I'm mimicking the fin
 
 ## Summary of LEVEL 1 BASIC
 
-|   **Command**   |   **Purpose**                                      |   **Exanple**                 |   **Detailed in Chapter(s)**   |
-|-------------|------------------------------------------------|---------------------------|:--------------------------:|
-| NEW         | Clears out all program lines stored in memory  | NEW (not part of program) | 1                          |
-
-
-| **Command** | **Purpose**                                                 | **Example**                    | **Detailed in<br />Chapters** |
-|-------------|-----------------------------------------------------------------------------------------------:-------------:|
-| NEW         | Clears out all program lines stored in memory               | NEW (not part of program)      | 1             |
-| RUN         | Starts program execution at lowest-numbered line            | RUN (not part of program)      | 1             |
-| RUN ###     | Starts program execution at specified line number.          | RUN 300 (not part of program)  | 11            |
-| LIST        | Displays the first 12 program lines stored in               |                                |               |
-|             | memory, starting at lowest numbered line. Use up            |                                |               |
-|             | arrow key to display higher numbered lines (if any)         | LIST (not part of program)     | 2             |
-| LIST ###    | Same as LIST, but starts at specific line number            | LIST 300 (not part of program) | 11            |
-| CONT        | Continues program execution when BREAK AT ### is displayed  | CONT (not part of program)     | 11            |
+|   **Command**   |   **Purpose**                                                   |   **Exanple**                 |   **Detailed in Chapter(s)**   |
+|-------------|-------------------------------------------------------------|--------------------------------|:--------------------------:|
+| NEW         | Clears out all program lines stored in memory               | NEW (not part of program)      | 1                          |
+| RUN         | Starts program execution at lowest-numbered line            | RUN (not part of program)      | 1                          |
+| RUN ###     | Starts program execution at specified line number.          | RUN 300 (not part of program)  | 11                         |
+| LIST        | Displays the first 12 program lines stored in memory, starting at lowest numbered line. Use up arrow key to display higher numbered lines (if any)  | LIST (not part of program)     | 2                          |
+| LIST ###    | Same as LIST, but starts at specific line number            | LIST 300 (not part of program) | 11                         |
+| CONT        | Continues program execution when BREAK AT ### is displayed  | CONT (not part of program)     | 11                         |
 
 
