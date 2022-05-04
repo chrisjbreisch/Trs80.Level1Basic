@@ -67,14 +67,14 @@ it looks like one. You get the standard READY prompt, and you just start typing 
 
 It looks like this:
 
-> READY
+> READY  
 > \>_
 
 And, for exmple, here's the first program from the book:
 > \>10 PRINT "HELLO THERE. I AM YOUR NEW TRS-80 MICROCOMPUTER."
 
 Which will of course output:
-> HELLO THERE. I AM YOUR NEW TRS-80 MICROCOMPUTER.
->
-> READY
+> HELLO THERE. I AM YOUR NEW TRS-80 MICROCOMPUTER.  
+>  
+> READY  
 > \>_
