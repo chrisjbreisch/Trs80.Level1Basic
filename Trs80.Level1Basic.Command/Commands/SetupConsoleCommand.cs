@@ -1,33 +1,29 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.Extensions.Logging;
 
 using Trs80.Level1Basic.CommandModels;
 using Trs80.Level1Basic.Interpreter;
 
 namespace Trs80.Level1Basic.Command.Commands;
 
-[SuppressMessage("ReSharper", "NotAccessedField.Local")]
+[SuppressMessage("ReSharper", "UnusedMember.Global")]
 public class SetupConsoleCommand : ICommand<SetupConsoleModel>
 {
-    private readonly ILogger _logger;
     private readonly IConsole _console;
 
-    public SetupConsoleCommand(ILoggerFactory logFactory, IConsole console, IConsoleDataModel sharedDataModel)
+    public SetupConsoleCommand(IConsole console, IConsoleDataModel consoleDataModel)
     {
-        _logger = logFactory.CreateLogger<SetupConsoleCommand>();
         _console = console ?? throw new ArgumentNullException(nameof(console));
 
-        if (sharedDataModel is null) throw new ArgumentNullException(nameof(sharedDataModel));
-        sharedDataModel.OriginalConsoleFont = _console.GetCurrentFont();
+        if (consoleDataModel is null) throw new ArgumentNullException(nameof(consoleDataModel));
+        consoleDataModel.OriginalConsoleFont = _console.GetCurrentFont();
     }
 
-    public void Execute(SetupConsoleModel parameterObject)
+    public void Execute(SetupConsoleModel model)
     {
-        _logger.LogInformation("SetupConsoleCommand.Execute()");
         InitializeWindow();
         WritePrompt();
     }
-    
+
     private void InitializeWindow()
     {
         _console.InitializeWindow();

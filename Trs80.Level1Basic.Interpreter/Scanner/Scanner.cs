@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Trs80.Level1Basic.Interpreter.Exceptions;
 using Trs80.Level1Basic.Interpreter.Interpreter;
 
@@ -345,9 +346,9 @@ public class Scanner : IScanner
                      .Select(d => d.Value)
                      .Any(kw => kw.ContainsKey(identifier)))
             AddToken(TokenType.String, identifier);
-            //throw new ScanException(
-            //    _source.Substring(0, TokenStart + 1) + "?" +
-            //    _source.Substring(TokenStart + 1, _source.Length - TokenStart - 1));
+        //throw new ScanException(
+        //    _source.Substring(0, TokenStart + 1) + "?" +
+        //    _source.Substring(TokenStart + 1, _source.Length - TokenStart - 1));
     }
 
     private void Add6PlusCharsToken()
@@ -370,7 +371,7 @@ public class Scanner : IScanner
 
     private void AddKeywordToken()
     {
-        var keyword = GetKeywordAtPosition();
+        TokenType keyword = GetKeywordAtPosition();
         if (keyword == TokenType.Backup) return;
 
         AddToken(keyword);
@@ -378,7 +379,7 @@ public class Scanner : IScanner
 
     private void Add3CharToken()
     {
-        var keyword = GetKeywordAtPosition();
+        TokenType keyword = GetKeywordAtPosition();
         if (keyword == TokenType.Backup) return;
 
         switch (keyword)
@@ -394,7 +395,7 @@ public class Scanner : IScanner
 
     private void Add4CharToken()
     {
-        var keyword = GetKeywordAtPosition();
+        TokenType keyword = GetKeywordAtPosition();
         if (keyword == TokenType.Backup) return;
 
         switch (keyword)
@@ -444,7 +445,7 @@ public class Scanner : IScanner
         string key = _source.Substring(TokenStart, TokenLength).ToLower();
         try
         {
-            var keyword = KeywordsByLetter[TokenLength][key];
+            TokenType keyword = KeywordsByLetter[TokenLength][key];
             return keyword;
         }
         catch

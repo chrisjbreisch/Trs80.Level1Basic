@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.Extensions.Logging;
 
 using Trs80.Level1Basic.CommandModels;
 using Trs80.Level1Basic.Interpreter;
@@ -11,19 +10,17 @@ using Trs80.Level1Basic.Interpreter.Scanner;
 
 namespace Trs80.Level1Basic.Command.Commands;
 
-[SuppressMessage("ReSharper", "NotAccessedField.Local")]
+[SuppressMessage("ReSharper", "UnusedMember.Global")]
 public class InterpreterCommand : ICommand<InterpreterModel>
 {
-    private readonly ILogger _logger;
     private readonly IScanner _scanner;
     private readonly IParser _parser;
     private readonly IBasicInterpreter _interpreter;
     private readonly IConsole _console;
 
-    public InterpreterCommand(ILoggerFactory logFactory, IScanner scanner, IParser parser,
+    public InterpreterCommand(IScanner scanner, IParser parser,
         IBasicInterpreter interpreter, IConsole console)
     {
-        _logger = logFactory.CreateLogger<InterpreterCommand>();
         _scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
         _parser = parser ?? throw new ArgumentNullException(nameof(parser));
         _interpreter = interpreter ?? throw new ArgumentNullException(nameof(interpreter));
@@ -54,7 +51,7 @@ public class InterpreterCommand : ICommand<InterpreterModel>
 
         while (true)
         {
-            var key = _console.ReadKey();
+            ConsoleKeyInfo key = _console.ReadKey();
 
             if (key.Key == ConsoleKey.Enter)
             {
@@ -84,7 +81,7 @@ public class InterpreterCommand : ICommand<InterpreterModel>
         if (input.ToLower() == "exit") return true;
 
         List<Token>? tokens = ScanLine(input);
-        var parsedLine = ParseTokens(tokens);
+        ParsedLine? parsedLine = ParseTokens(tokens);
         InterpretParsedLine(parsedLine);
 
         return false;

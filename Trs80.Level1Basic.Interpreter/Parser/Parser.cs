@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+
 using Trs80.Level1Basic.Interpreter.Exceptions;
 using Trs80.Level1Basic.Interpreter.Interpreter;
 using Trs80.Level1Basic.Interpreter.Parser.Expressions;
@@ -35,7 +36,7 @@ public class Parser : IParser
     private ParsedLine Line()
     {
         _currentLine = new ParsedLine();
-        var lineNumber = Peek();
+        Token lineNumber = Peek();
 
         _currentLine.LineNumber = GetLineNumberValue(lineNumber);
 
@@ -161,9 +162,8 @@ public class Parser : IParser
     {
         var elements = new List<Expression>();
         do
-        {
             elements.Add(Expression());
-        } while (Match(TokenType.Comma));
+        while (Match(TokenType.Comma));
 
         return StatementWrapper(new Data(elements), lineNumber);
     }
@@ -175,22 +175,21 @@ public class Parser : IParser
 
     private Statement GosubStatement(Token lineNumber)
     {
-        var location = Expression();
+        Expression location = Expression();
         return StatementWrapper(new Gosub(location), lineNumber);
     }
 
     private Statement OnStatement(Token lineNumber)
     {
-        var selector = Expression();
+        Expression selector = Expression();
         bool isGosub = false;
         var locations = new List<Expression>();
 
         if (Match(TokenType.Goto))
         {
             do
-            {
                 locations.Add(Expression());
-            } while (Match(TokenType.Comma));
+            while (Match(TokenType.Comma));
 
             while (!IsAtEnd())
                 Advance();
@@ -199,9 +198,8 @@ public class Parser : IParser
         {
             isGosub = true;
             do
-            {
                 locations.Add(Expression());
-            } while (Match(TokenType.Comma));
+            while (Match(TokenType.Comma));
 
             while (!IsAtEnd())
                 Advance();
@@ -233,7 +231,7 @@ public class Parser : IParser
 
     private Statement GotoStatement(Token lineNumber)
     {
-        var location = Expression();
+        Expression location = Expression();
         return StatementWrapper(new Goto(location), lineNumber);
     }
 
@@ -248,20 +246,20 @@ public class Parser : IParser
             throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
                 "Expected variable name after 'NEXT'.");
 
-        var identifier = Identifier();
+        Expression identifier = Identifier();
 
         return StatementWrapper(new Next(identifier), lineNumber);
     }
 
     private Statement ForStatement(Token lineNumber)
     {
-        var identifier = Identifier();
+        Expression identifier = Identifier();
 
         Consume(TokenType.Equal, "Expected assignment.");
 
-        var startValue = Expression();
+        Expression startValue = Expression();
         Consume(TokenType.To, "Expected TO");
-        var endValue = Expression();
+        Expression endValue = Expression();
 
         Expression stepValue;
         if (Peek().Type == TokenType.Step)
@@ -323,18 +321,18 @@ public class Parser : IParser
 
     private Statement IfStatement(Token lineNumber)
     {
-        var condition = Expression();
+        Expression condition = Expression();
 
         if (!Match(TokenType.Then, TokenType.Goto, TokenType.T, TokenType.Gosub) && Peek().Type == TokenType.Number)
             throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
                 "Expected 'THEN' or 'GOTO' before line number in 'IF' statement.");
 
-        var thenStatement =
+        Statement thenStatement =
             Peek().Type == TokenType.Number ?
                 new Goto(Expression()) :
                 Statement(lineNumber);
 
-        var savedThenStatement = thenStatement;
+        Statement savedThenStatement = thenStatement;
 
         while (Match(TokenType.Colon))
         {
@@ -347,7 +345,7 @@ public class Parser : IParser
 
     private Statement SaveStatement()
     {
-        var path = !IsAtEnd() ? Expression() : SaveFileDialog();
+        Expression path = !IsAtEnd() ? Expression() : SaveFileDialog();
 
         return new Save(path);
     }
@@ -370,13 +368,13 @@ public class Parser : IParser
 
     private Statement LoadStatement()
     {
-        var path = !IsAtEnd() ? Expression() : OpenFileDialog();
+        Expression path = !IsAtEnd() ? Expression() : OpenFileDialog();
         return new Load(path);
     }
 
     private Statement MergeStatement()
     {
-        var path = !IsAtEnd() ? Expression() : OpenFileDialog();
+        Expression path = !IsAtEnd() ? Expression() : OpenFileDialog();
         return new Merge(path);
     }
 
@@ -402,26 +400,26 @@ public class Parser : IParser
 
     private Statement ListStatement()
     {
-        var value = !IsAtEnd() ? Expression() : new Literal(0);
+        Expression value = !IsAtEnd() ? Expression() : new Literal(0);
         return new List(value);
     }
 
     private Statement RunStatement()
     {
-        var value = !IsAtEnd() ? Expression() : new Literal(0);
+        Expression value = !IsAtEnd() ? Expression() : new Literal(0);
         return new Run(value);
     }
 
     private Statement ExpressionStatement()
     {
-        var expression = Expression();
+        Expression expression = Expression();
         return new StatementExpression(expression);
     }
 
     private Statement LetStatement(Token lineNumber)
     {
-        var peek = Peek();
-        var peekNext = PeekNext();
+        Token peek = Peek();
+        Token peekNext = PeekNext();
 
         if (peek.Type != TokenType.Identifier)
             throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
@@ -429,17 +427,17 @@ public class Parser : IParser
 
         if (peekNext.Type != TokenType.Equal && _builtins.Get(peek.Lexeme) != null) return StatementWrapper(new StatementExpression(Call()), lineNumber);
 
-        var identifier = Identifier();
+        Expression identifier = Identifier();
 
         Consume(TokenType.Equal, "Expected assignment.");
 
-        var value = Expression();
+        Expression value = Expression();
         return StatementWrapper(new Let(identifier, value), lineNumber);
     }
 
     private Expression Identifier()
     {
-        var peek = Peek();
+        Token peek = Peek();
 
         if (peek.Type != TokenType.Identifier)
             throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
@@ -449,7 +447,7 @@ public class Parser : IParser
 
         if (!Match(TokenType.LeftParen)) return new Identifier(peek);
 
-        var index = Expression();
+        Expression index = Expression();
         Consume(TokenType.RightParen, "Expected ')' after array index");
         return new BasicArray(peek, index);
     }
@@ -524,13 +522,13 @@ public class Parser : IParser
 
     private Expression Comparison()
     {
-        var left = Term();
+        Expression left = Term();
         while (Match(TokenType.LessThanOrEqual, TokenType.LessThan,
                    TokenType.GreaterThanOrEqual, TokenType.GreaterThan,
                    TokenType.NotEqual, TokenType.Equal))
         {
-            var operatorType = Previous();
-            var right = Term();
+            Token operatorType = Previous();
+            Expression right = Term();
             left = new Binary(left, operatorType, right);
         }
 
@@ -539,11 +537,11 @@ public class Parser : IParser
 
     private Expression Term()
     {
-        var left = Factor();
+        Expression left = Factor();
         while (Match(TokenType.Minus, TokenType.Plus))
         {
-            var operatorType = Previous();
-            var right = Factor();
+            Token operatorType = Previous();
+            Expression right = Factor();
             left = new Binary(left, operatorType, right);
         }
 
@@ -552,11 +550,11 @@ public class Parser : IParser
 
     private Expression Factor()
     {
-        var left = Unary();
+        Expression left = Unary();
         while (Match(TokenType.Slash, TokenType.Star))
         {
-            var operatorType = Previous();
-            var right = Unary();
+            Token operatorType = Previous();
+            Expression right = Unary();
             left = new Binary(left, operatorType, right);
         }
 
@@ -567,24 +565,24 @@ public class Parser : IParser
     {
         if (!Match(TokenType.Minus)) return Call();
 
-        var operatorType = Previous();
-        var right = Unary();
+        Token operatorType = Previous();
+        Expression right = Unary();
         return new Unary(operatorType, right);
     }
 
     private Expression Call()
     {
-        var name = Peek();
+        Token name = Peek();
 
-        var expression = Primary();
+        Expression expression = Primary();
 
         if (Match(TokenType.LeftParen) && name.Type == TokenType.Identifier)
             return _builtins.Get(name.Lexeme) != null ? FinishCall(name) : FinishArray(name);
 
-        var previous = Previous();
+        Token previous = Previous();
         if (previous.Type != TokenType.Identifier) return expression;
 
-        var function = _builtins.Get(previous.Lexeme);
+        FunctionDefinition function = _builtins.Get(previous.Lexeme);
         if (function == null) return expression;
 
         if (function.Arity == 0)
@@ -600,9 +598,8 @@ public class Parser : IParser
 
         if (!Check(TokenType.RightParen))
             do
-            {
                 arguments.Add(Expression());
-            } while (Match(TokenType.Comma));
+            while (Match(TokenType.Comma));
 
         Consume(TokenType.RightParen, "Expected ')' after arguments");
 
@@ -613,7 +610,7 @@ public class Parser : IParser
 
     private Expression FinishArray(Token name)
     {
-        var index = Expression();
+        Expression index = Expression();
 
         Consume(TokenType.RightParen,
             "Expected ')' after arguments");
@@ -623,7 +620,7 @@ public class Parser : IParser
 
     private void CheckArgs(Token name, List<Expression> arguments)
     {
-        var function = _builtins.Get(name.Lexeme);
+        FunctionDefinition function = _builtins.Get(name.Lexeme);
         if (function == null)
             throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, $"Unknown function '{name.Lexeme}'");
 
@@ -639,7 +636,7 @@ public class Parser : IParser
 
         if (Match(TokenType.LeftParen))
         {
-            var expression = Expression();
+            Expression expression = Expression();
             Consume(TokenType.RightParen, "Expected ')' after expression.");
             return new Grouping(expression);
         }

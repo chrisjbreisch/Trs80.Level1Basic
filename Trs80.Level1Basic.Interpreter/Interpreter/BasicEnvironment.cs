@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using Trs80.Level1Basic.Interpreter.Parser;
 using Trs80.Level1Basic.Interpreter.Parser.Statements;
 using Trs80.Level1Basic.Interpreter.Scanner;
@@ -76,13 +77,13 @@ public class BasicEnvironment : IBasicEnvironment
 
     public void ListProgram(int lineNumber)
     {
-        foreach (var line in Program.List().Where(s => s.LineNumber >= lineNumber))
+        foreach (ParsedLine line in Program.List().Where(s => s.LineNumber >= lineNumber))
             _console.WriteLine(line.LineNumber > 0 ? $" {line.LineNumber}  {line.SourceLine}" : $"{line.SourceLine}");
     }
 
     public void SaveProgram(string path)
     {
-        var oldWriter = _console.Out;
+        TextWriter oldWriter = _console.Out;
         using var newWriter = new StreamWriter(path);
         _console.Out = newWriter;
 
@@ -97,7 +98,7 @@ public class BasicEnvironment : IBasicEnvironment
         while (!reader.EndOfStream)
         {
             List<Token> tokens = _scanner.ScanTokens(reader.ReadLine());
-            var line = _parser.Parse(tokens);
+            ParsedLine line = _parser.Parse(tokens);
             Program.AddLine(line);
         }
     }
@@ -120,7 +121,7 @@ public class BasicEnvironment : IBasicEnvironment
             statement = _nextStatement;
         }
     }
-    
+
     public int MemoryInUse()
     {
         return Program.Size();
@@ -130,7 +131,7 @@ public class BasicEnvironment : IBasicEnvironment
     {
         return Program.GetExecutableStatement(lineNumber);
     }
-    
+
     public void SetNextStatement(Statement statement)
     {
         _nextStatement = statement;
@@ -145,7 +146,7 @@ public class BasicEnvironment : IBasicEnvironment
     {
         Data.Clear();
 
-        foreach (var dataStatement in Program.List().SelectMany(s => s.Statements).Where(s => s is Data))
+        foreach (Statement dataStatement in Program.List().SelectMany(s => s.Statements).Where(s => s is Data))
             interpreter.Execute(dataStatement);
     }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+
 using Trs80.Level1Basic.Interpreter.Exceptions;
 
 namespace Trs80.Level1Basic.Interpreter.Interpreter;
@@ -22,7 +23,7 @@ public class BasicFunctionImplementations
     {
         if (value is float fValue)
             return Math.Abs(fValue);
-        return Math.Abs((int) value);
+        return Math.Abs((int)value);
     }
 
     public dynamic Chr(dynamic value)
@@ -34,9 +35,9 @@ public class BasicFunctionImplementations
     public dynamic Rnd(int control)
     {
         if (control == 0)
-            return (float) Rand.NextDouble();
+            return (float)Rand.NextDouble();
 
-        return (int) Math.Floor(control * Rand.NextDouble() + 1);
+        return (int)Math.Floor(control * Rand.NextDouble() + 1);
     }
 
     public string PadQuadrant(IBasicInterpreter interpreter)

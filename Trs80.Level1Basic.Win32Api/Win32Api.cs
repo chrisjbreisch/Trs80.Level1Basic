@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Trs80Level1Basic.Win32Api;
+namespace Trs80.Level1Basic.Win32Api;
 
 public static class Win32Api
 {
@@ -30,15 +30,6 @@ public static class Win32Api
     // https://www.pinvoke.net/default.aspx/kernel32/GetStdHandle.html
     [DllImport("kernel32.dll", SetLastError = true)]
     public static extern IntPtr GetStdHandle(int nStdHandle);
-
-    // https://www.pinvoke.net/default.aspx/user32/GetWindowInfo.html
-    [return: MarshalAs(UnmanagedType.Bool)]
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern bool GetWindowInfo(IntPtr hwnd, ref WindowInfo pwi);
-
-    // https://www.pinvoke.net/default.aspx/user32/GetWindowRect.html
-    [DllImport("user32.dll", SetLastError = true)]
-    static extern bool GetWindowRect(IntPtr hwnd, out Rect lpRect);
 
     // https://www.pinvoke.net/default.aspx/kernel32/SetConsoleMode.html
     [DllImport("kernel32.dll", SetLastError = true)]
@@ -75,21 +66,6 @@ public static class Win32Api
         public int Bottom;      // y position of lower-right corner
     }
 
-    [StructLayout(LayoutKind.Sequential)]
-    public struct WindowInfo
-    {
-        public uint cbSize;
-        public Rect rcWindow;
-        public Rect rcClient;
-        public uint dwStyle;
-        public uint dwExStyle;
-        public uint dwWindowStatus;
-        public uint cxWindowBorders;
-        public uint cyWindowBorders;
-        public ushort atomWindowType;
-        public ushort wCreatorVersion;
-    }
-
     public static IntPtr GetConsoleWindowHandle()
     {
         var sb = new StringBuilder(1024);
@@ -102,9 +78,8 @@ public static class Win32Api
 
         IntPtr hwnd;
         do
-        {
             hwnd = FindWindowFromWindowName(IntPtr.Zero, newTitle);
-        } while (!IsValidHwnd(hwnd));
+        while (!IsValidHwnd(hwnd));
 
         SetConsoleTitle(originalTitle);
         return hwnd;
@@ -120,21 +95,7 @@ public static class Win32Api
 
     public static Rect GetClientRect(IntPtr hWnd)
     {
-        GetClientRect(hWnd, out var result);
+        GetClientRect(hWnd, out Rect result);
         return result;
-    }
-
-    public static Rect GetWindowRect(IntPtr hWnd)
-    {
-        GetWindowRect(hWnd, out var result);
-        return result;
-    }
-        
-    public static WindowInfo GetWindowInfo(IntPtr hWnd)
-    {
-        var info = new WindowInfo();
-        info.cbSize = (uint)Marshal.SizeOf(info);
-        GetWindowInfo(hWnd, ref info);
-        return info;
     }
 }

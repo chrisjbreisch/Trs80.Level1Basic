@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 using Trs80.Level1Basic.Interpreter.Parser;
@@ -20,7 +19,7 @@ public class Program : IProgram
         Sort();
 
         Statement last = null;
-        foreach (var statement in _programLines.SelectMany(line => line.Statements))
+        foreach (Statement statement in _programLines.SelectMany(line => line.Statements))
         {
             if (last != null)
                 last.Next = statement;
@@ -50,7 +49,7 @@ public class Program : IProgram
     {
         IEnumerable<Statement> previousLines = _programLines.SelectMany(s => s.Statements).Where(p => p?.Next?.LineNumber == line.LineNumber);
 
-        foreach (var previousLine in previousLines)
+        foreach (Statement previousLine in previousLines)
             previousLine.Next = line.Statements[0].Next;
 
         _programLines.Remove(line);
@@ -64,8 +63,8 @@ public class Program : IProgram
     public void AddLine(ParsedLine line)
     {
         if (line == null) return;
-        var programLine = GetProgramLine(line);
-        
+        ParsedLine programLine = GetProgramLine(line);
+
         if (programLine != null)
             ReplaceLine(line);
         else
@@ -76,14 +75,14 @@ public class Program : IProgram
 
     private ParsedLine GetProgramLine(ParsedLine line)
     {
-        var programLine = _programLines.FirstOrDefault(l => l.LineNumber == line.LineNumber);
+        ParsedLine programLine = _programLines.FirstOrDefault(l => l.LineNumber == line.LineNumber);
         return programLine;
     }
 
     public void ReplaceLine(ParsedLine line)
     {
         if (line == null) return;
-        var programLine = GetProgramLine(line);
+        ParsedLine programLine = GetProgramLine(line);
 
         if (programLine != null)
         {

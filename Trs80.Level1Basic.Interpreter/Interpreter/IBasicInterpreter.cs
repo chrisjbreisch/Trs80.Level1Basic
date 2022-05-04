@@ -10,7 +10,6 @@ public interface IBasicInterpreter : IExpressionVisitor, IStatementVisitor
     void Interpret(ParsedLine line);
     void Execute(Statement statement);
     BasicFunctionImplementations Functions { get; }
-    void WriteToPosition(int position);
     string PadQuadrant();
     void Set(int x, int y);
     void Reset(int x, int y);

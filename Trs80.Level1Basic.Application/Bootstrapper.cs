@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Microsoft.Extensions.Configuration;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 using NLog.Extensions.Logging;
+
 using Trs80.Level1Basic.Command;
 using Trs80.Level1Basic.Command.Commands;
 using Trs80.Level1Basic.CommandModels;
@@ -15,6 +17,7 @@ using Trs80.Level1Basic.Interpreter.Interpreter;
 using Trs80.Level1Basic.Interpreter.Parser;
 using Trs80.Level1Basic.Interpreter.Scanner;
 using Trs80.Level1Basic.Workflow;
+
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 using WorkflowCore.Services.DefinitionStorage;
@@ -86,11 +89,6 @@ public sealed class Bootstrapper : IDisposable
 
     private void ConfigureLogging()
     {
-        var config = new ConfigurationBuilder()
-            .SetBasePath(System.IO.Directory.GetCurrentDirectory())
-            .AddJsonFile("appSettings.json", optional: true, reloadOnChange: true)
-            .Build();
-
         LogFactory = LoggerFactory.Create(
             builder =>
                 builder
@@ -99,6 +97,7 @@ public sealed class Bootstrapper : IDisposable
                     .AddNLog()
                     .SetMinimumLevel(LogLevel.Debug)
         );
+        _services.AddSingleton(LogFactory);
     }
 
     private void LogConfiguredServices()
@@ -120,14 +119,14 @@ public sealed class Bootstrapper : IDisposable
 
     private void GetApplicationName()
     {
-        var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
+        Assembly assembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
         ApplicationName = assembly.GetName().Name;
     }
 
     private void CreateServiceProvider()
     {
         RootServiceProvider = _services.BuildServiceProvider(validateScopes: true);
-        var mainScope = RootServiceProvider.CreateScope();
+        IServiceScope mainScope = RootServiceProvider.CreateScope();
         ScopedServiceProvider = mainScope.ServiceProvider;
     }
 
@@ -146,10 +145,10 @@ public sealed class Bootstrapper : IDisposable
             .Decorate<ICommand<InterpreterModel>, LogCommandDecorator<InterpreterModel>>()
             .Decorate<ICommand<ShutdownConsoleModel>, LogCommandDecorator<ShutdownConsoleModel>>();
     }
-    
+
     private void ConfigureCommands()
     {
-        var commandAssembly = typeof(InterpreterCommand).Assembly;
+        Assembly commandAssembly = typeof(InterpreterCommand).Assembly;
 
         var commands =
             from type in commandAssembly.GetTypes()
@@ -161,13 +160,13 @@ public sealed class Bootstrapper : IDisposable
             select new { iType, type };
 
         foreach (var command in commands)
-            _services.AddTransient(command.iType, command.type);
+            _services.AddSingleton(command.iType, command.type);
 
     }
 
     private void ConfigureWorkflowSteps()
     {
-        var workflowAssembly = typeof(InterpreterStep).Assembly;
+        Assembly workflowAssembly = typeof(InterpreterStep).Assembly;
 
         var workflowSteps =
             from type in workflowAssembly.GetTypes()
@@ -190,7 +189,7 @@ public sealed class Bootstrapper : IDisposable
             .AddSingleton<IBuiltinFunctions, BuiltinFunctions>()
             .AddSingleton<IBasicInterpreter, BasicInterpreter>()
             .AddSingleton<IBasicEnvironment, BasicEnvironment>()
-            .AddSingleton<IConsole, Interpreter.Console>()
+            .AddSingleton<IConsole, Console.Console>()
             .AddSingleton<IConsoleDataModel, ConsoleDataModel>()
             .AddSingleton<IProgram, Program>()
             .BuildServiceProvider();

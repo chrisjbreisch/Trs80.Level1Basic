@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+
 using Trs80.Level1Basic.Interpreter.Exceptions;
 using Trs80.Level1Basic.Interpreter.Parser;
 using Trs80.Level1Basic.Interpreter.Parser.Expressions;
@@ -31,7 +31,7 @@ public class BasicInterpreter : IBasicInterpreter
         if (line.LineNumber > 0)
             Execute(new Replace(line));
         else
-            foreach (var statement in line.Statements)
+            foreach (Statement statement in line.Statements)
                 Execute(statement);
     }
 
@@ -97,9 +97,9 @@ public class BasicInterpreter : IBasicInterpreter
 
     public dynamic VisitCallExpression(Call call)
     {
-        List<dynamic> arguments = call.Arguments.Select(argument => Evaluate(argument)).ToList();
+        var arguments = call.Arguments.Select(argument => Evaluate(argument)).ToList();
 
-        var function = _environment.GetFunctionDefinition(call.Name.Lexeme);
+        FunctionDefinition function = _environment.GetFunctionDefinition(call.Name.Lexeme);
 
         return function.Call(this, arguments);
     }
@@ -209,7 +209,7 @@ public class BasicInterpreter : IBasicInterpreter
 
     public void VisitNextStatement(Next root)
     {
-        var checkCondition = GetCheckCondition(root);
+        ForCheckCondition checkCondition = GetCheckCondition(root);
         dynamic nextIndexerValue = IncrementIndexer(checkCondition);
         if (EndOfLoop(checkCondition, nextIndexerValue)) return;
         Loop(checkCondition);
@@ -299,7 +299,7 @@ public class BasicInterpreter : IBasicInterpreter
     public void VisitOnStatement(On on)
     {
         int selector = (int)Math.Floor((float)Evaluate(on.Selector)) - 1;
-        List<dynamic> locations = on.Locations.Select(location => Evaluate(location)).ToList();
+        var locations = on.Locations.Select(location => Evaluate(location)).ToList();
 
         if (selector >= locations.Count || selector < 0) return;
 
@@ -320,7 +320,7 @@ public class BasicInterpreter : IBasicInterpreter
         if (printStatement.TabPosition != null) PrintTab(printStatement.TabPosition);
 
         if (printStatement.Expressions is { Count: > 0 })
-            foreach (var expression in printStatement.Expressions)
+            foreach (Expression expression in printStatement.Expressions)
                 WriteExpression(expression, _printPosition);
 
         string text = _sb.ToString();
@@ -352,8 +352,8 @@ public class BasicInterpreter : IBasicInterpreter
     private void PrintTab(Expression position)
     {
         dynamic value = Evaluate(position);
-        var (_, row) = _console.GetCursorPosition();
-        
+        (_, int row) = _console.GetCursorPosition();
+
         _console.SetCursorPosition(value, row);
         _inPrintAt = true;
     }
@@ -368,22 +368,11 @@ public class BasicInterpreter : IBasicInterpreter
 
     public void VisitReadStatement(Read root)
     {
-        foreach (var variable in root.Variables)
+        foreach (Expression variable in root.Variables)
             AssignVariable(variable, _environment.Data.GetNext());
     }
 
     private StringBuilder _sb = new();
-    public void WriteToPosition(int position)
-    {
-        string currentText = _sb.ToString().TrimEnd();
-        if (currentText.Length + _printPosition > position) return;
-
-        string padding = "".PadRight(position - (currentText.Length + _printPosition), ' ');
-
-        _sb.Clear();
-        _sb.Append(currentText);
-        _sb.Append(padding);
-    }
 
     public string PadQuadrant()
     {
@@ -549,7 +538,7 @@ public class BasicInterpreter : IBasicInterpreter
 
     public void VisitGotoStatement(Goto gotoStatement)
     {
-        var jumpToStatement = GetJumpToStatement(gotoStatement, gotoStatement.Location, "GOTO");
+        Statement jumpToStatement = GetJumpToStatement(gotoStatement, gotoStatement.Location, "GOTO");
         _environment.SetNextStatement(jumpToStatement);
     }
 
@@ -574,11 +563,11 @@ public class BasicInterpreter : IBasicInterpreter
             _environment.ProgramStack.Push(gosubStatement.Next);
         else
         {
-            var currentStatement = GetStatementByLineNumber(gosubStatement.LineNumber);
+            Statement currentStatement = GetStatementByLineNumber(gosubStatement.LineNumber);
             _environment.ProgramStack.Push(currentStatement.Next);
         }
 
-        var jumpToStatement = GetJumpToStatement(gosubStatement, gosubStatement.Location, "GOSUB");
+        Statement jumpToStatement = GetJumpToStatement(gosubStatement, gosubStatement.Location, "GOSUB");
         _environment.RunProgram(jumpToStatement, this);
 
         _environment.SetNextStatement(_environment.ProgramStack.Pop());
@@ -606,7 +595,7 @@ public class BasicInterpreter : IBasicInterpreter
 
     private void VisitThenStatement(If ifStatement)
     {
-        var nextStatement = ifStatement.ThenStatement;
+        Statement nextStatement = ifStatement.ThenStatement;
         while (nextStatement != null)
         {
             Execute(nextStatement);
@@ -618,7 +607,7 @@ public class BasicInterpreter : IBasicInterpreter
     public void VisitInputStatement(Input inputStatement)
     {
         _sb = new StringBuilder();
-        foreach (var expression in inputStatement.Expressions)
+        foreach (Expression expression in inputStatement.Expressions)
             ProcessInputExpression(expression, inputStatement.WriteNewline);
     }
 
@@ -658,7 +647,6 @@ public class BasicInterpreter : IBasicInterpreter
             AssignVariable(variable, lookup);
         }
         else
-        {
             try
             {
                 AssignVariable(variable, value);
@@ -668,8 +656,6 @@ public class BasicInterpreter : IBasicInterpreter
                 _console.WriteLine("WHAT?");
                 GetInputValue(variable, writeNewline);
             }
-        }
-
     }
 
     private Statement GetStatementByLineNumber(int lineNumber)
@@ -704,13 +690,13 @@ public class BasicInterpreter : IBasicInterpreter
 
     public void VisitDataStatement(Data data)
     {
-        foreach (var element in data.DataElements)
+        foreach (Expression element in data.DataElements)
             _environment.Data.Add(Evaluate(element));
     }
 
     private void DeleteStatement(int lineNumber)
     {
-        var programLine = _environment.Program.List().FirstOrDefault(l => l.LineNumber == lineNumber);
+        ParsedLine programLine = _environment.Program.List().FirstOrDefault(l => l.LineNumber == lineNumber);
         if (programLine != null)
             _environment.Program.RemoveLine(programLine);
     }

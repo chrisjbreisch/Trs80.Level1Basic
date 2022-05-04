@@ -3,9 +3,10 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
-using Trs80Level1Basic.Win32Api;
 
-namespace Trs80.Level1Basic.Interpreter;
+using Trs80.Level1Basic.Interpreter;
+
+namespace Trs80.Level1Basic.Console;
 
 public class ConsoleFont
 {
@@ -13,7 +14,7 @@ public class ConsoleFont
     public short FontSize { get; set; }
 }
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", 
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility",
     Justification = "It's fine if these pieces don't work on non-Windows devices")]
 public class Console : IConsole
 {
@@ -26,14 +27,14 @@ public class Console : IConsole
     private readonly bool[,] _screen = new bool[ScreenPixelWidth, ScreenPixelHeight];
     private readonly Graphics _graphics;
 
-    public TextWriter Out { get; set;  }
+    public TextWriter Out { get; set; }
     public TextReader In { get; set; }
     public TextWriter Error { get; set; }
-    
+
     public Console()
     {
-        var hwnd = Win32Api.GetConsoleWindowHandle();
-        var clientRect = Win32Api.GetClientRect(hwnd);
+        IntPtr hwnd = Win32Api.Win32Api.GetConsoleWindowHandle();
+        Win32Api.Win32Api.Rect clientRect = Win32Api.Win32Api.GetClientRect(hwnd);
         _pixelHeight = clientRect.Bottom / (double)ScreenPixelHeight;
         _pixelWidth = clientRect.Right / (double)ScreenPixelWidth;
         _graphics = Graphics.FromHwnd(hwnd);
@@ -65,16 +66,16 @@ public class Console : IConsole
     private const int FixedWidthTrueType = 54;
     private const int StandardOutputHandle = -11;
 
-    private static readonly IntPtr ConsoleOutputHandle = Win32Api.GetStdHandle(StandardOutputHandle);
+    private static readonly IntPtr ConsoleOutputHandle = Win32Api.Win32Api.GetStdHandle(StandardOutputHandle);
 
     public ConsoleFont GetCurrentFont()
     {
-        var font = new Win32Api.FontInfo
+        var font = new Win32Api.Win32Api.FontInfo
         {
-            cbSize = Marshal.SizeOf<Win32Api.FontInfo>()
+            cbSize = Marshal.SizeOf<Win32Api.Win32Api.FontInfo>()
         };
 
-        if (Win32Api.GetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref font)) 
+        if (Win32Api.Win32Api.GetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref font))
             return new ConsoleFont { FontName = font.FontName, FontSize = font.FontSize };
 
         int er = Marshal.GetLastWin32Error();
@@ -83,16 +84,16 @@ public class Console : IConsole
 
     public void SetCurrentFont(ConsoleFont font)
     {
-        var before = new Win32Api.FontInfo
+        var before = new Win32Api.Win32Api.FontInfo
         {
-            cbSize = Marshal.SizeOf<Win32Api.FontInfo>()
+            cbSize = Marshal.SizeOf<Win32Api.Win32Api.FontInfo>()
         };
 
-        if (Win32Api.GetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref before))
+        if (Win32Api.Win32Api.GetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref before))
         {
-            var set = new Win32Api.FontInfo
+            var set = new Win32Api.Win32Api.FontInfo
             {
-                cbSize = Marshal.SizeOf<Win32Api.FontInfo>(),
+                cbSize = Marshal.SizeOf<Win32Api.Win32Api.FontInfo>(),
                 FontIndex = 0,
                 FontFamily = FixedWidthTrueType,
                 FontName = font.FontName,
@@ -100,17 +101,17 @@ public class Console : IConsole
                 FontSize = font.FontSize > 0 ? font.FontSize : before.FontSize
             };
 
-            if (!Win32Api.SetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref set))
+            if (!Win32Api.Win32Api.SetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref set))
             {
                 int ex = Marshal.GetLastWin32Error();
                 throw new Win32Exception(ex);
             }
 
-            var after = new Win32Api.FontInfo
+            var after = new Win32Api.Win32Api.FontInfo
             {
-                cbSize = Marshal.SizeOf<Win32Api.FontInfo>()
+                cbSize = Marshal.SizeOf<Win32Api.Win32Api.FontInfo>()
             };
-            Win32Api.GetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref after);
+            Win32Api.Win32Api.GetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref after);
         }
         else
         {
@@ -139,17 +140,17 @@ public class Console : IConsole
         if (OperatingSystem.IsWindows())
             System.Console.SetBufferSize(width, height);
     }
-        
+
     private void DisableCursorBlink()
     {
-        if (!Win32Api.GetConsoleMode(ConsoleOutputHandle, out uint lpMode))
+        if (!Win32Api.Win32Api.GetConsoleMode(ConsoleOutputHandle, out uint lpMode))
         {
             int ex = Marshal.GetLastWin32Error();
             throw new Win32Exception(ex);
         }
 
         lpMode |= EnableVirtualTerminalProcessing;
-        if (!Win32Api.SetConsoleMode(ConsoleOutputHandle, lpMode))
+        if (!Win32Api.Win32Api.SetConsoleMode(ConsoleOutputHandle, lpMode))
         {
             int ex = Marshal.GetLastWin32Error();
             throw new Win32Exception(ex);
@@ -160,8 +161,8 @@ public class Console : IConsole
     private void Fill(int x, int y, int width, int height, bool turnOn)
     {
         for (int xIndex = x; xIndex < x + width; xIndex++)
-        for (int yIndex = y; yIndex < y + height; yIndex++)
-            _screen[xIndex, yIndex] = turnOn;
+            for (int yIndex = y; yIndex < y + height; yIndex++)
+                _screen[xIndex, yIndex] = turnOn;
 
         _graphics.FillRectangle(
             turnOn ? Brushes.White : Brushes.Black,

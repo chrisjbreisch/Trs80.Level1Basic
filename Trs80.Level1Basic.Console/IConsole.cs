@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Trs80.Level1Basic.Console;
 
 namespace Trs80.Level1Basic.Interpreter
 {

@@ -1,6 +1,8 @@
 ﻿using System;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 using Trs80.Level1Basic.Interpreter;
 
 namespace Trs80.Level1Basic.Application;
@@ -66,7 +68,7 @@ public class ConsoleApp
     private string GetWorkflow(string workflow)
     {
         _logger.LogTrace($"({workflow})");
-            
+
         if (string.IsNullOrEmpty(workflow))
             workflow = "Interpreter";
 
