@@ -94,7 +94,6 @@ If you don't want to read the book, and just want to play, I'm mimicking the fin
 ## Summary of LEVEL 1 BASIC
 
 | **Command** | **Purpose**                                                 | **Example**                    | **Detailed in |
-|             |                                                             |                                | Chapter(s)**  |
 |-------------|-----------------------------------------------------------------------------------------------:-------------:|
 | NEW         | Clears out all program lines stored in memory               | NEW (not part of program)      | 1             |
 | RUN         | Starts program execution at lowest-numbered line            | RUN (not part of program)      | 1             |
