@@ -32,6 +32,13 @@ arrived yet. I'm sure it's very good, though.
 Robert walks you through everything you need to know to craft an interpreter for his newly created language "lox". From a crafting perspective, lox is quite
 a bit easier than BASIC, particularly Level I BASIC, which has a rather bizarre grammar. However, I was able to shoehorn Level I BASIC into Robert's concepts.
 
+With the few exceptions noted below, it's a complete implementation of Level I BASIC right down to the three error messages. I've run every program and example
+in the book (and supplied the code for you), and they all produce exactly the output expected. I think there are two examples of error messages where I supply
+the correct error message, but the formatting isn't perfect. One of those isn't very hard to fix. The other would be a pain. If it was an actual formatting 
+problem with output from the program, I would fix it. But I can live with an error message that just has a question mark in the wrong place. Also, my 
+error messages supply a tiny bit more detail than the originals. I produce the original one, then underneath it there's usually some more helpful text in square
+brackets ([]). Hopefully this will help a little.
+
 ## What does it do?
 
 As I said earlier, it's an interpreter, not an emulator. I didn't want to write something to mimic the hardware of a TRS-80. I told you, I'm a compiler junkie.
@@ -52,3 +59,22 @@ your disk drives. `MERGE` is a creation of my own. Level I BASIC was designed to
 many standard math library functions, Power, Logarithm, and Trig functons weren't included. People wrote their own, in BASIC, that you could access
 as subroutines. In fact, Appendix A from the book contains a decent set. I've included all the code for these. `MERGE` lets you load these subroutines and add
 them to the code you already have. It differs from `LOAD` in that `LOAD` destroys whatever is currently in memory.
+
+## What doesn't it do?
+
+I haven't supplied an editor or any editing tools. You want to edit, do that outside and use `LOAD` to bring in what you've written. It may not be an emulator, but 
+it looks like one. You get the standard READY prompt, and you just start typing code.
+
+It looks like this:
+
+> READY
+> >_
+
+And, for exmple, here's the first program from the book:
+> >10 PRINT "HELLO THERE. I AM YOUR NEW TRS-80 MICROCOMPUTER."
+
+Which will of course output:
+> HELLO THERE. I AM YOUR NEW TRS-80 MICROCOMPUTER.
+>
+> READY
+> >_
