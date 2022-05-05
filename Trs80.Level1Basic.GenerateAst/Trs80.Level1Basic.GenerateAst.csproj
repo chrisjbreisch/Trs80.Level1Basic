@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Trs80.Level1Basic.Extensions\Trs80.Level1Basic.Extensions.csproj" />
+    <ProjectReference Include="..\Trs80.Level1Basic.Extensions\Trs80.Level1Basic.Common.csproj" />
   </ItemGroup>
 
 </Project>

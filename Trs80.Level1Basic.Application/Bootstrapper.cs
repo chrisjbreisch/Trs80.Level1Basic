@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -12,12 +13,13 @@ using NLog.Extensions.Logging;
 using Trs80.Level1Basic.Command;
 using Trs80.Level1Basic.Command.Commands;
 using Trs80.Level1Basic.CommandModels;
+using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.Console;
 using Trs80.Level1Basic.Interpreter.Interpreter;
 using Trs80.Level1Basic.Interpreter.Parser;
 using Trs80.Level1Basic.Interpreter.Scanner;
 using Trs80.Level1Basic.Workflow;
-using Trs80.Level1Basic.WorkflowDomain;
+
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 using WorkflowCore.Services.DefinitionStorage;
@@ -35,6 +37,7 @@ public sealed class Bootstrapper : IDisposable
 
     public IServiceProvider ScopedServiceProvider { get; private set; }
     public ServiceProvider RootServiceProvider { get; private set; }
+    public IAppSettings AppSettings { get; private set; }
     public IWorkflowHost WorkflowHost => ScopedServiceProvider.GetRequiredService<IWorkflowHost>();
     public ISyncWorkflowRunner WorkflowRunner => ScopedServiceProvider.GetRequiredService<ISyncWorkflowRunner>();
     private IDefinitionLoader WorkflowLoader => ScopedServiceProvider.GetRequiredService<IDefinitionLoader>();
@@ -48,11 +51,25 @@ public sealed class Bootstrapper : IDisposable
         ConfigureServices();
         CreateServiceProvider();
 
+        GetConfiguration();
+
         LoadWorkflow(workflowFileName);
 
         GetApplicationName();
 
         LogConfiguredServices();
+    }
+
+    private void GetConfiguration()
+    {
+        IConfiguration configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appSettings.json")
+            .AddEnvironmentVariables()
+            .Build();
+
+        AppSettings = ScopedServiceProvider.GetRequiredService<IAppSettings>();
+        configuration.GetSection("AppSettings").Bind(AppSettings);
     }
 
     private void LoadWorkflow(string workflowFileName)
@@ -63,7 +80,7 @@ public sealed class Bootstrapper : IDisposable
 
         WorkflowHost.OnStepError += WorkflowHost_OnStepError;
         WorkflowDataModel dataModel = ScopedServiceProvider.GetService<WorkflowDataModel>();
-        if (dataModel == null) 
+        if (dataModel == null)
             throw new InvalidOperationException();
 
         dataModel.WritePrompt = true;
@@ -206,6 +223,7 @@ public sealed class Bootstrapper : IDisposable
             .AddSingleton<IConsole, Console.Console>()
             .AddSingleton<IConsoleDataModel, ConsoleDataModel>()
             .AddSingleton<IProgram, Program>()
+            .AddScoped<IAppSettings, AppSettings>()
             .BuildServiceProvider();
     }
 

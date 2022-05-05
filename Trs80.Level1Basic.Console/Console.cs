@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
+using Trs80.Level1Basic.Common;
 
 namespace Trs80.Level1Basic.Console;
 
@@ -24,13 +25,16 @@ public class Console : IConsole
     private const int ScreenPixelHeight = 3 * ScreenCharHeight;
     private readonly bool[,] _screen = new bool[ScreenPixelWidth, ScreenPixelHeight];
     private readonly Graphics _graphics;
+    private readonly IAppSettings _appSettings;
 
     public TextWriter Out { get; set; }
     public TextReader In { get; set; }
     public TextWriter Error { get; set; }
 
-    public Console()
+    public Console(IAppSettings appSettings)
     {
+        _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
+
         IntPtr hwnd = Win32Api.Win32Api.GetConsoleWindowHandle();
         Win32Api.Win32Api.Rect clientRect = Win32Api.Win32Api.GetClientRect(hwnd);
         _pixelHeight = clientRect.Bottom / (double)ScreenPixelHeight;
@@ -127,7 +131,7 @@ public class Console : IConsole
     public ConsoleKeyInfo ReadKey() => System.Console.ReadKey();
     public void InitializeWindow()
     {
-        SetCurrentFont(new ConsoleFont { FontName = "Another Mans Treasure MIB 64C 2X3Y", FontSize = 48 });
+        SetCurrentFont(new ConsoleFont { FontName = _appSettings.FontName, FontSize = _appSettings.FontSize });
         DisableCursorBlink();
         SetWindowSize(ScreenCharWidth, ScreenCharHeight);
         SetBufferSize(ScreenCharWidth, ScreenPixelHeight * 10);

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-
-using Trs80.Level1Basic.Extensions;
+using Trs80.Level1Basic.Common.Extensions;
 
 namespace Trs80.Level1Basic.Command.Commands;
 

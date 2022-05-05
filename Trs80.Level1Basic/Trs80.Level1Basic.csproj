@@ -76,6 +76,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="appSettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="nLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

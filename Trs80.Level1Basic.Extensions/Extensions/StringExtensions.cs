@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-namespace Trs80.Level1Basic.Extensions;
+namespace Trs80.Level1Basic.Common.Extensions;
 
 [SuppressMessage("ReSharper", "UnusedMember.Global")]
 public static class StringExtensions

@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Trs80.Level1Basic.Extensions\Trs80.Level1Basic.Common.csproj" />
     <ProjectReference Include="..\Trs80.Level1Basic.Win32Api\Trs80.Level1Basic.Win32Api.csproj" />
   </ItemGroup>
 

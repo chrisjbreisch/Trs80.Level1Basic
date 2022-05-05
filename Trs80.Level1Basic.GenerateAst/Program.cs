@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Trs80.Level1Basic.Extensions;
+using Trs80.Level1Basic.Common.Extensions;
 
 namespace Trs80.Level1Basic.GenerateAst;
 

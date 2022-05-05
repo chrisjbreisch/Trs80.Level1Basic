@@ -1,10 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-
 using Microsoft.Extensions.Logging;
-
 using Newtonsoft.Json;
 
-namespace Trs80.Level1Basic.Extensions;
+namespace Trs80.Level1Basic.Common.Extensions;
 
 public static class LoggerExtensions
 {

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.Extensions", "Trs80.Level1Basic.Extensions\Trs80.Level1Basic.Extensions.csproj", "{8877543F-ADDF-436D-BCDE-B03E30EF0460}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.Common", "Trs80.Level1Basic.Extensions\Trs80.Level1Basic.Common.csproj", "{8877543F-ADDF-436D-BCDE-B03E30EF0460}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Radio Shack BASIC Computer Language", "Radio Shack BASIC Computer Language", "{71005317-8860-4F7C-A802-0A140C96AF1E}"
 	ProjectSection(SolutionItems) = preProject
@@ -42,7 +42,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.Win32Api", "Trs80.Level1Basic.Win32Api\Trs80.Level1Basic.Win32Api.csproj", "{78871EF1-A433-4018-BF31-AA3C40EFC6D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trs80.Level1Basic.WorkflowDomain", "Trs80.Level1Basic.WorkflowDomain\Trs80.Level1Basic.WorkflowDomain.csproj", "{71A89A32-FA2E-4A13-A8E5-EC46BA6B7C64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.WorkflowDomain", "Trs80.Level1Basic.WorkflowDomain\Trs80.Level1Basic.WorkflowDomain.csproj", "{71A89A32-FA2E-4A13-A8E5-EC46BA6B7C64}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
