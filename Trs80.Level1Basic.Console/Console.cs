@@ -17,12 +17,13 @@ public class ConsoleFont
     Justification = "It's fine if these pieces don't work on non-Windows devices")]
 public class Console : IConsole
 {
-    private readonly double _pixelWidth;
-    private readonly double _pixelHeight;
-    private const int ScreenCharWidth = 64;
-    private const int ScreenCharHeight = 16;
-    private const int ScreenPixelWidth = 2 * ScreenCharWidth;
-    private const int ScreenPixelHeight = 3 * ScreenCharHeight;
+    private IntPtr _hwnd;
+    private double _pixelWidth;
+    private double _pixelHeight;
+    private const int ScreenWidth = 64;
+    private const int ScreenHeight = 16;
+    private const int ScreenPixelWidth = 2 * ScreenWidth;
+    private const int ScreenPixelHeight = 3 * ScreenHeight;
     private readonly bool[,] _screen = new bool[ScreenPixelWidth, ScreenPixelHeight];
     private readonly Graphics _graphics;
     private readonly IAppSettings _appSettings;
@@ -35,15 +36,20 @@ public class Console : IConsole
     {
         _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
 
-        IntPtr hwnd = Win32Api.Win32Api.GetConsoleWindowHandle();
-        Win32Api.Win32Api.Rect clientRect = Win32Api.Win32Api.GetClientRect(hwnd);
-        _pixelHeight = clientRect.Bottom / (double)ScreenPixelHeight;
-        _pixelWidth = clientRect.Right / (double)ScreenPixelWidth;
-        _graphics = Graphics.FromHwnd(hwnd);
+        _hwnd = Win32Api.Win32Api.GetConsoleWindowHandle();
+        SetPixelSizes();
+        _graphics = Graphics.FromHwnd(_hwnd);
 
         Out = System.Console.Out;
         In = System.Console.In;
         Error = System.Console.Error;
+    }
+
+    private void SetPixelSizes()
+    {
+        Win32Api.Win32Api.Rect clientRect = Win32Api.Win32Api.GetClientRect(_hwnd);
+        _pixelHeight = clientRect.Bottom / (double) ScreenPixelHeight;
+        _pixelWidth = clientRect.Right / (double) ScreenPixelWidth;
     }
 
     public void WriteLine(string text = "") => Out.WriteLine(text);
@@ -133,14 +139,17 @@ public class Console : IConsole
     {
         SetCurrentFont(new ConsoleFont { FontName = _appSettings.FontName, FontSize = _appSettings.FontSize });
         DisableCursorBlink();
-        SetWindowSize(ScreenCharWidth, ScreenCharHeight);
-        SetBufferSize(ScreenCharWidth, ScreenPixelHeight * 10);
+        SetWindowSize(ScreenWidth, ScreenHeight);
+        SetBufferSize(ScreenWidth, ScreenPixelHeight * 10);
     }
 
     private void SetWindowSize(int width, int height)
     {
         if (OperatingSystem.IsWindows())
+        {
             System.Console.SetWindowSize(width, height);
+            SetPixelSizes();
+        }
     }
 
     private void SetBufferSize(int width, int height)
