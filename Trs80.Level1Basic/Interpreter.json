@@ -1,19 +1,75 @@
 {
   "Id": "Interpreter",
   "Version": 1,
+  "DataType": "Trs80.Level1Basic.CommandModels.WorkflowDataModel, Trs80.Level1Basic.CommandModels",
   "Steps": [
     {
       "Id": "SetupConsoleStep",
       "StepType": "Trs80.Level1Basic.Workflow.ISetupConsoleStep, Trs80.Level1Basic.Workflow",
-      "NextStepId": "InterpreterStep"
+      "NextStepId": "WhileNotDoneStep"
     },
     {
-      "Id": "InterpreterStep",
-      "StepType": "Trs80.Level1Basic.Workflow.IInterpreterStep, Trs80.Level1Basic.Workflow",
-      "NextStepId": "ShutdownConsoleStepStep"
+      "Id": "WhileNotDoneStep",
+      "StepType": "WorkflowCore.Primitives.While, WorkflowCore",
+      "NextStepId": "ShutdownConsoleStep",
+      "Inputs": { "Condition": "!data.Done" },
+      "Do": [
+        [
+          {
+            "Id": "InputStep",
+            "StepType": "Trs80.Level1Basic.Workflow.IInputStep, Trs80.Level1Basic.Workflow",
+            "NextStepId": "CheckIfDoneStep",
+            "Inputs": {
+              "WritePrompt": "data.WritePrompt"
+            },
+            "Outputs": {
+              "Done": "step.Done",
+              "SourceLine": "step.SourceLine"
+            }
+          },
+          {
+            "Id": "CheckIfDoneStep",
+            "StepType": "WorkflowCore.Primitives.If, WorkflowCore",
+            "Inputs": { "Condition": "!data.Done" },
+            "Do": [
+              [
+                {
+                  "Id": "ScanStep",
+                  "StepType": "Trs80.Level1Basic.Workflow.IScanStep, Trs80.Level1Basic.Workflow",
+                  "NextStepId": "ParseStep",
+                  "Inputs": {
+                    "SourceLine": "data.SourceLine"
+                  },
+                  "Outputs": {
+                    "Tokens": "step.Tokens"
+                  }
+                },
+                {
+                  "Id": "ParseStep",
+                  "StepType": "Trs80.Level1Basic.Workflow.IParseStep, Trs80.Level1Basic.Workflow",
+                  "NextStepId": "InterpretStep",
+                  "Inputs": {
+                    "Tokens": "data.Tokens"
+                  },
+                  "Outputs": {
+                    "ParsedLine": "step.ParsedLine"
+                  }
+                },
+                {
+                  "Id": "InterpretStep",
+                  "StepType": "Trs80.Level1Basic.Workflow.IInterpretStep, Trs80.Level1Basic.Workflow",
+                  "Inputs": {
+                    "ParsedLine": "data.ParsedLine"
+                  }
+                }
+              ]
+            ]
+          }
+        ]
+      ]
     },
     {
-      "Id": "ShutdownConsoleStepStep",
+      "Id": "ShutdownConsoleStep",
       "StepType": "Trs80.Level1Basic.Workflow.IShutdownConsoleStep, Trs80.Level1Basic.Workflow"
     }
   ]

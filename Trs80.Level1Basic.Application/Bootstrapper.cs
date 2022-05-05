@@ -13,12 +13,11 @@ using Trs80.Level1Basic.Command;
 using Trs80.Level1Basic.Command.Commands;
 using Trs80.Level1Basic.CommandModels;
 using Trs80.Level1Basic.Console;
-using Trs80.Level1Basic.Interpreter;
 using Trs80.Level1Basic.Interpreter.Interpreter;
 using Trs80.Level1Basic.Interpreter.Parser;
 using Trs80.Level1Basic.Interpreter.Scanner;
 using Trs80.Level1Basic.Workflow;
-
+using Trs80.Level1Basic.WorkflowDomain;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 using WorkflowCore.Services.DefinitionStorage;
@@ -29,7 +28,7 @@ public sealed class Bootstrapper : IDisposable
 {
     private bool _isDisposed;
     private IServiceCollection _services;
-    private readonly ILogger _logger;
+    private ILogger _logger;
 
     public string ApplicationName { get; private set; }
     public ILoggerFactory LogFactory;
@@ -53,8 +52,6 @@ public sealed class Bootstrapper : IDisposable
 
         GetApplicationName();
 
-        _logger = LogFactory.CreateLogger<Bootstrapper>();
-
         LogConfiguredServices();
     }
 
@@ -65,6 +62,12 @@ public sealed class Bootstrapper : IDisposable
         WorkflowLoader.LoadDefinition(File.ReadAllText(workflowFileName), Deserializers.Json);
 
         WorkflowHost.OnStepError += WorkflowHost_OnStepError;
+        WorkflowDataModel dataModel = ScopedServiceProvider.GetService<WorkflowDataModel>();
+        if (dataModel == null) 
+            throw new InvalidOperationException();
+
+        dataModel.WritePrompt = true;
+
         WorkflowHost.Start();
     }
 
@@ -99,6 +102,7 @@ public sealed class Bootstrapper : IDisposable
                     .SetMinimumLevel(LogLevel.Debug)
         );
         _services.AddSingleton(LogFactory);
+        _logger = LogFactory.CreateLogger<Bootstrapper>();
     }
 
     private void LogConfiguredServices()
@@ -135,21 +139,30 @@ public sealed class Bootstrapper : IDisposable
     {
         ConfigureGeneralServices();
         ConfigureWorkflowSteps();
+        ConfigureWorkflowDomain();
         ConfigureCommands();
         ConfigureDecorators();
+    }
+
+    private void ConfigureWorkflowDomain()
+    {
+        _services.AddSingleton(new WorkflowDataModel());
     }
 
     private void ConfigureDecorators()
     {
         _services
             .Decorate<ICommand<SetupConsoleModel>, LogCommandDecorator<SetupConsoleModel>>()
-            .Decorate<ICommand<InterpreterModel>, LogCommandDecorator<InterpreterModel>>()
+            .Decorate<ICommand<InputModel>, LogCommandDecorator<InputModel>>()
+            .Decorate<ICommand<ScanModel>, LogCommandDecorator<ScanModel>>()
+            .Decorate<ICommand<ParseModel>, LogCommandDecorator<ParseModel>>()
+            .Decorate<ICommand<InterpretModel>, LogCommandDecorator<InterpretModel>>()
             .Decorate<ICommand<ShutdownConsoleModel>, LogCommandDecorator<ShutdownConsoleModel>>();
     }
 
     private void ConfigureCommands()
     {
-        Assembly commandAssembly = typeof(InterpreterCommand).Assembly;
+        Assembly commandAssembly = typeof(ScanCommand).Assembly;
 
         var commands =
             from type in commandAssembly.GetTypes()
@@ -167,7 +180,7 @@ public sealed class Bootstrapper : IDisposable
 
     private void ConfigureWorkflowSteps()
     {
-        Assembly workflowAssembly = typeof(InterpreterStep).Assembly;
+        Assembly workflowAssembly = typeof(ScanStep).Assembly;
 
         var workflowSteps =
             from type in workflowAssembly.GetTypes()

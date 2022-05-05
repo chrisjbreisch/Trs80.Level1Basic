@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-
 using Trs80.Level1Basic.CommandModels;
 using Trs80.Level1Basic.Console;
 using Trs80.Level1Basic.Interpreter.Exceptions;
@@ -11,35 +10,21 @@ using Trs80.Level1Basic.Interpreter.Scanner;
 namespace Trs80.Level1Basic.Command.Commands;
 
 [SuppressMessage("ReSharper", "UnusedMember.Global")]
-public class InterpreterCommand : ICommand<InterpreterModel>
+public class InterpretCommand : ICommand<InterpretModel>
 {
-    private readonly IScanner _scanner;
-    private readonly IParser _parser;
     private readonly IBasicInterpreter _interpreter;
     private readonly IConsole _console;
 
-    public InterpreterCommand(IScanner scanner, IParser parser,
+    public InterpretCommand(IScanner scanner, IParser parser,
         IBasicInterpreter interpreter, IConsole console)
     {
-        _scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
-        _parser = parser ?? throw new ArgumentNullException(nameof(parser));
         _interpreter = interpreter ?? throw new ArgumentNullException(nameof(interpreter));
         _console = console ?? throw new ArgumentNullException(nameof(console));
     }
 
-    public void Execute(InterpreterModel parameterObject)
+    public void Execute(InterpretModel parameterObject)
     {
-        while (true)
-        {
-            _console.Write(">");
-            string inputLine = GetInputLine();
-            if (string.IsNullOrEmpty(inputLine)) continue;
-            if (inputLine.ToLower() == "exit") break;
-
-            List<Token>? tokens = ScanLine(inputLine);
-            ParsedLine? parsedLine = ParseTokens(tokens);
-            InterpretParsedLine(parsedLine);
-        }
+        InterpretParsedLine(parameterObject.ParsedLine);
     }
 
     private void WritePrompt()
@@ -48,37 +33,6 @@ public class InterpreterCommand : ICommand<InterpreterModel>
         _console.WriteLine("READY");
     }
 
-    private string GetInputLine()
-    {
-        char[] input = new char[1024];
-        int charCount = 0;
-
-        while (true)
-        {
-            ConsoleKeyInfo key = _console.ReadKey();
-
-            if (key.Key == ConsoleKey.Enter)
-            {
-                _console.WriteLine();
-                break;
-            }
-            if (key.Key == ConsoleKey.Backspace)
-            {
-                if (charCount > 0)
-                {
-                    _console.Write(" \b");
-                    input[charCount--] = '\0';
-                }
-                else
-                    _console.Write(">");
-            }
-            else
-                input[charCount++] = key.KeyChar;
-        }
-
-        return charCount <= 0 ? string.Empty : new string(input, 0, charCount);
-    }
-    
     private void InterpretParsedLine(ParsedLine? parsedLine)
     {
         if (parsedLine == null) return;
@@ -134,38 +88,6 @@ public class InterpreterCommand : ICommand<InterpreterModel>
         _console.Error.WriteLine(voore.LineNumber > 0
             ? $" {voore.LineNumber}  {voore.Statement}?\r\n[{voore.Message}]"
             : $" {voore.Statement}?\r\n[{voore.Message}]");
-    }
-
-    private ParsedLine? ParseTokens(List<Token>? tokens)
-    {
-        if (tokens == null) return null;
-
-        ParsedLine? parsedLine = null;
-        try
-        {
-            parsedLine = _parser.Parse(tokens);
-        }
-        catch (Exception ex)
-        {
-            HandleError(ex);
-            WritePrompt();
-        }
-        return parsedLine;
-    }
-
-    private List<Token>? ScanLine(string sourceLine)
-    {
-        List<Token>? tokens = null;
-        try
-        {
-            tokens = _scanner.ScanTokens(sourceLine);
-        }
-        catch (Exception ex)
-        {
-            HandleError(ex);
-        }
-
-        return tokens;
     }
 
     private void ScanError(ScanException se)

@@ -2,8 +2,8 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Trs80.Level1Basic.CommandModels;
 using Trs80.Level1Basic.Console;
-using Trs80.Level1Basic.Interpreter;
 
 namespace Trs80.Level1Basic.Application;
 
@@ -85,7 +85,7 @@ public class ConsoleApp
             .RunWorkflowSync(
                 GetWorkflow(workflow),
                 1,
-                false,
+                _bootstrapper.ScopedServiceProvider.GetService<WorkflowDataModel>(),
                 null,
                 new TimeSpan(WorkflowTimeoutHours, 0, 0)
             ).ConfigureAwait(false).GetAwaiter().GetResult();

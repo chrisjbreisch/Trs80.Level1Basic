@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Trs80.Level1Basic.Command\Trs80.Level1Basic.Command.csproj" />
     <ProjectReference Include="..\Trs80.Level1Basic.Interpreter\Trs80.Level1Basic.Interpreter.csproj" />
+    <ProjectReference Include="..\Trs80.Level1Basic.WorkflowDomain\Trs80.Level1Basic.WorkflowDomain.csproj" />
     <ProjectReference Include="..\Trs80.Level1Basic.Workflow\Trs80.Level1Basic.Workflow.csproj" />
   </ItemGroup>
 
