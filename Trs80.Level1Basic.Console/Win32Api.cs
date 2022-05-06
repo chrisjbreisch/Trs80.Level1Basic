@@ -58,7 +58,7 @@ public static class Win32Api
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
         public string FontName;
     }
-    
+
     [StructLayout(LayoutKind.Sequential)]
     public struct Rect
     {
@@ -83,6 +83,7 @@ public static class Win32Api
         while (!IsValidHwnd(hwnd));
 
         SetConsoleTitle(originalTitle);
+
         return hwnd;
     }
 
@@ -96,31 +97,34 @@ public static class Win32Api
 
     public static Rect GetClientRect()
     {
-        GetClientRect(ConsoleOutputHandle, out Rect result);
+        GetClientRect(_hwnd, out Rect result);
         return result;
     }
 
     private const uint EnableVirtualTerminalProcessing = 4;
     private const int FixedWidthTrueType = 54;
+    private const int StandardOutputHandle = -11;
 
     public static void EnableVirtualTerminal()
     {
         int ex;
-        if (!GetConsoleMode(ConsoleOutputHandle, out uint lpMode))
+        if (!GetConsoleMode(_outputHandle, out uint lpMode))
         {
             ex = Marshal.GetLastWin32Error();
             throw new Win32Exception(ex);
         }
 
         lpMode |= EnableVirtualTerminalProcessing;
-        if (SetConsoleMode(ConsoleOutputHandle, lpMode)) return;
+        if (SetConsoleMode(_outputHandle, lpMode)) return;
 
         ex = Marshal.GetLastWin32Error();
         throw new Win32Exception(ex);
     }
 
-    private static readonly IntPtr ConsoleOutputHandle = Win32Api.GetConsoleWindowHandle();
+    private static IntPtr _hwnd = GetConsoleWindowHandle();
+    private static IntPtr _outputHandle = GetStdHandle(StandardOutputHandle);
 
+    private const int InvalidHwndError = 6;
 
     public static ConsoleFont GetCurrentConsoleFont()
     {
@@ -129,7 +133,7 @@ public static class Win32Api
             cbSize = Marshal.SizeOf<FontInfo>()
         };
 
-        if (GetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref font))
+        if (GetCurrentConsoleFontEx(_outputHandle, false, ref font))
             return new ConsoleFont { FontName = font.FontName, FontSize = font.FontSize };
 
         int er = Marshal.GetLastWin32Error();
@@ -143,7 +147,7 @@ public static class Win32Api
             cbSize = Marshal.SizeOf<FontInfo>()
         };
 
-        if (GetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref before))
+        if (GetCurrentConsoleFontEx(_outputHandle, false, ref before))
         {
             var set = new FontInfo
             {
@@ -155,17 +159,11 @@ public static class Win32Api
                 FontSize = font.FontSize > 0 ? font.FontSize : before.FontSize
             };
 
-            if (!SetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref set))
+            if (!SetCurrentConsoleFontEx(_outputHandle, false, ref set))
             {
                 int ex = Marshal.GetLastWin32Error();
                 throw new Win32Exception(ex);
             }
-
-            var after = new FontInfo
-            {
-                cbSize = Marshal.SizeOf<FontInfo>()
-            };
-            GetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref after);
         }
         else
         {
@@ -177,6 +175,6 @@ public static class Win32Api
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Only used on Windows")]
     public static Graphics GetGraphics()
     {
-        return Graphics.FromHwnd(ConsoleOutputHandle);
+        return Graphics.FromHwnd(_hwnd);
     }
 }
