@@ -14,7 +14,6 @@ namespace Trs80.Level1Basic.Console;
     Justification = "It's fine if these pieces don't work on non-Windows devices")]
 public class Console : IConsole
 {
-    private readonly IntPtr _hwnd;
     private double _pixelWidth;
     private double _pixelHeight;
     private const int ScreenWidth = 64;
@@ -36,7 +35,6 @@ public class Console : IConsole
         if (logFactory == null) throw new ArgumentNullException(nameof(logFactory));
         _logger = logFactory.CreateLogger<Console>();
 
-        _hwnd = Win32Api.GetConsoleWindowHandle();
         InitializeWindowSettings();
 
         Out = System.Console.Out;
@@ -46,11 +44,11 @@ public class Console : IConsole
 
     private void InitializeWindowSettings()
     {
-        Win32Api.Rect clientRect = Win32Api.GetClientRect(_hwnd);
+        Win32Api.Rect clientRect = Win32Api.GetClientRect();
         _pixelHeight = clientRect.Bottom / (double)ScreenPixelHeight;
         _pixelWidth = clientRect.Right / (double)ScreenPixelWidth;
         _logger.LogDebug($"_pixelHeight: {_pixelHeight}, _pixelWidth: {_pixelWidth}");
-        _graphics = Graphics.FromHwnd(_hwnd);
+        _graphics = Win32Api.GetGraphics();
     }
 
     public void WriteLine(string text = "") => Out.WriteLine(text);
@@ -77,16 +75,14 @@ public class Console : IConsole
         return System.Console.GetCursorPosition();
     }
 
-    private static readonly IntPtr ConsoleOutputHandle = Win32Api.GetConsoleWindowHandle();
-
     public ConsoleFont GetCurrentFont()
     {
-        return Win32Api.GetCurrentConsoleFont(ConsoleOutputHandle);
+        return Win32Api.GetCurrentConsoleFont();
     }
 
     public void SetCurrentFont(ConsoleFont font)
     {
-        Win32Api.SetCurrentConsoleFont(ConsoleOutputHandle, font);
+        Win32Api.SetCurrentConsoleFont(font);
     }
 
     public ConsoleKeyInfo ReadKey() => System.Console.ReadKey();
@@ -114,7 +110,7 @@ public class Console : IConsole
 
     private void DisableCursorBlink()
     {
-        Win32Api.EnableVirtualTerminal(ConsoleOutputHandle);
+        Win32Api.EnableVirtualTerminal();
 
         Out.Write("\u001b[?12l");
     }

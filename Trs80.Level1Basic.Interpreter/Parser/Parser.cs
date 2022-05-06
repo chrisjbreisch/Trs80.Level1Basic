@@ -44,7 +44,7 @@ public class Parser : IParser
 
         _currentLine.LineNumber = GetLineNumberValue(lineNumber);
 
-        if (_currentLine.LineNumber == 0 && char.IsLetter(lineNumber.SourceLine[0]))
+        if (_currentLine.LineNumber == -1 && char.IsLetter(lineNumber.SourceLine[0]))
             _currentLine.SourceLine = lineNumber.SourceLine;
         else
         {
@@ -475,10 +475,10 @@ public class Parser : IParser
     {
         dynamic line = lineNumber.Literal;
 
-        if (line == null) return 0;
+        if (line == null) return -1;
 
         if (line is not int)
-            throw new ParseException(0, lineNumber.SourceLine, $"Invalid text at {line}");
+            throw new ParseException(-1, lineNumber.SourceLine, $"Invalid text at {line}");
         if (line > short.MaxValue)
             throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, $"Line number cannot exceed {short.MaxValue}.");
 

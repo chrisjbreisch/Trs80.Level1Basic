@@ -61,7 +61,7 @@ public class ScanCommand : ICommand<ScanModel>
 
     private void ValueOutOfRangeError(ValueOutOfRangeException voore)
     {
-        _console.Error.WriteLine(voore.LineNumber > 0
+        _console.Error.WriteLine(voore.LineNumber >= 0
             ? $" {voore.LineNumber}  {voore.Statement}?\r\n[{voore.Message}]"
             : $" {voore.Statement}?\r\n[{voore.Message}]");
     }
@@ -88,7 +88,7 @@ public class ScanCommand : ICommand<ScanModel>
 
     private void ParseError(ParseException pe)
     {
-        _console.Error.WriteLine(pe.LineNumber > 0
+        _console.Error.WriteLine(pe.LineNumber >= 0
             ? $" {pe.LineNumber}  {pe.Statement}?\r\n[{pe.Message}]"
             : $" {pe.Statement}?\r\n[{pe.Message}]");
     }
@@ -100,7 +100,7 @@ public class ScanCommand : ICommand<ScanModel>
 
     public void RuntimeStatementError(RuntimeStatementException re)
     {
-        _console.Error.WriteLine(re.LineNumber > 0
+        _console.Error.WriteLine(re.LineNumber >= 0
             ? $" {re.LineNumber}  {re.Statement}?\r\n[{re.Message}]"
             : $" {re.Statement}?\r\n[{re.Message}]");
     }

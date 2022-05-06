@@ -5,5 +5,4 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Performance", "CA1822:Mark members as static", 
-    Justification = "Minimal performance gain not worth effort if must change to non-static later", Scope = "module")]
+[assembly: SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "Caller requires instance method", Scope = "module")]

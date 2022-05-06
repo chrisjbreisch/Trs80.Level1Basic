@@ -30,7 +30,7 @@ public class BasicInterpreter : IBasicInterpreter
 
     public void Interpret(ParsedLine line)
     {
-        if (line.LineNumber > 0)
+        if (line.LineNumber >= 0)
             Execute(new Replace(line));
         else
             foreach (Statement statement in line.Statements)
@@ -107,7 +107,7 @@ public class BasicInterpreter : IBasicInterpreter
         return function.Call(this, arguments);
     }
 
-    private void CheckForProperOperands(Token operatorType, dynamic left, dynamic right)
+    private static void CheckForProperOperands(Token operatorType, dynamic left, dynamic right)
     {
         switch (left)
         {
@@ -121,7 +121,7 @@ public class BasicInterpreter : IBasicInterpreter
                 throw new RuntimeExpressionException(operatorType, "Operands are of incompatible types.");
         }
     }
-    private void CheckForNumericOperand(Token operatorType, dynamic operand)
+    private static void CheckForNumericOperand(Token operatorType, dynamic operand)
     {
         switch (operand)
         {
@@ -134,7 +134,7 @@ public class BasicInterpreter : IBasicInterpreter
     }
 
 
-    private bool AreEqual(dynamic left, dynamic right)
+    private static bool AreEqual(dynamic left, dynamic right)
     {
         if (left == null && right == null) return true;
         return left != null && (bool)left.Equals(right);
@@ -204,7 +204,7 @@ public class BasicInterpreter : IBasicInterpreter
     private void WriteFloatValue(dynamic value)
     {
         if (value == 0)
-            _sb.Append("0");
+            _sb.Append('0');
         else if (value < .1 && value > -.1)
             _sb.Append(value.ToString("0.#####E+00"));
         else if (value < 1 && value > -1)
@@ -239,7 +239,7 @@ public class BasicInterpreter : IBasicInterpreter
         _environment.SetNextStatement(checkCondition.Next);
     }
 
-    private bool EndOfLoop(ForCheckCondition checkCondition, dynamic nextIndexerValue)
+    private static bool EndOfLoop(ForCheckCondition checkCondition, dynamic nextIndexerValue)
     {
         if (checkCondition.Step > 0)
         {
@@ -442,7 +442,7 @@ public class BasicInterpreter : IBasicInterpreter
 
     private int GetStartingLineNumber(Expression startAtLineNumber)
     {
-        int lineNumber = 0;
+        int lineNumber = -1;
         dynamic value = Evaluate(startAtLineNumber);
         if (value != null)
             lineNumber = (int)value;
@@ -473,7 +473,7 @@ public class BasicInterpreter : IBasicInterpreter
     private const string Filter = "BASIC files (*.bas)|*.bas|All files (*.*)|*.*";
     private const string Title = "TRS-80 Level I BASIC File";
 
-    private string SaveFileDialog()
+    private static string SaveFileDialog()
     {
         var dialog = new SaveFileDialog
         {
@@ -487,7 +487,7 @@ public class BasicInterpreter : IBasicInterpreter
         return dialog.ShowDialog() == DialogResult.OK ? dialog.FileName : null;
     }
 
-    private string OpenFileDialog()
+    private static string OpenFileDialog()
     {
         var dialog = new OpenFileDialog
         {
@@ -578,7 +578,7 @@ public class BasicInterpreter : IBasicInterpreter
         if (jumpToStatement.LineNumber != jumpToLineNumber)
             throw new RuntimeStatementException(statement.LineNumber, statement.SourceLine,
                 $"Can't {jumpType} line {jumpToLineNumber}");
-
+            
         return jumpToStatement;
     }
 

@@ -237,7 +237,7 @@ public class Scanner : IScanner
         }
     }
 
-    private bool IsAlpha(char c)
+    private static bool IsAlpha(char c)
     {
         return char.IsLetter(c);
     }
@@ -547,7 +547,7 @@ public class Scanner : IScanner
         return _currentIndex + 1 >= _source.Length ? '\0' : _source[_currentIndex + 1];
     }
 
-    private bool IsDigit(char c)
+    private static bool IsDigit(char c)
     {
         return char.IsDigit(c);
     }

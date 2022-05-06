@@ -11,7 +11,7 @@ namespace Trs80.Level1Basic.Interpreter.Parser.Statements;
 
 public abstract class Statement
 {
-    public int LineNumber { get; set; }
+    public int LineNumber { get; set; } = -1;
     public string SourceLine { get; set; }
     public Statement Next { get; set; }
 

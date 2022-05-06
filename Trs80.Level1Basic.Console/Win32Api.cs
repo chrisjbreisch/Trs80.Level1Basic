@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -66,7 +67,7 @@ public static class Win32Api
         public int Right;       // x position of lower-right corner
         public int Bottom;      // y position of lower-right corner
     }
-    public static IntPtr GetConsoleWindowHandle()
+    private static IntPtr GetConsoleWindowHandle()
     {
         var sb = new StringBuilder(1024);
         _ = GetConsoleTitle(sb, 1024);
@@ -93,53 +94,56 @@ public static class Win32Api
         return false;
     }
 
-    public static Rect GetClientRect(IntPtr hWnd)
+    public static Rect GetClientRect()
     {
-        GetClientRect(hWnd, out Rect result);
+        GetClientRect(ConsoleOutputHandle, out Rect result);
         return result;
     }
 
     private const uint EnableVirtualTerminalProcessing = 4;
     private const int FixedWidthTrueType = 54;
 
-    public static void EnableVirtualTerminal(IntPtr hwnd)
+    public static void EnableVirtualTerminal()
     {
         int ex;
-        if (!GetConsoleMode(hwnd, out uint lpMode))
+        if (!GetConsoleMode(ConsoleOutputHandle, out uint lpMode))
         {
             ex = Marshal.GetLastWin32Error();
             throw new Win32Exception(ex);
         }
 
         lpMode |= EnableVirtualTerminalProcessing;
-        if (SetConsoleMode(hwnd, lpMode)) return;
+        if (SetConsoleMode(ConsoleOutputHandle, lpMode)) return;
 
         ex = Marshal.GetLastWin32Error();
         throw new Win32Exception(ex);
     }
 
-    public static ConsoleFont GetCurrentConsoleFont(IntPtr hwnd)
+    private static readonly IntPtr ConsoleOutputHandle = Win32Api.GetConsoleWindowHandle();
+
+
+    public static ConsoleFont GetCurrentConsoleFont()
     {
         var font = new FontInfo
         {
             cbSize = Marshal.SizeOf<FontInfo>()
         };
 
-        if (GetCurrentConsoleFontEx(hwnd, false, ref font))
+        if (GetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref font))
             return new ConsoleFont { FontName = font.FontName, FontSize = font.FontSize };
 
         int er = Marshal.GetLastWin32Error();
         throw new Win32Exception(er);
     }
 
-    public static void SetCurrentConsoleFont(IntPtr hwnd, ConsoleFont font)
+    public static void SetCurrentConsoleFont(ConsoleFont font)
     {
         var before = new FontInfo
         {
             cbSize = Marshal.SizeOf<FontInfo>()
         };
 
-        if (GetCurrentConsoleFontEx(hwnd, false, ref before))
+        if (GetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref before))
         {
             var set = new FontInfo
             {
@@ -151,7 +155,7 @@ public static class Win32Api
                 FontSize = font.FontSize > 0 ? font.FontSize : before.FontSize
             };
 
-            if (!SetCurrentConsoleFontEx(hwnd, false, ref set))
+            if (!SetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref set))
             {
                 int ex = Marshal.GetLastWin32Error();
                 throw new Win32Exception(ex);
@@ -161,12 +165,18 @@ public static class Win32Api
             {
                 cbSize = Marshal.SizeOf<FontInfo>()
             };
-            GetCurrentConsoleFontEx(hwnd, false, ref after);
+            GetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref after);
         }
         else
         {
             int er = Marshal.GetLastWin32Error();
             throw new Win32Exception(er);
         }
+    }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Only used on Windows")]
+    public static Graphics GetGraphics()
+    {
+        return Graphics.FromHwnd(ConsoleOutputHandle);
     }
 }

@@ -93,7 +93,7 @@ internal static class Program
         string returnType = "dynamic";
         if (baseName.Contains("Statement"))
         {
-            writer.WriteLine("    public int LineNumber { get; set; }");
+            writer.WriteLine("    public int LineNumber { get; set; } = -1;");
             writer.WriteLine("    public string SourceLine { get; set; }");
             writer.WriteLine("    public Statement Next { get; set; }");
             writer.WriteLine();

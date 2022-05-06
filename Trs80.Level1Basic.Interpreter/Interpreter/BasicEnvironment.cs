@@ -81,7 +81,7 @@ public class BasicEnvironment : IBasicEnvironment
         bool exitList = false;
         foreach (ParsedLine line in Program.List().Where(s => s.LineNumber >= lineNumber))
         {
-            _console.WriteLine(line.LineNumber > 0 ? $" {line.LineNumber}  {line.SourceLine}" : $"{line.SourceLine}");
+            _console.WriteLine(line.LineNumber >= 0 ? $" {line.LineNumber}  {line.SourceLine}" : $"{line.SourceLine}");
             index++;
             if (index < 12) continue;
 
@@ -113,7 +113,7 @@ public class BasicEnvironment : IBasicEnvironment
         _console.Out = newWriter;
 
         foreach (ParsedLine line in Program.List())
-            _console.WriteLine(line.LineNumber > 0 ? $" {line.LineNumber}  {line.SourceLine}" : $"{line.SourceLine}");
+            _console.WriteLine(line.LineNumber >= 0 ? $" {line.LineNumber}  {line.SourceLine}" : $"{line.SourceLine}");
 
         _console.Out = oldWriter;
     }

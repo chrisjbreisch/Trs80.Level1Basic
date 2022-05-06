@@ -97,8 +97,8 @@ dotnet_style_prefer_inferred_anonymous_type_member_names = true:suggestion
 #prefer auto properties
 dotnet_style_prefer_auto_properties = true:suggestion
 #prefer conditional
-dotnet_style_prefer_conditional_expression_over_assignment = true:suggestion
-dotnet_style_prefer_conditional_expression_over_return = true:suggestion
+dotnet_style_prefer_conditional_expression_over_assignment = true
+dotnet_style_prefer_conditional_expression_over_return = true
 #prefer simplified interpolation
 dotnet_style_prefer_simplified_interpolation = true:warning
 #prefer simplified booleans
