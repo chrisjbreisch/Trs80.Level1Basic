@@ -1,8 +1,6 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using System.Runtime.InteropServices;
 
 using Microsoft.Extensions.Logging;
 
@@ -10,11 +8,7 @@ using Trs80.Level1Basic.Common;
 
 namespace Trs80.Level1Basic.Console;
 
-public class ConsoleFont
-{
-    public string FontName { get; set; }
-    public short FontSize { get; set; }
-}
+
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility",
     Justification = "It's fine if these pieces don't work on non-Windows devices")]
@@ -42,7 +36,7 @@ public class Console : IConsole
         if (logFactory == null) throw new ArgumentNullException(nameof(logFactory));
         _logger = logFactory.CreateLogger<Console>();
 
-        _hwnd = Win32Api.Win32Api.GetConsoleWindowHandle();
+        _hwnd = Win32Api.GetConsoleWindowHandle();
         InitializeWindowSettings();
 
         Out = System.Console.Out;
@@ -52,7 +46,7 @@ public class Console : IConsole
 
     private void InitializeWindowSettings()
     {
-        Win32Api.Win32Api.Rect clientRect = Win32Api.Win32Api.GetClientRect(_hwnd);
+        Win32Api.Rect clientRect = Win32Api.GetClientRect(_hwnd);
         _pixelHeight = clientRect.Bottom / (double)ScreenPixelHeight;
         _pixelWidth = clientRect.Right / (double)ScreenPixelWidth;
         _logger.LogDebug($"_pixelHeight: {_pixelHeight}, _pixelWidth: {_pixelWidth}");
@@ -83,62 +77,16 @@ public class Console : IConsole
         return System.Console.GetCursorPosition();
     }
 
-    private const uint EnableVirtualTerminalProcessing = 4;
-    private const int FixedWidthTrueType = 54;
-    private const int StandardOutputHandle = -11;
-
-    private static readonly IntPtr ConsoleOutputHandle = Win32Api.Win32Api.GetStdHandle(StandardOutputHandle);
+    private static readonly IntPtr ConsoleOutputHandle = Win32Api.GetConsoleWindowHandle();
 
     public ConsoleFont GetCurrentFont()
     {
-        var font = new Win32Api.Win32Api.FontInfo
-        {
-            cbSize = Marshal.SizeOf<Win32Api.Win32Api.FontInfo>()
-        };
-
-        if (Win32Api.Win32Api.GetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref font))
-            return new ConsoleFont { FontName = font.FontName, FontSize = font.FontSize };
-
-        int er = Marshal.GetLastWin32Error();
-        throw new Win32Exception(er);
+        return Win32Api.GetCurrentConsoleFont(ConsoleOutputHandle);
     }
 
     public void SetCurrentFont(ConsoleFont font)
     {
-        var before = new Win32Api.Win32Api.FontInfo
-        {
-            cbSize = Marshal.SizeOf<Win32Api.Win32Api.FontInfo>()
-        };
-
-        if (Win32Api.Win32Api.GetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref before))
-        {
-            var set = new Win32Api.Win32Api.FontInfo
-            {
-                cbSize = Marshal.SizeOf<Win32Api.Win32Api.FontInfo>(),
-                FontIndex = 0,
-                FontFamily = FixedWidthTrueType,
-                FontName = font.FontName,
-                FontWeight = 400,
-                FontSize = font.FontSize > 0 ? font.FontSize : before.FontSize
-            };
-
-            if (!Win32Api.Win32Api.SetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref set))
-            {
-                int ex = Marshal.GetLastWin32Error();
-                throw new Win32Exception(ex);
-            }
-
-            var after = new Win32Api.Win32Api.FontInfo
-            {
-                cbSize = Marshal.SizeOf<Win32Api.Win32Api.FontInfo>()
-            };
-            Win32Api.Win32Api.GetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref after);
-        }
-        else
-        {
-            int er = Marshal.GetLastWin32Error();
-            throw new Win32Exception(er);
-        }
+        Win32Api.SetCurrentConsoleFont(ConsoleOutputHandle, font);
     }
 
     public ConsoleKeyInfo ReadKey() => System.Console.ReadKey();
@@ -152,14 +100,13 @@ public class Console : IConsole
 
     private void SetWindowSize(int width, int height)
     {
-        if (OperatingSystem.IsWindows())
-        {
-            System.Console.SetWindowSize(width, height);
-            InitializeWindowSettings();
-        }
+        if (!OperatingSystem.IsWindows()) return;
+
+        System.Console.SetWindowSize(width, height);
+        InitializeWindowSettings();
     }
 
-    private void SetBufferSize(int width, int height)
+    public void SetBufferSize(int width, int height)
     {
         if (OperatingSystem.IsWindows())
             System.Console.SetBufferSize(width, height);
@@ -167,18 +114,8 @@ public class Console : IConsole
 
     private void DisableCursorBlink()
     {
-        if (!Win32Api.Win32Api.GetConsoleMode(ConsoleOutputHandle, out uint lpMode))
-        {
-            int ex = Marshal.GetLastWin32Error();
-            throw new Win32Exception(ex);
-        }
+        Win32Api.EnableVirtualTerminal(ConsoleOutputHandle);
 
-        lpMode |= EnableVirtualTerminalProcessing;
-        if (!Win32Api.Win32Api.SetConsoleMode(ConsoleOutputHandle, lpMode))
-        {
-            int ex = Marshal.GetLastWin32Error();
-            throw new Win32Exception(ex);
-        }
         Out.Write("\u001b[?12l");
     }
 
@@ -187,11 +124,6 @@ public class Console : IConsole
         for (int xIndex = x; xIndex < x + width; xIndex++)
             for (int yIndex = y; yIndex < y + height; yIndex++)
                 _screen[xIndex, yIndex] = turnOn;
-
-        //int clientX = (int)(x * _pixelWidth);
-        //int clientY = (int)(y * _pixelHeight);
-        //int clientWidth = (int)Math.Round(width * _pixelWidth + .5);
-        //int clientHeight = (int)Math.Round(height * _pixelHeight + .5);
 
         _graphics.FillRectangle(
             turnOn ? Brushes.White : Brushes.Black,

@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 
 using Trs80.Level1Basic.CommandModels;
 using Trs80.Level1Basic.Console;
@@ -9,7 +8,6 @@ using Trs80.Level1Basic.Interpreter.Scanner;
 
 namespace Trs80.Level1Basic.Command.Commands;
 
-[SuppressMessage("ReSharper", "UnusedMember.Global")]
 public class ParseCommand : ICommand<ParseModel>
 {
     private readonly IParser _parser;

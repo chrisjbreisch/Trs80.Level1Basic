@@ -1,11 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-using Trs80.Level1Basic.CommandModels;
+﻿using Trs80.Level1Basic.CommandModels;
 using Trs80.Level1Basic.Console;
 
 namespace Trs80.Level1Basic.Command.Commands;
 
-[SuppressMessage("ReSharper", "UnusedMember.Global")]
 public class ShutdownConsoleCommand : ICommand<ShutdownConsoleModel>
 {
     private readonly IConsole _console;

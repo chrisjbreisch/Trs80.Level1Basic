@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-using Trs80.Level1Basic.Command;
+﻿using Trs80.Level1Basic.Command;
 using Trs80.Level1Basic.CommandModels;
 
 using WorkflowCore.Interface;
@@ -12,7 +10,6 @@ public interface IShutdownConsoleStep : IStepBody
 {
 }
 
-[SuppressMessage("ReSharper", "UnusedMember.Global")]
 public class ShutdownConsoleStep : StepBody, IShutdownConsoleStep
 {
     private readonly ICommand<ShutdownConsoleModel> _command;

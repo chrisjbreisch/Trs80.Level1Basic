@@ -1,8 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 
-namespace Trs80.Level1Basic.Win32Api;
+namespace Trs80.Level1Basic.Console;
 
 public static class Win32Api
 {
@@ -64,13 +66,6 @@ public static class Win32Api
         public int Right;       // x position of lower-right corner
         public int Bottom;      // y position of lower-right corner
     }
-
-    public class ConsoleFont
-    {
-        public string FontName { get; set; } = string.Empty;
-        public short FontSize { get; set; }
-    }
-
     public static IntPtr GetConsoleWindowHandle()
     {
         var sb = new StringBuilder(1024);
