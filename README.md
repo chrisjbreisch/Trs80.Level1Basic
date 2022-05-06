@@ -86,6 +86,14 @@ To run the program, just type `RUN`. Which will produce the following:
 >READY  
 >\>_
 
+## Extensions to Level I BASIC
+- The `LOAD`, `SAVE`, and `MERGE` commands mentioned above
+- The `CHR$(n)` function. It takes an ASCII value and returns the corresponding character. When I was playing around, I needed to print a double quote (").
+There's no way to do that in Level I BASIC. `CHR$(n)` is part of Level II BASIC, so I'm just getting a head start on the Level II interpreter. :)
+- You'll notice all the samples are in UPPER case. I do allow mixed-case code, but everything is case-insentive. Forcing UPPER case wouldn't have been too
+hard, but had little benefit, and might have screwed up the `LOAD`, `SAVE`, and `MERGE` commands if you're working on a case-sensitive file system.
+- Slightly more detailed error messages.
+
 ## What doesn't it do?
 
 I haven't supplied an editor or any editing tools. You want to edit, do that outside and use `LOAD` to bring in what you've written. Otherwise, you can 
@@ -124,3 +132,9 @@ If you don't want to read the book, and just want to play, I'm mimicking the fin
 |-------------|----------------------------------------------------|--------------------------------|:--------------------------:|
 | PRINT       | Print value of a variable or expression; also prints whatever is inside quotes | 10 PRINT "A+B=";A+B              | 1,2,3                      |
 | INPUT       | Tells Computer to let you enter data from the Keyboard. | 10 INPUT A,B,C | 7 |
+| INPUT       | Also has built-in PRINT capablity | 10 INPUT "ENTER A";A | 7 |
+| READ        | Reads data in DATA statement                       | 10 READ A,B,C,A$ | 16 |
+| DATA        | Holds data to be read by READ statement            | 20 DATA 1,2,3,"SALLY" | 16 |
+| RESTORE     | Causes next READ statement to start with first item in first DATA line | 30 RESTORE | 16 |
+| LET         | (Optional) Assign a new value to variable on left of equals sign | 0 LET A=3.14159 | 2 |
+| GOTO        | Transfers program control to designated program line | 10 GOTO 100 | 6 |
