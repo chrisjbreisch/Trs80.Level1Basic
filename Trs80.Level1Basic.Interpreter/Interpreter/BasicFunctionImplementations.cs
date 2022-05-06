@@ -40,6 +40,14 @@ public class BasicFunctionImplementations
         return (int)Math.Floor(control * Rand.NextDouble() + 1);
     }
 
+    public string Tab(IBasicInterpreter interpreter, dynamic value)
+    {
+        interpreter.WriteToPosition(value);
+
+        return string.Empty;
+    }
+
+
     public string PadQuadrant(IBasicInterpreter interpreter)
     {
         return interpreter.PadQuadrant();
@@ -58,8 +66,8 @@ public class BasicFunctionImplementations
 
     }
 
-    public bool Point(IBasicInterpreter interpreter, int x, int y)
+    public int Point(IBasicInterpreter interpreter, int x, int y)
     {
-        return interpreter.Point(x, y);// ? 1 : 0;
+        return interpreter.Point(x, y) ? 1 : 0;
     }
 }

@@ -8,6 +8,10 @@ using WorkflowCore.Models;
 
 namespace Trs80.Level1Basic.Workflow;
 
+public interface IShutdownConsoleStep : IStepBody
+{
+}
+
 [SuppressMessage("ReSharper", "UnusedMember.Global")]
 public class ShutdownConsoleStep : StepBody, IShutdownConsoleStep
 {

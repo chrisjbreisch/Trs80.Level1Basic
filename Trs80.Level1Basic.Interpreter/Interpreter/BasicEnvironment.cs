@@ -102,7 +102,7 @@ public class BasicEnvironment : IBasicEnvironment
                     readAnotherKey = false;
                     continue;
                 }
-                _console.Write(key.KeyChar);
+                //_console.Write(key.KeyChar);
             }
 
             if (exitList)

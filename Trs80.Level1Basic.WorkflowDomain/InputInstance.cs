@@ -1,7 +1,6 @@
-﻿namespace Trs80.Level1Basic.WorkflowDomain
+﻿namespace Trs80.Level1Basic.WorkflowDomain;
+
+public class InputInstance
 {
-    public class InputInstance
-    {
-        public string SourceLine { get; set; } = string.Empty;
-    }
+    public string SourceLine { get; set; } = string.Empty;
 }

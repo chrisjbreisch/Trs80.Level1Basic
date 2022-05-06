@@ -2,15 +2,22 @@
 using Trs80.Level1Basic.CommandModels;
 using Trs80.Level1Basic.Interpreter.Parser;
 using Trs80.Level1Basic.Interpreter.Scanner;
+
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
 namespace Trs80.Level1Basic.Workflow;
 
+public interface IParseStep : IStepBody
+{
+    List<Token> Tokens { get; set; }
+    ParsedLine ParsedLine { get; set; }
+}
+
 public class ParseStep : StepBody, IParseStep
 {
     private readonly ICommand<ParseModel> _command;
-    public List<Token> Tokens { get; set;} = new ();
+    public List<Token> Tokens { get; set; } = new();
     public ParsedLine ParsedLine { get; set; } = new();
 
     public ParseStep(ICommand<ParseModel> inboundCommand)
@@ -20,7 +27,8 @@ public class ParseStep : StepBody, IParseStep
 
     public override ExecutionResult Run(IStepExecutionContext context)
     {
-        var model = new ParseModel {
+        var model = new ParseModel
+        {
             Tokens = Tokens
         };
 

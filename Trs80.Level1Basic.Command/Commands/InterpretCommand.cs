@@ -5,7 +5,6 @@ using Trs80.Level1Basic.Console;
 using Trs80.Level1Basic.Interpreter.Exceptions;
 using Trs80.Level1Basic.Interpreter.Interpreter;
 using Trs80.Level1Basic.Interpreter.Parser;
-using Trs80.Level1Basic.Interpreter.Scanner;
 
 namespace Trs80.Level1Basic.Command.Commands;
 
@@ -15,8 +14,7 @@ public class InterpretCommand : ICommand<InterpretModel>
     private readonly IBasicInterpreter _interpreter;
     private readonly IConsole _console;
 
-    public InterpretCommand(IScanner scanner, IParser parser,
-        IBasicInterpreter interpreter, IConsole console)
+    public InterpretCommand(IBasicInterpreter interpreter, IConsole console)
     {
         _interpreter = interpreter ?? throw new ArgumentNullException(nameof(interpreter));
         _console = console ?? throw new ArgumentNullException(nameof(console));

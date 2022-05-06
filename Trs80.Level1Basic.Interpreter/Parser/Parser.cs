@@ -11,6 +11,11 @@ using Trs80.Level1Basic.Interpreter.Scanner;
 
 namespace Trs80.Level1Basic.Interpreter.Parser;
 
+public interface IParser
+{
+    ParsedLine Parse(List<Token> tokens);
+}
+
 public class Parser : IParser
 {
     private List<Token> _tokens;
@@ -345,53 +350,22 @@ public class Parser : IParser
 
     private Statement SaveStatement()
     {
-        Expression path = !IsAtEnd() ? Expression() : SaveFileDialog();
+        Expression path = !IsAtEnd() ? Expression() : new Literal(string.Empty);
 
         return new Save(path);
     }
-
-    private const string Filter = "BASIC files (*.bas)|*.bas|All files (*.*)|*.*";
-    private const string Title = "TRS-80 Level I BASIC File";
-    private Expression SaveFileDialog()
-    {
-        var dialog = new SaveFileDialog
-        {
-            AddExtension = true,
-            DefaultExt = "bas",
-            Filter = Filter,
-            Title = $"Save {Title}",
-            OverwritePrompt = true
-        };
-
-        return dialog.ShowDialog() == DialogResult.OK ? new Literal(dialog.FileName) : null;
-    }
-
+    
     private Statement LoadStatement()
     {
-        Expression path = !IsAtEnd() ? Expression() : OpenFileDialog();
+        Expression path = !IsAtEnd() ? Expression() : new Literal(string.Empty);
         return new Load(path);
     }
 
     private Statement MergeStatement()
     {
-        Expression path = !IsAtEnd() ? Expression() : OpenFileDialog();
+        Expression path = !IsAtEnd() ? Expression() : new Literal(string.Empty);
         return new Merge(path);
     }
-
-    private Expression OpenFileDialog()
-    {
-        var dialog = new OpenFileDialog
-        {
-            DefaultExt = "bas",
-            Filter = Filter,
-            Title = $"Open {Title}",
-            CheckFileExists = true,
-            Multiselect = false,
-        };
-
-        return dialog.ShowDialog() == DialogResult.OK ? new Literal(dialog.FileName) : null;
-    }
-
     private Statement RemarkStatement(Token lineNumber)
     {
         var value = new Literal(Previous().Literal);
@@ -462,21 +436,18 @@ public class Parser : IParser
         bool newline = true;
         var values = new List<Expression>();
         Expression atPosition = null;
-        Expression tabPosition = null;
 
         if (Match(TokenType.At))
         {
             atPosition = Expression();
-            if (Match(TokenType.Comma) || Match(TokenType.Semicolon))
-                Advance();
-            else
+            if (!Match(TokenType.Comma, TokenType.Semicolon))
                 throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, "Expected ',' or ';' after AT clause.");
         }
 
-        if ((Match(TokenType.T) || Match(TokenType.Tab)) && Match(TokenType.LeftParen))
+        if (Match(TokenType.T) && Match(TokenType.LeftParen))
         {
-            tabPosition = Expression();
-            Consume(TokenType.RightParen, "Expected ')' after 'TAB' argument.");
+            var t = new Token(TokenType.Identifier, "tab", "tab", _currentLine.SourceLine);
+            values.Add(FinishCall(t));
         }
 
         while (!IsAtStatementEnd())
@@ -498,7 +469,7 @@ public class Parser : IParser
 
         }
 
-        return StatementWrapper(new Print(atPosition, tabPosition, values, newline), lineNumber);
+        return StatementWrapper(new Print(atPosition, values, newline), lineNumber);
     }
 
     private int GetLineNumberValue(Token lineNumber)

@@ -12,4 +12,4 @@
 110   PRINT "L = ";L
 120   M = M - L
 130   M = M * 10
-130 NEXT A
+140 NEXT A

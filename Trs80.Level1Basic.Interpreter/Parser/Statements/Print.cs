@@ -14,14 +14,12 @@ namespace Trs80.Level1Basic.Interpreter.Parser.Statements;
 public class Print : Statement
 {
     public Expression AtPosition { get; }
-    public Expression TabPosition { get; }
     public List<Expression> Expressions { get; }
     public bool WriteNewline { get; }
 
-    public Print(Expression atPosition, Expression tabPosition, List<Expression> expressions, bool writeNewline)
+    public Print(Expression atPosition, List<Expression> expressions, bool writeNewline)
     {
         AtPosition = atPosition;
-        TabPosition = tabPosition;
         Expressions = expressions;
         WriteNewline = writeNewline;
     }

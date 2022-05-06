@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Windows.Forms;
+
 using Trs80.Level1Basic.Console;
 using Trs80.Level1Basic.Interpreter.Exceptions;
 using Trs80.Level1Basic.Interpreter.Parser;
@@ -174,6 +176,7 @@ public class BasicInterpreter : IBasicInterpreter
 
     private void WriteValue(dynamic value)
     {
+        int startingLength = _sb.Length;
         switch (value)
         {
             case null:
@@ -206,6 +209,15 @@ public class BasicInterpreter : IBasicInterpreter
                 _sb.Append(value.ToString());
                 break;
         }
+
+        // if (_sb.Length > 0 && _sb[^1] != ' ')
+        if (value is (int or float))
+        {
+            _sb.Append(' ');
+            _lastCharacterIsSpace = true;
+        }
+
+        _printPosition += _sb.Length - startingLength;
     }
 
     public void VisitNextStatement(Next root)
@@ -318,16 +330,14 @@ public class BasicInterpreter : IBasicInterpreter
         _inPrintAt = false;
         _sb = new StringBuilder();
         if (printStatement.AtPosition != null) PrintAt(printStatement.AtPosition);
-        if (printStatement.TabPosition != null) PrintTab(printStatement.TabPosition);
 
         if (printStatement.Expressions is { Count: > 0 })
             foreach (Expression expression in printStatement.Expressions)
-                WriteExpression(expression, _printPosition);
+                WriteExpression(expression);
 
         string text = _sb.ToString();
-        _printPosition += text.Length;
-
         _console.Write(text);
+
         if (!printStatement.WriteNewline)
         {
             if (text.EndsWith(" "))
@@ -338,6 +348,7 @@ public class BasicInterpreter : IBasicInterpreter
         _console.WriteLine();
         _printPosition = 0;
         _lastCharacterIsSpace = false;
+        _inPrintAt = false;
     }
 
     private void PrintAt(Expression position)
@@ -348,15 +359,8 @@ public class BasicInterpreter : IBasicInterpreter
 
         _console.SetCursorPosition(column, row);
         _inPrintAt = true;
-    }
-
-    private void PrintTab(Expression position)
-    {
-        dynamic value = Evaluate(position);
-        (_, int row) = _console.GetCursorPosition();
-
-        _console.SetCursorPosition(value, row);
-        _inPrintAt = true;
+        _printPosition = column;
+        _lastCharacterIsSpace = false;
     }
 
     public void VisitReplaceStatement(Replace root)
@@ -374,14 +378,22 @@ public class BasicInterpreter : IBasicInterpreter
     }
 
     private StringBuilder _sb = new();
+    public void WriteToPosition(int position)
+    {
+        if (_printPosition > position) return;
+
+        string padding = "".PadRight(position - _printPosition, ' ');
+
+        _sb.Append(padding);
+        _printPosition = position;
+        _lastCharacterIsSpace = false;
+    }
 
     public string PadQuadrant()
     {
-        int currentPosition = _printPosition + _sb.Length;
-
-        int nextPosition = (currentPosition / 16 + 1) * 16;
-        string padding = "".PadRight(nextPosition - currentPosition, ' ');
-
+        int nextPosition = (_printPosition / 16 + 1) * 16;
+        string padding = "".PadRight(nextPosition - _printPosition, ' ');
+        _lastCharacterIsSpace = false;
         return padding;
     }
 
@@ -405,28 +417,32 @@ public class BasicInterpreter : IBasicInterpreter
         return _environment.MemoryInUse();
     }
 
-    private void PrependSpaceIfNecessary(dynamic value, int position)
+    private void PrependSpaceIfNecessary(dynamic value)
     {
-        bool isNotNegativeNumber = value is not (int or float) || value >= 0;
+        bool valueIsNegativeNumber = value is (int or float) && value < 0;
+
+        if (valueIsNegativeNumber) return;
 
         if (_lastCharacterIsSpace) return;
 
-        if (position == 0 || isNotNegativeNumber) return;
+        if (value is string) return;
+        //if (_printPosition == 0 && (value is string || valueIsNegativeNumber))
+        //    return;
 
-        if (value is string str && str.StartsWith(" ")) return;
-
-        if (_sb.Length > 0 && _sb[^1] == ' ') return;
+        //if (value is string str && 
+        //    (str.StartsWith(" ") || (_sb.Length > 0 && _sb[^1] == ' '))) return;
 
         _sb.Append(' ');
+        _printPosition++;
     }
 
-    private void WriteExpression(Expression expression, int position)
+    private void WriteExpression(Expression expression)
     {
         dynamic value = Evaluate(expression);
-        if (_inPrintAt)
-            AdjustPositionIfNecessary(value);
-        else
-            PrependSpaceIfNecessary(value, position);
+        //if (_inPrintAt)
+        //    AdjustPositionIfNecessary(value);
+        //else
+        PrependSpaceIfNecessary(value);
         WriteValue(value);
     }
 
@@ -435,7 +451,8 @@ public class BasicInterpreter : IBasicInterpreter
         if (value is not (int or float) || value < 0) return;
 
         (int left, int top) = _console.GetCursorPosition();
-        _console.SetCursorPosition(left + 1, top);
+        _printPosition++;
+        _console.SetCursorPosition(_printPosition, top);
     }
 
     public void VisitStatementExpressionStatement(StatementExpression statement)
@@ -462,7 +479,10 @@ public class BasicInterpreter : IBasicInterpreter
     public void VisitRunStatement(Run runStatement)
     {
         _environment.InitializeProgram();
-
+        _inPrintAt = false;
+        _lastCharacterIsSpace = false;
+        _printPosition = 0;
+        
         int lineNumber = GetStartingLineNumber(runStatement.StartAtLineNumber);
 
         _environment.LoadData(this);
@@ -499,20 +519,73 @@ public class BasicInterpreter : IBasicInterpreter
         // do nothing
     }
 
+    private const string Filter = "BASIC files (*.bas)|*.bas|All files (*.*)|*.*";
+    private const string Title = "TRS-80 Level I BASIC File";
+
+    private string SaveFileDialog()
+    {
+        var dialog = new SaveFileDialog
+        {
+            AddExtension = true,
+            DefaultExt = "bas",
+            Filter = Filter,
+            Title = $"Save {Title}",
+            OverwritePrompt = true
+        };
+
+        return dialog.ShowDialog() == DialogResult.OK ? dialog.FileName : null;
+    }
+
+    private string OpenFileDialog()
+    {
+        var dialog = new OpenFileDialog
+        {
+            DefaultExt = "bas",
+            Filter = Filter,
+            Title = $"Open {Title}",
+            CheckFileExists = true,
+            Multiselect = false,
+        };
+
+        return dialog.ShowDialog() == DialogResult.OK ? dialog.FileName : null;
+    }
+
+
     public void VisitLoadStatement(Load loadStatement)
     {
         _environment.NewProgram();
-        _environment.LoadProgram(Evaluate(loadStatement.Path));
+        string path = Evaluate(loadStatement.Path);
+        if (string.IsNullOrEmpty(path))
+            path = OpenFileDialog();
+
+        if (string.IsNullOrEmpty(path)) return;
+
+        _environment.LoadProgram(path);
+        _console.WriteLine($"Loaded \"{path}\".");
     }
 
     public void VisitMergeStatement(Merge mergeStatement)
     {
-        _environment.LoadProgram(Evaluate(mergeStatement.Path));
+        string path = Evaluate(mergeStatement.Path);
+        if (string.IsNullOrEmpty(path))
+            path = OpenFileDialog();
+
+        if (string.IsNullOrEmpty(path)) return;
+
+        _environment.LoadProgram(path);
+        _console.WriteLine($"Merged \"{path}\".");
     }
 
     public void VisitSaveStatement(Save saveStatement)
     {
-        _environment.SaveProgram(Evaluate(saveStatement.Path));
+        string path = Evaluate(saveStatement.Path);
+        if (string.IsNullOrEmpty(path))
+            path = SaveFileDialog();
+
+        if (string.IsNullOrEmpty(path)) return;
+
+        _environment.SaveProgram(path);
+        _console.WriteLine($"Saved \"{path}\".");
     }
     public void VisitEndStatement(End endStatement)
     {
@@ -577,8 +650,14 @@ public class BasicInterpreter : IBasicInterpreter
     public void VisitIfStatement(If ifStatement)
     {
         dynamic value = Evaluate(ifStatement.Condition);
+        dynamic check;
 
-        if (!value) return;
+        if (value is int intVal)
+            check = intVal == 1;
+        else
+            check = value;
+
+        if (!check) return;
 
         switch (ifStatement.ThenStatement)
         {
@@ -617,7 +696,7 @@ public class BasicInterpreter : IBasicInterpreter
         switch (expression)
         {
             case Literal:
-                WriteExpression(expression, _printPosition);
+                WriteExpression(expression);
                 break;
             case Identifier variable:
                 GetInputValue(variable, writeNewline);
@@ -632,6 +711,7 @@ public class BasicInterpreter : IBasicInterpreter
     {
         _console.Write(_sb.ToString());
         _console.Write("?");
+
         if (writeNewline)
             _console.WriteLine();
 
@@ -648,6 +728,7 @@ public class BasicInterpreter : IBasicInterpreter
             AssignVariable(variable, lookup);
         }
         else
+        {
             try
             {
                 AssignVariable(variable, value);
@@ -657,6 +738,9 @@ public class BasicInterpreter : IBasicInterpreter
                 _console.WriteLine("WHAT?");
                 GetInputValue(variable, writeNewline);
             }
+        }
+
+        _printPosition = 0;
     }
 
     private Statement GetStatementByLineNumber(int lineNumber)

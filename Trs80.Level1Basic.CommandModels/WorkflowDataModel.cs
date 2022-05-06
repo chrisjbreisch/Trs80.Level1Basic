@@ -3,7 +3,7 @@ using Trs80.Level1Basic.Interpreter.Scanner;
 
 namespace Trs80.Level1Basic.CommandModels;
 
-public sealed class WorkflowDataModel : IWorkflowDataModel
+public sealed class WorkflowDataModel
 {
     public bool WritePrompt { get; set; } = false;
     public bool Done { get; set; }

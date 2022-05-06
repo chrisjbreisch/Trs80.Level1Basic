@@ -1,5 +1,5 @@
 10 CLS
-20 PRINT AT 407, "H  M   S"
+20 PRINT AT 407, "H  M  S"
 30 FOR H = 0 TO 23
 40    FOR M = 0 TO 59
 50       FOR S = 0 TO 59

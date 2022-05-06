@@ -223,7 +223,7 @@ public sealed class Bootstrapper : IDisposable
             .AddSingleton<IConsole, Console.Console>()
             .AddSingleton<IConsoleDataModel, ConsoleDataModel>()
             .AddSingleton<IProgram, Program>()
-            .AddScoped<IAppSettings, AppSettings>()
+            .AddSingleton<IAppSettings, AppSettings>()
             .BuildServiceProvider();
     }
 
