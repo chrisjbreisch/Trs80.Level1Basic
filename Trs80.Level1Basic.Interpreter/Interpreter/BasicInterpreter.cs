@@ -174,37 +174,21 @@ public class BasicInterpreter : IBasicInterpreter
         return _environment.GetVariable(identifier.Name.Lexeme);
     }
 
-    private void WriteValue(dynamic value)
+    private void WriteExpression(Expression expression)
     {
+        dynamic value = Evaluate(expression);
         int startingLength = _sb.Length;
+        
+        if (value is >= 0 or float and >= 0)
+            _sb.Append(' ');
+        
         switch (value)
         {
             case null:
                 return;
             case float:
-                {
-                    if (value == 0)
-                        _sb.Append("0");
-                    else if (value < .1 && value > -.1)
-                        _sb.Append(value.ToString("0.#####E+00"));
-                    else if (value < 1 && value > -1)
-                        _sb.Append(value.ToString("0.######"));
-                    else if (value > 999999 || value < -999999)
-                        _sb.Append(value.ToString("0.#####E+00"));
-                    else if (value > -10 && value < 10)
-                        _sb.Append(value.ToString("#.#####"));
-                    else if (value > -100 && value < 100)
-                        _sb.Append(value.ToString("##.####"));
-                    else if (value > -1000 && value < 1000)
-                        _sb.Append(value.ToString("###.###"));
-                    else if (value > -10000 && value < 10000)
-                        _sb.Append(value.ToString("####.##"));
-                    else if (value > -100000 && value < 100000)
-                        _sb.Append(value.ToString("#####.#"));
-                    else
-                        _sb.Append(value.ToString("######"));
-                    break;
-                }
+                WriteFloatValue(value);
+                break;
             default:
                 _sb.Append(value.ToString());
                 break;
@@ -212,12 +196,33 @@ public class BasicInterpreter : IBasicInterpreter
 
         // if (_sb.Length > 0 && _sb[^1] != ' ')
         if (value is (int or float))
-        {
             _sb.Append(' ');
-            _lastCharacterIsSpace = true;
-        }
 
         _printPosition += _sb.Length - startingLength;
+    }
+
+    private void WriteFloatValue(dynamic value)
+    {
+        if (value == 0)
+            _sb.Append("0");
+        else if (value < .1 && value > -.1)
+            _sb.Append(value.ToString("0.#####E+00"));
+        else if (value < 1 && value > -1)
+            _sb.Append(value.ToString("0.######"));
+        else if (value > 999999 || value < -999999)
+            _sb.Append(value.ToString("0.#####E+00"));
+        else if (value > -10 && value < 10)
+            _sb.Append(value.ToString("#.#####"));
+        else if (value > -100 && value < 100)
+            _sb.Append(value.ToString("##.####"));
+        else if (value > -1000 && value < 1000)
+            _sb.Append(value.ToString("###.###"));
+        else if (value > -10000 && value < 10000)
+            _sb.Append(value.ToString("####.##"));
+        else if (value > -100000 && value < 100000)
+            _sb.Append(value.ToString("#####.#"));
+        else
+            _sb.Append(value.ToString("######"));
     }
 
     public void VisitNextStatement(Next root)
@@ -323,11 +328,8 @@ public class BasicInterpreter : IBasicInterpreter
     }
 
     private int _printPosition;
-    private bool _lastCharacterIsSpace;
-    private bool _inPrintAt;
     public void VisitPrintStatement(Print printStatement)
     {
-        _inPrintAt = false;
         _sb = new StringBuilder();
         if (printStatement.AtPosition != null) PrintAt(printStatement.AtPosition);
 
@@ -338,17 +340,10 @@ public class BasicInterpreter : IBasicInterpreter
         string text = _sb.ToString();
         _console.Write(text);
 
-        if (!printStatement.WriteNewline)
-        {
-            if (text.EndsWith(" "))
-                _lastCharacterIsSpace = true;
-            return;
-        }
+        if (!printStatement.WriteNewline) return;
 
         _console.WriteLine();
         _printPosition = 0;
-        _lastCharacterIsSpace = false;
-        _inPrintAt = false;
     }
 
     private void PrintAt(Expression position)
@@ -358,9 +353,7 @@ public class BasicInterpreter : IBasicInterpreter
         dynamic column = value % 64;
 
         _console.SetCursorPosition(column, row);
-        _inPrintAt = true;
         _printPosition = column;
-        _lastCharacterIsSpace = false;
     }
 
     public void VisitReplaceStatement(Replace root)
@@ -386,14 +379,12 @@ public class BasicInterpreter : IBasicInterpreter
 
         _sb.Append(padding);
         _printPosition = position;
-        _lastCharacterIsSpace = false;
     }
 
     public string PadQuadrant()
     {
         int nextPosition = (_printPosition / 16 + 1) * 16;
         string padding = "".PadRight(nextPosition - _printPosition, ' ');
-        _lastCharacterIsSpace = false;
         return padding;
     }
 
@@ -416,45 +407,7 @@ public class BasicInterpreter : IBasicInterpreter
     {
         return _environment.MemoryInUse();
     }
-
-    private void PrependSpaceIfNecessary(dynamic value)
-    {
-        bool valueIsNegativeNumber = value is (int or float) && value < 0;
-
-        if (valueIsNegativeNumber) return;
-
-        if (_lastCharacterIsSpace) return;
-
-        if (value is string) return;
-        //if (_printPosition == 0 && (value is string || valueIsNegativeNumber))
-        //    return;
-
-        //if (value is string str && 
-        //    (str.StartsWith(" ") || (_sb.Length > 0 && _sb[^1] == ' '))) return;
-
-        _sb.Append(' ');
-        _printPosition++;
-    }
-
-    private void WriteExpression(Expression expression)
-    {
-        dynamic value = Evaluate(expression);
-        //if (_inPrintAt)
-        //    AdjustPositionIfNecessary(value);
-        //else
-        PrependSpaceIfNecessary(value);
-        WriteValue(value);
-    }
-
-    private void AdjustPositionIfNecessary(dynamic value)
-    {
-        if (value is not (int or float) || value < 0) return;
-
-        (int left, int top) = _console.GetCursorPosition();
-        _printPosition++;
-        _console.SetCursorPosition(_printPosition, top);
-    }
-
+    
     public void VisitStatementExpressionStatement(StatementExpression statement)
     {
         Evaluate(statement.Expression);
@@ -479,8 +432,6 @@ public class BasicInterpreter : IBasicInterpreter
     public void VisitRunStatement(Run runStatement)
     {
         _environment.InitializeProgram();
-        _inPrintAt = false;
-        _lastCharacterIsSpace = false;
         _printPosition = 0;
         
         int lineNumber = GetStartingLineNumber(runStatement.StartAtLineNumber);

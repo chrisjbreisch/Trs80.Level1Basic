@@ -17,9 +17,6 @@ public class InputCommand : ICommand<InputModel>
 
     public void Execute(InputModel parameterObject)
     {
-        //if (parameterObject.WritePrompt)
-        //    WritePrompt();
-
         _console.Write(">");
         parameterObject.SourceLine = GetInputLine();
 

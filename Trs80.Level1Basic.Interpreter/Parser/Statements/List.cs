@@ -4,10 +4,8 @@
 //
 //
 
-using System;
 using System.Collections.Generic;
 using Trs80.Level1Basic.Interpreter.Parser.Expressions;
-using Trs80.Level1Basic.Interpreter.Scanner;
 
 namespace Trs80.Level1Basic.Interpreter.Parser.Statements;
 

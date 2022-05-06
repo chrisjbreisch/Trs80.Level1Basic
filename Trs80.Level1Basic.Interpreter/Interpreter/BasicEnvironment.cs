@@ -97,12 +97,8 @@ public class BasicEnvironment : IBasicEnvironment
                     break;
                 }
 
-                if (key.Key == ConsoleKey.UpArrow)
-                {
+                if (key.Key == ConsoleKey.UpArrow) 
                     readAnotherKey = false;
-                    continue;
-                }
-                //_console.Write(key.KeyChar);
             }
 
             if (exitList)

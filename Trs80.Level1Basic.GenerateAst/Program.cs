@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using Trs80.Level1Basic.Common.Extensions;
 
 namespace Trs80.Level1Basic.GenerateAst;
@@ -48,7 +49,7 @@ internal static class Program
             "New",
             "Next                   : Expression variable",
             "On                     : Expression selector, List<Expression> locations, bool isGosub",
-            "Print                  : Expression atPosition, Expression tabPosition, List<Expression> expressions, bool writeNewline",
+            "Print                  : Expression atPosition, List<Expression> expressions, bool writeNewline",
             "Replace                : ParsedLine line",
             "Read                   : List<Expression> variables",
             "Rem                    : Literal remark",
@@ -94,7 +95,6 @@ internal static class Program
         {
             writer.WriteLine("    public int LineNumber { get; set; }");
             writer.WriteLine("    public string SourceLine { get; set; }");
-            writer.WriteLine("    public Guid UniqueIdentifier { get; set; }");
             writer.WriteLine("    public Statement Next { get; set; }");
             writer.WriteLine();
             returnType = "void";
@@ -116,13 +116,12 @@ internal static class Program
         WriteDisclaimer(writer);
 
         writer.WriteLine();
-        writer.WriteLine("using System;");
         writer.WriteLine("using System.Collections.Generic;");
 
-        if (baseName.Contains("Statement"))
-            writer.WriteLine("using Trs80.Level1Basic.Interpreter.Parser.Expressions;");
+        writer.WriteLine(baseName.Contains("Statement")
+            ? "using Trs80.Level1Basic.Interpreter.Parser.Expressions;"
+            : "using Trs80.Level1Basic.Interpreter.Scanner;");
 
-        writer.WriteLine("using Trs80.Level1Basic.Interpreter.Scanner;");
         writer.WriteLine();
         writer.WriteLine($"namespace Trs80.Level1Basic.Interpreter.Parser.{baseName}s;");
         writer.WriteLine();

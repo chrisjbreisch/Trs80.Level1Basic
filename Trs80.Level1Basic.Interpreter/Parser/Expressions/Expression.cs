@@ -4,7 +4,6 @@
 //
 //
 
-using System;
 using System.Collections.Generic;
 using Trs80.Level1Basic.Interpreter.Scanner;
 

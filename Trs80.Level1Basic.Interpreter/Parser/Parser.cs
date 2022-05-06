@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 
 using Trs80.Level1Basic.Interpreter.Exceptions;
 using Trs80.Level1Basic.Interpreter.Interpreter;
@@ -354,7 +353,7 @@ public class Parser : IParser
 
         return new Save(path);
     }
-    
+
     private Statement LoadStatement()
     {
         Expression path = !IsAtEnd() ? Expression() : new Literal(string.Empty);
@@ -595,7 +594,7 @@ public class Parser : IParser
             _builtins.Get(name.Lexeme).FirstOrDefault(f => f.Arity == arguments.Count);
 
         if (function == null)
-            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, 
+            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
                 $"Unknown function '{name.Lexeme}' with argument count {arguments.Count}");
     }
 

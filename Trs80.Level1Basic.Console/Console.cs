@@ -3,6 +3,9 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
+
+using Microsoft.Extensions.Logging;
+
 using Trs80.Level1Basic.Common;
 
 namespace Trs80.Level1Basic.Console;
@@ -17,7 +20,7 @@ public class ConsoleFont
     Justification = "It's fine if these pieces don't work on non-Windows devices")]
 public class Console : IConsole
 {
-    private IntPtr _hwnd;
+    private readonly IntPtr _hwnd;
     private double _pixelWidth;
     private double _pixelHeight;
     private const int ScreenWidth = 64;
@@ -25,31 +28,35 @@ public class Console : IConsole
     private const int ScreenPixelWidth = 2 * ScreenWidth;
     private const int ScreenPixelHeight = 3 * ScreenHeight;
     private readonly bool[,] _screen = new bool[ScreenPixelWidth, ScreenPixelHeight];
-    private readonly Graphics _graphics;
+    private Graphics _graphics;
     private readonly IAppSettings _appSettings;
+    private readonly ILogger _logger;
 
     public TextWriter Out { get; set; }
     public TextReader In { get; set; }
     public TextWriter Error { get; set; }
 
-    public Console(IAppSettings appSettings)
+    public Console(IAppSettings appSettings, ILoggerFactory logFactory)
     {
         _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
+        if (logFactory == null) throw new ArgumentNullException(nameof(logFactory));
+        _logger = logFactory.CreateLogger<Console>();
 
         _hwnd = Win32Api.Win32Api.GetConsoleWindowHandle();
-        SetPixelSizes();
-        _graphics = Graphics.FromHwnd(_hwnd);
+        InitializeWindowSettings();
 
         Out = System.Console.Out;
         In = System.Console.In;
         Error = System.Console.Error;
     }
 
-    private void SetPixelSizes()
+    private void InitializeWindowSettings()
     {
         Win32Api.Win32Api.Rect clientRect = Win32Api.Win32Api.GetClientRect(_hwnd);
-        _pixelHeight = clientRect.Bottom / (double) ScreenPixelHeight;
-        _pixelWidth = clientRect.Right / (double) ScreenPixelWidth;
+        _pixelHeight = clientRect.Bottom / (double)ScreenPixelHeight;
+        _pixelWidth = clientRect.Right / (double)ScreenPixelWidth;
+        _logger.LogDebug($"_pixelHeight: {_pixelHeight}, _pixelWidth: {_pixelWidth}");
+        _graphics = Graphics.FromHwnd(_hwnd);
     }
 
     public void WriteLine(string text = "") => Out.WriteLine(text);
@@ -148,7 +155,7 @@ public class Console : IConsole
         if (OperatingSystem.IsWindows())
         {
             System.Console.SetWindowSize(width, height);
-            SetPixelSizes();
+            InitializeWindowSettings();
         }
     }
 
@@ -180,6 +187,11 @@ public class Console : IConsole
         for (int xIndex = x; xIndex < x + width; xIndex++)
             for (int yIndex = y; yIndex < y + height; yIndex++)
                 _screen[xIndex, yIndex] = turnOn;
+
+        //int clientX = (int)(x * _pixelWidth);
+        //int clientY = (int)(y * _pixelHeight);
+        //int clientWidth = (int)Math.Round(width * _pixelWidth + .5);
+        //int clientHeight = (int)Math.Round(height * _pixelHeight + .5);
 
         _graphics.FillRectangle(
             turnOn ? Brushes.White : Brushes.Black,

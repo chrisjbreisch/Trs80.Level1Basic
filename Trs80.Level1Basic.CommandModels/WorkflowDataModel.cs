@@ -1,8 +1,10 @@
-﻿using Trs80.Level1Basic.Interpreter.Parser;
+﻿using System.Diagnostics.CodeAnalysis;
+using Trs80.Level1Basic.Interpreter.Parser;
 using Trs80.Level1Basic.Interpreter.Scanner;
 
 namespace Trs80.Level1Basic.CommandModels;
 
+[SuppressMessage("ReSharper", "EmptyConstructor")]
 public sealed class WorkflowDataModel
 {
     public bool WritePrompt { get; set; } = false;

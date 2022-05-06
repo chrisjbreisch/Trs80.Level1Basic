@@ -21,7 +21,6 @@ public class LogCommandDecorator<TPo> : ICommand<TPo>
     {
         try
         {
-            _logger.LogCritical("Boo!");
             _logger.LogInformation(
                 $"\r\nExecuting {_command.GetType().Name} ({_logger.JsonSerializeObject(parameterObject)})");
             _command.Execute(parameterObject);

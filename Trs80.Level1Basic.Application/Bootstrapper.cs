@@ -42,16 +42,20 @@ public sealed class Bootstrapper : IDisposable
     public ISyncWorkflowRunner WorkflowRunner => ScopedServiceProvider.GetRequiredService<ISyncWorkflowRunner>();
     private IDefinitionLoader WorkflowLoader => ScopedServiceProvider.GetRequiredService<IDefinitionLoader>();
 
+    private IConfiguration _configuration;
+
     public Bootstrapper(string workflowFileName)
     {
         _services = new ServiceCollection();
         ConfigureServicesExtensions();
 
+        LoadConfiguration();
+
         ConfigureLogging();
         ConfigureServices();
         CreateServiceProvider();
 
-        GetConfiguration();
+        GetAppSettings();
 
         LoadWorkflow(workflowFileName);
 
@@ -60,16 +64,19 @@ public sealed class Bootstrapper : IDisposable
         LogConfiguredServices();
     }
 
-    private void GetConfiguration()
+    private void LoadConfiguration()
     {
-        IConfiguration configuration = new ConfigurationBuilder()
+        _configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appSettings.json")
             .AddEnvironmentVariables()
             .Build();
+    }
 
+    private void GetAppSettings()
+    {
         AppSettings = ScopedServiceProvider.GetRequiredService<IAppSettings>();
-        configuration.GetSection("AppSettings").Bind(AppSettings);
+        _configuration.GetSection("AppSettings").Bind(AppSettings);
     }
 
     private void LoadWorkflow(string workflowFileName)
@@ -110,15 +117,20 @@ public sealed class Bootstrapper : IDisposable
 
     private void ConfigureLogging()
     {
+        NLog.LogManager.LoadConfiguration("nLog.Config");
         LogFactory = LoggerFactory.Create(
             builder =>
                 builder
                     .ClearProviders()
                     .AddDebug()
                     .AddNLog()
-                    .SetMinimumLevel(LogLevel.Debug)
+                    .AddConfiguration(_configuration.GetSection("Logging"))
         );
-        _services.AddSingleton(LogFactory);
+
+        _services.AddSingleton(
+            LogFactory
+        );
+
         _logger = LogFactory.CreateLogger<Bootstrapper>();
     }
 
