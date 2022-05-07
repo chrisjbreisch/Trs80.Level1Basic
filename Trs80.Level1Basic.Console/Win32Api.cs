@@ -121,10 +121,8 @@ public static class Win32Api
         throw new Win32Exception(ex);
     }
 
-    private static IntPtr _hwnd = GetConsoleWindowHandle();
-    private static IntPtr _outputHandle = GetStdHandle(StandardOutputHandle);
-
-    private const int InvalidHwndError = 6;
+    private static readonly IntPtr _hwnd = GetConsoleWindowHandle();
+    private static readonly IntPtr _outputHandle = GetStdHandle(StandardOutputHandle);
 
     public static ConsoleFont GetCurrentConsoleFont()
     {

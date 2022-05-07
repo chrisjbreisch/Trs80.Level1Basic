@@ -44,7 +44,7 @@ public sealed class Bootstrapper : IDisposable
 
     private IConfiguration _configuration;
 
-    public Bootstrapper(string workflowFileName)
+    public Bootstrapper()
     {
         _services = new ServiceCollection();
         ConfigureServicesExtensions();
@@ -56,9 +56,7 @@ public sealed class Bootstrapper : IDisposable
         CreateServiceProvider();
 
         GetAppSettings();
-
-        LoadWorkflow(workflowFileName);
-
+        
         GetApplicationName();
 
         LogConfiguredServices();
@@ -79,7 +77,7 @@ public sealed class Bootstrapper : IDisposable
         _configuration.GetSection("AppSettings").Bind(AppSettings);
     }
 
-    private void LoadWorkflow(string workflowFileName)
+    public void LoadWorkflow(string workflowFileName)
     {
         if (string.IsNullOrEmpty(workflowFileName)) return;
 

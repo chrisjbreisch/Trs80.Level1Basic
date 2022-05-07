@@ -49,7 +49,8 @@ public class ConsoleApp
     {
         try
         {
-            _bootstrapper = new Bootstrapper(workflow);
+            _bootstrapper = new Bootstrapper();
+            _bootstrapper.LoadWorkflow(workflow);
             _serviceProvider = _bootstrapper.ScopedServiceProvider;
             _logger = _bootstrapper.LogFactory.CreateLogger<ConsoleApp>();
             _console = _serviceProvider.GetRequiredService<IConsole>();

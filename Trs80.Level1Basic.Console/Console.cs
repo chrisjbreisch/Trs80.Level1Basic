@@ -25,21 +25,18 @@ public class Console : IConsole
     private readonly IAppSettings _appSettings;
     private readonly ILogger _logger;
 
-    public TextWriter Out { get; set; }
-    public TextReader In { get; set; }
-    public TextWriter Error { get; set; }
+    public TextWriter Out { get; set; } = System.Console.Out;
+    public TextReader In { get; set; } = System.Console.In;
+    public TextWriter Error { get; set; } = System.Console.Error;
 
-    public Console(IAppSettings appSettings, ILoggerFactory logFactory)
+    public Console(IAppSettings appSettings, ILoggerFactory logFactory, bool initializeWindow = true)
     {
         _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
         if (logFactory == null) throw new ArgumentNullException(nameof(logFactory));
         _logger = logFactory.CreateLogger<Console>();
 
-        InitializeWindowSettings();
-
-        Out = System.Console.Out;
-        In = System.Console.In;
-        Error = System.Console.Error;
+        if (initializeWindow)
+            InitializeWindowSettings();
     }
 
     private void InitializeWindowSettings()
