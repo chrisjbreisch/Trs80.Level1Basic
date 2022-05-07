@@ -6,6 +6,8 @@ namespace Trs80.Level1Basic.Interpreter.Interpreter;
 
 public interface IBasicInterpreter : IExpressionVisitor, IStatementVisitor
 {
+    int CursorX { get; }
+    int CursorY { get; }
     Statement CurrentStatement { get; }
     void Interpret(ParsedLine line);
     void Execute(Statement statement);

@@ -34,7 +34,7 @@ a bit easier than BASIC, particularly Level I BASIC, which has a rather bizarre 
 
 Note that Robert compiles his language down to the bytecode level. And shows you how to create a virtual machine and do garbage collection, optimization, etc.
 I did not do that for my BASIC interpreter. Even my nice simple tree-walking interpeter is about 4,000 times faster than my TRS-80 was. 
-And that's with some artificial slowness that I added. This is logging, primarily, but also the addition of 
+And that's with some artificial slowness that I added. This is primarily logging, but also the addition of 
 [Workflow Core](https://www.nuget.org/packages/WorkflowCore/), which is complete overkill for this application, but I wanted to play with it.
 I don't really feel the need to optimize further.
 
@@ -83,7 +83,6 @@ And, for exmple, here's the first program from the book:
 
 To run the program, just type `RUN`. Which will produce the following:
 >\>RUN
-
 >HELLO THERE. I AM YOUR NEW TRS-80 MICROCOMPUTER.  
 >  
 >READY  
@@ -115,11 +114,15 @@ The other "new" features should be easier to deal with.
 - Visual Studio 2022 solution with all the code. I'm sure it can be built in Visual Studio Code, but I've not attempted it. If I get the time, I'll work 
 on that and supply directions.
 - David Lien's book in PDF form in the Radio Shack BASIC Computer Language folder.
-- All of the samples and exercises from the book, excluding the progams in Appendix B, which are mostly worthless. I will tell you that programs that
-depend on timing are likely not going to work very well. On the original TRS-80, the book advises you to create a tight loop in BASIC counting to 500, and that
-will take about a second. Even in my interpreter, I was about to create a tight loop that counted to 2,000,000 that ran in about a second. YMMV. I have replaced
-the delays in the code in most places, but for some it just doesn't work. And the graphics programs just expect your computer to be slow. There are no delays
-built in. These samples are in the Trs80.Level1Basic/Samples/Radio Shack BASIC Computer Language folder. They are organized by chapter and appendix.
+- All of the samples and exercises from the book, excluding the progams in Part C, which are mostly worthless. This includes the subroutines in Appendix A
+with my slight modifications. All of the subroutines have built-in unit tests which can be executed by loading the subroutine (`LOAD`) and typing `run 32000`.
+Be aware that some subroutines depend upon others. You'll have to load those as well with `MERGE`. You'll get the unit tests for both subroutines after a `MERGE`.
+- Caveat: Programs that
+depend on timing are likely not going to work very well without some refactoring. On the original TRS-80, the book advises you that a tight loop 
+counting to 500 will take about a second. Even in my interpreter, I was about to create a tight loop that counted to 2,000,000 that ran in about a second. 
+YMMV. I have replaced the delays in the code in most places, but for some it just doesn't work. And the graphics programs just expect your computer to 
+be slow. There are no delays built in. These samples are in the Trs80.Level1Basic/Samples/Radio Shack BASIC Computer Language folder. 
+They are organized by chapter and appendix.
 
 ## Bugs?
 There are probably many. I've lost count of how many times that I've rewritten `PRINT`. I discovered three issues while typing in the summary below, one of
@@ -154,3 +157,6 @@ If you don't want to read the book, and just want to play, I'm mimicking the fin
 | RESTORE     | Causes next READ statement to start with first item in first DATA line | 30 RESTORE | 16 |
 | LET         | (Optional) Assign a new value to variable on left of equals sign | 0 LET A=3.14159 | 2 |
 | GOTO        | Transfers program control to designated program line | 10 GOTO 100 | 6 |
+| IF-THEN     | Establishes a test point                           | 10 IF A=B THEN 300 | 6 |
+| FOR-NEXT    | Sets up a do-loop to be executed a specific number of times | 10 FOR I=1 to 10 | 10,11,13 |
+|             |                                                    | 20 NEXT I | |

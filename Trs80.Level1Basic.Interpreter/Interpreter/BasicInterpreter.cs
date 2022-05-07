@@ -17,6 +17,8 @@ public class BasicInterpreter : IBasicInterpreter
 {
     private readonly IConsole _console;
     private readonly IBasicEnvironment _environment;
+    public int CursorX { get; private set; }
+    public int CursorY { get; private set; }
 
     public BasicFunctionImplementations Functions { get; } = new();
 
@@ -198,7 +200,7 @@ public class BasicInterpreter : IBasicInterpreter
         if (value is (int or float))
             _sb.Append(' ');
 
-        _printPosition += _sb.Length - startingLength;
+        CursorX += _sb.Length - startingLength;
     }
 
     private void WriteFloatValue(dynamic value)
@@ -341,7 +343,6 @@ public class BasicInterpreter : IBasicInterpreter
         _environment.SetNextStatement(nextStatement);
     }
 
-    private int _printPosition;
     public void VisitPrintStatement(Print printStatement)
     {
         _sb = new StringBuilder();
@@ -357,7 +358,8 @@ public class BasicInterpreter : IBasicInterpreter
         if (!printStatement.WriteNewline) return;
 
         _console.WriteLine();
-        _printPosition = 0;
+        CursorX = 0;
+        CursorY++;
     }
 
     private void PrintAt(Expression position)
@@ -367,7 +369,9 @@ public class BasicInterpreter : IBasicInterpreter
         dynamic column = value % 64;
 
         _console.SetCursorPosition(column, row);
-        _printPosition = column;
+
+        CursorX = column;
+        CursorY = row;
     }
 
     public void VisitReplaceStatement(Replace root)
@@ -387,18 +391,18 @@ public class BasicInterpreter : IBasicInterpreter
     private StringBuilder _sb = new();
     public void WriteToPosition(int position)
     {
-        if (_printPosition > position) return;
+        if (CursorX > position) return;
 
-        string padding = "".PadRight(position - _printPosition, ' ');
+        string padding = "".PadRight(position - CursorX, ' ');
 
         _sb.Append(padding);
-        _printPosition = position;
+        CursorX = position;
     }
 
     public string PadQuadrant()
     {
-        int nextPosition = (_printPosition / 16 + 1) * 16;
-        string padding = "".PadRight(nextPosition - _printPosition, ' ');
+        int nextPosition = (CursorX / 16 + 1) * 16;
+        string padding = "".PadRight(nextPosition - CursorX, ' ');
         return padding;
     }
 
@@ -446,7 +450,7 @@ public class BasicInterpreter : IBasicInterpreter
     public void VisitRunStatement(Run runStatement)
     {
         _environment.InitializeProgram();
-        _printPosition = 0;
+        GetCursorPosition();
 
         int lineNumber = GetStartingLineNumber(runStatement.StartAtLineNumber);
         if (lineNumber < 0)
@@ -459,6 +463,13 @@ public class BasicInterpreter : IBasicInterpreter
             throw new RuntimeStatementException(-1, runStatement.SourceLine, $"Can't start execution at {lineNumber}");
 
         RunProgram(firstStatement, true);
+    }
+
+    private void GetCursorPosition()
+    {
+        (int left, int top) = _console.GetCursorPosition();
+        CursorX = left;
+        CursorY = top;
     }
 
     private int GetFirstLineNumber()
@@ -720,7 +731,7 @@ public class BasicInterpreter : IBasicInterpreter
             }
         }
 
-        _printPosition = 0;
+        GetCursorPosition();
     }
 
     private Statement GetStatementByLineNumber(int lineNumber)
