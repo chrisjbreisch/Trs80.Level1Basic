@@ -34,7 +34,9 @@ a bit easier than BASIC, particularly Level I BASIC, which has a rather bizarre 
 
 Note that Robert compiles his language down to the bytecode level. And shows you how to create a virtual machine and do garbage collection, optimization, etc.
 I did not do that for my BASIC interpreter. Even my nice simple tree-walking interpeter is about 4,000 times faster than my TRS-80 was. 
-And that's with some artificial slowness that I added (logging, primarily). I don't really feel the need to optimize further.
+And that's with some artificial slowness that I added. This is logging, primarily, but also the addition of 
+[Workflow Core](https://www.nuget.org/packages/WorkflowCore/), which is complete overkill for this application, but I wanted to play with it.
+I don't really feel the need to optimize further.
 
 With the few exceptions noted below, it's a complete implementation of Level I BASIC right down to the three error messages. I've run every program and example
 in the book (and supplied the code for you), and they all produce exactly the output expected. There is one case where I supply
@@ -45,7 +47,7 @@ brackets ([]). Hopefully this will help a little.
 
 ## What does it do?
 
-As I said earlier, it's an interpreter, not an emulator. I didn't want to write something to mimic the hardware of a TRS-80. I'm a compiler junkie, 
+Again, it's an interpreter, not an emulator. I didn't want to write something to mimic the hardware of a TRS-80. I'm a compiler junkie, 
 not a hardware junkie. Also, that would have gotten into mimicking the TRS-80 ROM and assembly language. I haven't programmed in assembly language in 30+
 years, and I didn't particularly enjoy it then. I wanted to work with more modern tools. 
 
@@ -81,6 +83,7 @@ And, for exmple, here's the first program from the book:
 
 To run the program, just type `RUN`. Which will produce the following:
 >\>RUN
+
 >HELLO THERE. I AM YOUR NEW TRS-80 MICROCOMPUTER.  
 >  
 >READY  
@@ -105,7 +108,8 @@ type the code in by hand just like I did way back in 1978.
 ## What's next?
 As I said above, my first computer was actually a Radio Shack TRS-80 Model I Level II. I intend to fork this code and modify it to handle Level II BASIC.
 That will take some time and will never be fully implemented. Level II gives you more access to the ROM, which I won't emulate. It also introduces strong
-typing, which will take a bit of rewrite. The other "new" features should be easier to deal with.
+typing, which will take a bit of rewrite. The system has a limited line editor, which I will try to emulate, but might be a bit challenging.
+The other "new" features should be easier to deal with.
 
 ## Contents
 - Visual Studio 2022 solution with all the code. I'm sure it can be built in Visual Studio Code, but I've not attempted it. If I get the time, I'll work 
