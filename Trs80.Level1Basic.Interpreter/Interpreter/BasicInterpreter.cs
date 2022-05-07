@@ -322,9 +322,23 @@ public class BasicInterpreter : IBasicInterpreter
         if (selector >= locations.Count || selector < 0) return;
 
         if (on.IsGosub)
+        {
             _environment.ProgramStack.Push(on.Next);
+            Expression location = new Literal(locations[selector]);
+            Statement jumpToStatement = GetJumpToStatement(on, location, "GOSUB");
+            _environment.RunProgram(jumpToStatement, this);
 
-        _environment.SetNextStatement(GetStatementByLineNumber(locations[selector]));
+            _environment.SetNextStatement(_environment.ProgramStack.Pop());
+            return;
+        }
+
+        Statement nextStatement = GetStatementByLineNumber(locations[selector]);
+        
+        if (nextStatement is null)
+            throw new RuntimeStatementException(on.LineNumber, on.SourceLine,
+                $"Can't 'GOTO' line {locations[selector]}.");
+
+        _environment.SetNextStatement(nextStatement);
     }
 
     private int _printPosition;
@@ -433,11 +447,28 @@ public class BasicInterpreter : IBasicInterpreter
     {
         _environment.InitializeProgram();
         _printPosition = 0;
-        
+
         int lineNumber = GetStartingLineNumber(runStatement.StartAtLineNumber);
+        if (lineNumber < 0)
+            lineNumber = GetFirstLineNumber();
+        if (lineNumber < 0) return;
 
         _environment.LoadData(this);
-        RunProgram(GetStatementByLineNumber(lineNumber), true);
+        Statement firstStatement = GetStatementByLineNumber(lineNumber);
+        if (firstStatement is null)
+            throw new RuntimeStatementException(-1, runStatement.SourceLine, $"Can't start execution at {lineNumber}");
+
+        RunProgram(firstStatement, true);
+    }
+
+    private int GetFirstLineNumber()
+    {
+        Statement statement = _environment.Program.GetFirstStatement();
+
+        if (statement is null)
+            return -1;
+
+        return statement.LineNumber;
     }
 
     private int GetStartingLineNumber(Expression startAtLineNumber)
@@ -571,14 +602,12 @@ public class BasicInterpreter : IBasicInterpreter
     {
         dynamic jumpToLineNumber = Evaluate(location);
 
-        if (GetStatementByLineNumber(jumpToLineNumber) is not Statement jumpToStatement)
+        Statement jumpToStatement = GetStatementByLineNumber(jumpToLineNumber);
+
+        if (jumpToStatement is null)
             throw new RuntimeStatementException(statement.LineNumber, statement.SourceLine,
                 $"Can't {jumpType} line {jumpToLineNumber}");
 
-        if (jumpToStatement.LineNumber != jumpToLineNumber)
-            throw new RuntimeStatementException(statement.LineNumber, statement.SourceLine,
-                $"Can't {jumpType} line {jumpToLineNumber}");
-            
         return jumpToStatement;
     }
 

@@ -30,6 +30,15 @@ public class Program : IProgram
 
     public Statement GetExecutableStatement(int lineNumber)
     {
+        Statement statement = _programStatements
+            .FirstOrDefault(s => s.LineNumber == lineNumber && s is not Data);
+
+        if (statement is not null) return statement;
+        statement = _programStatements
+            .FirstOrDefault(s => s.LineNumber == lineNumber && s is Data);
+
+        if (statement is null) return null;
+
         return _programStatements
             .FirstOrDefault(s => s.LineNumber >= lineNumber && s is not Data);
     }
@@ -94,6 +103,12 @@ public class Program : IProgram
             AddLine(line);
             Sort();
         }
+    }
+
+    public Statement? GetFirstStatement()
+    {
+        Sort();
+        return _programStatements.FirstOrDefault();
     }
 
     public void Sort()

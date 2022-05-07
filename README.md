@@ -92,6 +92,9 @@ To run the program, just type `RUN`. Which will produce the following:
 There's no way to do that in Level I BASIC. `CHR$(n)` is part of Level II BASIC, so I'm just getting a head start on the Level II interpreter. :)
 - You'll notice all the samples are in UPPER case. I do allow mixed-case code, but everything is case-insentive. Forcing UPPER case wouldn't have been too
 hard, but had little benefit, and might have screwed up the `LOAD`, `SAVE`, and `MERGE` commands if you're working on a case-sensitive file system.
+- Level I BASIC had exactly 29 variables. Variables could only be 1 letter long (A-Z). There were two string variables (A$, B$), and one array(A()).
+I've expanded on that __slightly__. I still only allow 1 letter variables, but all of them can also be strings or arrays. So `10 C$="Chris"` is legal. 
+So is `10 F(10) = 3.14159`.
 - Slightly more detailed error messages.
 
 ## What doesn't it do?
@@ -114,6 +117,13 @@ will take about a second. Even in my interpreter, I was about to create a tight 
 the delays in the code in most places, but for some it just doesn't work. And the graphics programs just expect your computer to be slow. There are no delays
 built in. These samples are in the Trs80.Level1Basic/Samples/Radio Shack BASIC Computer Language folder. They are organized by chapter and appendix.
 
+## Bugs?
+There are probably many. I've lost count of how many times that I've rewritten `PRINT`. I discovered three issues while typing in the summary below, one of
+which caused me to rewrite `PRINT` __again__. I do have some limited unit tests. But the unit tests for the scanner and parser are essentially smoke tests.
+And the unit tests for the interpreter are light except on areas that have caused me issues (like `PRINT`, for example). And I had to rewrite `PRINT`
+once more just to make it properly testable.
+
+# TL;DR
 If you don't want to read the book, and just want to play, I'm mimicking the final pages of the book here, which should be just enough to get you started
 
 ## Summary of LEVEL 1 BASIC

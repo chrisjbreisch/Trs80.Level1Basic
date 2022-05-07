@@ -379,7 +379,7 @@ public class Parser : IParser
 
     private Statement RunStatement()
     {
-        Expression value = !IsAtEnd() ? Expression() : new Literal(0);
+        Expression value = !IsAtEnd() ? Expression() : new Literal(-1);
         return new Run(value);
     }
 
