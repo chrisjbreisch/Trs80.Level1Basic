@@ -14,5 +14,5 @@ public interface IProgram
     int Size();
     void AddLine(ParsedLine line);
     void ReplaceLine(ParsedLine line);
-    Statement? GetFirstStatement();
+    Statement GetFirstStatement();
 }

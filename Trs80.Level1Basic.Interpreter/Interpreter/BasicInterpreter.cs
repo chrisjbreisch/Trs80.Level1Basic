@@ -627,10 +627,7 @@ public class BasicInterpreter : IBasicInterpreter
         if (gosubStatement.Next != null)
             _environment.ProgramStack.Push(gosubStatement.Next);
         else
-        {
-            Statement currentStatement = GetStatementByLineNumber(gosubStatement.LineNumber);
-            _environment.ProgramStack.Push(currentStatement.Next);
-        }
+            _environment.ProgramStack.Push(CurrentStatement.Next);
 
         Statement jumpToStatement = GetJumpToStatement(gosubStatement, gosubStatement.Location, "GOSUB");
         _environment.RunProgram(jumpToStatement, this);

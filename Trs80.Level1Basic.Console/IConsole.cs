@@ -5,6 +5,8 @@ namespace Trs80.Level1Basic.Console
 {
     public interface IConsole
     {
+        int CursorX { get; }
+        int CursorY { get; }
         TextWriter Out { get; set; }
         TextReader In { get; set; }
         TextWriter Error { get; set; }

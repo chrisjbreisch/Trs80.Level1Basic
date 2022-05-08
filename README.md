@@ -106,9 +106,9 @@ type the code in by hand just like I did way back in 1978.
 
 ## What's next?
 As I said above, my first computer was actually a Radio Shack TRS-80 Model I Level II. I intend to fork this code and modify it to handle Level II BASIC.
-That will take some time and will never be fully implemented. Level II gives you more access to the ROM, which I won't emulate. It also introduces strong
-typing, which will take a bit of rewrite. The system has a limited line editor, which I will try to emulate, but might be a bit challenging.
-The other "new" features should be easier to deal with.
+That will take some time and will never be fully implemented. Level II gives you more access to the ROM, which I won't emulate. It also introduces static
+typing, which will take a bit of rewrite. Level I BASIC was ahead of its time. It used dynamic typing. Level II's 'system has a limited line editor, 
+which I will try to emulate, but might be a bit challenging. The other "new" features should be easier to deal with.
 
 ## Contents
 - Visual Studio 2022 solution with all the code. I'm sure it can be built in Visual Studio Code, but I've not attempted it. If I get the time, I'll work 

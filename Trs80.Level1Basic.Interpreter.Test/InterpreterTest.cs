@@ -12,6 +12,7 @@ using Trs80.Level1Basic.Console;
 using Trs80.Level1Basic.Interpreter.Interpreter;
 using Trs80.Level1Basic.Interpreter.Parser;
 using Trs80.Level1Basic.Interpreter.Scanner;
+using Trs80.Level1Basic.TestUtilities;
 
 namespace Trs80.Level1Basic.Interpreter.Test;
 
@@ -32,8 +33,10 @@ public class InterpreterTest
         IAppSettings? appSettings = bootstrapper.AppSettings;
         ILoggerFactory? loggerFactory = bootstrapper.LogFactory;
 
-        _console = new Console.Console(appSettings, loggerFactory, false);
-        _console.Out = _sw;
+        _console = new Console.Console(appSettings, loggerFactory, new FakeSystemConsole())
+        {
+            Out = _sw
+        };
 
         IBuiltinFunctions builtins = new BuiltinFunctions();
         _scanner = new Scanner.Scanner(builtins);

@@ -105,7 +105,7 @@ public class Program : IProgram
         }
     }
 
-    public Statement? GetFirstStatement()
+    public Statement GetFirstStatement()
     {
         Sort();
         return _programStatements.FirstOrDefault();

@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Trs80.Level1Basic.Application;
 using Trs80.Level1Basic.Common;
 using FluentAssertions;
+using Trs80.Level1Basic.TestUtilities;
 
 namespace Trs80.Level1Basic.Console.Test;
 
@@ -25,7 +26,7 @@ public class ConsoleTest
     public void Can_Replace_In_And_Out()
     {
         string input = "Hello, World!\r\n";
-        IConsole console = new Console(_appSettings, _loggerFactory, false);
+        IConsole console = new Console(_appSettings, _loggerFactory, new FakeSystemConsole());
         var sw = new StringWriter();
         var sr = new StringReader(input);
 

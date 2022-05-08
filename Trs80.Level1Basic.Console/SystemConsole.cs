@@ -1,13 +1,58 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 
 namespace Trs80.Level1Basic.Console;
 
-public static class Win32Api
+[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+public struct FontInfo
+{
+    public int cbSize;
+    public int FontIndex;
+    public short FontWidth;
+    public short FontSize;
+    public int FontFamily;
+    public int FontWeight;
+    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+    public string FontName;
+}
+
+[StructLayout(LayoutKind.Sequential)]
+public struct Rect
+{
+    public int Left;        // x position of upper-left corner
+    public int Top;         // y position of upper-left corner
+    public int Right;       // x position of lower-right corner
+    public int Bottom;      // y position of lower-right corner
+}
+
+public interface ISystemConsole
+{
+    void EnableVirtualTerminal();
+    ConsoleFont GetCurrentConsoleFont();
+    void SetCurrentConsoleFont(ConsoleFont font);
+    (int Left, int Top) GetCursorPosition();
+    void SetCursorPosition(int column, int row);
+    void Clear();
+    ConsoleKeyInfo ReadKey();
+    void SetWindowSize(int width, int height);
+    void SetBufferSize(int width, int height);
+    void Fill(int x, int y, int width, int height);
+    void Erase(int x, int y, int width, int height);
+    TextWriter Out { get; set; }
+    TextReader In { get; set; }
+    TextWriter Error { get; set; }
+    void WriteLine(string text = "");
+    void Write(string text);
+    void Write(char c);
+    string ReadLine();
+}
+
+public class SystemConsole : ISystemConsole
 {
     // https://www.pinvoke.net/default.aspx/user32/FindWindow.html
     [DllImport("user32.dll", EntryPoint = "FindWindow", SetLastError = true, CharSet = CharSet.Unicode)]
@@ -46,27 +91,45 @@ public static class Win32Api
     [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
     private static extern bool SetCurrentConsoleFontEx(IntPtr hConsoleOutput, bool maximumWindow, ref FontInfo consoleCurrentFontEx);
 
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    public struct FontInfo
+    private const int ScreenWidth = 64;
+    private const int ScreenHeight = 16;
+    private const int ScreenPixelWidth = 2 * ScreenWidth;
+    private const int ScreenPixelHeight = 3 * ScreenHeight;
+
+    private readonly IntPtr _hwnd;
+    private readonly IntPtr _outputHandle;
+    private readonly Graphics _graphics;
+    private double _pixelWidth;
+    private double _pixelHeight;
+
+    public TextWriter Out { get; set; } = System.Console.Out;
+    public TextReader In { get; set; } = System.Console.In;
+    public TextWriter Error { get; set; } = System.Console.Error;
+
+    public SystemConsole()
     {
-        public int cbSize;
-        public int FontIndex;
-        public short FontWidth;
-        public short FontSize;
-        public int FontFamily;
-        public int FontWeight;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-        public string FontName;
+        _hwnd = GetConsoleWindowHandle();
+        _outputHandle = GetStdHandle(StandardOutputHandle);
+        _graphics = GetGraphics();
+        SetPixelSizes();
     }
 
-    [StructLayout(LayoutKind.Sequential)]
-    public struct Rect
+    public void WriteLine(string text = "") => Out.WriteLine(text);
+
+    public void Write(string text) => Out.Write(text);
+
+    public void Write(char c) => Out.Write(c);
+
+    public string ReadLine() => In.ReadLine();
+
+
+    private void SetPixelSizes()
     {
-        public int Left;        // x position of upper-left corner
-        public int Top;         // y position of upper-left corner
-        public int Right;       // x position of lower-right corner
-        public int Bottom;      // y position of lower-right corner
+        Rect clientRect = GetClientRect();
+        _pixelHeight = clientRect.Bottom / (double)ScreenPixelHeight;
+        _pixelWidth = clientRect.Right / (double)ScreenPixelWidth;
     }
+
     private static IntPtr GetConsoleWindowHandle()
     {
         var sb = new StringBuilder(1024);
@@ -95,7 +158,7 @@ public static class Win32Api
         return false;
     }
 
-    public static Rect GetClientRect()
+    public Rect GetClientRect()
     {
         GetClientRect(_hwnd, out Rect result);
         return result;
@@ -105,7 +168,7 @@ public static class Win32Api
     private const int FixedWidthTrueType = 54;
     private const int StandardOutputHandle = -11;
 
-    public static void EnableVirtualTerminal()
+    public void EnableVirtualTerminal()
     {
         int ex;
         if (!GetConsoleMode(_outputHandle, out uint lpMode))
@@ -121,10 +184,8 @@ public static class Win32Api
         throw new Win32Exception(ex);
     }
 
-    private static readonly IntPtr _hwnd = GetConsoleWindowHandle();
-    private static readonly IntPtr _outputHandle = GetStdHandle(StandardOutputHandle);
 
-    public static ConsoleFont GetCurrentConsoleFont()
+    public ConsoleFont GetCurrentConsoleFont()
     {
         var font = new FontInfo
         {
@@ -138,7 +199,7 @@ public static class Win32Api
         throw new Win32Exception(er);
     }
 
-    public static void SetCurrentConsoleFont(ConsoleFont font)
+    public void SetCurrentConsoleFont(ConsoleFont font)
     {
         var before = new FontInfo
         {
@@ -171,8 +232,69 @@ public static class Win32Api
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Only used on Windows")]
-    public static Graphics GetGraphics()
+    public Graphics GetGraphics()
     {
         return Graphics.FromHwnd(_hwnd);
+    }
+
+    public (int Left, int Top) GetCursorPosition()
+    {
+        return System.Console.GetCursorPosition();
+    }
+
+    public void SetCursorPosition(int column, int row)
+    {
+        System.Console.SetCursorPosition(column, row);
+    }
+
+    public void Clear()
+    {
+        System.Console.Clear();
+    }
+
+    public ConsoleKeyInfo ReadKey()
+    {
+        return System.Console.ReadKey();
+    }
+
+    public void SetWindowSize(int width, int height)
+    {
+        if (!OperatingSystem.IsWindows()) return;
+
+        System.Console.SetWindowSize(width, height);
+        SetPixelSizes();
+    }
+
+    public void SetBufferSize(int width, int height)
+    {
+        if (OperatingSystem.IsWindows())
+            System.Console.SetBufferSize(width, height);
+    }
+
+    public void Fill(int x, int y, int width, int height)
+    {
+        if (!OperatingSystem.IsWindows()) return;
+
+        _graphics.FillRectangle(
+            Brushes.White,
+            (int)(x * _pixelWidth),
+            (int)(y * _pixelHeight),
+            (int)Math.Round(width * _pixelWidth + .5),
+            (int)Math.Round(height * _pixelHeight + .5)
+        );
+
+    }
+
+    public void Erase(int x, int y, int width, int height)
+    {
+        if (!OperatingSystem.IsWindows()) return;
+
+        _graphics.FillRectangle(
+            Brushes.Black,
+            (int)(x * _pixelWidth),
+            (int)(y * _pixelHeight),
+            (int)Math.Round(width * _pixelWidth + .5),
+            (int)Math.Round(height * _pixelHeight + .5)
+        );
     }
 }

@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FakeItEasy" Version="7.3.1" />
     <PackageReference Include="FluentAssertions" Version="6.6.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.2.7" />
@@ -18,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Trs80.Level1Basic.Application\Trs80.Level1Basic.Application.csproj" />
     <ProjectReference Include="..\Trs80.Level1Basic.Extensions\Trs80.Level1Basic.Common.csproj" />
+    <ProjectReference Include="..\Trs80.Level1Basic.TestUtilities\Trs80.Level1Basic.TestUtilities.csproj" />
   </ItemGroup>
 
   <ItemGroup>

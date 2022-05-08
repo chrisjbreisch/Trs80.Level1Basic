@@ -14,75 +14,100 @@ namespace Trs80.Level1Basic.Console;
     Justification = "It's fine if these pieces don't work on non-Windows devices")]
 public class Console : IConsole
 {
-    private double _pixelWidth;
-    private double _pixelHeight;
     private const int ScreenWidth = 64;
     private const int ScreenHeight = 16;
     private const int ScreenPixelWidth = 2 * ScreenWidth;
     private const int ScreenPixelHeight = 3 * ScreenHeight;
     private readonly bool[,] _screen = new bool[ScreenPixelWidth, ScreenPixelHeight];
-    private Graphics _graphics;
     private readonly IAppSettings _appSettings;
-    private readonly ILogger _logger;
+    private readonly ISystemConsole _systemConsole;
 
-    public TextWriter Out { get; set; } = System.Console.Out;
-    public TextReader In { get; set; } = System.Console.In;
-    public TextWriter Error { get; set; } = System.Console.Error;
-
-    public Console(IAppSettings appSettings, ILoggerFactory logFactory, bool initializeWindow = true)
+    public Console(IAppSettings appSettings, ILoggerFactory logFactory, ISystemConsole systemConsole)
     {
         _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
+        _systemConsole = systemConsole ?? throw new ArgumentNullException(nameof(systemConsole));
         if (logFactory == null) throw new ArgumentNullException(nameof(logFactory));
-        _logger = logFactory.CreateLogger<Console>();
-
-        if (initializeWindow)
-            InitializeWindowSettings();
     }
 
-    private void InitializeWindowSettings()
+    public int CursorX
     {
-        Win32Api.Rect clientRect = Win32Api.GetClientRect();
-        _pixelHeight = clientRect.Bottom / (double)ScreenPixelHeight;
-        _pixelWidth = clientRect.Right / (double)ScreenPixelWidth;
-        _logger.LogDebug($"_pixelHeight: {_pixelHeight}, _pixelWidth: {_pixelWidth}");
-        _graphics = Win32Api.GetGraphics();
+        get
+        {
+            (int left, _) = GetCursorPosition();
+            return left;
+        }
+        set
+        {
+            SetCursorPosition(value, CursorY);
+        }
     }
 
-    public void WriteLine(string text = "") => Out.WriteLine(text);
+    public int CursorY
+    {
+        get
+        {
+            (_, int top) = GetCursorPosition();
+            return top;
+        }
+        set
+        {
+            SetCursorPosition(CursorX, value);
+        }
+    }
 
-    public void Write(string text) => Out.Write(text);
+    public TextReader In
+    {
+        get { return _systemConsole.In; }
+        set { _systemConsole.In = value; }
+    }
 
-    public void Write(char c) => Out.Write(c);
+    public TextWriter Out
+    {
+        get { return _systemConsole.Out; }
+        set { _systemConsole.Out = value; }
+    }
 
-    public string ReadLine() => In.ReadLine();
+    public TextWriter Error
+    {
+        get { return _systemConsole.Error; }
+        set { _systemConsole.Error = value; }
+    }
+
+    public void WriteLine(string text = "") => _systemConsole.WriteLine(text);
+
+    public void Write(string text) => _systemConsole.Write(text);
+
+    public void Write(char c) => _systemConsole.Write(c);
+
+    public string ReadLine() => _systemConsole.ReadLine();
 
     public void Clear()
     {
-        System.Console.Clear();
-        Fill(0, 0, ScreenPixelWidth - 1, ScreenPixelHeight - 1, false);
+        _systemConsole.Clear();
+        Erase(0, 0, ScreenPixelWidth - 1, ScreenPixelHeight - 1);
     }
 
     public void SetCursorPosition(int column, int row)
     {
-        System.Console.SetCursorPosition(column, row);
+        _systemConsole.SetCursorPosition(column, row);
     }
 
     public (int Left, int Top) GetCursorPosition()
     {
-        return System.Console.GetCursorPosition();
+        return _systemConsole.GetCursorPosition();
     }
 
     public ConsoleFont GetCurrentFont()
     {
-        return Win32Api.GetCurrentConsoleFont();
+        return _systemConsole.GetCurrentConsoleFont();
     }
 
     public void SetCurrentFont(ConsoleFont font)
     {
-        Win32Api.SetCurrentConsoleFont(font);
+        _systemConsole.SetCurrentConsoleFont(font);
     }
 
-    public ConsoleKeyInfo ReadKey() => System.Console.ReadKey();
+    public ConsoleKeyInfo ReadKey() => _systemConsole.ReadKey();
     public void InitializeWindow()
     {
         SetCurrentFont(new ConsoleFont { FontName = _appSettings.FontName, FontSize = _appSettings.FontSize });
@@ -93,48 +118,47 @@ public class Console : IConsole
 
     private void SetWindowSize(int width, int height)
     {
-        if (!OperatingSystem.IsWindows()) return;
-
-        System.Console.SetWindowSize(width, height);
-        InitializeWindowSettings();
+        _systemConsole.SetWindowSize(width, height);
     }
 
     public void SetBufferSize(int width, int height)
     {
-        if (OperatingSystem.IsWindows())
-            System.Console.SetBufferSize(width, height);
+        _systemConsole.SetBufferSize(width, height);
     }
 
     private void DisableCursorBlink()
     {
-        Win32Api.EnableVirtualTerminal();
+        _systemConsole.EnableVirtualTerminal();
 
         Out.Write("\u001b[?12l");
     }
 
-    private void Fill(int x, int y, int width, int height, bool turnOn)
+    private void Fill(int x, int y, int width, int height)
     {
         for (int xIndex = x; xIndex < x + width; xIndex++)
             for (int yIndex = y; yIndex < y + height; yIndex++)
-                _screen[xIndex, yIndex] = turnOn;
+                _screen[xIndex, yIndex] = true;
 
-        _graphics.FillRectangle(
-            turnOn ? Brushes.White : Brushes.Black,
-            (int)(x * _pixelWidth),
-            (int)(y * _pixelHeight),
-            (int)Math.Round(width * _pixelWidth + .5),
-            (int)Math.Round(height * _pixelHeight + .5)
-        );
+        _systemConsole.Fill(x, y, width, height);
+    }
+
+    private void Erase(int x, int y, int width, int height)
+    {
+        for (int xIndex = x; xIndex < x + width; xIndex++)
+        for (int yIndex = y; yIndex < y + height; yIndex++)
+            _screen[xIndex, yIndex] = false;
+
+        _systemConsole.Erase(x, y, width, height);
     }
 
     public void Set(int x, int y)
     {
-        Fill(x % ScreenPixelWidth, y % ScreenPixelHeight, 1, 1, true);
+        Fill(x % ScreenPixelWidth, y % ScreenPixelHeight, 1, 1);
     }
 
     public void Reset(int x, int y)
     {
-        Fill(x % ScreenPixelWidth, y % ScreenPixelHeight, 1, 1, false);
+        Erase(x % ScreenPixelWidth, y % ScreenPixelHeight, 1, 1);
     }
 
     public bool Point(int x, int y)

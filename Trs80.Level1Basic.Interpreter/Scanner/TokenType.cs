@@ -27,6 +27,7 @@ public enum TokenType
     String,
 
     // Keywords
+    A,
     At,
     Cls,
     Cont,
@@ -46,6 +47,7 @@ public enum TokenType
     Next,
     On,
     Print,
+    R,
     Read,
     Rem,
     Restore,
