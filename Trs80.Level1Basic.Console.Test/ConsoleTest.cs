@@ -25,7 +25,7 @@ public class ConsoleTest
     [TestMethod]
     public void Can_Replace_In_And_Out()
     {
-        string input = "Hello, World!\r\n";
+        const string input = "Hello, World!\r\n";
         IConsole console = new Console(_appSettings, _loggerFactory, new FakeSystemConsole());
         var sw = new StringWriter();
         var sr = new StringReader(input);

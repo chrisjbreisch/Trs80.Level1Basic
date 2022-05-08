@@ -12,7 +12,6 @@ namespace Trs80.Level1Basic.Interpreter.Test;
 [TestClass]
 public class ShorthandTest
 {
-
     [TestMethod]
     public void P_Is_Shorthand_For_Print()
     {
@@ -111,6 +110,7 @@ public class ShorthandTest
             "40 end",
             "100 print i+1"
         };
+
         controller.RunProgram(program);
 
         controller.ReadOutputLine().Should().Be(" 4 ");
@@ -121,13 +121,13 @@ public class ShorthandTest
     public void In_Is_Shorthand_For_Input()
     {
         using var controller = new TestController();
-        using var input = new StringReader("Chris");
-        controller.Input = input;
+        controller.Input = new StringReader("Chris");
 
         var program = new List<string> {
             "10 in. \"Enter your name\";A$",
             "20 print \"Hello, \";A$"
         };
+
         controller.RunProgram(program);
 
         controller.ReadOutputLine().Should().Be("Enter your name?Hello, Chris");

@@ -1,17 +1,9 @@
 using System.Collections.Generic;
 using System.IO;
-
 using FluentAssertions;
 
-using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using Trs80.Level1Basic.Application;
-using Trs80.Level1Basic.Common;
-using Trs80.Level1Basic.Console;
-using Trs80.Level1Basic.Interpreter.Interpreter;
-using Trs80.Level1Basic.Interpreter.Parser;
-using Trs80.Level1Basic.Interpreter.Scanner;
 using Trs80.Level1Basic.TestUtilities;
 
 namespace Trs80.Level1Basic.Interpreter.Test;
@@ -19,178 +11,119 @@ namespace Trs80.Level1Basic.Interpreter.Test;
 [TestClass]
 public class InterpreterTest
 {
-    private IScanner? _scanner;
-    private IParser? _parser;
-    private IBasicInterpreter? _interpreter;
-    private IBasicEnvironment? _environment;
-    private IConsole? _console;
-    private readonly StringWriter _sw = new();
-
-    [TestInitialize]
-    public void Initialize()
-    {
-        var bootstrapper = new Bootstrapper();
-        IAppSettings? appSettings = bootstrapper.AppSettings;
-        ILoggerFactory? loggerFactory = bootstrapper.LogFactory;
-
-        _console = new Console.Console(appSettings, loggerFactory, new FakeSystemConsole())
-        {
-            Out = _sw
-        };
-
-        IBuiltinFunctions builtins = new BuiltinFunctions();
-        _scanner = new Scanner.Scanner(builtins);
-        _parser = new Parser.Parser(builtins);
-        IProgram program = new Program();
-        _environment = new BasicEnvironment(_console, _parser, _scanner, builtins, program);
-        _interpreter = new BasicInterpreter(_console, _environment);
-    }
-
-    private void ExecuteLine(string input)
-    {
-        List<Token> tokens = _scanner!.ScanTokens(input);
-        ParsedLine parsedLine = _parser!.Parse(tokens);
-        _interpreter!.Interpret(parsedLine);
-    }
-
-    private void RunProgram(List<string> program)
-    {
-        ExecuteLine("new");
-
-        ExecuteStatements(program);
-
-        ExecuteLine("run");
-    }
-
-    private void ExecuteStatements(List<string> statements)
-    {
-        foreach (string line in statements)
-            ExecuteLine(line);
-    }
-
     [TestMethod]
     public void Interpreter_Can_Run_HelloWorld()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 print \"Hello, World!\""
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be("Hello, World!");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be("Hello, World!");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Can_Execute_Simple_Assignment()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i=3",
             "20 print i"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 3 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 3 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Can_Execute_Multiple_Assignments()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i=3",
             "15 i=7",
             "20 print i"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 7 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 7 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Can_Do_Simple_Math()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i=3",
             "20 j=4",
             "30 n=i*j",
             "40 print n"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 12 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 12 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
-
 
     [TestMethod]
     public void Interpreter_Can_Do_Harder_Math()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 c=25",
             "20 f=(9/5) * c + 32",
             "30 print f"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 77 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 77 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Can_Execute_Goto()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i=3",
             "20 goto 40",
             "30 i=7",
             "40 print i"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 3 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 3 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Can_Execute_End()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 end",
             "20 print \"How did I get here?\""
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be("");
-        output = sr.ReadLine();
-        output.Should().Be("READY");
-        sr.ReadToEnd();
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Can_Execute_Gosub()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i=3",
             "20 gosub 100",
@@ -199,67 +132,63 @@ public class InterpreterTest
             "100 i = 7",
             "110 return"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 7 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 7 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Can_Execute_Multi_Statement_Lines()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i=3 : print i"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 3 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 3 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Can_Execute_Addition()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i=3",
             "20 i= i + 1",
             "30 print i"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 4 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 4 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Can_Handle_Lines_Inserted_In_The_Middle()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i=3",
             "20 print i",
             "15 i=i * 2"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 6 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 6 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Can_Execute_Correct_Statement_After_Gosub()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i=3 : gosub 100 : i = i + 1",
             "20 print i",
@@ -267,107 +196,100 @@ public class InterpreterTest
             "100 i = 5",
             "110 return"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 6 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 6 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Can_Process_String_Variables()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 A$=\"Chris\"",
             "20 print \"Hello, \";A$"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be("Hello, Chris");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be("Hello, Chris");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Can_Read_From_Mocked_Console()
     {
-        using var input = new StringReader("Chris");
-        _console!.In = input;
+        using var controller = new TestController();
+        controller.Input = new StringReader("Chris");
 
         var program = new List<string> {
             "10 input \"Enter your name\";A$",
             "20 print \"Hello, \";A$"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be("Enter your name?Hello, Chris");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be("Enter your name?Hello, Chris");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Can_Execute_If_Statement()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i = 5",
             "20 if i = 5 then 40",
             "30 i = 7",
             "40 print i"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 5 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 5 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Can_Execute_If_Statement_With_Goto()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i = 5",
             "20 if i = 5 goto 40",
             "30 i = 7",
             "40 print i"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 5 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 5 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Can_Execute_If_Statement_With_Print()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i = 5",
             "20 if i = 5 then print i;",
             "30 i = 7",
             "40 print i"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 5  7 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 5  7 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Can_Execute_If_Statement_With_Variable_Assignment()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i = 0 : s = 2",
             "20 if i < 0 then s = -1",
@@ -375,35 +297,33 @@ public class InterpreterTest
             "40 if i > 0 then s = 1",
             "40 print s"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 0 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Can_Execute_If_Statement_With_Multiple_Variable_Assignment()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i = 4: p=3.14159: e=2.71828",
             "20 if i = 4 then t=p:p=e:e=t",
             "30 print p;e"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 2.71828  3.14159 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 2.71828  3.14159 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Can_Execute_If_Statement_With_Invalid_Goto()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i = 4",
             "20 if i = 4 then 100: goto 200",
@@ -414,204 +334,173 @@ public class InterpreterTest
             "200 print \"THEN is broken\"",
             "210 end"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 4 ");
-
-        output = sr.ReadLine();
-        output.Should().Be("");
-
-        output = sr.ReadLine();
-        output.Should().Be("READY");
-
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 4 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Can_Execute_Commands1()
     {
-        var statements = new List<string> {
-            "print 3 * 4",
-        };
-        ExecuteStatements(statements);
+        using var controller = new TestController();
+        const string statement = "print 3 * 4";
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.ExecuteLine(statement);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 12 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 12 ");
     }
 
     [TestMethod]
     public void Interpreter_Can_Execute_Commands2()
     {
-        var statements = new List<string> {
-            "print 345/123",
-        };
-        ExecuteStatements(statements);
+        using var controller = new TestController();
+        const string statement = "print 345/123";
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.ExecuteLine(statement);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 2.80488 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 2.80488 ");
     }
 
     [TestMethod]
     public void Interpreter_Can_Execute_Commands3()
     {
-        var statements = new List<string> {
-            "print (2/3)*(3/2)",
-        };
-        ExecuteStatements(statements);
+        using var controller = new TestController();
+        const string statement = "print (2/3)*(3/2)";
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.ExecuteLine(statement);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 1 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 1 ");
     }
 
     [TestMethod]
     public void Interpreter_Clears_Memory_Properly()
     {
+        using var controller = new TestController();
         var statements = new List<string> {
             "new",
             "print a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z"
         };
-        ExecuteStatements(statements);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.ExecuteStatements(statements);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine()
+            .Should().Be(" 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 ");
     }
 
     [TestMethod]
     public void Interpreter_Returns_Full_Memory_After_New()
     {
+        using var controller = new TestController();
         var statements = new List<string> {
             "new",
             "print mem"
         };
-        ExecuteStatements(statements);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.ExecuteStatements(statements);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 15871 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 15871 ");
     }
 
     [TestMethod]
     public void Interpreter_Counts_Static_Memory_Usage1()
     {
+        using var controller = new TestController();
         var statements = new List<string> {
             "new",
             "10 a = 25",
             "print mem"
         };
-        ExecuteStatements(statements);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.ExecuteStatements(statements);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 15861 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 15861 ");
     }
 
     [TestMethod]
     public void Interpreter_Counts_Static_Memory_Usage2()
     {
+        using var controller = new TestController();
         var statements = new List<string> {
             "new",
             "10 a = 25",
             "20 print \"this example is to measure memory usage.\"",
             "print mem"
         };
-        ExecuteStatements(statements);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.ExecuteStatements(statements);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 15809 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 15809 ");
     }
 
     [TestMethod]
     public void Interpreter_Handles_Line_Number_Zero()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "0 let a = 3.14159",
             "1 print a",
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 3.14159 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 3.14159 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Executes_For_Loop()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 for n = 1 to 10 : next n",
             "20 print n",
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 11 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 11 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Executes_For_Loop_With_Step()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 for n = 1 to 10 step 2",
             "20 i = i + n",
             "30 next n",
             "40 print i"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 25 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 25 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Executes_For_Loop_With_Negative_Step()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 for n = 10 to 3 step -1",
             "30 next n",
             "40 print n"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 2 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 2 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Executes_Nested_For_Loop()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 a = 1",
             "30 for i = 1 to 2",
@@ -621,18 +510,17 @@ public class InterpreterTest
             "70 next i",
             "80 print a"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 1024 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 1024 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Executes_On_Goto()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 a = 4",
             "20 on a goto 100,200,300,400,500,600",
@@ -645,18 +533,17 @@ public class InterpreterTest
             "500 a = a + 2: print a: end",
             "600 a = a * a: print a: end"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 2 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 2 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Executes_On_Goto_With_Float()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 a = 5.2",
             "20 on a goto 100,200,300,400,500,600",
@@ -669,18 +556,17 @@ public class InterpreterTest
             "500 a = a + 2: print a: end",
             "600 a = a * a: print a: end"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 7.2 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 7.2 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Executes_On_Gosub()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 a = 4",
             "20 on a gosub 100,200,300,400,500,600",
@@ -693,69 +579,65 @@ public class InterpreterTest
             "500 a = a + 2: return",
             "600 a = a * a: return"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 2 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 2 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Executes_Data_And_Read()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 data 1,2,3,4,5",
             "20 read a,b,c,d,e",
             "30 print e;d;c;b;a",
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 5  4  3  2  1 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 5  4  3  2  1 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Executes_Data_In_The_Middle()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "20 read a,b,c,d,e",
             "25 data 1,2,3,4,5",
             "30 print e;d;c;b;a",
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 5  4  3  2  1 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 5  4  3  2  1 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Executes_Data_At_The_End()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "20 read a,b,c,d,e",
             "30 print e;d;c;b;a",
             "40 data 1,2,3,4,5",
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 5  4  3  2  1 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 5  4  3  2  1 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Executes_Restore()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "5 i = 0",
             "10 data 1, 2, 3, 4, 5",
@@ -768,44 +650,33 @@ public class InterpreterTest
             "80 if i = 1 then 10",
             "90 end"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 1  2  3  4  5  1  2  3  4  5 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 1  2  3  4  5  1  2  3  4  5 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Stores_Variables_Until_Explicitly_Cleared()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 p = 3.14159"
         };
-        RunProgram(program);
 
-        ExecuteLine("print p");
+        controller.RunProgram(program);
+        controller.ExecuteLine("print p");
 
-        using var sr = new StringReader(_sw.ToString());
-
-        string? output = sr.ReadLine();
-        output.Should().Be("");
-
-        output = sr.ReadLine();
-        output.Should().Be("READY");
-
-        output = sr.ReadLine();
-        output.Should().Be(" 3.14159 ");
-
-        sr.ReadToEnd();
+        controller.IsEndOfRun().Should().BeTrue();
+        controller.ReadOutputLine().Should().Be(" 3.14159 ");
     }
 
     [TestMethod]
     public void Interpreter_Handles_Indirect_References_On_Input1()
     {
-        using var input = new StringReader("Y");
-        _console!.In = input;
+        using var controller = new TestController();
+        controller.Input = new StringReader("Y");
 
         var program = new List<string> {
             "10 y=1: n=0",
@@ -815,20 +686,18 @@ public class InterpreterTest
             "50 end",
             "100 print \"You entered 'YES'\""
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be("Enter (Y/N)?You entered 'YES'");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be("Enter (Y/N)?You entered 'YES'");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Handles_Indirect_References_On_Input2()
     {
-        using var input = new StringReader("N");
-        _console!.In = input;
+        using var controller = new TestController();
+        controller.Input = new StringReader("N");
 
         var program = new List<string> {
             "10 y=1: n=0",
@@ -838,20 +707,18 @@ public class InterpreterTest
             "50 end",
             "100 print \"You entered 'YES'\""
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be("Enter (Y/N)?You entered 'NO'");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be("Enter (Y/N)?You entered 'NO'");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Handles_Indirect_References_On_Input3()
     {
-        using var input = new StringReader("Z");
-        _console!.In = input;
+        using var controller = new TestController();
+        controller.Input = new StringReader("Z");
 
         var program = new List<string> {
             "10 y=2: n=1",
@@ -865,52 +732,49 @@ public class InterpreterTest
             "200 print \"You entered 'NO'\"",
             "210 end"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be("Enter (Y/N)?You didn't enter 'Y' or 'N'");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be("Enter (Y/N)?You didn't enter 'Y' or 'N'");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Handles_Extra_String_Variables()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 C$=\"Chris\"",
             "20 print C$"
 
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be("Chris");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be("Chris");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Handles_Extra_Array_Variables()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 F(10) = 3.14159",
             "20 print F(10)"
 
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 3.14159 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 3.14159 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Executes_Read_Into_Array()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 data 1,2,3,4,5",
             "20 for i = 1 to 5",
@@ -920,18 +784,17 @@ public class InterpreterTest
             "60 print a(i);",
             "70 next i",
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 1  2  3  4  5 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 1  2  3  4  5 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Evaluates_Logical_Expressions1()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 a=1:b=1",
             "20 if (a=1) * (b=1) then 100",
@@ -939,18 +802,17 @@ public class InterpreterTest
             "40 end",
             "100 print \"TRUE\"",
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be("TRUE");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be("TRUE");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Evaluates_Logical_Expressions2()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 a=1:b=0",
             "20 if (a=1) * (b=1) then 100",
@@ -958,18 +820,17 @@ public class InterpreterTest
             "40 end",
             "100 print \"TRUE\"",
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be("FALSE");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be("FALSE");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Evaluates_Logical_Expressions3()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 a=0:b=1",
             "20 if (a=1) * (b=1) then 100",
@@ -977,18 +838,17 @@ public class InterpreterTest
             "40 end",
             "100 print \"TRUE\"",
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be("FALSE");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be("FALSE");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Evaluates_Logical_Expressions4()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 a=0:b=0",
             "20 if (a=1) * (b=1) then 100",
@@ -996,18 +856,17 @@ public class InterpreterTest
             "40 end",
             "100 print \"TRUE\"",
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be("FALSE");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be("FALSE");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Evaluates_Logical_Expressions5()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 a=1:b=1",
             "20 if (a=1) + (b=1) then 100",
@@ -1015,18 +874,17 @@ public class InterpreterTest
             "40 end",
             "100 print \"TRUE\"",
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be("TRUE");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be("TRUE");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Evaluates_Logical_Expressions6()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 a=1:b=0",
             "20 if (a=1) + (b=1) then 100",
@@ -1034,18 +892,17 @@ public class InterpreterTest
             "40 end",
             "100 print \"TRUE\"",
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be("TRUE");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be("TRUE");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Evaluates_Logical_Expressions7()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 a=0:b=1",
             "20 if (a=1) + (b=1) then 100",
@@ -1053,18 +910,17 @@ public class InterpreterTest
             "40 end",
             "100 print \"TRUE\"",
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be("TRUE");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be("TRUE");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Evaluates_Logical_Expressions8()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 a=0:b=0",
             "20 if (a=1) + (b=1) then 100",
@@ -1072,12 +928,10 @@ public class InterpreterTest
             "40 end",
             "100 print \"TRUE\"",
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be("FALSE");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be("FALSE");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 }

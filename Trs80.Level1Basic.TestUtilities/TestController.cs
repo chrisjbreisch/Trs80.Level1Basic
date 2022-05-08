@@ -83,7 +83,9 @@ public class TestController : IDisposable
     {
         if (_outputReader is null) InitializeOutputReader();
 
-        return _outputReader!.ReadLine() == "" && _outputReader.ReadLine() == "READY";
+        string? firstLine = _outputReader!.ReadLine();
+
+        return firstLine == "READY" || (firstLine == "" && _outputReader.ReadLine() == "READY");
     }
 
     public void Dispose()
