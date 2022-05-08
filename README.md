@@ -140,6 +140,7 @@ eventually go negative, but you can keep on typing.
 - I'm probobaly not as strict on expressions as Level I BASIC was. I allow full expressions anywhere. 
 Thus, `10 A=100: GOSUB A` is probably legal (I havn't tested it), but I suspect that would not be 
 legal in the original.
+- The random number generator is much more random than the original. This is something I may correct in time.
 - Slightly more detailed error messages.
 
 ## What doesn't it do?
@@ -229,3 +230,11 @@ which should be just enough to get you started
 | RESET       | Turns off a specified graphics location on Display | 20 RESET(30,40)                | 20,22                      |
 | POINT       | Check the specified graphics location. If point is "on", returns a 1; if "off", return a 0. | 30 IF POINT(30,40)=1 then PRINT 'ON'| 22                      |
 | CLS         | Turns off all graphics locations (clears screen)   | 10 CLS                         | 10,20                      |
+
+| **Built-In Functions** |   **Description**                                          |   **Exanple**                 |   **Detailed in Chapter(s)**   |
+|-------------|----------------------------------------------------|--------------------------------|:--------------------------:|
+| MEM         | Returns the number of free bytes left in memory    | 10 PRINT MEM                   | 20,22                      |
+| INT(X)      | Returns the greatest integer less than or equal to X (-32768< x <32768) | 10 I=INT(Y)                    | 20,22                      |
+| ABS(X)      | Absolute value of X                                | 10 M=ABS(A)                    | 22                      |
+| RND(0)      | Returns a random number between 0 and 1            | 10 X=RND(0)                    | 10,20                      |
+| RND(N)      | Returns a random number betwween 1 and N (1 <= N < 32768) | 10 X=RND(500)                 | 10,20                      |
