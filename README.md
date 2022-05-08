@@ -12,7 +12,9 @@ Several reasons:
 So, why not do a Level II interpreter? Well, I plan to at some point. But even though the computer was a Model I Level II,
 we got it with a programming book that described Level I BASIC. This was David A. Lien's famous (infamous?) book: 
 [Radio Shack BASIC Computer Language It's Easier Than you think!](https://archive.org/details/Basic_Computer_Language_Its_Easier_Than_You_Think_1978_Radio_Shack),
-a copy of which is embedded in the project. I was perusing the internet one day and I came across this book again. I discovered I could buy a copy. So, I did.
+a copy of which is embedded in the project.(This book was also released as 
+[User's Manual for Level 1](https://archive.org/details/Level_1_Users_Manual_1977_David_Lien?msclkid=146b1fdecec911eca73d4773ce1df1c3).)
+I was perusing the internet one day and I came across this book again. I discovered I could buy a copy. So, I did.
 But then I wanted to do the examples in the book. There are lots of TRS-80 emulators  and interpreters around on the net, and some of them are pretty good.
 I clearly didn't need to write a new one. But it felt incomplete somehow.
 3. I like to code for fun and to learn. While there isn't much in this code that's likely to help me much at my job, it
@@ -97,6 +99,15 @@ hard, but had little benefit, and might have screwed up the `LOAD`, `SAVE`, and 
 - Level I BASIC had exactly 29 variables. Variables could only be 1 letter long (A-Z). There were two string variables (A$, B$), and one array(A()).
 I've expanded on that __slightly__. I still only allow 1 letter variables, but all of them can also be strings or arrays. So `10 C$="Chris"` is legal. 
 So is `10 F(10) = 3.14159`.
+- I'm sure I've read details on floating-point numbers on the TRS-80 somewhere, but I can't find it. It's all 32-bit single-precision in Level I, and that's 
+what I've implemented also. However, the TRS-80 implementation predates [IEEE 754](https://en.wikipedia.org/wiki/IEEE_754) and suffers from rounding error
+in some cases that don't apply to modern computers. Some examples in the book display the issues with these rounding errors. My emulator will display the 
+numbers with more accuracy.
+- I've given you 16 K or RAM. The original Level I's had 4K, but 16K models were avilable. It's just a number for the emulator thorugh, so that `PRINT MEM`
+works. It has no meaning. Feel free to write programs as large as you like. The numbers displayed by `PRINT MEM` will drop accordingly, and eventually go
+negative, but you can keep on typing.
+- I'm probobaly not as strict on expressions as Level I BASIC was. I allow full expressions anywhere. Thus, `10 A=100: GOSUB A` is probably legal (I
+havn't tested it), but I suspect that would not be legal in the original.
 - Slightly more detailed error messages.
 
 ## What doesn't it do?
