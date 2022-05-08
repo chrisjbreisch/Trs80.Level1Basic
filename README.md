@@ -222,3 +222,10 @@ which should be just enough to get you started
 |-------------|----------------------------------------------------|--------------------------------|:--------------------------:|
 | AT          | (Follows PRINT) Begins print at specified location on Display | 10 PRINT AT 650 "HELLO"              | 22                      |
 | TAB         | (Follows PRINT) Begins print at specified number of spaces from left margin | 10 PRINT TAB(10);"MONTH";TAB(20);"RECEIPTS"| 12                      |
+
+| **Graphics Statements** |   **Purpose**                                          |   **Exanple**                 |   **Detailed in Chapter(s)**   |
+|-------------|----------------------------------------------------|--------------------------------|:--------------------------:|
+| SET         | Lights up a specified location on Display          | 10 SET(30,40)                  | 20,22                      |
+| RESET       | Turns off a specified graphics location on Display | 20 RESET(30,40)                | 20,22                      |
+| POINT       | Check the specified graphics location. If point is "on", returns a 1; if "off", return a 0. | 30 IF POINT(30,40)=1 then PRINT 'ON'| 22                      |
+| CLS         | Turns off all graphics locations (clears screen)   | 10 CLS                         | 10,20                      |
