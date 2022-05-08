@@ -153,7 +153,7 @@ to bring in what you've written. Otherwise, you can type the code in by hand jus
 ## What's next?
 As I said above, my first computer was actually a Radio Shack TRS-80 Model I Level II. I intend to fork 
 this code and modify it to handle Level II BASIC. That will take some time and will never be fully 
-implemented. Level II gives you more access to the ROM, which I won't emulate. It also introduces static
+implemented. Level II gives you more access to the ROM & RAM, which I won't emulate. It also introduces static
 typing, which will take a bit of rewrite. Level I BASIC was ahead of its time. It used dynamic typing. 
 Level II's 'system has a limited line editor, which I will try to emulate, but might be a bit challenging.
 The other "new" features should be easier to deal with.
