@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Trs80.Level1Basic.Application\Trs80.Level1Basic.Application.csproj" />
     <ProjectReference Include="..\Trs80.Level1Basic.Console\Trs80.Level1Basic.Console.csproj" />
+    <ProjectReference Include="..\Trs80.Level1Basic.Interpreter\Trs80.Level1Basic.Interpreter.csproj" />
   </ItemGroup>
 
 </Project>

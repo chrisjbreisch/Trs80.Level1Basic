@@ -132,7 +132,7 @@ dotnet_style_require_accessibility_modifiers = for_non_interface_members:warning
 #Style - Modifier preferences
 
 #when this rule is set to a list of modifiers, prefer the specified ordering.
-csharp_preferred_modifier_order = private,public,internal,static,readonly,extern,abstract,virtual,override,sealed:suggestion
+csharp_preferred_modifier_order = private,protected,public,internal,static,readonly,extern,abstract,virtual,override,sealed:suggestion
 #prefer non-static
 csharp_prefer_static_local_function = false:suggestion
 #prefer using directives at top of file

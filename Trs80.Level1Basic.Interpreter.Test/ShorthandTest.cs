@@ -3,15 +3,8 @@ using System.IO;
 
 using FluentAssertions;
 
-using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using Trs80.Level1Basic.Application;
-using Trs80.Level1Basic.Common;
-using Trs80.Level1Basic.Console;
-using Trs80.Level1Basic.Interpreter.Interpreter;
-using Trs80.Level1Basic.Interpreter.Parser;
-using Trs80.Level1Basic.Interpreter.Scanner;
 using Trs80.Level1Basic.TestUtilities;
 
 namespace Trs80.Level1Basic.Interpreter.Test;
@@ -19,156 +12,98 @@ namespace Trs80.Level1Basic.Interpreter.Test;
 [TestClass]
 public class ShorthandTest
 {
-    private IScanner? _scanner;
-    private IParser? _parser;
-    private IBasicInterpreter? _interpreter;
-    private IBasicEnvironment? _environment;
-    private IConsole? _console;
-    private readonly StringWriter _sw = new();
-
-    [TestInitialize]
-    public void Initialize()
-    {
-        var bootstrapper = new Bootstrapper();
-        IAppSettings? appSettings = bootstrapper.AppSettings;
-        ILoggerFactory? loggerFactory = bootstrapper.LogFactory;
-
-        _console = new Console.Console(appSettings, loggerFactory, new FakeSystemConsole())
-        {
-            Out = _sw
-        };
-
-        IBuiltinFunctions builtins = new BuiltinFunctions();
-        _scanner = new Scanner.Scanner(builtins);
-        _parser = new Parser.Parser(builtins);
-        IProgram program = new Program();
-        _environment = new BasicEnvironment(_console, _parser, _scanner, builtins, program);
-        _interpreter = new BasicInterpreter(_console, _environment);
-    }
-
-    private void ExecuteLine(string input)
-    {
-        List<Token> tokens = _scanner!.ScanTokens(input);
-        ParsedLine parsedLine = _parser!.Parse(tokens);
-        _interpreter!.Interpret(parsedLine);
-    }
-
-    private void RunProgram(List<string> program)
-    {
-        ExecuteLine("new");
-
-        ExecuteStatements(program);
-
-        ExecuteLine("run");
-    }
-
-    private void ExecuteStatements(List<string> statements)
-    {
-        foreach (string line in statements)
-            ExecuteLine(line);
-    }
 
     [TestMethod]
     public void P_Is_Shorthand_For_Print()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 p.\"hello\"",
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
-
-        string? output = sr.ReadLine();
-        output.Should().Be("hello");
-        sr.ReadToEnd();
+        controller.RunProgram(program);
+        
+        controller.ReadOutputLine().Should().Be("hello");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void N_Is_Shorthand_For_New()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 print \"hello\"",
         };
-        ExecuteStatements(program);
-        ExecuteLine("n.");
-        ExecuteLine("print mem");
 
-        using var sr = new StringReader(_sw.ToString());
-
-        string? output = sr.ReadLine();
-        output.Should().Be(" 15871 ");
-        sr.ReadToEnd();
+        controller.ExecuteStatements(program);
+        controller.ExecuteLine("n.");
+        controller.ExecuteLine("print mem");
+        
+        controller.ReadOutputLine().Should().Be(" 15871 ");
     }
 
     [TestMethod]
     public void R_Is_Shorthand_For_Run()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 print \"hello\"",
         };
-        ExecuteStatements(program);
-        ExecuteLine("r.");
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.ExecuteStatements(program);
+        controller.ExecuteLine("r.");
 
-        string? output = sr.ReadLine();
-        output.Should().Be("hello");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be("hello");
     }
 
     [TestMethod]
     public void L_Is_Shorthand_For_List()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 print \"hello\"",
         };
-        ExecuteStatements(program);
-        ExecuteLine("l.");
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.ExecuteStatements(program);
+        controller.ExecuteLine("l.");
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 10  print \"hello\"");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 10  print \"hello\"");
     }
 
     [TestMethod]
     public void E_Is_Shorthand_For_End()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i=3",
             "20 e.",
             "30 print i"
         };
-        RunProgram(program);
-        
-        using var sr = new StringReader(_sw.ToString());
 
-        string? output = sr.ReadLine();
-        output.Should().Be("");
-        sr.ReadToEnd();
+        controller.RunProgram(program);
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void T_Is_Shorthand_For_Then()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i=3",
             "20 if i=3 t. print i:end",
             "30 print i+1"
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 3 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 3 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void G_Is_Shorthand_For_Goto()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i=3",
             "20 g.100",
@@ -176,50 +111,44 @@ public class ShorthandTest
             "40 end",
             "100 print i+1"
         };
-        RunProgram(program);
+        controller.RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
-
-        string? output = sr.ReadLine();
-        output.Should().Be(" 4 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 4 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void In_Is_Shorthand_For_Input()
     {
+        using var controller = new TestController();
         using var input = new StringReader("Chris");
-        _console!.In = input;
+        controller.Input = input;
 
         var program = new List<string> {
             "10 in. \"Enter your name\";A$",
             "20 print \"Hello, \";A$"
         };
-        RunProgram(program);
+        controller.RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
-
-        string? output = sr.ReadLine();
-        output.Should().Be("Enter your name?Hello, Chris");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be("Enter your name?Hello, Chris");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void M_Is_Shorthand_For_Mem()
     {
-        ExecuteLine("new");
-        ExecuteLine("p.m.");
+        using var controller = new TestController();
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.ExecuteLine("new");
+        controller.ExecuteLine("p.m.");
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 15871 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 15871 ");
     }
 
     [TestMethod]
     public void F_Is_Shorthand_For_For()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i=1",
             "20 f.n=1 to 10",
@@ -228,17 +157,16 @@ public class ShorthandTest
             "50 print i"
         };
 
-        RunProgram(program);
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 1024 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 1024 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void N_Is_Shorthand_For_Next()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i=1",
             "20 for n=1 to 10",
@@ -247,17 +175,16 @@ public class ShorthandTest
             "50 print i"
         };
 
-        RunProgram(program);
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 1024 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 1024 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void S_Is_Shorthand_For_Step()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i=1",
             "20 for n=1 to 10 s. 2",
@@ -266,62 +193,51 @@ public class ShorthandTest
             "50 print i"
         };
 
-        RunProgram(program);
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 32 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 32 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void St_Is_Shorthand_For_Stop()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i=1",
             "20 st.",
             "30 print i",
         };
 
-        RunProgram(program);
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be("BREAK AT 20");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be("BREAK AT 20");
     }
 
     [TestMethod]
     public void C_Is_Shorthand_For_Cont()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i=3",
             "20 stop",
             "30 print i",
         };
 
-        RunProgram(program);
-        ExecuteLine("c.");
+        controller.RunProgram(program);
+        controller.ExecuteLine("c.");
 
-        using var sr = new StringReader(_sw.ToString());
-
-        string? output = sr.ReadLine();
-        output.Should().Be("BREAK AT 20");
-
-        output = sr.ReadLine();
-        output.Should().Be("");
-
-        output = sr.ReadLine();
-        output.Should().Be("READY");
-
-        output = sr.ReadLine();
-        output.Should().Be(" 3 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be("BREAK AT 20");
+        controller.ReadOutputLine().Should().Be("");
+        controller.ReadOutputLine().Should().Be("READY");
+        controller.ReadOutputLine().Should().Be(" 3 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Gos_Is_Shorthand_For_Gosub()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i=3",
             "20 gos.100",
@@ -331,17 +247,16 @@ public class ShorthandTest
             "110 return"
         };
 
-        RunProgram(program);
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 6 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 6 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Ret_Is_Shorthand_For_Return()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 i=3",
             "20 gosub 100",
@@ -351,51 +266,48 @@ public class ShorthandTest
             "110 ret."
         };
 
-        RunProgram(program);
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 6 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 6 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Rea_Is_Shorthand_For_Read()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 data 1,2,3,4,5",
             "20 rea. a,b,c,d,e",
             "30 print e;d;c;b;a",
         };
 
-        RunProgram(program);
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 5  4  3  2  1 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 5  4  3  2  1 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void D_Is_Shorthand_For_Data()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 d. 1,2,3,4,5",
             "20 read a,b,c,d,e",
             "30 print e;d;c;b;a",
         };
 
-        RunProgram(program);
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 5  4  3  2  1 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 5  4  3  2  1 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Rest_Is_Shorthand_For_Restore()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 data 1,2,3,4,5",
             "20 read a,b,c,d,e",
@@ -404,34 +316,32 @@ public class ShorthandTest
             "50 print j;i;h;g;f"
         };
 
-        RunProgram(program);
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 5  4  3  2  1 ");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 5  4  3  2  1 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Pa_Is_Shorthand_For_Print_At()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "10 p.a.200, \"hello\"",
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be("hello");
-        _console!.CursorY.Should().Be(200 / 64 + 3);
-        _console.CursorX.Should().Be(0);
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be("hello");
+        controller.Console.CursorY.Should().Be(200 / 64 + 3);
+        controller.Console.CursorX.Should().Be(0);
+        controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
     public void Interpreter_Can_Handle_Extreme_Shorthand()
     {
+        using var controller = new TestController();
         var program = new List<string> {
             "0i=3:ifi=3gos.2:f.n=1to10:i=i*2:n.n:g.4",
             "1p.\"BAD\":e.",
@@ -440,18 +350,10 @@ public class ShorthandTest
             "4p.i:e.",
             "5p.\"FAIL\""
         };
-        RunProgram(program);
 
-        using var sr = new StringReader(_sw.ToString());
+        controller.RunProgram(program);
 
-        string? output = sr.ReadLine();
-        output.Should().Be(" 1024 ");
-
-        output = sr.ReadLine();
-        output.Should().Be("");
-
-        output = sr.ReadLine();
-        output.Should().Be("READY");
-        sr.ReadToEnd();
+        controller.ReadOutputLine().Should().Be(" 1024 ");
+        controller.IsEndOfRun().Should().BeTrue();
     }
 }
