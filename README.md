@@ -141,6 +141,7 @@ eventually go negative, but you can keep on typing.
 Thus, `10 A=100: GOSUB A` is probably legal (I havn't tested it), but I suspect that would not be 
 legal in the original.
 - The random number generator is much more random than the original. This is something I may correct in time.
+- String variables could only hold 16 characters. Mine have no such limits.
 - Slightly more detailed error messages.
 
 ## What doesn't it do?
@@ -231,10 +232,18 @@ which should be just enough to get you started
 | POINT       | Check the specified graphics location. If point is "on", returns a 1; if "off", return a 0. | 30 IF POINT(30,40)=1 then PRINT 'ON'| 22                      |
 | CLS         | Turns off all graphics locations (clears screen)   | 10 CLS                         | 10,20                      |
 
-| **Built-In Functions** |   **Description**                                          |   **Exanple**                 |   **Detailed in Chapter(s)**   |
-|-------------|----------------------------------------------------|--------------------------------|:--------------------------:|
-| MEM         | Returns the number of free bytes left in memory    | 10 PRINT MEM                   | 20,22                      |
-| INT(X)      | Returns the greatest integer less than or equal to X (-32768< x <32768) | 10 I=INT(Y)                    | 20,22                      |
-| ABS(X)      | Absolute value of X                                | 10 M=ABS(A)                    | 22                      |
-| RND(0)      | Returns a random number between 0 and 1            | 10 X=RND(0)                    | 10,20                      |
-| RND(N)      | Returns a random number betwween 1 and N (1 <= N < 32768) | 10 X=RND(500)                 | 10,20                      |
+| **Built-In Functions** |   **Description**                               |   **Exanple**                 |   **Detailed in Chapter(s)**   |
+|-------------|-----------------------------------------|--------------------------------|:--------------------------:|
+| MEM         | Returns the number of free bytes left in memory | 10 PRINT MEM                   | 8 |
+| INT(X)      | Returns the greatest integer less than or equal to X (-32768< x <32768) | 10 I=INT(Y)                    | 14 |
+| ABS(X)      | Absolute value of X                     | 10 M=ABS(A)                    | 17 |
+| RND(0)      | Returns a random number between 0 and 1 | 10 X=RND(0)                    | 19 |
+| RND(N)      | Returns a random number betwween 1 and N (1 <= N < 32768) | 10 X=RND(500)                 | 19 |
+
+| **Math Operators** |   **Function**                           |   **Exanple**                 |   **Detailed in Chapter(s)**   |
+|-------------|------------------------------------|--------------------------------|:--------------------------:|
+| +           | Addition                           | A+B                            | 3 |
+| -           | Subtraction                        | A-B                            | 3 |
+| *           | Multiplication                     | A*B                            | 3 |
+| /           | Division                           | A/B                            | 3 |
+| =           | Assigns value of right-hand side to variable on left-hand side | A=B                           | 3 |
