@@ -1,11 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
-
 using Trs80.Level1Basic.Application;
 using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.Console;
-using Trs80.Level1Basic.Interpreter.Interpreter;
-using Trs80.Level1Basic.Interpreter.Parser;
-using Trs80.Level1Basic.Interpreter.Scanner;
+using Trs80.Level1Basic.VirtualMachine.Interpreter;
+using Trs80.Level1Basic.VirtualMachine.Parser;
+using Trs80.Level1Basic.VirtualMachine.Scanner;
 
 namespace Trs80.Level1Basic.TestUtilities;
 
@@ -15,7 +14,7 @@ public class TestController : IDisposable
     private StringReader? _outputReader;
     private readonly IScanner _scanner;
     private readonly IParser _parser;
-    private readonly IBasicInterpreter _interpreter;
+    private readonly IInterpreter _interpreter;
     private readonly StringWriter _output = new();
 
     public IConsole Console { get; set; }
@@ -41,8 +40,8 @@ public class TestController : IDisposable
         _scanner = new Scanner(builtins);
         _parser = new Parser(builtins);
         IProgram program = new Program();
-        IBasicEnvironment environment = new BasicEnvironment(Console, _parser, _scanner, builtins, program);
-        _interpreter = new BasicInterpreter(Console, environment);
+        IMachine machine = new Machine(Console, _parser, _scanner, builtins, program);
+        _interpreter = new Interpreter(Console, machine);
     }
 
     public void ExecuteLine(string input)

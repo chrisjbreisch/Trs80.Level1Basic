@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Trs80.Level1Basic.Console\Trs80.Level1Basic.Console.csproj" />
-    <ProjectReference Include="..\Trs80.Level1Basic.Interpreter\Trs80.Level1Basic.Interpreter.csproj" />
+    <ProjectReference Include="..\Trs80.Level1Basic.VirtualMachine\Trs80.Level1Basic.VirtualMachine.csproj" />
   </ItemGroup>
 
 </Project>

@@ -286,6 +286,36 @@ public class LonghandSmokeTest
     }
 
     [TestMethod]
+    public void Strings_Can_Be_Entered_Without_Quotes()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A$=RADIO SHACK",
+            "20 print A$",
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("RADIO SHACK");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Strings_Can_Be_Entered_Without_Quotes_On_Multi_Statement_Lines()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A$=RADIO SHACK:B$=TRS-80 MODEL I",
+            "20 print A$;\" \";B$",
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("RADIO SHACK TRS-80 MODEL I");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Print_At_Prints_To_A_Position_On_Screen()
     {
         using var controller = new TestController();

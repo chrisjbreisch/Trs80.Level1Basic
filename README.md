@@ -47,7 +47,8 @@ I BASIC, which has a rather bizarre grammar. However, I was able to shoehorn Lev
 Robert's concepts. I later discovered that one of the reasons Tandy was able to have such a bizarre grammar
 is that their interpreter included no scanner. They skipped directly to the parsing phase. With no tokens, 
 they were free to ascribe different meanings to the same values based upon their position in a statement. 
-You can do that with a scanner also, but sometimes it gets messy.
+You can do that with a scanner also, but sometimes it gets messy. On the other hand, Level I BASIC has no
+objects or scope to worry about. Robert spends quite a bit of time on that, which I was able to mostly ignore.
 
 Note that Robert compiles his language down to the bytecode level. And shows you how to create a virtual 
 machine and do garbage collection, optimization, etc. I did not do that for my BASIC interpreter. 
@@ -176,7 +177,7 @@ Trs80.Level1Basic/Samples/Radio Shack BASIC Computer Language folder. They are o
 
 ## Bugs?
 There are probably many. I've lost count of how many times that I've rewritten `PRINT`. I discovered 
-three issues while typing in the summary below, one of which caused me to rewrite `PRINT` __again__.
+four issues while typing in the summary below, one of which caused me to rewrite `PRINT` __again__.
 I do have some limited unit tests. But the unit tests for the scanner and parser are essentially
 smoke tests. And the unit tests for the interpreter are light except on areas that have caused me 
 issues (like `PRINT`, for example). And I had to rewrite `PRINT` once more just to make it properly testable.
@@ -247,3 +248,42 @@ which should be just enough to get you started
 | *           | Multiplication                     | A*B                            | 3 |
 | /           | Division                           | A/B                            | 3 |
 | =           | Assigns value of right-hand side to variable on left-hand side | A=B                           | 3 |
+
+| **Relational Operators** |   **Relationship**                           |   **Exanple**                 |   **Detailed in Chapter(s)**   |
+|-------------|------------------------------------|-------------------------------|:--------------------------:|
+| <           | Is less than                       | A<B                           | 6 |
+| >           | Is greater than                    | A>B                           | 6 |
+| =           | Is equal to                        | A=B                           | 6 |
+| <=          | Is less than or equal to           | A<=B                          | 6 |
+| >=          | Is greater than or equal to        | A>=B                          | 6 |
+| <>          | Is not equal to                    | A<>B                          | 6 |
+
+| **Logical Operators** |   **Function**                           |   **Exanple**                 |   **Detailed in Chapter(s)**   |
+|-------------|------------------------------------|-------------------------------|:--------------------------:|
+| *           | AND                                | (A=3)*(B=7) "A equals 3 and B equals 7" | 24 |
+| +           | OR                                 | (A=3)+(B=7) "A equals 3 or B equals 7" | 24 |
+
+| **Variables** |   **Purpose**                           |   **Exanple**                 |   **Detailed in Chapter(s)**   |
+|-------------|------------------------------------|-------------------------------|:--------------------------:|
+| A through Z | Take on number values              | A=3.14159 | 3 |
+| A$ and B$   | Take on string values (up to 16 characters) | A$=RADIO SHACK | 16 |
+| A(X)        | Store the elements of a one-dimensional array (X <= MEM/4-1) | A(0)=400 | 21 |
+
+## LEVEL I Shorthand Dialect
+| **Command/Statement** | **Abbreviation** | **Command/Statement** | **Abbreviation** |
+|-------------------|--------------|-------------------|--------------|
+| PRINT             | P.           | TAB (after PRINT) | T.           |
+| NEW               | N.           | INT               | I.           |
+| RUN               | R.           | GOSUB             | GOS.         |
+| LIST              | L.           | RETURN            | RET.         |
+| END               | E.           | READ              | REA.         |
+| THEN              | T.           | DATA              | D.           |
+| GOTO              | G.           | RESTORE           | REST.        |
+| INPUT             | IN.          | ABS               | A.           |
+| MEM               | M.           | RND               | R.           |
+| FOR               | F.           | SET               | S.           |
+| NEXT              | N.           | RESET             | R.           |
+| STEP (after FOR)  | S.           | POINT             | P.           |
+| STOP              | ST.          | PRINT AT          | P.A.         |
+| CONT              | C.           |                   |              |
+

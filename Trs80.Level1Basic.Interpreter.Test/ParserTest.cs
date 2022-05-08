@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using FluentAssertions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Trs80.Level1Basic.VirtualMachine.Interpreter;
+using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
+using Trs80.Level1Basic.VirtualMachine.Parser;
+using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
+using Trs80.Level1Basic.VirtualMachine.Scanner;
 
-using Trs80.Level1Basic.Interpreter.Interpreter;
-using Trs80.Level1Basic.Interpreter.Parser;
-using Trs80.Level1Basic.Interpreter.Parser.Expressions;
-using Trs80.Level1Basic.Interpreter.Parser.Statements;
-using Trs80.Level1Basic.Interpreter.Scanner;
 
 namespace Trs80.Level1Basic.Interpreter.Test;
 
@@ -20,8 +20,8 @@ public class ParserTest
     {
         string input = "10 print \"Hello, World!\"";
         IBuiltinFunctions builtins = new BuiltinFunctions();
-        IScanner scanner = new Scanner.Scanner(builtins);
-        IParser parser = new Parser.Parser(builtins);
+        IScanner scanner = new Scanner(builtins);
+        IParser parser = new Parser(builtins);
 
         List<Token> tokens = scanner.ScanTokens(input);
         ParsedLine parsedLine = parser.Parse(tokens);

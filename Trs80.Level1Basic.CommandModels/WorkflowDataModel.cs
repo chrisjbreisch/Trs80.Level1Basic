@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Trs80.Level1Basic.Interpreter.Parser;
-using Trs80.Level1Basic.Interpreter.Scanner;
+using Trs80.Level1Basic.VirtualMachine.Parser;
+using Trs80.Level1Basic.VirtualMachine.Scanner;
 
 namespace Trs80.Level1Basic.CommandModels;
 

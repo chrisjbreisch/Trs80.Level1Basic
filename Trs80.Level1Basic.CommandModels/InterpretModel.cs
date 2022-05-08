@@ -1,4 +1,4 @@
-﻿using Trs80.Level1Basic.Interpreter.Parser;
+﻿using Trs80.Level1Basic.VirtualMachine.Parser;
 
 namespace Trs80.Level1Basic.CommandModels;
 

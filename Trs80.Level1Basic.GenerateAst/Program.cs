@@ -119,11 +119,11 @@ internal static class Program
         writer.WriteLine("using System.Collections.Generic;");
 
         writer.WriteLine(baseName.Contains("Statement")
-            ? "using Trs80.Level1Basic.Interpreter.Parser.Expressions;"
-            : "using Trs80.Level1Basic.Interpreter.Scanner;");
+            ? "using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;"
+            : "using Trs80.Level1Basic.VirtualMachine.Scanner;");
 
         writer.WriteLine();
-        writer.WriteLine($"namespace Trs80.Level1Basic.Interpreter.Parser.{baseName}s;");
+        writer.WriteLine($"namespace Trs80.Level1Basic.VirtualMachine.Parser.{baseName}s;");
         writer.WriteLine();
     }
 
@@ -143,7 +143,7 @@ internal static class Program
 
         WriteDisclaimer(writer);
 
-        writer.WriteLine($"namespace Trs80.Level1Basic.Interpreter.Parser.{baseName}s;");
+        writer.WriteLine($"namespace Trs80.Level1Basic.VirtualMachine.Parser.{baseName}s;");
         writer.WriteLine();
         writer.WriteLine($"public interface I{baseName}Visitor");
         writer.WriteLine("{");

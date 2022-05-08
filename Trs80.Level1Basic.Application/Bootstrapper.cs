@@ -15,9 +15,9 @@ using Trs80.Level1Basic.Command.Commands;
 using Trs80.Level1Basic.CommandModels;
 using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.Console;
-using Trs80.Level1Basic.Interpreter.Interpreter;
-using Trs80.Level1Basic.Interpreter.Parser;
-using Trs80.Level1Basic.Interpreter.Scanner;
+using Trs80.Level1Basic.VirtualMachine.Interpreter;
+using Trs80.Level1Basic.VirtualMachine.Parser;
+using Trs80.Level1Basic.VirtualMachine.Scanner;
 using Trs80.Level1Basic.Workflow;
 
 using WorkflowCore.Interface;
@@ -228,8 +228,8 @@ public sealed class Bootstrapper : IDisposable
             .AddSingleton<IScanner, Scanner>()
             .AddSingleton<IParser, Parser>()
             .AddSingleton<IBuiltinFunctions, BuiltinFunctions>()
-            .AddSingleton<IBasicInterpreter, BasicInterpreter>()
-            .AddSingleton<IBasicEnvironment, BasicEnvironment>()
+            .AddSingleton<IInterpreter, Interpreter>()
+            .AddSingleton<IMachine, Machine>()
             .AddSingleton<IConsole, Console.Console>()
             .AddSingleton<IConsoleDataModel, ConsoleDataModel>()
             .AddSingleton<IProgram, Program>()

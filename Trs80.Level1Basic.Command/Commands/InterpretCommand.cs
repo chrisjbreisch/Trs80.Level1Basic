@@ -1,18 +1,18 @@
 ﻿using System.Diagnostics;
 using Trs80.Level1Basic.CommandModels;
 using Trs80.Level1Basic.Console;
-using Trs80.Level1Basic.Interpreter.Exceptions;
-using Trs80.Level1Basic.Interpreter.Interpreter;
-using Trs80.Level1Basic.Interpreter.Parser;
+using Trs80.Level1Basic.VirtualMachine.Exceptions;
+using Trs80.Level1Basic.VirtualMachine.Interpreter;
+using Trs80.Level1Basic.VirtualMachine.Parser;
 
 namespace Trs80.Level1Basic.Command.Commands;
 
 public class InterpretCommand : ICommand<InterpretModel>
 {
-    private readonly IBasicInterpreter _interpreter;
+    private readonly IInterpreter _interpreter;
     private readonly IConsole _console;
 
-    public InterpretCommand(IBasicInterpreter interpreter, IConsole console)
+    public InterpretCommand(IInterpreter interpreter, IConsole console)
     {
         _interpreter = interpreter ?? throw new ArgumentNullException(nameof(interpreter));
         _console = console ?? throw new ArgumentNullException(nameof(console));

@@ -4,8 +4,8 @@ using FluentAssertions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using Trs80.Level1Basic.Interpreter.Interpreter;
-using Trs80.Level1Basic.Interpreter.Scanner;
+using Trs80.Level1Basic.VirtualMachine.Interpreter;
+using Trs80.Level1Basic.VirtualMachine.Scanner;
 
 namespace Trs80.Level1Basic.Interpreter.Test;
 
@@ -17,7 +17,7 @@ public class ScannerTest
     {
         string input = "10 print \"Hello, World!\"";
         IBuiltinFunctions builtins = new BuiltinFunctions();
-        IScanner scanner = new Scanner.Scanner(builtins);
+        IScanner scanner = new Scanner(builtins);
 
         List<Token> tokens = scanner.ScanTokens(input);
         tokens.Should().HaveCount(4);

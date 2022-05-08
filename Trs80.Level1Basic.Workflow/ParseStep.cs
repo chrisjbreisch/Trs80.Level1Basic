@@ -1,8 +1,7 @@
 ﻿using Trs80.Level1Basic.Command;
 using Trs80.Level1Basic.CommandModels;
-using Trs80.Level1Basic.Interpreter.Parser;
-using Trs80.Level1Basic.Interpreter.Scanner;
-
+using Trs80.Level1Basic.VirtualMachine.Parser;
+using Trs80.Level1Basic.VirtualMachine.Scanner;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 

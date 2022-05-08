@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Trs80.Level1Basic.Command\Trs80.Level1Basic.Command.csproj" />
+    <ProjectReference Include="..\Trs80.Level1Basic.VirtualMachine\Trs80.Level1Basic.VirtualMachine.csproj" />
   </ItemGroup>
 
 </Project>
