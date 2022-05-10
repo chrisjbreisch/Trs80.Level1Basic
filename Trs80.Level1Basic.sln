@@ -26,7 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflow", "Workflow", "{527AA9D1-704A-4AA4-9012-8C47380E7B08}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VirtualMachine", "VirtualMachine", "{EC14AF9B-5F4B-4EFC-AE2F-0F5EF3AD0F55}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Level I BASIC", "Level I BASIC", "{EC14AF9B-5F4B-4EFC-AE2F-0F5EF3AD0F55}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.Console", "Trs80.Level1Basic.Console\Trs80.Level1Basic.Console.csproj", "{46D5282B-47E8-4597-90C9-C37443C4E34D}"
 EndProject
@@ -47,6 +47,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.TestUtilities", "Trs80.Level1Basic.TestUtilities\Trs80.Level1Basic.TestUtilities.csproj", "{C0766798-3B89-476D-A53B-2B18ACA2529E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.VirtualMachine", "Trs80.Level1Basic.VirtualMachine\Trs80.Level1Basic.VirtualMachine.csproj", "{827C9838-033A-4044-B091-E0C6FE509DDC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trs80.Level1Basic.Extensions.Test", "Trs80.Level1Basic.Extensions.Test\Trs80.Level1Basic.Extensions.Test.csproj", "{464C903C-6EE4-4629-9031-5D877E0B96E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -102,6 +104,10 @@ Global
 		{827C9838-033A-4044-B091-E0C6FE509DDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{827C9838-033A-4044-B091-E0C6FE509DDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{827C9838-033A-4044-B091-E0C6FE509DDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{464C903C-6EE4-4629-9031-5D877E0B96E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{464C903C-6EE4-4629-9031-5D877E0B96E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{464C903C-6EE4-4629-9031-5D877E0B96E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{464C903C-6EE4-4629-9031-5D877E0B96E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -120,6 +126,7 @@ Global
 		{CCDDE474-9B7C-4300-9962-9C56996F91B0} = {CD571827-E0DE-4EEA-BCCE-3475124C8BB2}
 		{C0766798-3B89-476D-A53B-2B18ACA2529E} = {CD571827-E0DE-4EEA-BCCE-3475124C8BB2}
 		{827C9838-033A-4044-B091-E0C6FE509DDC} = {EC14AF9B-5F4B-4EFC-AE2F-0F5EF3AD0F55}
+		{464C903C-6EE4-4629-9031-5D877E0B96E6} = {CD571827-E0DE-4EEA-BCCE-3475124C8BB2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5EB0E852-7B78-46A4-934D-25D7E53322B7}

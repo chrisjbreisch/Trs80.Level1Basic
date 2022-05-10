@@ -7,12 +7,12 @@ namespace Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
 
 public interface IExpressionVisitor
 {
-    dynamic VisitBasicArrayExpression(BasicArray root);
-    dynamic VisitAssignExpression(Assign root);
-    dynamic VisitBinaryExpression(Binary root);
-    dynamic VisitCallExpression(Call root);
-    dynamic VisitGroupingExpression(Grouping root);
-    dynamic VisitLiteralExpression(Literal root);
-    dynamic VisitUnaryExpression(Unary root);
-    dynamic VisitIdentifierExpression(Identifier root);
+    dynamic VisitBasicArrayExpression(BasicArray expression);
+    dynamic VisitAssignExpression(Assign expression);
+    dynamic VisitBinaryExpression(Binary expression);
+    dynamic VisitCallExpression(Call expression);
+    dynamic VisitGroupingExpression(Grouping expression);
+    dynamic VisitLiteralExpression(Literal expression);
+    dynamic VisitUnaryExpression(Unary expression);
+    dynamic VisitIdentifierExpression(Identifier expression);
 }
