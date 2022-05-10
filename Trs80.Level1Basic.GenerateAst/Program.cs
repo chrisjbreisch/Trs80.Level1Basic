@@ -153,7 +153,7 @@ internal static class Program
             string returnType = baseName.Contains("Statement") ? "void" : "dynamic";
 
             string typeName = type.Split(":")[0].Trim();
-            writer.WriteLine($"    {returnType} Visit{typeName}{baseName}({typeName} root);");
+            writer.WriteLine($"    {returnType} Visit{typeName}{baseName}({typeName} {baseName.ToCamelCase()});");
         }
         writer.WriteLine("}");
         WriteEnd(writer);
