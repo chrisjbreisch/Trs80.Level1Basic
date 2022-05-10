@@ -80,7 +80,7 @@ one of those old programs and try it run it on my interpreter, it will fail. It 
 won't do what you expect.
 
 Level I BASIC was designed to fit in 4K of ROM, so they cut a few corners. One of them was that 
-many standard math library functions, Power, Logarithm, and Trig functons weren't included. 
+many standard math library functions such as Power, Logarithm, and Trig functons weren't included. 
 People wrote their own, in BASIC, that you could access as subroutines. In fact, Appendix A from 
 the book contains a decent set. I do find the POWER subroutine to be inadequate. Mostly because it 
 builds upon the LOGARITHM subroutine and the EXP subroutine. Each of these have a small amount of 
