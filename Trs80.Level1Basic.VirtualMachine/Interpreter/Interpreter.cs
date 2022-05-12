@@ -226,7 +226,7 @@ public class Interpreter : IInterpreter
             _sb.Append(value.ToString("######"));
     }
 
-    public sd VisitNextStatement(Next statement)
+    public void VisitNextStatement(Next statement)
     {
         ForCheckCondition checkCondition = GetCheckCondition(statement);
         dynamic nextIndexerValue = IncrementIndexer(checkCondition);

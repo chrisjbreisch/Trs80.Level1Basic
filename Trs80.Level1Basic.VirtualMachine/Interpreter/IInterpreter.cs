@@ -4,7 +4,7 @@ using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
 namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
 
-public interface IInterpreter : IExpressionVisitor<object>, IStatementVisitor<object>
+public interface IInterpreter : IExpressionVisitor, IStatementVisitor
 {
     Statement CurrentStatement { get; }
     void Interpret(ParsedLine line);
