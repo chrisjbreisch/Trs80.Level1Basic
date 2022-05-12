@@ -48,6 +48,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.TestUtili
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.VirtualMachine", "Trs80.Level1Basic.VirtualMachine\Trs80.Level1Basic.VirtualMachine.csproj", "{827C9838-033A-4044-B091-E0C6FE509DDC}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.Extensions.Test", "Trs80.Level1Basic.Extensions.Test\Trs80.Level1Basic.Extensions.Test.csproj", "{B745908C-EE13-4C63-9167-B96015BBE529}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -102,6 +104,10 @@ Global
 		{827C9838-033A-4044-B091-E0C6FE509DDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{827C9838-033A-4044-B091-E0C6FE509DDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{827C9838-033A-4044-B091-E0C6FE509DDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B745908C-EE13-4C63-9167-B96015BBE529}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B745908C-EE13-4C63-9167-B96015BBE529}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B745908C-EE13-4C63-9167-B96015BBE529}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B745908C-EE13-4C63-9167-B96015BBE529}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -120,6 +126,7 @@ Global
 		{CCDDE474-9B7C-4300-9962-9C56996F91B0} = {CD571827-E0DE-4EEA-BCCE-3475124C8BB2}
 		{C0766798-3B89-476D-A53B-2B18ACA2529E} = {CD571827-E0DE-4EEA-BCCE-3475124C8BB2}
 		{827C9838-033A-4044-B091-E0C6FE509DDC} = {EC14AF9B-5F4B-4EFC-AE2F-0F5EF3AD0F55}
+		{B745908C-EE13-4C63-9167-B96015BBE529} = {CD571827-E0DE-4EEA-BCCE-3475124C8BB2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5EB0E852-7B78-46A4-934D-25D7E53322B7}
