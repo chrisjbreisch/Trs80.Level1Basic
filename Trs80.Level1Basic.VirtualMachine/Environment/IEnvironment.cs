@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-
+using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
-namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
+namespace Trs80.Level1Basic.VirtualMachine.Environment;
 
 public interface IEnvironment
 {
@@ -28,5 +28,5 @@ public interface IEnvironment
     void LoadData(IInterpreter interpreter);
     Statement GetNextStatement();
     void Initialize();
-    dynamic GetArrayValue(string name, int index);
+    dynamic Get(string name, int index);
 }

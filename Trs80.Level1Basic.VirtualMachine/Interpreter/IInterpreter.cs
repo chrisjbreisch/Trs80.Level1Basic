@@ -11,8 +11,8 @@ public interface IInterpreter : Parser.Expressions.IVisitor<object>, IVisitor<Vo
     void Interpret(ParsedLine line);
     void Execute(Statement statement);
     FunctionImplementations Functions { get; }
-    void WriteToPosition(int position);
-    string PadQuadrant();
+    string PadToPosition(int position);
+    string PadToQuadrant();
     void Set(int x, int y);
     void Reset(int x, int y);
     bool Point(int x, int y);

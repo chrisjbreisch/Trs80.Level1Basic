@@ -10,12 +10,12 @@ using Trs80.Level1Basic.VirtualMachine.Scanner;
 
 namespace Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
 
-public class BasicArray : Expression
+public class Array : Expression
 {
     public Token Name { get; }
     public Expression Index { get; }
 
-    public BasicArray(Token name, Expression index)
+    public Array(Token name, Expression index)
     {
         Name = name;
         Index = index;
@@ -23,6 +23,6 @@ public class BasicArray : Expression
 
     public override T Accept<T>(IVisitor<T> visitor)
     {
-        return visitor.VisitBasicArrayExpression(this);
+        return visitor.VisitArrayExpression(this);
     }
 }

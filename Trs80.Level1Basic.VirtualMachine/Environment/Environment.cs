@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
 using Trs80.Level1Basic.Console;
+using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
 
-namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
+namespace Trs80.Level1Basic.VirtualMachine.Environment;
 
 public class Environment : IEnvironment
 {
@@ -188,7 +188,7 @@ public class Environment : IEnvironment
         Data.MoveFirst();
     }
 
-    public dynamic GetArrayValue(string name, int index)
+    public dynamic Get(string name, int index)
     {
         return _globals.GetArrayValue(name, index);
     }

@@ -14,8 +14,8 @@ public interface IVisitor<T>
     T VisitDeleteStatement(Delete statement);
     T VisitEndStatement(End statement);
     T VisitForStatement(For statement);
-    T VisitGotoStatement(Goto statement);
     T VisitGosubStatement(Gosub statement);
+    T VisitGotoStatement(Goto statement);
     T VisitIfStatement(If statement);
     T VisitInputStatement(Input statement);
     T VisitLetStatement(Let statement);

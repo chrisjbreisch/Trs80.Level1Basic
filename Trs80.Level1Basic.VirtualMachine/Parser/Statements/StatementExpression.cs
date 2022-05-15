@@ -12,11 +12,11 @@ namespace Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
 public class StatementExpression : Statement
 {
-    public Expression Expression { get; }
+    public Expression Value { get; }
 
-    public StatementExpression(Expression expression)
+    public StatementExpression(Expression value)
     {
-        Expression = expression;
+        Value = value;
     }
 
     public override T Accept<T>(IVisitor<T> visitor)

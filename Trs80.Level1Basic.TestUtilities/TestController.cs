@@ -2,9 +2,11 @@
 using Trs80.Level1Basic.Application;
 using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.Console;
+using Trs80.Level1Basic.VirtualMachine.Environment;
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
+using Environment = Trs80.Level1Basic.VirtualMachine.Environment.Environment;
 
 namespace Trs80.Level1Basic.TestUtilities;
 
@@ -40,7 +42,7 @@ public class TestController : IDisposable
         _scanner = new Scanner(builtins);
         _parser = new Parser(builtins);
         IProgram program = new Program();
-        IEnvironment environment = new VirtualMachine.Interpreter.Environment(Console, _parser, _scanner, builtins, program);
+        IEnvironment environment = new Environment(Console, _parser, _scanner, builtins, program);
         _interpreter = new Interpreter(Console, environment);
     }
 

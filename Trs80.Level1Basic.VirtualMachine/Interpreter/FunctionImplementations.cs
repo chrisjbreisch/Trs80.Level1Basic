@@ -42,15 +42,12 @@ public class FunctionImplementations
 
     public string Tab(IInterpreter interpreter, dynamic value)
     {
-        interpreter.WriteToPosition(value);
-
-        return string.Empty;
+        return interpreter.PadToPosition(value); ;
     }
-
-
+    
     public string PadQuadrant(IInterpreter interpreter)
     {
-        return interpreter.PadQuadrant();
+        return interpreter.PadToQuadrant();
     }
 
     public object Set(IInterpreter interpreter, float x, float y)

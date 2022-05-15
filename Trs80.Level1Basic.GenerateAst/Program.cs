@@ -20,14 +20,14 @@ internal static class Program
         string outputDir = args[0];
         DefineAst(outputDir, "Expression", new List<string>
         {
-            "BasicArray : Token name, Expression index",
+            "Array      : Token name, Expression index",
             "Assign     : Token name, Expression value",
             "Binary     : Expression left, Token binaryOperator, Expression right",
             "Call       : Token name, List<Expression> arguments",
             "Grouping   : Expression expression",
+            "Identifier : Token name",
             "Literal    : dynamic value",
             "Unary      : Token unaryOperator, Expression right",
-            "Identifier : Token name",
         });
 
         DefineAst(outputDir, "Statement", new List<string>
@@ -38,8 +38,8 @@ internal static class Program
             "Delete                 : int lineToDelete",
             "End",
             "For                    : Expression variable, Expression startValue, Expression endValue, Expression stepValue",
-            "Goto                   : Expression location",
             "Gosub                  : Expression location",
+            "Goto                   : Expression location",
             "If                     : Expression condition, Statement thenBranch",
             "Input                  : List<Expression> expressions, bool writeNewline",
             "Let                    : Expression variable, Expression initializer",

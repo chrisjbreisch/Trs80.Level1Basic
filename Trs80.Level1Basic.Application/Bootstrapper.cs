@@ -15,6 +15,7 @@ using Trs80.Level1Basic.Command.Commands;
 using Trs80.Level1Basic.CommandModels;
 using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.Console;
+using Trs80.Level1Basic.VirtualMachine.Environment;
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
@@ -24,7 +25,7 @@ using WorkflowCore.Interface;
 using WorkflowCore.Models;
 using WorkflowCore.Services.DefinitionStorage;
 
-using Environment = Trs80.Level1Basic.VirtualMachine.Interpreter.Environment;
+using Environment = Trs80.Level1Basic.VirtualMachine.Environment.Environment;
 
 namespace Trs80.Level1Basic.Application;
 

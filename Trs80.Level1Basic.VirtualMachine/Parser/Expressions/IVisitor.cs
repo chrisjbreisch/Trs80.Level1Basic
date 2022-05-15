@@ -8,12 +8,12 @@ namespace Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
 
 public interface IVisitor<T>
 {
-    T VisitBasicArrayExpression(BasicArray expression);
+    T VisitArrayExpression(Array expression);
     T VisitAssignExpression(Assign expression);
     T VisitBinaryExpression(Binary expression);
     T VisitCallExpression(Call expression);
     T VisitGroupingExpression(Grouping expression);
+    T VisitIdentifierExpression(Identifier expression);
     T VisitLiteralExpression(Literal expression);
     T VisitUnaryExpression(Unary expression);
-    T VisitIdentifierExpression(Identifier expression);
 }
