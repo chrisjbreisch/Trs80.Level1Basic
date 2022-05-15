@@ -609,7 +609,7 @@ public class Interpreter : IInterpreter
 
     public Void VisitStatementExpressionStatement(StatementExpression statement)
     {
-        Evaluate(statement.Value);
+        Evaluate(statement.Expression);
 
         return null!;
     }
