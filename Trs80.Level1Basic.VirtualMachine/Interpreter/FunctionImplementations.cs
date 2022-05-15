@@ -4,7 +4,7 @@ using Trs80.Level1Basic.VirtualMachine.Exceptions;
 
 namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
 
-public class BasicFunctionImplementations
+public class FunctionImplementations
 {
     public int Int(IInterpreter interpreter, dynamic value)
     {

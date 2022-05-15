@@ -40,8 +40,8 @@ public class TestController : IDisposable
         _scanner = new Scanner(builtins);
         _parser = new Parser(builtins);
         IProgram program = new Program();
-        IMachine machine = new Machine(Console, _parser, _scanner, builtins, program);
-        _interpreter = new Interpreter(Console, machine);
+        IEnvironment environment = new VirtualMachine.Interpreter.Environment(Console, _parser, _scanner, builtins, program);
+        _interpreter = new Interpreter(Console, environment);
     }
 
     public void ExecuteLine(string input)

@@ -1,15 +1,16 @@
-﻿using Trs80.Level1Basic.VirtualMachine.Parser;
-using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
+﻿using Trs80.Level1Basic.Common;
+using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
 namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
 
-public interface IInterpreter : IExpressionVisitor<object>, IStatementVisitor<object>
+
+public interface IInterpreter : Parser.Expressions.IVisitor<object>, IVisitor<Void>
 {
     Statement CurrentStatement { get; }
     void Interpret(ParsedLine line);
     void Execute(Statement statement);
-    BasicFunctionImplementations Functions { get; }
+    FunctionImplementations Functions { get; }
     void WriteToPosition(int position);
     string PadQuadrant();
     void Set(int x, int y);

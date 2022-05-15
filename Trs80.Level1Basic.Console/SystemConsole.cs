@@ -52,19 +52,19 @@ public interface ISystemConsole
     string ReadLine();
 }
 
-public class SystemConsole : ISystemConsole
+public class SystemConsole : ISystemConsole, IDisposable 
 {
     // https://www.pinvoke.net/default.aspx/user32/FindWindow.html
     [DllImport("user32.dll", EntryPoint = "FindWindow", SetLastError = true, CharSet = CharSet.Unicode)]
-    private static extern IntPtr FindWindowFromWindowName(IntPtr zeroOnly, string lpWindowName);
+    private static extern nint FindWindowFromWindowName(nint zeroOnly, string lpWindowName);
 
     // https://www.pinvoke.net/default.aspx/user32/GetClientRect.html
     [DllImport("user32.dll")]
-    private static extern bool GetClientRect(IntPtr hWnd, out Rect lpRect);
+    private static extern bool GetClientRect(nint hWnd, out Rect lpRect);
 
     // https://www.pinvoke.net/default.aspx/kernel32/GetConsoleMode.html
     [DllImport("kernel32.dll", SetLastError = true)]
-    private static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+    private static extern bool GetConsoleMode(nint hConsoleHandle, out uint lpMode);
 
     // https://www.pinvoke.net/default.aspx/kernel32/GetConsoleTitle.html
     [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
@@ -73,15 +73,15 @@ public class SystemConsole : ISystemConsole
     // https://www.pinvoke.net/default.aspx/kernel32/GetCurrentConsoleFontEx.html
     [return: MarshalAs(UnmanagedType.Bool)]
     [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-    private static extern bool GetCurrentConsoleFontEx(IntPtr hConsoleOutput, bool maximumWindow, ref FontInfo consoleCurrentFontEx);
+    private static extern bool GetCurrentConsoleFontEx(nint hConsoleOutput, bool maximumWindow, ref FontInfo consoleCurrentFontEx);
 
     // https://www.pinvoke.net/default.aspx/kernel32/GetStdHandle.html
     [DllImport("kernel32.dll", SetLastError = true)]
-    private static extern IntPtr GetStdHandle(int nStdHandle);
+    private static extern nint GetStdHandle(int nStdHandle);
 
     // https://www.pinvoke.net/default.aspx/kernel32/SetConsoleMode.html
     [DllImport("kernel32.dll", SetLastError = true)]
-    private static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
+    private static extern bool SetConsoleMode(nint hConsoleHandle, uint dwMode);
 
     // https://www.pinvoke.net/default.aspx/kernel32/SetConsoleTitle.html
     [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
@@ -89,15 +89,15 @@ public class SystemConsole : ISystemConsole
 
     [return: MarshalAs(UnmanagedType.Bool)]
     [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-    private static extern bool SetCurrentConsoleFontEx(IntPtr hConsoleOutput, bool maximumWindow, ref FontInfo consoleCurrentFontEx);
+    private static extern bool SetCurrentConsoleFontEx(nint hConsoleOutput, bool maximumWindow, ref FontInfo consoleCurrentFontEx);
 
     private const int ScreenWidth = 64;
     private const int ScreenHeight = 16;
     private const int ScreenPixelWidth = 2 * ScreenWidth;
     private const int ScreenPixelHeight = 3 * ScreenHeight;
 
-    private readonly IntPtr _hwnd;
-    private readonly IntPtr _outputHandle;
+    private readonly nint _hwnd;
+    private readonly nint _outputHandle;
     private readonly Graphics _graphics;
     private double _pixelWidth;
     private double _pixelHeight;
@@ -130,7 +130,7 @@ public class SystemConsole : ISystemConsole
         _pixelWidth = clientRect.Right / (double)ScreenPixelWidth;
     }
 
-    private static IntPtr GetConsoleWindowHandle()
+    private static nint GetConsoleWindowHandle()
     {
         var sb = new StringBuilder(1024);
         _ = GetConsoleTitle(sb, 1024);
@@ -140,7 +140,7 @@ public class SystemConsole : ISystemConsole
         string newTitle = originalTitle + Environment.ProcessId;
         SetConsoleTitle(newTitle);
 
-        IntPtr hwnd;
+        nint hwnd;
         do
             hwnd = FindWindowFromWindowName(IntPtr.Zero, newTitle);
         while (!IsValidHwnd(hwnd));
@@ -150,7 +150,7 @@ public class SystemConsole : ISystemConsole
         return hwnd;
     }
 
-    private static bool IsValidHwnd(IntPtr hwnd)
+    private static bool IsValidHwnd(nint hwnd)
     {
         if (hwnd != IntPtr.Zero) return true;
 
@@ -296,5 +296,29 @@ public class SystemConsole : ISystemConsole
             (int)Math.Round(width * _pixelWidth + .5),
             (int)Math.Round(height * _pixelHeight + .5)
         );
+    }
+
+
+    private void Dispose(bool disposing)
+    {
+        if (!disposing) return;
+
+        if (OperatingSystem.IsWindows())
+            _graphics?.Dispose();
+
+        Out?.Dispose();
+        In?.Dispose();
+        Error?.Dispose();
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    ~SystemConsole()
+    {
+        Dispose(false);
     }
 }

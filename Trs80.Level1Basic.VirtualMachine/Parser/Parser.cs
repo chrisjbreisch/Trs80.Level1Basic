@@ -334,18 +334,18 @@ public class Parser : IParser
             throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
                 "Expected 'THEN' or 'GOTO' before line number in 'IF' statement.");
 
-        Statement thenStatement = current.Type switch {
+        Statement thenBranch = current.Type switch {
             TokenType.Gosub => new Gosub(Expression()),
             TokenType.Goto => new Goto(Expression()),
             _ => Peek().Type == TokenType.Number ? new Goto(Expression()) : Statement(lineNumber)
         };
 
-        Statement savedThenStatement = thenStatement;
+        Statement savedThenStatement = thenBranch;
 
         while (Match(TokenType.Colon))
         {
-            thenStatement.Next = Statement(lineNumber);
-            thenStatement = thenStatement.Next;
+            thenBranch.Next = Statement(lineNumber);
+            thenBranch = thenBranch.Next;
         }
 
         return StatementWrapper(new If(condition, savedThenStatement), lineNumber);

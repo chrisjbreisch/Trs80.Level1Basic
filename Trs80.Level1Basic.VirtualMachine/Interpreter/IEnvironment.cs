@@ -4,16 +4,16 @@ using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
 namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
 
-public interface IMachine
+public interface IEnvironment
 {
     Stack<ForCheckCondition> ForChecks { get; }
     Stack<Statement> ProgramStack { get; }
     DataElements Data { get; }
     IProgram Program { get; }
-    dynamic AssignVariable(string name, dynamic value);
-    dynamic AssignArray(string name, int index, dynamic value);
-    dynamic GetVariable(string name);
-    bool VariableExists(string name);
+    dynamic Assign(string name, dynamic value);
+    dynamic Assign(string name, int index, dynamic value);
+    dynamic Get(string name);
+    bool Exists(string name);
     List<FunctionDefinition> GetFunctionDefinition(string name);
     void InitializeProgram();
     void ListProgram(int lineNumber);

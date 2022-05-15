@@ -11,21 +11,23 @@ using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
 
+using Void = Trs80.Level1Basic.Common.Void;
+
 namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
 
 public class Interpreter : IInterpreter
 {
     private readonly IConsole _console;
-    private readonly IMachine _machine;
+    private readonly IEnvironment _environment;
     public int CursorX { get; private set; }
     public int CursorY { get; private set; }
 
-    public BasicFunctionImplementations Functions { get; } = new();
+    public FunctionImplementations Functions { get; } = new();
 
-    public Interpreter(IConsole console, IMachine machine)
+    public Interpreter(IConsole console, IEnvironment environment)
     {
         _console = console ?? throw new ArgumentNullException(nameof(console));
-        _machine = machine ?? throw new ArgumentNullException(nameof(machine));
+        _environment = environment ?? throw new ArgumentNullException(nameof(environment));
     }
 
     public Statement CurrentStatement { get; private set; }
@@ -67,13 +69,13 @@ public class Interpreter : IInterpreter
     public dynamic VisitBasicArrayExpression(BasicArray expression)
     {
         dynamic index = Evaluate(expression.Index);
-        return _machine.GetArrayValue(expression.Name.Lexeme, index);
+        return _environment.GetArrayValue(expression.Name.Lexeme, index);
     }
 
     public dynamic VisitAssignExpression(Assign expression)
     {
         dynamic value = Evaluate(expression.Value);
-        return AssignVariable(expression, value);
+        return Assign(expression, value);
     }
 
     public dynamic VisitBinaryExpression(Binary expression)
@@ -81,9 +83,9 @@ public class Interpreter : IInterpreter
         dynamic left = Evaluate(expression.Left);
         dynamic right = Evaluate(expression.Right);
 
-        CheckForProperOperands(expression.OperatorType, left, right);
+        CheckForProperOperands(expression.BinaryOperator, left, right);
 
-        return expression.OperatorType.Type switch
+        return expression.BinaryOperator.Type switch
         {
             TokenType.Plus => (left is bool && right is bool) ? left || right : left + right,
             TokenType.Minus => left - right,
@@ -103,7 +105,7 @@ public class Interpreter : IInterpreter
     {
         var arguments = expression.Arguments.Select(argument => Evaluate(argument)).ToList();
 
-        FunctionDefinition function = _machine
+        FunctionDefinition function = _environment
             .GetFunctionDefinition(expression.Name.Lexeme).First(f => f.Arity == arguments.Count);
 
         return function.Call(this, arguments);
@@ -167,23 +169,23 @@ public class Interpreter : IInterpreter
     {
         dynamic right = Evaluate(expression.Right);
 
-        CheckForNumericOperand(expression.OperatorType, right);
+        CheckForNumericOperand(expression.UnaryOperator, right);
         return -1 * right;
     }
 
     public dynamic VisitIdentifierExpression(Identifier expression)
     {
-        return _machine.GetVariable(expression.Name.Lexeme);
+        return _environment.Get(expression.Name.Lexeme);
     }
 
     private void WriteExpression(Expression expression)
     {
         dynamic value = Evaluate(expression);
         int startingLength = _sb.Length;
-        
+
         if (value is >= 0 or float and >= 0)
             _sb.Append(' ');
-        
+
         switch (value)
         {
             case null:
@@ -226,18 +228,20 @@ public class Interpreter : IInterpreter
             _sb.Append(value.ToString("######"));
     }
 
-    public sd VisitNextStatement(Next statement)
+    public Void VisitNextStatement(Next statement)
     {
         ForCheckCondition checkCondition = GetCheckCondition(statement);
         dynamic nextIndexerValue = IncrementIndexer(checkCondition);
-        if (EndOfLoop(checkCondition, nextIndexerValue)) return;
+        if (EndOfLoop(checkCondition, nextIndexerValue)) return null!;
         Loop(checkCondition);
+
+        return null!;
     }
 
     private void Loop(ForCheckCondition checkCondition)
     {
-        _machine.ForChecks.Push(checkCondition);
-        _machine.SetNextStatement(checkCondition.Next);
+        _environment.ForChecks.Push(checkCondition);
+        _environment.SetNextStatement(checkCondition.Next);
     }
 
     private static bool EndOfLoop(ForCheckCondition checkCondition, dynamic nextIndexerValue)
@@ -253,23 +257,23 @@ public class Interpreter : IInterpreter
 
     private dynamic IncrementIndexer(ForCheckCondition checkCondition)
     {
-        dynamic indexerValue = GetVariable(checkCondition.Variable);
+        dynamic indexerValue = Evaluate(checkCondition.Variable);
         dynamic nextIndexerValue = indexerValue + checkCondition.Step;
-        AssignVariable(checkCondition.Variable, nextIndexerValue);
+        Assign(checkCondition.Variable, nextIndexerValue);
         return nextIndexerValue;
     }
 
-    private dynamic AssignVariable(Expression expression, dynamic value)
+    private dynamic Assign(Expression expression, dynamic value)
     {
         switch (expression)
         {
             case Identifier identifier:
-                _machine.AssignVariable(identifier.Name.Lexeme, value);
+                _environment.Assign(identifier.Name.Lexeme, value);
                 break;
             case BasicArray array:
                 {
                     dynamic index = Evaluate(array.Index);
-                    _machine.AssignArray(array.Name.Lexeme, index, value);
+                    _environment.Assign(array.Name.Lexeme, index, value);
                     break;
                 }
             default:
@@ -277,11 +281,6 @@ public class Interpreter : IInterpreter
         }
 
         return value;
-    }
-
-    private dynamic GetVariable(Expression expression)
-    {
-        return Evaluate(expression);
     }
 
     private ForCheckCondition GetCheckCondition(Next next)
@@ -294,11 +293,11 @@ public class Interpreter : IInterpreter
             var nextIdentifier = next.Variable as Identifier;
             do
             {
-                if (_machine.ForChecks.Count == 0)
+                if (_environment.ForChecks.Count == 0)
                     throw new ParseException(next.LineNumber, next.SourceLine,
                         "'NEXT' variable mismatch with 'FOR'");
 
-                checkCondition = _machine.ForChecks.Pop();
+                checkCondition = _environment.ForChecks.Pop();
                 if (checkCondition.Variable is Identifier variable)
                     checkIdentifier = variable;
                 else
@@ -315,34 +314,36 @@ public class Interpreter : IInterpreter
         return checkCondition;
     }
 
-    public void VisitOnStatement(On statement)
+    public Void VisitOnStatement(On statement)
     {
         int selector = (int)Math.Floor((float)Evaluate(statement.Selector)) - 1;
         var locations = statement.Locations.Select(location => Evaluate(location)).ToList();
 
-        if (selector >= locations.Count || selector < 0) return;
+        if (selector >= locations.Count || selector < 0) return null!;
 
         if (statement.IsGosub)
         {
-            _machine.ProgramStack.Push(statement.Next);
+            _environment.ProgramStack.Push(statement.Next);
             Expression location = new Literal(locations[selector]);
             Statement jumpToStatement = GetJumpToStatement(statement, location, "GOSUB");
-            _machine.RunProgram(jumpToStatement, this);
+            _environment.RunProgram(jumpToStatement, this);
 
-            _machine.SetNextStatement(_machine.ProgramStack.Pop());
-            return;
+            _environment.SetNextStatement(_environment.ProgramStack.Pop());
+            return null!;
         }
 
         Statement nextStatement = GetStatementByLineNumber(locations[selector]);
-        
+
         if (nextStatement is null)
             throw new RuntimeStatementException(statement.LineNumber, statement.SourceLine,
                 $"Can't 'GOTO' line {locations[selector]}.");
 
-        _machine.SetNextStatement(nextStatement);
+        _environment.SetNextStatement(nextStatement);
+
+        return null!;
     }
 
-    public void VisitPrintStatement(Print statement)
+    public Void VisitPrintStatement(Print statement)
     {
         _sb = new StringBuilder();
         if (statement.AtPosition != null) PrintAt(statement.AtPosition);
@@ -354,11 +355,12 @@ public class Interpreter : IInterpreter
         string text = _sb.ToString();
         _console.Write(text);
 
-        if (!statement.WriteNewline) return;
+        if (!statement.WriteNewline) return null!;
 
         _console.WriteLine();
         CursorX = 0;
         CursorY++;
+        return null!;
     }
 
     private void PrintAt(Expression position)
@@ -373,18 +375,22 @@ public class Interpreter : IInterpreter
         CursorY = row;
     }
 
-    public void VisitReplaceStatement(Replace statement)
+    public Void VisitReplaceStatement(Replace statement)
     {
         if (string.IsNullOrEmpty(statement.Line.SourceLine))
             DeleteStatement(statement.Line.LineNumber);
         else
-            _machine.Program.ReplaceLine(statement.Line);
+            _environment.Program.ReplaceLine(statement.Line);
+
+        return null!;
     }
 
-    public void VisitReadStatement(Read statement)
+    public Void VisitReadStatement(Read statement)
     {
         foreach (Expression variable in statement.Variables)
-            AssignVariable(variable, _machine.Data.GetNext());
+            Assign(variable, _environment.Data.GetNext());
+
+        return null!;
     }
 
     private StringBuilder _sb = new();
@@ -422,46 +428,56 @@ public class Interpreter : IInterpreter
 
     public int MemoryInUse()
     {
-        return _machine.MemoryInUse();
+        return _environment.MemoryInUse();
     }
-    
-    public void VisitStatementExpressionStatement(StatementExpression statement)
+
+    public Void VisitStatementExpressionStatement(StatementExpression statement)
     {
         Evaluate(statement.Expression);
+
+        return null!;
     }
 
-    public void VisitStopStatement(Stop statement)
+    public Void VisitStopStatement(Stop statement)
     {
         _console.WriteLine($"BREAK AT {statement.LineNumber}");
-        _machine.HaltRun();
+        _environment.HaltRun();
+
+        return null!;
     }
 
-    public void VisitRestoreStatement(Restore _)
+    public Void VisitRestoreStatement(Restore _)
     {
-        _machine.Data.MoveFirst();
+        _environment.Data.MoveFirst();
+
+        return null!;
     }
 
-    public void VisitReturnStatement(Return statement)
+    public Void VisitReturnStatement(Return statement)
     {
-        _machine.SetNextStatement(null);
+        _environment.SetNextStatement(null);
+
+        return null!;
     }
 
-    public void VisitRunStatement(Run statement)
+    public Void VisitRunStatement(Run statement)
     {
-        _machine.InitializeProgram();
+        _environment.InitializeProgram();
         GetCursorPosition();
 
         int lineNumber = GetStartingLineNumber(statement.StartAtLineNumber);
         if (lineNumber < 0)
             lineNumber = GetFirstLineNumber();
-        if (lineNumber < 0) return;
+        if (lineNumber < 0) return null!;
 
-        _machine.LoadData(this);
+        _environment.LoadData(this);
         Statement firstStatement = GetStatementByLineNumber(lineNumber);
         if (firstStatement is null)
             throw new RuntimeStatementException(-1, statement.SourceLine, $"Can't start execution at {lineNumber}");
 
         RunProgram(firstStatement, true);
+
+        return null!;
     }
 
     private void GetCursorPosition()
@@ -473,7 +489,7 @@ public class Interpreter : IInterpreter
 
     private int GetFirstLineNumber()
     {
-        Statement statement = _machine.Program.GetFirstStatement();
+        Statement statement = _environment.Program.GetFirstStatement();
 
         if (statement is null)
             return -1;
@@ -493,22 +509,25 @@ public class Interpreter : IInterpreter
     public void RunProgram(Statement statement, bool initialize)
     {
         if (initialize)
-            _machine.Initialize();
+            _environment.Initialize();
 
-        _machine.RunProgram(statement, this);
+        _environment.RunProgram(statement, this);
         _console.WriteLine();
         _console.WriteLine("READY");
     }
 
-    public void VisitListStatement(List statement)
+    public Void VisitListStatement(List statement)
     {
         int lineNumber = GetStartingLineNumber(statement.StartAtLineNumber);
-        _machine.ListProgram(lineNumber);
+        _environment.ListProgram(lineNumber);
+
+        return null!;
     }
 
-    public void VisitRemStatement(Rem statement)
+    public Void VisitRemStatement(Rem statement)
     {
         // do nothing
+        return null!;
     }
 
     private const string Filter = "BASIC files (*.bas)|*.bas|All files (*.*)|*.*";
@@ -543,56 +562,64 @@ public class Interpreter : IInterpreter
     }
 
 
-    public void VisitLoadStatement(Load statement)
+    public Void VisitLoadStatement(Load statement)
     {
-        _machine.NewProgram();
+        _environment.NewProgram();
         string path = Evaluate(statement.Path);
         if (string.IsNullOrEmpty(path))
             path = OpenFileDialog();
 
-        if (string.IsNullOrEmpty(path)) return;
+        if (string.IsNullOrEmpty(path)) return null!;
 
-        _machine.LoadProgram(path);
+        _environment.LoadProgram(path);
         _console.WriteLine($"Loaded \"{path}\".");
+
+        return null!;
     }
 
-    public void VisitMergeStatement(Merge statement)
+    public Void VisitMergeStatement(Merge statement)
     {
         string path = Evaluate(statement.Path);
         if (string.IsNullOrEmpty(path))
             path = OpenFileDialog();
 
-        if (string.IsNullOrEmpty(path)) return;
+        if (string.IsNullOrEmpty(path)) return null!;
 
-        _machine.LoadProgram(path);
+        _environment.LoadProgram(path);
         _console.WriteLine($"Merged \"{path}\".");
+
+        return null!;
     }
 
-    public void VisitSaveStatement(Save statement)
+    public Void VisitSaveStatement(Save statement)
     {
         string path = Evaluate(statement.Path);
         if (string.IsNullOrEmpty(path))
             path = SaveFileDialog();
 
-        if (string.IsNullOrEmpty(path)) return;
+        if (string.IsNullOrEmpty(path)) return null!;
 
-        _machine.SaveProgram(path);
+        _environment.SaveProgram(path);
         _console.WriteLine($"Saved \"{path}\".");
+
+        return null!;
     }
-    public void VisitEndStatement(End statement)
+    public Void VisitEndStatement(End statement)
     {
-        _machine.HaltRun();
+        _environment.HaltRun();
+
+        return null!;
     }
 
-    public void VisitForStatement(For statement)
+    public Void VisitForStatement(For statement)
     {
         dynamic startValue = Evaluate(statement.StartValue);
-        AssignVariable(statement.Variable, startValue);
+        Assign(statement.Variable, startValue);
 
         dynamic endValue = Evaluate(statement.EndValue);
         dynamic stepValue = Evaluate(statement.StepValue);
 
-        _machine.ForChecks.Push(new ForCheckCondition
+        _environment.ForChecks.Push(new ForCheckCondition
         {
             Variable = statement.Variable,
             Start = (int)startValue,
@@ -600,12 +627,16 @@ public class Interpreter : IInterpreter
             Step = (int)stepValue,
             Next = statement.Next
         });
+
+        return null!;
     }
 
-    public void VisitGotoStatement(Goto statement)
+    public Void VisitGotoStatement(Goto statement)
     {
         Statement jumpToStatement = GetJumpToStatement(statement, statement.Location, "GOTO");
-        _machine.SetNextStatement(jumpToStatement);
+        _environment.SetNextStatement(jumpToStatement);
+
+        return null!;
     }
 
     private Statement GetJumpToStatement(Statement statement, Expression location, string jumpType)
@@ -621,20 +652,22 @@ public class Interpreter : IInterpreter
         return jumpToStatement;
     }
 
-    public void VisitGosubStatement(Gosub statement)
+    public Void VisitGosubStatement(Gosub statement)
     {
         if (statement.Next != null)
-            _machine.ProgramStack.Push(statement.Next);
+            _environment.ProgramStack.Push(statement.Next);
         else
-            _machine.ProgramStack.Push(CurrentStatement.Next);
+            _environment.ProgramStack.Push(CurrentStatement.Next);
 
         Statement jumpToStatement = GetJumpToStatement(statement, statement.Location, "GOSUB");
-        _machine.RunProgram(jumpToStatement, this);
+        _environment.RunProgram(jumpToStatement, this);
 
-        _machine.SetNextStatement(_machine.ProgramStack.Pop());
+        _environment.SetNextStatement(_environment.ProgramStack.Pop());
+
+        return null!;
     }
 
-    public void VisitIfStatement(If statement)
+    public Void VisitIfStatement(If statement)
     {
         dynamic value = Evaluate(statement.Condition);
         dynamic check;
@@ -644,9 +677,9 @@ public class Interpreter : IInterpreter
         else
             check = value;
 
-        if (!check) return;
+        if (!check) return null!;
 
-        switch (statement.ThenStatement)
+        switch (statement.ThenBranch)
         {
             case Goto gotoStatement:
                 VisitGotoStatement(gotoStatement);
@@ -658,24 +691,28 @@ public class Interpreter : IInterpreter
                 VisitThenStatement(statement);
                 break;
         }
+        return null!;
     }
 
-    private void VisitThenStatement(If ifStatement)
+    private Void VisitThenStatement(If ifStatement)
     {
-        Statement nextStatement = ifStatement.ThenStatement;
+        Statement nextStatement = ifStatement.ThenBranch;
         while (nextStatement != null)
         {
             Execute(nextStatement);
             if (nextStatement is Goto) break;
             nextStatement = nextStatement.Next;
         }
+        return null!;
     }
 
-    public void VisitInputStatement(Input statement)
+    public Void VisitInputStatement(Input statement)
     {
         _sb = new StringBuilder();
         foreach (Expression expression in statement.Expressions)
             ProcessInputExpression(expression, statement.WriteNewline);
+
+        return null!;
     }
 
     private void ProcessInputExpression(Expression expression, bool writeNewline)
@@ -704,21 +741,21 @@ public class Interpreter : IInterpreter
 
         string value = _console.ReadLine();
         if (value is null)
-            AssignVariable(variable, null);
+            Assign(variable, null);
         else if (int.TryParse(value, out int intValue))
-            AssignVariable(variable, intValue);
+            Assign(variable, intValue);
         else if (float.TryParse(value, out float floatValue))
-            AssignVariable(variable, floatValue);
-        else if (_machine.VariableExists(value))
+            Assign(variable, floatValue);
+        else if (_environment.Exists(value))
         {
-            dynamic lookup = _machine.GetVariable(value);
-            AssignVariable(variable, lookup);
+            dynamic lookup = _environment.Get(value);
+            Assign(variable, lookup);
         }
         else
         {
             try
             {
-                AssignVariable(variable, value);
+                Assign(variable, value);
             }
             catch (ValueOutOfRangeException)
             {
@@ -732,53 +769,65 @@ public class Interpreter : IInterpreter
 
     private Statement GetStatementByLineNumber(int lineNumber)
     {
-        return _machine.GetStatementByLineNumber(lineNumber);
+        return _environment.GetStatementByLineNumber(lineNumber);
     }
 
-    public void VisitLetStatement(Let statement)
+    public Void VisitLetStatement(Let statement)
     {
         dynamic value = null;
         if (statement.Initializer != null)
             value = Evaluate(statement.Initializer);
 
-        AssignVariable(statement.Variable, value);
+        Assign(statement.Variable, value);
+
+        return null!;
     }
 
-    public void VisitNewStatement(New statement)
+    public Void VisitNewStatement(New statement)
     {
         NewProgram();
+
+        return null!;
     }
 
-    public void VisitClsStatement(Cls statement)
+    public Void VisitClsStatement(Cls statement)
     {
         _console.Clear();
         Thread.Sleep(500);
+
+        return null!;
     }
 
-    public void VisitContStatement(Cont statement)
+    public Void VisitContStatement(Cont statement)
     {
-        RunProgram(_machine.GetNextStatement(), false);
+        RunProgram(_environment.GetNextStatement(), false);
+
+        return null!;
     }
 
-    public void VisitDataStatement(Data statement)
+    public Void VisitDataStatement(Data statement)
     {
         foreach (Expression element in statement.DataElements)
-            _machine.Data.Add(Evaluate(element));
+            _environment.Data.Add(Evaluate(element));
+
+        return null!;
     }
 
     private void DeleteStatement(int lineNumber)
     {
-        ParsedLine programLine = _machine.Program.List().FirstOrDefault(l => l.LineNumber == lineNumber);
+        ParsedLine programLine = _environment.Program.List().FirstOrDefault(l => l.LineNumber == lineNumber);
         if (programLine != null)
-            _machine.Program.RemoveLine(programLine);
+            _environment.Program.RemoveLine(programLine);
     }
-    public void VisitDeleteStatement(Delete statement)
+    public Void VisitDeleteStatement(Delete statement)
     {
         DeleteStatement(statement.LineToDelete);
+
+        return null!;
     }
 
     private void NewProgram()
     {
-        _machine.Program.Clear();
+        _environment.Program.Clear();
     }
 }

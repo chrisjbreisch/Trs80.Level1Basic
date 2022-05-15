@@ -24,6 +24,8 @@ using WorkflowCore.Interface;
 using WorkflowCore.Models;
 using WorkflowCore.Services.DefinitionStorage;
 
+using Environment = Trs80.Level1Basic.VirtualMachine.Interpreter.Environment;
+
 namespace Trs80.Level1Basic.Application;
 
 public sealed class Bootstrapper : IDisposable
@@ -229,9 +231,10 @@ public sealed class Bootstrapper : IDisposable
             .AddSingleton<IParser, Parser>()
             .AddSingleton<IBuiltinFunctions, BuiltinFunctions>()
             .AddSingleton<IInterpreter, Interpreter>()
-            .AddSingleton<IMachine, Machine>()
+            .AddSingleton<IEnvironment, Environment>()
             .AddSingleton<IConsole, Console.Console>()
             .AddSingleton<IConsoleDataModel, ConsoleDataModel>()
+            .AddSingleton<ISystemConsole, SystemConsole>()
             .AddSingleton<IProgram, Program>()
             .AddSingleton<IAppSettings, AppSettings>()
             .BuildServiceProvider();

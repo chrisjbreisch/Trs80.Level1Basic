@@ -10,7 +10,7 @@ using Trs80.Level1Basic.VirtualMachine.Scanner;
 
 namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
 
-public class Machine : IMachine
+public class Environment : IEnvironment
 {
     private readonly GlobalVariables _globals = new();
     private readonly IConsole _console;
@@ -24,7 +24,7 @@ public class Machine : IMachine
     public IProgram Program { get; }
     public bool ExecutionHalted { get; private set; }
 
-    public Machine(IConsole console, IParser parser, IScanner scanner, IBuiltinFunctions builtins, IProgram program)
+    public Environment(IConsole console, IParser parser, IScanner scanner, IBuiltinFunctions builtins, IProgram program)
     {
         _console = console ?? throw new ArgumentNullException(nameof(console));
         _parser = parser ?? throw new ArgumentNullException(nameof(parser));
@@ -44,22 +44,22 @@ public class Machine : IMachine
         Program.Initialize();
     }
 
-    public dynamic AssignVariable(string name, dynamic value)
+    public dynamic Assign(string name, dynamic value)
     {
         return _globals.Assign(name, value);
     }
 
-    public dynamic AssignArray(string name, int index, dynamic value)
+    public dynamic Assign(string name, int index, dynamic value)
     {
         return _globals.AssignArray(name, index, value);
     }
 
-    public dynamic GetVariable(string name)
+    public dynamic Get(string name)
     {
         return _globals.Get(name);
     }
 
-    public bool VariableExists(string name)
+    public bool Exists(string name)
     {
         return _globals.Exists(name);
     }

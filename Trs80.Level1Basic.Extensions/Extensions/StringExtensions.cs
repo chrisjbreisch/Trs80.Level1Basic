@@ -9,6 +9,27 @@ namespace Trs80.Level1Basic.Common.Extensions;
 [SuppressMessage("ReSharper", "UnusedMember.Global")]
 public static class StringExtensions
 {
+    public static string SeparateWordsByCase(this string text, char separatorChar)
+    {
+        StringBuilder sb = new();
+        int start = 0;
+        int end = 1;
+
+        while (end < text.Length)
+        {
+            char c = text[end];
+            if (char.IsUpper(c))
+            {
+                sb.Append(text[start..end]);
+                sb.Append(separatorChar);
+                start = end;
+            }
+            end++;
+        }
+        sb.Append(text[start..end]);
+
+        return sb.ToString();
+    }
     public static string ToPascalCase(this string text)
     {
         string result = HandleBaseCases(text, true);
