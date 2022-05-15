@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
+using Trs80.Level1Basic.VirtualMachine.Scanner;
 
 namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
 
@@ -11,6 +14,14 @@ public class Program : IProgram
     private List<ParsedLine> _programLines = new();
     private readonly List<Statement> _programStatements = new();
     private bool _sorted;
+    private readonly IScanner _scanner;
+    private readonly IParser _parser;
+
+    public Program(IScanner scanner, IParser parser)
+    {
+        _parser = parser ?? throw new ArgumentNullException(nameof(parser));
+        _scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
+    }
 
     public void Initialize()
     {
@@ -54,6 +65,17 @@ public class Program : IProgram
         _programLines.Clear();
     }
 
+    public void Load(string path)
+    {
+        using var reader = new StreamReader(path);
+        while (!reader.EndOfStream)
+        {
+            List<Token> tokens = _scanner.ScanTokens(reader.ReadLine());
+            ParsedLine line = _parser.Parse(tokens);
+            AddLine(line);
+        }
+    }
+
     public void RemoveLine(ParsedLine line)
     {
         IEnumerable<Statement> previousLines = _programLines.SelectMany(s => s.Statements).Where(p => p?.Next?.LineNumber == line.LineNumber);
@@ -69,7 +91,7 @@ public class Program : IProgram
         return _programLines.Sum(statement => 4 + statement.SourceLine.Length);
     }
 
-    public void AddLine(ParsedLine line)
+    private void AddLine(ParsedLine line)
     {
         if (line == null) return;
         ParsedLine programLine = GetProgramLine(line);

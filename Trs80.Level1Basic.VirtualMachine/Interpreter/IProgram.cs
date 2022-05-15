@@ -10,9 +10,9 @@ public interface IProgram
     Statement GetExecutableStatement(int lineNumber);
     List<ParsedLine> List();
     void Clear();
+    void Load(string path);
     void RemoveLine(ParsedLine line);
     int Size();
-    void AddLine(ParsedLine line);
     void ReplaceLine(ParsedLine line);
     Statement GetFirstStatement();
 }

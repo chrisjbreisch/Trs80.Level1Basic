@@ -98,7 +98,7 @@ internal static class Program
             writer.WriteLine();
         }
 
-        writer.WriteLine($"    public abstract T Accept<T>(IVisitor<T> visitor);");
+        writer.WriteLine("    public abstract T Accept<T>(IVisitor<T> visitor);");
         writer.WriteLine("}");
         WriteEnd(writer);
     }
@@ -144,7 +144,7 @@ internal static class Program
 
         writer.WriteLine($"namespace Trs80.Level1Basic.VirtualMachine.Parser.{baseName}s;");
         writer.WriteLine();
-        writer.WriteLine($"public interface IVisitor<T>");
+        writer.WriteLine("public interface IVisitor<T>");
         writer.WriteLine("{");
 
         foreach (string type in types)
@@ -185,7 +185,7 @@ internal static class Program
         writer.WriteLine("    }");
 
         writer.WriteLine();
-        writer.WriteLine($"    public override T Accept<T>(IVisitor<T> visitor)");
+        writer.WriteLine("    public override T Accept<T>(IVisitor<T> visitor)");
         writer.WriteLine("    {");
         writer.WriteLine($"        return visitor.Visit{className}{baseName}(this);");
         writer.WriteLine("    }");

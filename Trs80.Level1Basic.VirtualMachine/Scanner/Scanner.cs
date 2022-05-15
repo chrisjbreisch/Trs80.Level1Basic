@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Trs80.Level1Basic.VirtualMachine.Environment;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
-using Trs80.Level1Basic.VirtualMachine.Interpreter;
 
 namespace Trs80.Level1Basic.VirtualMachine.Scanner;
 

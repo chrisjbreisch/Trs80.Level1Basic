@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.IO;
 
 using Microsoft.Extensions.Logging;
@@ -38,6 +37,11 @@ public class Console : IConsole
         }
         set
         {
+            if (value > ScreenWidth)
+            {
+                value %= ScreenWidth;
+                CursorY++;
+            }
             SetCursorPosition(value, CursorY);
         }
     }
@@ -145,8 +149,8 @@ public class Console : IConsole
     private void Erase(int x, int y, int width, int height)
     {
         for (int xIndex = x; xIndex < x + width; xIndex++)
-        for (int yIndex = y; yIndex < y + height; yIndex++)
-            _screen[xIndex, yIndex] = false;
+            for (int yIndex = y; yIndex < y + height; yIndex++)
+                _screen[xIndex, yIndex] = false;
 
         _systemConsole.Erase(x, y, width, height);
     }
@@ -164,5 +168,20 @@ public class Console : IConsole
     public bool Point(int x, int y)
     {
         return _screen[x % ScreenPixelWidth, y % ScreenPixelHeight];
+    }
+    public string PadToPosition(int position)
+    {
+        if (CursorX > position) return "";
+
+        string padding = "".PadRight(position - CursorX, ' ');
+
+        return padding;
+    }
+
+    public string PadToQuadrant()
+    {
+        int nextPosition = (CursorX / 16 + 1) * 16;
+        string padding = "".PadRight(nextPosition - CursorX, ' ');
+        return padding;
     }
 }

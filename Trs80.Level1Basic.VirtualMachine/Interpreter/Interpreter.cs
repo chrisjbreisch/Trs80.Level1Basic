@@ -22,16 +22,13 @@ public class Interpreter : IInterpreter
 {
     private readonly IConsole _console;
     private readonly IEnvironment _environment;
-    public int CursorX { get; private set; }
-    public int CursorY { get; private set; }
-    public Statement CurrentStatement { get; private set; }
+    private readonly IMachine _machine;
 
-    public FunctionImplementations Functions { get; } = new();
-
-    public Interpreter(IConsole console, IEnvironment environment)
+    public Interpreter(IConsole console, IEnvironment environment, IMachine machine)
     {
         _console = console ?? throw new ArgumentNullException(nameof(console));
         _environment = environment ?? throw new ArgumentNullException(nameof(environment));
+        _machine = machine ?? throw new ArgumentNullException(nameof(machine));
     }
 
     public void Interpret(ParsedLine line)
@@ -68,18 +65,18 @@ public class Interpreter : IInterpreter
                 _environment.Assign(identifier.Name.Lexeme, value);
                 break;
             case Array array:
-            {
-                dynamic index = Evaluate(array.Index);
-                _environment.Assign(array.Name.Lexeme, index, value);
-                break;
-            }
+                {
+                    dynamic index = Evaluate(array.Index);
+                    _environment.Assign(array.Name.Lexeme, index, value);
+                    break;
+                }
             default:
                 throw new RuntimeExpressionException(null, "Expected variable.");
         }
 
         return value;
     }
-    
+
     public dynamic VisitBinaryExpression(Binary expression)
     {
         dynamic left = Evaluate(expression.Left);
@@ -107,10 +104,9 @@ public class Interpreter : IInterpreter
     {
         var arguments = expression.Arguments.Select(argument => Evaluate(argument)).ToList();
 
-        FunctionDefinition function = _environment
-            .GetFunctionDefinition(expression.Name.Lexeme).First(f => f.Arity == arguments.Count);
+        FunctionDefinition function = _environment.Function(expression.Name.Lexeme).First(f => f.Arity == arguments.Count);
 
-        return function.Call(this, arguments);
+        return function.Call(_machine, arguments);
     }
 
     public dynamic VisitGroupingExpression(Grouping expression)
@@ -196,7 +192,7 @@ public class Interpreter : IInterpreter
             case null:
                 return "";
             case float:
-                sb.Append(StringifyFloat(sb, value));
+                sb.Append(StringifyFloat(value));
                 break;
             default:
                 sb.Append(value.ToString());
@@ -206,11 +202,11 @@ public class Interpreter : IInterpreter
         if (value is (int or float))
             sb.Append(' ');
 
-        CursorX += sb.Length;
+        _environment.CursorX += sb.Length;
         return sb.ToString();
     }
 
-    private string StringifyFloat(StringBuilder sb, dynamic value)
+    private string StringifyFloat(dynamic value)
     {
         if (value == 0)
             return "0";
@@ -233,10 +229,10 @@ public class Interpreter : IInterpreter
 
         return value.ToString("######");
     }
-    
+
     public void Execute(Statement statement)
     {
-        CurrentStatement = statement;
+        _environment.CurrentStatement = statement;
         try
         {
             statement.Accept(this);
@@ -318,7 +314,7 @@ public class Interpreter : IInterpreter
 
     public Void VisitGosubStatement(Gosub statement)
     {
-        _environment.ProgramStack.Push(statement.Next ?? CurrentStatement.Next);
+        _environment.ProgramStack.Push(statement.Next ?? _environment.CurrentStatement.Next);
 
         Statement jumpToStatement = GetJumpToStatement(statement, statement.Location, "GOSUB");
         _environment.RunProgram(jumpToStatement, this);
@@ -357,7 +353,6 @@ public class Interpreter : IInterpreter
 
     public Void VisitInputStatement(Input statement)
     {
-        var sb = new StringBuilder();
         foreach (Expression expression in statement.Expressions)
             ProcessInputExpression(expression, statement.WriteNewline);
 
@@ -430,7 +425,7 @@ public class Interpreter : IInterpreter
 
         return null!;
     }
-    
+
     private ForCheckCondition GetCheckCondition(Next next)
     {
         ForCheckCondition checkCondition = null;
@@ -461,7 +456,7 @@ public class Interpreter : IInterpreter
         }
         return checkCondition;
     }
-    
+
     private dynamic IncrementIndexer(ForCheckCondition checkCondition)
     {
         dynamic indexerValue = Evaluate(checkCondition.Variable);
@@ -469,7 +464,7 @@ public class Interpreter : IInterpreter
         Assign(checkCondition.Variable, nextIndexerValue);
         return nextIndexerValue;
     }
-    
+
     private static bool ExitFor(ForCheckCondition checkCondition, dynamic nextIndexerValue)
     {
         if (checkCondition.Step > 0)
@@ -480,7 +475,7 @@ public class Interpreter : IInterpreter
 
         return false;
     }
-    
+
     public Void VisitOnStatement(On statement)
     {
         int selector = (int)Math.Floor((float)Evaluate(statement.Selector)) - 1;
@@ -512,7 +507,6 @@ public class Interpreter : IInterpreter
 
     public Void VisitPrintStatement(Print statement)
     {
-        var sb = new StringBuilder();
         if (statement.AtPosition != null) PrintAt(statement.AtPosition);
 
         if (statement.Expressions is { Count: > 0 })
@@ -525,8 +519,8 @@ public class Interpreter : IInterpreter
         if (!statement.WriteNewline) return null!;
 
         _console.WriteLine();
-        CursorX = 0;
-        CursorY++;
+        _environment.CursorX = 0;
+        _environment.CursorY++;
         return null!;
     }
 
@@ -538,24 +532,8 @@ public class Interpreter : IInterpreter
 
         _console.SetCursorPosition(column, row);
 
-        CursorX = column;
-        CursorY = row;
-    }
-
-    public string PadToPosition(int position)
-    {
-        if (CursorX > position) return "";
-
-        string padding = "".PadRight(position - CursorX, ' ');
-
-        return padding;
-    }
-
-    public string PadToQuadrant()
-    {
-        int nextPosition = (CursorX / 16 + 1) * 16;
-        string padding = "".PadRight(nextPosition - CursorX, ' ');
-        return padding;
+        _environment.CursorX = column;
+        _environment.CursorY = row;
     }
 
     public Void VisitReadStatement(Read statement)
@@ -599,8 +577,7 @@ public class Interpreter : IInterpreter
     public Void VisitRunStatement(Run statement)
     {
         _environment.InitializeProgram();
-        GetCursorPosition();
-
+        
         int lineNumber = GetStartingLineNumber(statement.StartAtLineNumber);
         if (lineNumber < 0)
             lineNumber = GetFirstLineNumber();
@@ -636,40 +613,13 @@ public class Interpreter : IInterpreter
 
         return null!;
     }
-    
+
     public Void VisitStopStatement(Stop statement)
     {
         _console.WriteLine($"BREAK AT {statement.LineNumber}");
         _environment.HaltRun();
 
         return null!;
-    }
-
-    public void Set(int x, int y)
-    {
-        _console.Set(x, y);
-    }
-
-    public void Reset(int x, int y)
-    {
-        _console.Reset(x, y);
-    }
-
-    public bool Point(int x, int y)
-    {
-        return _console.Point(x, y);
-    }
-
-    public int MemoryInUse()
-    {
-        return _environment.MemoryInUse();
-    }
-
-    private void GetCursorPosition()
-    {
-        (int left, int top) = _console.GetCursorPosition();
-        CursorX = left;
-        CursorY = top;
     }
 
     private int GetFirstLineNumber()
@@ -774,7 +724,6 @@ public class Interpreter : IInterpreter
 
     private void GetInputValue(Expression variable, bool writeNewline)
     {
-        //_console.Write(sb.ToString());
         _console.Write("?");
 
         if (writeNewline)
@@ -804,8 +753,6 @@ public class Interpreter : IInterpreter
                 GetInputValue(variable, writeNewline);
             }
         }
-
-        GetCursorPosition();
     }
 
     private Statement GetStatementByLineNumber(int lineNumber)

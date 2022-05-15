@@ -41,9 +41,10 @@ public class TestController : IDisposable
         IBuiltinFunctions builtins = new BuiltinFunctions();
         _scanner = new Scanner(builtins);
         _parser = new Parser(builtins);
-        IProgram program = new Program();
-        IEnvironment environment = new Environment(Console, _parser, _scanner, builtins, program);
-        _interpreter = new Interpreter(Console, environment);
+        IProgram program = new Program(_scanner, _parser);
+        IEnvironment environment = new Environment(Console, program, builtins);
+        IMachine machine = new Machine(environment, Console);
+        _interpreter = new Interpreter(Console, environment, machine);
     }
 
     public void ExecuteLine(string input)

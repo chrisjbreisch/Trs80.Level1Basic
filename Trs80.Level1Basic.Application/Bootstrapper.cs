@@ -230,7 +230,7 @@ public sealed class Bootstrapper : IDisposable
         _services
             .AddSingleton<IScanner, Scanner>()
             .AddSingleton<IParser, Parser>()
-            .AddSingleton<IBuiltinFunctions, BuiltinFunctions>()
+            .AddSingleton<IMachine, Machine>()
             .AddSingleton<IInterpreter, Interpreter>()
             .AddSingleton<IEnvironment, Environment>()
             .AddSingleton<IConsole, Console.Console>()

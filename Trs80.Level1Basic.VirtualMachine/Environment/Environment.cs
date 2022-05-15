@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using Trs80.Level1Basic.Console;
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
-using Trs80.Level1Basic.VirtualMachine.Scanner;
 
 namespace Trs80.Level1Basic.VirtualMachine.Environment;
 
@@ -14,23 +14,22 @@ public class Environment : IEnvironment
 {
     private readonly GlobalVariables _globals = new();
     private readonly IConsole _console;
-    private readonly IParser _parser;
-    private readonly IScanner _scanner;
     private readonly IBuiltinFunctions _builtins;
 
+    public int CursorX { get; set; }
+    public int CursorY { get; set; }
+    public Statement CurrentStatement { get; set; }
     public Stack<ForCheckCondition> ForChecks { get; } = new();
     public Stack<Statement> ProgramStack { get; } = new();
     public DataElements Data { get; } = new();
     public IProgram Program { get; }
     public bool ExecutionHalted { get; private set; }
 
-    public Environment(IConsole console, IParser parser, IScanner scanner, IBuiltinFunctions builtins, IProgram program)
+    public Environment(IConsole console, IProgram program, IBuiltinFunctions builtins)
     {
         _console = console ?? throw new ArgumentNullException(nameof(console));
-        _parser = parser ?? throw new ArgumentNullException(nameof(parser));
-        _builtins = builtins ?? throw new ArgumentNullException(nameof(builtins));
-        _scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
         Program = program ?? throw new ArgumentNullException(nameof(program));
+        _builtins = builtins ?? throw new ArgumentNullException(nameof(builtins));
 
         System.Console.CancelKeyPress += delegate (object _, ConsoleCancelEventArgs e)
         {
@@ -42,7 +41,17 @@ public class Environment : IEnvironment
     public void InitializeProgram()
     {
         Program.Initialize();
+        GetCursorPosition();
     }
+
+
+    private void GetCursorPosition()
+    {
+        (int left, int top) = _console.GetCursorPosition();
+        CursorX = left;
+        CursorY = top;
+    }
+
 
     public dynamic Assign(string name, dynamic value)
     {
@@ -59,23 +68,16 @@ public class Environment : IEnvironment
         return _globals.Get(name);
     }
 
+    public List<FunctionDefinition> Function(string name)
+    {
+        return _builtins.Get(name);
+    }
+
     public bool Exists(string name)
     {
         return _globals.Exists(name);
     }
-
-    public List<FunctionDefinition> GetFunctionDefinition(string name)
-    {
-        try
-        {
-            return _builtins.Get(name);
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
+    
     public void ListProgram(int lineNumber)
     {
         int index = 0;
@@ -121,13 +123,7 @@ public class Environment : IEnvironment
 
     public void LoadProgram(string path)
     {
-        using var reader = new StreamReader(path);
-        while (!reader.EndOfStream)
-        {
-            List<Token> tokens = _scanner.ScanTokens(reader.ReadLine());
-            ParsedLine line = _parser.Parse(tokens);
-            Program.AddLine(line);
-        }
+        Program.Load(path);
     }
 
     public void NewProgram()

@@ -10,11 +10,16 @@ public interface IEnvironment
     Stack<Statement> ProgramStack { get; }
     DataElements Data { get; }
     IProgram Program { get; }
+    int CursorX { get; set;  }
+    int CursorY { get; set;  }
+    Statement CurrentStatement { get; set; }
+
     dynamic Assign(string name, dynamic value);
     dynamic Assign(string name, int index, dynamic value);
     dynamic Get(string name);
+    dynamic Get(string name, int index);
+    List<FunctionDefinition> Function(string name);
     bool Exists(string name);
-    List<FunctionDefinition> GetFunctionDefinition(string name);
     void InitializeProgram();
     void ListProgram(int lineNumber);
     void SaveProgram(string path);
@@ -28,5 +33,4 @@ public interface IEnvironment
     void LoadData(IInterpreter interpreter);
     Statement GetNextStatement();
     void Initialize();
-    dynamic Get(string name, int index);
 }

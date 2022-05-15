@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Trs80.Level1Basic.VirtualMachine.Environment;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
-using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
@@ -336,7 +336,8 @@ public class Parser : IParser
             throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
                 "Expected 'THEN' or 'GOTO' before line number in 'IF' statement.");
 
-        Statement thenBranch = current.Type switch {
+        Statement thenBranch = current.Type switch
+        {
             TokenType.Gosub => new Gosub(Expression()),
             TokenType.Goto => new Goto(Expression()),
             _ => Peek().Type == TokenType.Number ? new Goto(Expression()) : Statement(lineNumber)

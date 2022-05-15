@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using FluentAssertions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Trs80.Level1Basic.VirtualMachine.Interpreter;
-using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
+
+using Trs80.Level1Basic.VirtualMachine.Environment;
 using Trs80.Level1Basic.VirtualMachine.Parser;
+using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
 
@@ -19,6 +20,7 @@ public class ParserTest
     public void Parser_Can_Parse_A_Simple_Line_Correctly()
     {
         string input = "10 print \"Hello, World!\"";
+
         IBuiltinFunctions builtins = new BuiltinFunctions();
         IScanner scanner = new Scanner(builtins);
         IParser parser = new Parser(builtins);
