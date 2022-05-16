@@ -17,6 +17,10 @@ public class LogCommandDecorator<TPo> : ICommand<TPo>
 
         _logger = logFactory.CreateLogger<LogCommandDecorator<TPo>>();
     }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", 
+        "CA2254:Template should be a static expression", 
+        Justification = "Minimal performance benefit not worth the effort.")]
     public void Execute(TPo parameterObject)
     {
         try

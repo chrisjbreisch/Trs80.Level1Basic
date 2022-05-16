@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Trs80.Level1Basic.Common\Trs80.Level1Basic.Common.csproj" />
     <ProjectReference Include="..\Trs80.Level1Basic.HostMachine\Trs80.Level1Basic.HostMachine.csproj" />
   </ItemGroup>
 
