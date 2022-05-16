@@ -1,8 +1,8 @@
-﻿using Trs80.Level1Basic.Console;
+﻿using Trs80.Level1Basic.HostMachine;
 
 namespace Trs80.Level1Basic.TestUtilities
 {
-    public class FakeSystemConsole : ISystemConsole
+    public class FakeHost : IHost
     {
         private const int ScreenWidth = 64;
         private const int ScreenHeight = 16;
@@ -12,7 +12,7 @@ namespace Trs80.Level1Basic.TestUtilities
         private int _cursorX;
         private int _cursorY;
 
-        public FakeSystemConsole()
+        public FakeHost()
         {
             ClearScreen();
         }
@@ -29,12 +29,12 @@ namespace Trs80.Level1Basic.TestUtilities
             // do nothing
         }
 
-        public ConsoleFont GetCurrentConsoleFont()
+        public HostFont GetCurrentConsoleFont()
         {
-            return new ConsoleFont { FontSize = 12, FontName = "Courier New" };
+            return new HostFont { FontSize = 12, FontName = "Courier New" };
         }
 
-        public void SetCurrentConsoleFont(ConsoleFont font)
+        public void SetCurrentConsoleFont(HostFont font)
         {
             // do nothing
         }
@@ -84,9 +84,9 @@ namespace Trs80.Level1Basic.TestUtilities
                     _screen[xIndex, yIndex] = false;
         }
 
-        public TextWriter Out { get; set; } = System.Console.Out;
-        public TextReader In { get; set; } = System.Console.In;
-        public TextWriter Error { get; set; } = System.Console.Error;
+        public TextWriter Out { get; set; } = Console.Out;
+        public TextReader In { get; set; } = Console.In;
+        public TextWriter Error { get; set; } = Console.Error;
         public void WriteLine(string text = "")
         {
             Out.WriteLine(text);
@@ -109,6 +109,16 @@ namespace Trs80.Level1Basic.TestUtilities
         public string ReadLine()
         {
             return In.ReadLine()!;
+        }
+
+        public string GetFileNameForSave()
+        {
+            return string.Empty;
+        }
+
+        public string GetFileNameForLoad()
+        {
+            return string.Empty;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Trs80.Level1Basic.CommandModels;
 
-public class SetupConsoleModel
+public class ShutdownTrs80Model
 {
 
 }

@@ -12,16 +12,16 @@ public interface ISetupConsoleStep : IStepBody
 
 public class SetupConsoleStep : StepBody, ISetupConsoleStep
 {
-    private readonly ICommand<SetupConsoleModel> _command;
+    private readonly ICommand<SetupTrs80Model> _command;
 
-    public SetupConsoleStep(ICommand<SetupConsoleModel> command)
+    public SetupConsoleStep(ICommand<SetupTrs80Model> command)
     {
         _command = command ?? throw new ArgumentNullException(nameof(command));
     }
 
     public override ExecutionResult Run(IStepExecutionContext context)
     {
-        _command.Execute(new SetupConsoleModel());
+        _command.Execute(new SetupTrs80Model());
 
         return ExecutionResult.Next();
     }

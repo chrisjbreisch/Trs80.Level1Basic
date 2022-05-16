@@ -3,36 +3,33 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using Trs80.Level1Basic.Console;
+using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
-using Trs80.Level1Basic.VirtualMachine.Scanner;
 
-namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
+namespace Trs80.Level1Basic.VirtualMachine.Environment;
 
-public class Machine : IMachine
+public class Environment : IEnvironment
 {
     private readonly GlobalVariables _globals = new();
-    private readonly IConsole _console;
-    private readonly IParser _parser;
-    private readonly IScanner _scanner;
+    private readonly ITrs80 _trs80;
     private readonly IBuiltinFunctions _builtins;
 
+    public int CursorX { get; set; }
+    public int CursorY { get; set; }
     public Stack<ForCheckCondition> ForChecks { get; } = new();
     public Stack<Statement> ProgramStack { get; } = new();
     public DataElements Data { get; } = new();
     public IProgram Program { get; }
     public bool ExecutionHalted { get; private set; }
 
-    public Machine(IConsole console, IParser parser, IScanner scanner, IBuiltinFunctions builtins, IProgram program)
+    public Environment(ITrs80 trs80, IProgram program, IBuiltinFunctions builtins)
     {
-        _console = console ?? throw new ArgumentNullException(nameof(console));
-        _parser = parser ?? throw new ArgumentNullException(nameof(parser));
-        _builtins = builtins ?? throw new ArgumentNullException(nameof(builtins));
-        _scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
+        _trs80 = trs80 ?? throw new ArgumentNullException(nameof(trs80));
         Program = program ?? throw new ArgumentNullException(nameof(program));
+        _builtins = builtins ?? throw new ArgumentNullException(nameof(builtins));
 
-        System.Console.CancelKeyPress += delegate (object _, ConsoleCancelEventArgs e)
+        Console.CancelKeyPress += delegate (object _, ConsoleCancelEventArgs e)
         {
             e.Cancel = true;
             ExecutionHalted = true;
@@ -42,58 +39,61 @@ public class Machine : IMachine
     public void InitializeProgram()
     {
         Program.Initialize();
+        GetCursorPosition();
     }
 
-    public dynamic AssignVariable(string name, dynamic value)
+
+    private void GetCursorPosition()
+    {
+        (int left, int top) = _trs80.GetCursorPosition();
+        CursorX = left;
+        CursorY = top;
+    }
+
+
+    public dynamic Assign(string name, dynamic value)
     {
         return _globals.Assign(name, value);
     }
 
-    public dynamic AssignArray(string name, int index, dynamic value)
+    public dynamic Assign(string name, int index, dynamic value)
     {
         return _globals.AssignArray(name, index, value);
     }
 
-    public dynamic GetVariable(string name)
+    public dynamic Get(string name)
     {
         return _globals.Get(name);
     }
 
-    public bool VariableExists(string name)
+    public List<FunctionDefinition> Function(string name)
+    {
+        return _builtins.Get(name);
+    }
+
+    public bool Exists(string name)
     {
         return _globals.Exists(name);
     }
-
-    public List<FunctionDefinition> GetFunctionDefinition(string name)
-    {
-        try
-        {
-            return _builtins.Get(name);
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
+    
     public void ListProgram(int lineNumber)
     {
         int index = 0;
         bool exitList = false;
         foreach (ParsedLine line in Program.List().Where(s => s.LineNumber >= lineNumber))
         {
-            _console.WriteLine(line.LineNumber >= 0 ? $" {line.LineNumber}  {line.SourceLine}" : $"{line.SourceLine}");
+            _trs80.WriteLine(line.LineNumber >= 0 ? $" {line.LineNumber}  {line.SourceLine}" : $"{line.SourceLine}");
             index++;
             if (index < 12) continue;
 
             bool readAnotherKey = true;
             while (readAnotherKey)
             {
-                ConsoleKeyInfo key = _console.ReadKey();
+                ConsoleKeyInfo key = _trs80.ReadKey();
 
                 if (key.Key == ConsoleKey.Enter)
                 {
-                    _console.WriteLine();
+                    _trs80.WriteLine();
                     exitList = true;
                     break;
                 }
@@ -109,25 +109,19 @@ public class Machine : IMachine
 
     public void SaveProgram(string path)
     {
-        TextWriter oldWriter = _console.Out;
+        TextWriter oldWriter = _trs80.Out;
         using var newWriter = new StreamWriter(path);
-        _console.Out = newWriter;
+        _trs80.Out = newWriter;
 
         foreach (ParsedLine line in Program.List())
-            _console.WriteLine(line.LineNumber >= 0 ? $" {line.LineNumber}  {line.SourceLine}" : $"{line.SourceLine}");
+            _trs80.WriteLine(line.LineNumber >= 0 ? $" {line.LineNumber}  {line.SourceLine}" : $"{line.SourceLine}");
 
-        _console.Out = oldWriter;
+        _trs80.Out = oldWriter;
     }
 
     public void LoadProgram(string path)
     {
-        using var reader = new StreamReader(path);
-        while (!reader.EndOfStream)
-        {
-            List<Token> tokens = _scanner.ScanTokens(reader.ReadLine());
-            ParsedLine line = _parser.Parse(tokens);
-            Program.AddLine(line);
-        }
+        Program.Load(path);
     }
 
     public void NewProgram()
@@ -188,7 +182,7 @@ public class Machine : IMachine
         Data.MoveFirst();
     }
 
-    public dynamic GetArrayValue(string name, int index)
+    public dynamic Get(string name, int index)
     {
         return _globals.GetArrayValue(name, index);
     }

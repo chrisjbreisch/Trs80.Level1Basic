@@ -1,12 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Windows.Forms;
 
-namespace Trs80.Level1Basic.Console;
+namespace Trs80.Level1Basic.HostMachine;
 
 [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 public struct FontInfo
@@ -30,41 +32,21 @@ public struct Rect
     public int Bottom;      // y position of lower-right corner
 }
 
-public interface ISystemConsole
-{
-    void EnableVirtualTerminal();
-    ConsoleFont GetCurrentConsoleFont();
-    void SetCurrentConsoleFont(ConsoleFont font);
-    (int Left, int Top) GetCursorPosition();
-    void SetCursorPosition(int column, int row);
-    void Clear();
-    ConsoleKeyInfo ReadKey();
-    void SetWindowSize(int width, int height);
-    void SetBufferSize(int width, int height);
-    void Fill(int x, int y, int width, int height);
-    void Erase(int x, int y, int width, int height);
-    TextWriter Out { get; set; }
-    TextReader In { get; set; }
-    TextWriter Error { get; set; }
-    void WriteLine(string text = "");
-    void Write(string text);
-    void Write(char c);
-    string ReadLine();
-}
 
-public class SystemConsole : ISystemConsole
+
+public class Host : IHost, IDisposable 
 {
     // https://www.pinvoke.net/default.aspx/user32/FindWindow.html
     [DllImport("user32.dll", EntryPoint = "FindWindow", SetLastError = true, CharSet = CharSet.Unicode)]
-    private static extern IntPtr FindWindowFromWindowName(IntPtr zeroOnly, string lpWindowName);
+    private static extern nint FindWindowFromWindowName(nint zeroOnly, string lpWindowName);
 
     // https://www.pinvoke.net/default.aspx/user32/GetClientRect.html
     [DllImport("user32.dll")]
-    private static extern bool GetClientRect(IntPtr hWnd, out Rect lpRect);
+    private static extern bool GetClientRect(nint hWnd, out Rect lpRect);
 
     // https://www.pinvoke.net/default.aspx/kernel32/GetConsoleMode.html
     [DllImport("kernel32.dll", SetLastError = true)]
-    private static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+    private static extern bool GetConsoleMode(nint hConsoleHandle, out uint lpMode);
 
     // https://www.pinvoke.net/default.aspx/kernel32/GetConsoleTitle.html
     [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
@@ -73,40 +55,46 @@ public class SystemConsole : ISystemConsole
     // https://www.pinvoke.net/default.aspx/kernel32/GetCurrentConsoleFontEx.html
     [return: MarshalAs(UnmanagedType.Bool)]
     [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-    private static extern bool GetCurrentConsoleFontEx(IntPtr hConsoleOutput, bool maximumWindow, ref FontInfo consoleCurrentFontEx);
+    private static extern bool GetCurrentConsoleFontEx(nint hConsoleOutput, bool maximumWindow, ref FontInfo consoleCurrentFontEx);
 
     // https://www.pinvoke.net/default.aspx/kernel32/GetStdHandle.html
     [DllImport("kernel32.dll", SetLastError = true)]
-    private static extern IntPtr GetStdHandle(int nStdHandle);
+    private static extern nint GetStdHandle(int nStdHandle);
 
     // https://www.pinvoke.net/default.aspx/kernel32/SetConsoleMode.html
     [DllImport("kernel32.dll", SetLastError = true)]
-    private static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
+    private static extern bool SetConsoleMode(nint hConsoleHandle, uint dwMode);
 
     // https://www.pinvoke.net/default.aspx/kernel32/SetConsoleTitle.html
     [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
     private static extern bool SetConsoleTitle(string lpConsoleTitle);
 
+    // https://www.pinvoke.net/default.aspx/kernel32/SetCurrentConsoleFontEx.html
     [return: MarshalAs(UnmanagedType.Bool)]
     [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-    private static extern bool SetCurrentConsoleFontEx(IntPtr hConsoleOutput, bool maximumWindow, ref FontInfo consoleCurrentFontEx);
+    private static extern bool SetCurrentConsoleFontEx(nint hConsoleOutput, bool maximumWindow, ref FontInfo consoleCurrentFontEx);
 
     private const int ScreenWidth = 64;
     private const int ScreenHeight = 16;
     private const int ScreenPixelWidth = 2 * ScreenWidth;
     private const int ScreenPixelHeight = 3 * ScreenHeight;
 
-    private readonly IntPtr _hwnd;
-    private readonly IntPtr _outputHandle;
-    private readonly Graphics _graphics;
+    private nint _hwnd;
+    private nint _outputHandle;
+    private Graphics _graphics;
     private double _pixelWidth;
     private double _pixelHeight;
 
-    public TextWriter Out { get; set; } = System.Console.Out;
-    public TextReader In { get; set; } = System.Console.In;
-    public TextWriter Error { get; set; } = System.Console.Error;
+    public TextWriter Out { get; set; } = Console.Out;
+    public TextReader In { get; set; } = Console.In;
+    public TextWriter Error { get; set; } = Console.Error;
 
-    public SystemConsole()
+    public Host()
+    {
+        InitializeWindow();
+    }
+
+    private void InitializeWindow()
     {
         _hwnd = GetConsoleWindowHandle();
         _outputHandle = GetStdHandle(StandardOutputHandle);
@@ -118,8 +106,6 @@ public class SystemConsole : ISystemConsole
 
     public void Write(string text) => Out.Write(text);
 
-    public void Write(char c) => Out.Write(c);
-
     public string ReadLine() => In.ReadLine();
 
 
@@ -130,7 +116,7 @@ public class SystemConsole : ISystemConsole
         _pixelWidth = clientRect.Right / (double)ScreenPixelWidth;
     }
 
-    private static IntPtr GetConsoleWindowHandle()
+    private static nint GetConsoleWindowHandle()
     {
         var sb = new StringBuilder(1024);
         _ = GetConsoleTitle(sb, 1024);
@@ -140,7 +126,7 @@ public class SystemConsole : ISystemConsole
         string newTitle = originalTitle + Environment.ProcessId;
         SetConsoleTitle(newTitle);
 
-        IntPtr hwnd;
+        nint hwnd;
         do
             hwnd = FindWindowFromWindowName(IntPtr.Zero, newTitle);
         while (!IsValidHwnd(hwnd));
@@ -150,7 +136,7 @@ public class SystemConsole : ISystemConsole
         return hwnd;
     }
 
-    private static bool IsValidHwnd(IntPtr hwnd)
+    private static bool IsValidHwnd(nint hwnd)
     {
         if (hwnd != IntPtr.Zero) return true;
 
@@ -185,7 +171,7 @@ public class SystemConsole : ISystemConsole
     }
 
 
-    public ConsoleFont GetCurrentConsoleFont()
+    public HostFont GetCurrentConsoleFont()
     {
         var font = new FontInfo
         {
@@ -193,13 +179,13 @@ public class SystemConsole : ISystemConsole
         };
 
         if (GetCurrentConsoleFontEx(_outputHandle, false, ref font))
-            return new ConsoleFont { FontName = font.FontName, FontSize = font.FontSize };
+            return new HostFont { FontName = font.FontName, FontSize = font.FontSize };
 
         int er = Marshal.GetLastWin32Error();
         throw new Win32Exception(er);
     }
 
-    public void SetCurrentConsoleFont(ConsoleFont font)
+    public void SetCurrentConsoleFont(HostFont font)
     {
         var before = new FontInfo
         {
@@ -223,6 +209,7 @@ public class SystemConsole : ISystemConsole
                 int ex = Marshal.GetLastWin32Error();
                 throw new Win32Exception(ex);
             }
+            InitializeWindow();
         }
         else
         {
@@ -231,7 +218,7 @@ public class SystemConsole : ISystemConsole
         }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Only used on Windows")]
+    [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Only used on Windows")]
     public Graphics GetGraphics()
     {
         return Graphics.FromHwnd(_hwnd);
@@ -239,36 +226,37 @@ public class SystemConsole : ISystemConsole
 
     public (int Left, int Top) GetCursorPosition()
     {
-        return System.Console.GetCursorPosition();
+        return Console.GetCursorPosition();
     }
 
     public void SetCursorPosition(int column, int row)
     {
-        System.Console.SetCursorPosition(column, row);
+        Console.SetCursorPosition(column, row);
     }
 
     public void Clear()
     {
-        System.Console.Clear();
+        Console.Clear();
     }
 
     public ConsoleKeyInfo ReadKey()
     {
-        return System.Console.ReadKey();
+        return Console.ReadKey();
     }
 
     public void SetWindowSize(int width, int height)
     {
         if (!OperatingSystem.IsWindows()) return;
 
-        System.Console.SetWindowSize(width, height);
-        SetPixelSizes();
+        Console.SetWindowSize(width, height);
+        //SetPixelSizes();
+        InitializeWindow();
     }
 
     public void SetBufferSize(int width, int height)
     {
         if (OperatingSystem.IsWindows())
-            System.Console.SetBufferSize(width, height);
+            Console.SetBufferSize(width, height);
     }
 
     public void Fill(int x, int y, int width, int height)
@@ -296,5 +284,61 @@ public class SystemConsole : ISystemConsole
             (int)Math.Round(width * _pixelWidth + .5),
             (int)Math.Round(height * _pixelHeight + .5)
         );
+    }
+
+
+    public const string Filter = "BASIC files (*.bas)|*.bas|All files (*.*)|*.*";
+    public const string Title = "TRS-80 Level I BASIC File";
+
+    public string GetFileNameForSave()
+    {
+        var dialog = new SaveFileDialog
+        {
+            AddExtension = true,
+            DefaultExt = "bas",
+            Filter = Filter,
+            Title = $"Save {Title}",
+            OverwritePrompt = true
+        };
+
+        return dialog.ShowDialog() == DialogResult.OK ? dialog.FileName : null;
+    }
+
+    public string GetFileNameForLoad()
+    {
+        var dialog = new OpenFileDialog
+        {
+            DefaultExt = "bas",
+            Filter = Filter,
+            Title = $"Open {Title}",
+            CheckFileExists = true,
+            Multiselect = false,
+        };
+
+        return dialog.ShowDialog() == DialogResult.OK ? dialog.FileName : null;
+    }
+
+
+    private void Dispose(bool disposing)
+    {
+        if (!disposing) return;
+
+        if (OperatingSystem.IsWindows())
+            _graphics?.Dispose();
+
+        Out?.Dispose();
+        In?.Dispose();
+        Error?.Dispose();
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    ~Host()
+    {
+        Dispose(false);
     }
 }

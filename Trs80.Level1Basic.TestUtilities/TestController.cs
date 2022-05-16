@@ -1,10 +1,14 @@
 ﻿using Microsoft.Extensions.Logging;
+
 using Trs80.Level1Basic.Application;
 using Trs80.Level1Basic.Common;
-using Trs80.Level1Basic.Console;
+using Trs80.Level1Basic.HostMachine;
+using Trs80.Level1Basic.VirtualMachine.Environment;
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
+
+using Environment = Trs80.Level1Basic.VirtualMachine.Environment.Environment;
 
 namespace Trs80.Level1Basic.TestUtilities;
 
@@ -17,12 +21,12 @@ public class TestController : IDisposable
     private readonly IInterpreter _interpreter;
     private readonly StringWriter _output = new();
 
-    public IConsole Console { get; set; }
+    public ITrs80 Trs80 { get; set; }
 
     public TextReader Input
     {
-        get { return Console.In; }
-        set { Console.In = value; }
+        get { return Trs80.In; }
+        set { Trs80.In = value; }
     }
 
     public TestController()
@@ -31,17 +35,17 @@ public class TestController : IDisposable
         IAppSettings? appSettings = bootstrapper.AppSettings;
         ILoggerFactory? loggerFactory = bootstrapper.LogFactory;
 
-        Console = new Console.Console(appSettings, loggerFactory, new FakeSystemConsole())
-        {
-            Out = _output
-        };
-
         IBuiltinFunctions builtins = new BuiltinFunctions();
         _scanner = new Scanner(builtins);
         _parser = new Parser(builtins);
-        IProgram program = new Program();
-        IMachine machine = new Machine(Console, _parser, _scanner, builtins, program);
-        _interpreter = new Interpreter(Console, machine);
+        IProgram program = new Program(_scanner, _parser);
+        IHost host = new FakeHost();
+        Trs80 = new VirtualMachine.Environment.Trs80(program, appSettings, loggerFactory, host)
+        {
+            Out = _output
+        };
+        IEnvironment environment = new Environment(Trs80, program, builtins);
+        _interpreter = new Interpreter(host, Trs80, environment, program);
     }
 
     public void ExecuteLine(string input)

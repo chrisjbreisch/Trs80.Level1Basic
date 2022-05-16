@@ -12,16 +12,16 @@ public interface IShutdownConsoleStep : IStepBody
 
 public class ShutdownConsoleStep : StepBody, IShutdownConsoleStep
 {
-    private readonly ICommand<ShutdownConsoleModel> _command;
+    private readonly ICommand<ShutdownTrs80Model> _command;
 
-    public ShutdownConsoleStep(ICommand<ShutdownConsoleModel> inboundCommand)
+    public ShutdownConsoleStep(ICommand<ShutdownTrs80Model> inboundCommand)
     {
         _command = inboundCommand ?? throw new ArgumentNullException(nameof(inboundCommand));
     }
 
     public override ExecutionResult Run(IStepExecutionContext context)
     {
-        _command.Execute(new ShutdownConsoleModel());
+        _command.Execute(new ShutdownTrs80Model());
 
         return ExecutionResult.Next();
     }

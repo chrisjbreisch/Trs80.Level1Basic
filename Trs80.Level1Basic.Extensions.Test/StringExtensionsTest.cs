@@ -11,6 +11,7 @@ namespace Trs80.Level1Basic.Extensions.Test
         private const string testOneWordString = "fOUr";
         private const string testUpperOneLetterString = "F";
         private const string testLowerOneLetterString = "f";
+        private const string testCamelCaseString = "fourScoreAndSevenYearsAgo";
 
         [TestMethod]
         public void Can_Convert_String_To_Pascal_Case()
@@ -150,6 +151,21 @@ namespace Trs80.Level1Basic.Extensions.Test
         {
             string? result = testLowerOneLetterString.ToKebabCase();
             result.Should().Be("f");
+        }
+
+        [TestMethod]
+        public void Can_Separate_Camel_Case_String()
+        {
+            string? result = testCamelCaseString.SeparateWordsByCase('_');
+            result.Should().Be("four_Score_And_Seven_Years_Ago");
+        }
+
+        [TestMethod]
+        public void Can_Convert_Separated_String_To_Pascal_Case()
+        {
+            string? result = testCamelCaseString.SeparateWordsByCase('_').ToPascalCase();
+            result.Should().Be("FourScoreAndSevenYearsAgo");
+
         }
     }
 }

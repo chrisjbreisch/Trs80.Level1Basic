@@ -14,7 +14,8 @@ using Trs80.Level1Basic.Command;
 using Trs80.Level1Basic.Command.Commands;
 using Trs80.Level1Basic.CommandModels;
 using Trs80.Level1Basic.Common;
-using Trs80.Level1Basic.Console;
+using Trs80.Level1Basic.HostMachine;
+using Trs80.Level1Basic.VirtualMachine.Environment;
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
@@ -23,6 +24,8 @@ using Trs80.Level1Basic.Workflow;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 using WorkflowCore.Services.DefinitionStorage;
+
+using Environment = Trs80.Level1Basic.VirtualMachine.Environment.Environment;
 
 namespace Trs80.Level1Basic.Application;
 
@@ -179,12 +182,12 @@ public sealed class Bootstrapper : IDisposable
     private void ConfigureDecorators()
     {
         _services
-            .Decorate<ICommand<SetupConsoleModel>, LogCommandDecorator<SetupConsoleModel>>()
+            .Decorate<ICommand<SetupTrs80Model>, LogCommandDecorator<SetupTrs80Model>>()
             .Decorate<ICommand<InputModel>, LogCommandDecorator<InputModel>>()
             .Decorate<ICommand<ScanModel>, LogCommandDecorator<ScanModel>>()
             .Decorate<ICommand<ParseModel>, LogCommandDecorator<ParseModel>>()
             .Decorate<ICommand<InterpretModel>, LogCommandDecorator<InterpretModel>>()
-            .Decorate<ICommand<ShutdownConsoleModel>, LogCommandDecorator<ShutdownConsoleModel>>();
+            .Decorate<ICommand<ShutdownTrs80Model>, LogCommandDecorator<ShutdownTrs80Model>>();
     }
 
     private void ConfigureCommands()
@@ -227,11 +230,12 @@ public sealed class Bootstrapper : IDisposable
         _services
             .AddSingleton<IScanner, Scanner>()
             .AddSingleton<IParser, Parser>()
-            .AddSingleton<IBuiltinFunctions, BuiltinFunctions>()
+            .AddSingleton<ITrs80, VirtualMachine.Environment.Trs80>()
             .AddSingleton<IInterpreter, Interpreter>()
-            .AddSingleton<IMachine, Machine>()
-            .AddSingleton<IConsole, Console.Console>()
-            .AddSingleton<IConsoleDataModel, ConsoleDataModel>()
+            .AddSingleton<IEnvironment, Environment>()
+            .AddSingleton<ITrs80DataModel, Trs80DataModel>()
+            .AddSingleton<IHost, Host>()
+            .AddSingleton<IBuiltinFunctions, BuiltinFunctions>()
             .AddSingleton<IProgram, Program>()
             .AddSingleton<IAppSettings, AppSettings>()
             .BuildServiceProvider();

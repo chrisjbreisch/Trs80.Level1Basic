@@ -5,6 +5,8 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <RootNamespace>Trs80.Level1Basic</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <ItemGroup>

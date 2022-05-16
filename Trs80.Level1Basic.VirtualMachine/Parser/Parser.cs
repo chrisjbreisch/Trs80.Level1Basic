@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Trs80.Level1Basic.VirtualMachine.Environment;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
-using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
+
+using Array = Trs80.Level1Basic.VirtualMachine.Parser.Expressions.Array;
 
 namespace Trs80.Level1Basic.VirtualMachine.Parser;
 
@@ -334,18 +336,19 @@ public class Parser : IParser
             throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
                 "Expected 'THEN' or 'GOTO' before line number in 'IF' statement.");
 
-        Statement thenStatement = current.Type switch {
+        Statement thenBranch = current.Type switch
+        {
             TokenType.Gosub => new Gosub(Expression()),
             TokenType.Goto => new Goto(Expression()),
             _ => Peek().Type == TokenType.Number ? new Goto(Expression()) : Statement(lineNumber)
         };
 
-        Statement savedThenStatement = thenStatement;
+        Statement savedThenStatement = thenBranch;
 
         while (Match(TokenType.Colon))
         {
-            thenStatement.Next = Statement(lineNumber);
-            thenStatement = thenStatement.Next;
+            thenBranch.Next = Statement(lineNumber);
+            thenBranch = thenBranch.Next;
         }
 
         return StatementWrapper(new If(condition, savedThenStatement), lineNumber);
@@ -426,7 +429,7 @@ public class Parser : IParser
 
         Expression index = Expression();
         Consume(TokenType.RightParen, "Expected ')' after array index");
-        return new BasicArray(peek, index);
+        return new Array(peek, index);
     }
 
     private bool IsAtStatementEnd()
@@ -587,7 +590,7 @@ public class Parser : IParser
         Consume(TokenType.RightParen,
             "Expected ')' after arguments");
 
-        return new BasicArray(name, index);
+        return new Array(name, index);
     }
 
     private void CheckArgs(Token name, List<Expression> arguments)
