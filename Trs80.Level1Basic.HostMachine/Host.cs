@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 
-namespace Trs80.Level1Basic.Console;
+namespace Trs80.Level1Basic.HostMachine;
 
 [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 public struct FontInfo
@@ -30,7 +30,7 @@ public struct Rect
     public int Bottom;      // y position of lower-right corner
 }
 
-public interface ISystemConsole
+public interface IHost
 {
     void EnableVirtualTerminal();
     ConsoleFont GetCurrentConsoleFont();
@@ -52,7 +52,7 @@ public interface ISystemConsole
     string ReadLine();
 }
 
-public class SystemConsole : ISystemConsole, IDisposable 
+public class Host : IHost, IDisposable 
 {
     // https://www.pinvoke.net/default.aspx/user32/FindWindow.html
     [DllImport("user32.dll", EntryPoint = "FindWindow", SetLastError = true, CharSet = CharSet.Unicode)]
@@ -106,7 +106,7 @@ public class SystemConsole : ISystemConsole, IDisposable
     public TextReader In { get; set; } = System.Console.In;
     public TextWriter Error { get; set; } = System.Console.Error;
 
-    public SystemConsole()
+    public Host()
     {
         _hwnd = GetConsoleWindowHandle();
         _outputHandle = GetStdHandle(StandardOutputHandle);
@@ -317,7 +317,7 @@ public class SystemConsole : ISystemConsole, IDisposable
         GC.SuppressFinalize(this);
     }
 
-    ~SystemConsole()
+    ~Host()
     {
         Dispose(false);
     }

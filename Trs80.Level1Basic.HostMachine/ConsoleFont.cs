@@ -1,4 +1,4 @@
-﻿namespace Trs80.Level1Basic.Console;
+﻿namespace Trs80.Level1Basic.HostMachine;
 
 public class ConsoleFont
 {

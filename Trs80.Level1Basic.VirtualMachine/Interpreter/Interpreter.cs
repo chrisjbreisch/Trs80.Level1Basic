@@ -4,7 +4,6 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
-using Trs80.Level1Basic.Console;
 using Trs80.Level1Basic.VirtualMachine.Environment;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
 using Trs80.Level1Basic.VirtualMachine.Parser;
@@ -20,15 +19,15 @@ namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
 
 public class Interpreter : IInterpreter
 {
-    private readonly IConsole _console;
     private readonly IEnvironment _environment;
-    private readonly IMachine _machine;
+    private readonly ITrs80 _trs80;
+    private readonly IProgram _program;
 
-    public Interpreter(IConsole console, IEnvironment environment, IMachine machine)
+    public Interpreter(ITrs80 trs80, IEnvironment environment, IProgram program)
     {
-        _console = console ?? throw new ArgumentNullException(nameof(console));
+        _trs80 = trs80 ?? throw new ArgumentNullException(nameof(trs80));
         _environment = environment ?? throw new ArgumentNullException(nameof(environment));
-        _machine = machine ?? throw new ArgumentNullException(nameof(machine));
+        _program = program ?? throw new ArgumentNullException(nameof(program));
     }
 
     public void Interpret(ParsedLine line)
@@ -106,7 +105,7 @@ public class Interpreter : IInterpreter
 
         FunctionDefinition function = _environment.Function(expression.Name.Lexeme).First(f => f.Arity == arguments.Count);
 
-        return function.Call(_machine, arguments);
+        return function.Call(_trs80, arguments);
     }
 
     public dynamic VisitGroupingExpression(Grouping expression)
@@ -232,7 +231,7 @@ public class Interpreter : IInterpreter
 
     public void Execute(Statement statement)
     {
-        _environment.CurrentStatement = statement;
+        _program.CurrentStatement = statement;
         try
         {
             statement.Accept(this);
@@ -257,7 +256,7 @@ public class Interpreter : IInterpreter
 
     public Void VisitClsStatement(Cls statement)
     {
-        _console.Clear();
+        _trs80.Clear();
         Thread.Sleep(500);
 
         return null!;
@@ -314,7 +313,7 @@ public class Interpreter : IInterpreter
 
     public Void VisitGosubStatement(Gosub statement)
     {
-        _environment.ProgramStack.Push(statement.Next ?? _environment.CurrentStatement.Next);
+        _environment.ProgramStack.Push(statement.Next ?? _program.CurrentStatement.Next);
 
         Statement jumpToStatement = GetJumpToStatement(statement, statement.Location, "GOSUB");
         _environment.RunProgram(jumpToStatement, this);
@@ -388,7 +387,7 @@ public class Interpreter : IInterpreter
         if (string.IsNullOrEmpty(path)) return null!;
 
         _environment.LoadProgram(path);
-        _console.WriteLine($"Loaded \"{path}\".");
+        _trs80.WriteLine($"Loaded \"{path}\".");
 
         return null!;
     }
@@ -402,7 +401,7 @@ public class Interpreter : IInterpreter
         if (string.IsNullOrEmpty(path)) return null!;
 
         _environment.LoadProgram(path);
-        _console.WriteLine($"Merged \"{path}\".");
+        _trs80.WriteLine($"Merged \"{path}\".");
 
         return null!;
     }
@@ -511,14 +510,14 @@ public class Interpreter : IInterpreter
 
         if (statement.Expressions is { Count: > 0 })
             foreach (Expression expression in statement.Expressions)
-                _console.Write(Stringify(Evaluate(expression)));
+                _trs80.Write(Stringify(Evaluate(expression)));
 
         //string text = sb.ToString();
-        //_console.Write(text);
+        //_trs80.Write(text);
 
         if (!statement.WriteNewline) return null!;
 
-        _console.WriteLine();
+        _trs80.WriteLine();
         _environment.CursorX = 0;
         _environment.CursorY++;
         return null!;
@@ -530,7 +529,7 @@ public class Interpreter : IInterpreter
         dynamic row = value / 64;
         dynamic column = value % 64;
 
-        _console.SetCursorPosition(column, row);
+        _trs80.SetCursorPosition(column, row);
 
         _environment.CursorX = column;
         _environment.CursorY = row;
@@ -577,7 +576,7 @@ public class Interpreter : IInterpreter
     public Void VisitRunStatement(Run statement)
     {
         _environment.InitializeProgram();
-        
+
         int lineNumber = GetStartingLineNumber(statement.StartAtLineNumber);
         if (lineNumber < 0)
             lineNumber = GetFirstLineNumber();
@@ -602,7 +601,7 @@ public class Interpreter : IInterpreter
         if (string.IsNullOrEmpty(path)) return null!;
 
         _environment.SaveProgram(path);
-        _console.WriteLine($"Saved \"{path}\".");
+        _trs80.WriteLine($"Saved \"{path}\".");
 
         return null!;
     }
@@ -616,7 +615,7 @@ public class Interpreter : IInterpreter
 
     public Void VisitStopStatement(Stop statement)
     {
-        _console.WriteLine($"BREAK AT {statement.LineNumber}");
+        _trs80.WriteLine($"BREAK AT {statement.LineNumber}");
         _environment.HaltRun();
 
         return null!;
@@ -647,8 +646,8 @@ public class Interpreter : IInterpreter
             _environment.Initialize();
 
         _environment.RunProgram(statement, this);
-        _console.WriteLine();
-        _console.WriteLine("READY");
+        _trs80.WriteLine();
+        _trs80.WriteLine("READY");
     }
 
     private const string Filter = "BASIC files (*.bas)|*.bas|All files (*.*)|*.*";
@@ -711,7 +710,7 @@ public class Interpreter : IInterpreter
         switch (expression)
         {
             case Literal:
-                _console.Write(Stringify(Evaluate(expression)));
+                _trs80.Write(Stringify(Evaluate(expression)));
                 break;
             case Identifier variable:
                 GetInputValue(variable, writeNewline);
@@ -724,12 +723,12 @@ public class Interpreter : IInterpreter
 
     private void GetInputValue(Expression variable, bool writeNewline)
     {
-        _console.Write("?");
+        _trs80.Write("?");
 
         if (writeNewline)
-            _console.WriteLine();
+            _trs80.WriteLine();
 
-        string value = _console.ReadLine();
+        string value = _trs80.ReadLine();
         if (value is null)
             Assign(variable, null);
         else if (int.TryParse(value, out int intValue))
@@ -749,7 +748,7 @@ public class Interpreter : IInterpreter
             }
             catch (ValueOutOfRangeException)
             {
-                _console.WriteLine("WHAT?");
+                _trs80.WriteLine("WHAT?");
                 GetInputValue(variable, writeNewline);
             }
         }

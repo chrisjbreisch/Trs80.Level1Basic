@@ -12,7 +12,6 @@ public interface IEnvironment
     IProgram Program { get; }
     int CursorX { get; set;  }
     int CursorY { get; set;  }
-    Statement CurrentStatement { get; set; }
 
     dynamic Assign(string name, dynamic value);
     dynamic Assign(string name, int index, dynamic value);

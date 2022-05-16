@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using Trs80.Level1Basic.Console;
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
@@ -13,21 +12,20 @@ namespace Trs80.Level1Basic.VirtualMachine.Environment;
 public class Environment : IEnvironment
 {
     private readonly GlobalVariables _globals = new();
-    private readonly IConsole _console;
+    private readonly ITrs80 _trs80;
     private readonly IBuiltinFunctions _builtins;
 
     public int CursorX { get; set; }
     public int CursorY { get; set; }
-    public Statement CurrentStatement { get; set; }
     public Stack<ForCheckCondition> ForChecks { get; } = new();
     public Stack<Statement> ProgramStack { get; } = new();
     public DataElements Data { get; } = new();
     public IProgram Program { get; }
     public bool ExecutionHalted { get; private set; }
 
-    public Environment(IConsole console, IProgram program, IBuiltinFunctions builtins)
+    public Environment(ITrs80 trs80, IProgram program, IBuiltinFunctions builtins)
     {
-        _console = console ?? throw new ArgumentNullException(nameof(console));
+        _trs80 = trs80 ?? throw new ArgumentNullException(nameof(trs80));
         Program = program ?? throw new ArgumentNullException(nameof(program));
         _builtins = builtins ?? throw new ArgumentNullException(nameof(builtins));
 
@@ -47,7 +45,7 @@ public class Environment : IEnvironment
 
     private void GetCursorPosition()
     {
-        (int left, int top) = _console.GetCursorPosition();
+        (int left, int top) = _trs80.GetCursorPosition();
         CursorX = left;
         CursorY = top;
     }
@@ -84,18 +82,18 @@ public class Environment : IEnvironment
         bool exitList = false;
         foreach (ParsedLine line in Program.List().Where(s => s.LineNumber >= lineNumber))
         {
-            _console.WriteLine(line.LineNumber >= 0 ? $" {line.LineNumber}  {line.SourceLine}" : $"{line.SourceLine}");
+            _trs80.WriteLine(line.LineNumber >= 0 ? $" {line.LineNumber}  {line.SourceLine}" : $"{line.SourceLine}");
             index++;
             if (index < 12) continue;
 
             bool readAnotherKey = true;
             while (readAnotherKey)
             {
-                ConsoleKeyInfo key = _console.ReadKey();
+                ConsoleKeyInfo key = _trs80.ReadKey();
 
                 if (key.Key == ConsoleKey.Enter)
                 {
-                    _console.WriteLine();
+                    _trs80.WriteLine();
                     exitList = true;
                     break;
                 }
@@ -111,14 +109,14 @@ public class Environment : IEnvironment
 
     public void SaveProgram(string path)
     {
-        TextWriter oldWriter = _console.Out;
+        TextWriter oldWriter = _trs80.Out;
         using var newWriter = new StreamWriter(path);
-        _console.Out = newWriter;
+        _trs80.Out = newWriter;
 
         foreach (ParsedLine line in Program.List())
-            _console.WriteLine(line.LineNumber >= 0 ? $" {line.LineNumber}  {line.SourceLine}" : $"{line.SourceLine}");
+            _trs80.WriteLine(line.LineNumber >= 0 ? $" {line.LineNumber}  {line.SourceLine}" : $"{line.SourceLine}");
 
-        _console.Out = oldWriter;
+        _trs80.Out = oldWriter;
     }
 
     public void LoadProgram(string path)

@@ -1,8 +1,8 @@
-﻿using Trs80.Level1Basic.Console;
+﻿using Trs80.Level1Basic.HostMachine;
 
 namespace Trs80.Level1Basic.TestUtilities
 {
-    public class FakeSystemConsole : ISystemConsole
+    public class FakeHost : IHost
     {
         private const int ScreenWidth = 64;
         private const int ScreenHeight = 16;
@@ -12,7 +12,7 @@ namespace Trs80.Level1Basic.TestUtilities
         private int _cursorX;
         private int _cursorY;
 
-        public FakeSystemConsole()
+        public FakeHost()
         {
             ClearScreen();
         }

@@ -1,20 +1,20 @@
 ﻿using Trs80.Level1Basic.CommandModels;
-using Trs80.Level1Basic.Console;
+using Trs80.Level1Basic.VirtualMachine.Environment;
 
 namespace Trs80.Level1Basic.Command.Commands;
 
-public class ShutdownConsoleCommand : ICommand<ShutdownConsoleModel>
+public class ShutdownTrs80Command : ICommand<ShutdownTrs80Model>
 {
-    private readonly IConsole _console;
-    private readonly IConsoleDataModel _sharedDataModel;
-    public ShutdownConsoleCommand(IConsole console, IConsoleDataModel sharedDataModel)
+    private readonly ITrs80 _trs80;
+    private readonly ITrs80DataModel _sharedDataModel;
+    public ShutdownTrs80Command(ITrs80 trs80, ITrs80DataModel sharedDataModel)
     {
-        _console = console ?? throw new ArgumentNullException(nameof(console));
+        _trs80 = trs80 ?? throw new ArgumentNullException(nameof(trs80));
         _sharedDataModel = sharedDataModel ?? throw new ArgumentNullException(nameof(sharedDataModel));
     }
 
-    public void Execute(ShutdownConsoleModel parameterObject)
+    public void Execute(ShutdownTrs80Model parameterObject)
     {
-        _console.SetCurrentFont(_sharedDataModel.OriginalConsoleFont);
+        _trs80.SetCurrentFont(_sharedDataModel.OriginalConsoleFont);
     }
 }

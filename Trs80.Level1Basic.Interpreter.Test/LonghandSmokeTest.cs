@@ -326,8 +326,8 @@ public class LonghandSmokeTest
         controller.RunProgram(program);
 
         controller.ReadOutputLine().Should().Be("hello");
-        controller.Console.CursorY.Should().Be(200 / 64 + 3);
-        controller.Console.CursorX.Should().Be(0);
+        controller.Trs80.CursorY.Should().Be(200 / 64 + 3);
+        controller.Trs80.CursorX.Should().Be(0);
         controller.IsEndOfRun().Should().BeTrue();
     }
 

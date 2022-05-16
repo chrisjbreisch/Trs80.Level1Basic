@@ -133,6 +133,8 @@ public class Program : IProgram
         return _programStatements.FirstOrDefault();
     }
 
+    public Statement CurrentStatement { get; set; }
+
     public void Sort()
     {
         if (_sorted) return;

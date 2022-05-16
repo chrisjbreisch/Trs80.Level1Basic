@@ -15,4 +15,6 @@ public interface IProgram
     int Size();
     void ReplaceLine(ParsedLine line);
     Statement GetFirstStatement();
+    Statement CurrentStatement { get; set; }
+
 }

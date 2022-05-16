@@ -6,5 +6,5 @@ namespace Trs80.Level1Basic.VirtualMachine.Environment;
 public class FunctionDefinition
 {
     public int Arity { get; set; }
-    public Func<IMachine, List<dynamic>, dynamic> Call;
+    public Func<ITrs80, List<dynamic>, dynamic> Call;
 }

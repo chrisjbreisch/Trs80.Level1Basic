@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Trs80.Level1Basic.Application\Trs80.Level1Basic.Application.csproj" />
-    <ProjectReference Include="..\Trs80.Level1Basic.Console\Trs80.Level1Basic.Console.csproj" />
     <ProjectReference Include="..\Trs80.Level1Basic.TestUtilities\Trs80.Level1Basic.TestUtilities.csproj" />
   </ItemGroup>
 

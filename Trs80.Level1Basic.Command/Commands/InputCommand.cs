@@ -1,20 +1,20 @@
 ﻿using Trs80.Level1Basic.CommandModels;
-using Trs80.Level1Basic.Console;
+using Trs80.Level1Basic.VirtualMachine.Environment;
 
 namespace Trs80.Level1Basic.Command.Commands;
 
 public class InputCommand : ICommand<InputModel>
 {
-    private readonly IConsole _console;
+    private readonly ITrs80 _trs80;
 
-    public InputCommand(IConsole console)
+    public InputCommand(ITrs80 trs80)
     {
-        _console = console ?? throw new ArgumentNullException(nameof(console));
+        _trs80 = trs80 ?? throw new ArgumentNullException(nameof(trs80));
     }
 
     public void Execute(InputModel parameterObject)
     {
-        _console.Write(">");
+        _trs80.Write(">");
         parameterObject.SourceLine = GetInputLine();
 
         if (parameterObject.SourceLine.ToLower() == "exit")
@@ -28,22 +28,22 @@ public class InputCommand : ICommand<InputModel>
 
         while (true)
         {
-            ConsoleKeyInfo key = _console.ReadKey();
+            ConsoleKeyInfo key = _trs80.ReadKey();
 
             if (key.Key == ConsoleKey.Enter)
             {
-                _console.WriteLine();
+                _trs80.WriteLine();
                 break;
             }
             if (key.Key == ConsoleKey.Backspace)
             {
                 if (charCount > 0)
                 {
-                    _console.Write(" \b");
+                    _trs80.Write(" \b");
                     input[charCount--] = '\0';
                 }
                 else
-                    _console.Write(">");
+                    _trs80.Write(">");
             }
             else
                 input[charCount++] = key.KeyChar;
