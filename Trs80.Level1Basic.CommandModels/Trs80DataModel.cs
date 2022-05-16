@@ -4,10 +4,10 @@ namespace Trs80.Level1Basic.CommandModels;
 
 public interface ITrs80DataModel
 {
-    ConsoleFont OriginalConsoleFont { get; set; }
+    HostFont OriginalHostFont { get; set; }
 }
 
 public class Trs80DataModel : ITrs80DataModel
 {
-    public ConsoleFont OriginalConsoleFont { get; set; } = new();
+    public HostFont OriginalHostFont { get; set; } = new();
 }

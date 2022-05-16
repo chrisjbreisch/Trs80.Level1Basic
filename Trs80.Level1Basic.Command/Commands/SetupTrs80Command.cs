@@ -12,7 +12,7 @@ public class SetupTrs80Command : ICommand<SetupTrs80Model>
         _trs80 = trs80 ?? throw new ArgumentNullException(nameof(trs80));
 
         if (trs80DataModel is null) throw new ArgumentNullException(nameof(trs80DataModel));
-        trs80DataModel.OriginalConsoleFont = _trs80.GetCurrentFont();
+        trs80DataModel.OriginalHostFont = _trs80.GetCurrentFont();
     }
 
     public void Execute(SetupTrs80Model model)

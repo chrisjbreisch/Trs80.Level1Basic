@@ -235,6 +235,7 @@ public sealed class Bootstrapper : IDisposable
             .AddSingleton<IEnvironment, Environment>()
             .AddSingleton<ITrs80DataModel, Trs80DataModel>()
             .AddSingleton<IHost, Host>()
+            .AddSingleton<IBuiltinFunctions, BuiltinFunctions>()
             .AddSingleton<IProgram, Program>()
             .AddSingleton<IAppSettings, AppSettings>()
             .BuildServiceProvider();

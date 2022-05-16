@@ -1,46 +1,15 @@
 ﻿using System;
 using System.IO;
+
 using Microsoft.Extensions.Logging;
+
 using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.HostMachine;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
-using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
 namespace Trs80.Level1Basic.VirtualMachine.Environment;
 
-public interface ITrs80
-{
-    Statement CurrentStatement { get; set; }
-
-    int Int(dynamic value);
-    dynamic Mem();
-    dynamic Abs(dynamic value);
-    dynamic Chr(dynamic value);
-    dynamic Rnd(int control);
-    string Tab(dynamic value);
-    string PadQuadrant();
-    object Set(float x, float y);
-    object Reset(float x, float y);
-    int Point(int x, int y);
-
-    int CursorX { get; set; }
-    int CursorY { get; set; }
-    TextWriter Out { get; set; }
-    TextReader In { get; set; }
-    TextWriter Error { get; set; }
-    void WriteLine(string text = "");
-    void Write(string text);
-    string ReadLine();
-    void Clear();
-    void SetCursorPosition(int column, int row);
-    (int Left, int Top) GetCursorPosition();
-    ConsoleFont GetCurrentFont();
-    void SetCurrentFont(ConsoleFont font);
-    ConsoleKeyInfo ReadKey();
-    void InitializeWindow();
-    string PadToPosition(int value);
-}
 
 public class Trs80 : ITrs80
 {
@@ -52,8 +21,6 @@ public class Trs80 : ITrs80
     private readonly bool[,] _screen = new bool[ScreenPixelWidth, ScreenPixelHeight];
     private readonly IAppSettings _appSettings;
     private readonly IHost _host;
-    public Statement CurrentStatement { get; set; }
-
 
     public Trs80(IProgram program, IAppSettings appSettings, ILoggerFactory logFactory, IHost host)
     {
@@ -102,7 +69,7 @@ public class Trs80 : ITrs80
     {
         return PadToPosition(value);
     }
-    
+
     public int CursorX
     {
         get
@@ -156,8 +123,6 @@ public class Trs80 : ITrs80
 
     public void Write(string text) => _host.Write(text);
 
-    public void Write(char c) => _host.Write(c);
-
     public string ReadLine() => _host.ReadLine();
 
     public void Clear()
@@ -176,12 +141,12 @@ public class Trs80 : ITrs80
         return _host.GetCursorPosition();
     }
 
-    public ConsoleFont GetCurrentFont()
+    public HostFont GetCurrentFont()
     {
         return _host.GetCurrentConsoleFont();
     }
 
-    public void SetCurrentFont(ConsoleFont font)
+    public void SetCurrentFont(HostFont font)
     {
         _host.SetCurrentConsoleFont(font);
     }
@@ -189,7 +154,7 @@ public class Trs80 : ITrs80
     public ConsoleKeyInfo ReadKey() => _host.ReadKey();
     public void InitializeWindow()
     {
-        SetCurrentFont(new ConsoleFont { FontName = _appSettings.FontName, FontSize = _appSettings.FontSize });
+        SetCurrentFont(new HostFont { FontName = _appSettings.FontName, FontSize = _appSettings.FontSize });
         DisableCursorBlink();
         SetWindowSize(ScreenWidth, ScreenHeight);
         SetBufferSize(ScreenWidth, ScreenPixelHeight * 10);

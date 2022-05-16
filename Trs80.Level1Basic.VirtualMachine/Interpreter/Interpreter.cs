@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Windows.Forms;
 
+using Trs80.Level1Basic.HostMachine;
 using Trs80.Level1Basic.VirtualMachine.Environment;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
 using Trs80.Level1Basic.VirtualMachine.Parser;
@@ -22,9 +22,11 @@ public class Interpreter : IInterpreter
     private readonly IEnvironment _environment;
     private readonly ITrs80 _trs80;
     private readonly IProgram _program;
+    private readonly IHost _host;
 
-    public Interpreter(ITrs80 trs80, IEnvironment environment, IProgram program)
+    public Interpreter(IHost host, ITrs80 trs80, IEnvironment environment, IProgram program)
     {
+        _host = host ?? throw new ArgumentNullException(nameof(host));
         _trs80 = trs80 ?? throw new ArgumentNullException(nameof(trs80));
         _environment = environment ?? throw new ArgumentNullException(nameof(environment));
         _program = program ?? throw new ArgumentNullException(nameof(program));
@@ -170,8 +172,8 @@ public class Interpreter : IInterpreter
 
         if (value is int intVal)
             return intVal == 1;
-        else
-            return value;
+
+        return value;
     }
 
     private static bool IsEqual(dynamic left, dynamic right)
@@ -382,7 +384,7 @@ public class Interpreter : IInterpreter
         _environment.NewProgram();
         string path = Evaluate(statement.Path);
         if (string.IsNullOrEmpty(path))
-            path = OpenFileDialog();
+            path = _host.GetFileNameForLoad();
 
         if (string.IsNullOrEmpty(path)) return null!;
 
@@ -396,7 +398,7 @@ public class Interpreter : IInterpreter
     {
         string path = Evaluate(statement.Path);
         if (string.IsNullOrEmpty(path))
-            path = OpenFileDialog();
+            path = _host.GetFileNameForLoad();
 
         if (string.IsNullOrEmpty(path)) return null!;
 
@@ -512,9 +514,6 @@ public class Interpreter : IInterpreter
             foreach (Expression expression in statement.Expressions)
                 _trs80.Write(Stringify(Evaluate(expression)));
 
-        //string text = sb.ToString();
-        //_trs80.Write(text);
-
         if (!statement.WriteNewline) return null!;
 
         _trs80.WriteLine();
@@ -596,7 +595,7 @@ public class Interpreter : IInterpreter
     {
         string path = Evaluate(statement.Path);
         if (string.IsNullOrEmpty(path))
-            path = SaveFileDialog();
+            path = _host.GetFileNameForSave();
 
         if (string.IsNullOrEmpty(path)) return null!;
 
@@ -648,37 +647,6 @@ public class Interpreter : IInterpreter
         _environment.RunProgram(statement, this);
         _trs80.WriteLine();
         _trs80.WriteLine("READY");
-    }
-
-    private const string Filter = "BASIC files (*.bas)|*.bas|All files (*.*)|*.*";
-    private const string Title = "TRS-80 Level I BASIC File";
-
-    private static string SaveFileDialog()
-    {
-        var dialog = new SaveFileDialog
-        {
-            AddExtension = true,
-            DefaultExt = "bas",
-            Filter = Filter,
-            Title = $"Save {Title}",
-            OverwritePrompt = true
-        };
-
-        return dialog.ShowDialog() == DialogResult.OK ? dialog.FileName : null;
-    }
-
-    private static string OpenFileDialog()
-    {
-        var dialog = new OpenFileDialog
-        {
-            DefaultExt = "bas",
-            Filter = Filter,
-            Title = $"Open {Title}",
-            CheckFileExists = true,
-            Multiselect = false,
-        };
-
-        return dialog.ShowDialog() == DialogResult.OK ? dialog.FileName : null;
     }
 
     private Statement GetJumpToStatement(Statement statement, Expression location, string jumpType)
@@ -758,6 +726,7 @@ public class Interpreter : IInterpreter
     {
         return _environment.GetStatementByLineNumber(lineNumber);
     }
+
     private void NewProgram()
     {
         _environment.Program.Clear();
@@ -769,5 +738,4 @@ public class Interpreter : IInterpreter
         if (programLine != null)
             _environment.Program.RemoveLine(programLine);
     }
-
 }

@@ -60,7 +60,7 @@ public class ConsoleApp
         }
         catch (Exception e)
         {
-            System.Console.WriteLine(e);
+            Console.WriteLine(e);
             throw;
         }
     }

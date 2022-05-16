@@ -2,6 +2,7 @@
 
 using Trs80.Level1Basic.Application;
 using Trs80.Level1Basic.Common;
+using Trs80.Level1Basic.HostMachine;
 using Trs80.Level1Basic.VirtualMachine.Environment;
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser;
@@ -38,12 +39,13 @@ public class TestController : IDisposable
         _scanner = new Scanner(builtins);
         _parser = new Parser(builtins);
         IProgram program = new Program(_scanner, _parser);
-        Trs80 = new VirtualMachine.Environment.Trs80(program, appSettings, loggerFactory, new FakeHost())
+        IHost host = new FakeHost();
+        Trs80 = new VirtualMachine.Environment.Trs80(program, appSettings, loggerFactory, host)
         {
             Out = _output
         };
         IEnvironment environment = new Environment(Trs80, program, builtins);
-        _interpreter = new Interpreter(Trs80, environment, program);
+        _interpreter = new Interpreter(host, Trs80, environment, program);
     }
 
     public void ExecuteLine(string input)

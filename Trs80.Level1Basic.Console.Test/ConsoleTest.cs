@@ -13,7 +13,7 @@ using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
 
-namespace Trs80.Level1Basic.Trs80.Test;
+namespace Trs80.Level1Basic.Console.Test;
 
 [TestClass]
 public class Trs80Test
@@ -37,7 +37,7 @@ public class Trs80Test
         var parser = new Parser(builtins);
         IProgram program = new Program(scanner, parser);
         var trs80 = new VirtualMachine.Environment.Trs80(program, _appSettings, _loggerFactory, new FakeHost());
-        
+
         const string input = "Hello, World!\r\n";
         var sw = new StringWriter();
         var sr = new StringReader(input);

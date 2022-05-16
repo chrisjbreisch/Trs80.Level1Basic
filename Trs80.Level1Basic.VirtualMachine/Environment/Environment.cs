@@ -29,7 +29,7 @@ public class Environment : IEnvironment
         Program = program ?? throw new ArgumentNullException(nameof(program));
         _builtins = builtins ?? throw new ArgumentNullException(nameof(builtins));
 
-        System.Console.CancelKeyPress += delegate (object _, ConsoleCancelEventArgs e)
+        Console.CancelKeyPress += delegate (object _, ConsoleCancelEventArgs e)
         {
             e.Cancel = true;
             ExecutionHalted = true;

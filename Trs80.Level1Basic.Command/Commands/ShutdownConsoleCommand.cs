@@ -15,6 +15,6 @@ public class ShutdownTrs80Command : ICommand<ShutdownTrs80Model>
 
     public void Execute(ShutdownTrs80Model parameterObject)
     {
-        _trs80.SetCurrentFont(_sharedDataModel.OriginalConsoleFont);
+        _trs80.SetCurrentFont(_sharedDataModel.OriginalHostFont);
     }
 }

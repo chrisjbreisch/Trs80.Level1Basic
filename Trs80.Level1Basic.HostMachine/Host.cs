@@ -1,10 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace Trs80.Level1Basic.HostMachine;
 
@@ -30,27 +32,7 @@ public struct Rect
     public int Bottom;      // y position of lower-right corner
 }
 
-public interface IHost
-{
-    void EnableVirtualTerminal();
-    ConsoleFont GetCurrentConsoleFont();
-    void SetCurrentConsoleFont(ConsoleFont font);
-    (int Left, int Top) GetCursorPosition();
-    void SetCursorPosition(int column, int row);
-    void Clear();
-    ConsoleKeyInfo ReadKey();
-    void SetWindowSize(int width, int height);
-    void SetBufferSize(int width, int height);
-    void Fill(int x, int y, int width, int height);
-    void Erase(int x, int y, int width, int height);
-    TextWriter Out { get; set; }
-    TextReader In { get; set; }
-    TextWriter Error { get; set; }
-    void WriteLine(string text = "");
-    void Write(string text);
-    void Write(char c);
-    string ReadLine();
-}
+
 
 public class Host : IHost, IDisposable 
 {
@@ -87,6 +69,7 @@ public class Host : IHost, IDisposable
     [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
     private static extern bool SetConsoleTitle(string lpConsoleTitle);
 
+    // https://www.pinvoke.net/default.aspx/kernel32/SetCurrentConsoleFontEx.html
     [return: MarshalAs(UnmanagedType.Bool)]
     [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
     private static extern bool SetCurrentConsoleFontEx(nint hConsoleOutput, bool maximumWindow, ref FontInfo consoleCurrentFontEx);
@@ -96,17 +79,22 @@ public class Host : IHost, IDisposable
     private const int ScreenPixelWidth = 2 * ScreenWidth;
     private const int ScreenPixelHeight = 3 * ScreenHeight;
 
-    private readonly nint _hwnd;
-    private readonly nint _outputHandle;
-    private readonly Graphics _graphics;
+    private nint _hwnd;
+    private nint _outputHandle;
+    private Graphics _graphics;
     private double _pixelWidth;
     private double _pixelHeight;
 
-    public TextWriter Out { get; set; } = System.Console.Out;
-    public TextReader In { get; set; } = System.Console.In;
-    public TextWriter Error { get; set; } = System.Console.Error;
+    public TextWriter Out { get; set; } = Console.Out;
+    public TextReader In { get; set; } = Console.In;
+    public TextWriter Error { get; set; } = Console.Error;
 
     public Host()
+    {
+        InitializeWindow();
+    }
+
+    private void InitializeWindow()
     {
         _hwnd = GetConsoleWindowHandle();
         _outputHandle = GetStdHandle(StandardOutputHandle);
@@ -117,8 +105,6 @@ public class Host : IHost, IDisposable
     public void WriteLine(string text = "") => Out.WriteLine(text);
 
     public void Write(string text) => Out.Write(text);
-
-    public void Write(char c) => Out.Write(c);
 
     public string ReadLine() => In.ReadLine();
 
@@ -185,7 +171,7 @@ public class Host : IHost, IDisposable
     }
 
 
-    public ConsoleFont GetCurrentConsoleFont()
+    public HostFont GetCurrentConsoleFont()
     {
         var font = new FontInfo
         {
@@ -193,13 +179,13 @@ public class Host : IHost, IDisposable
         };
 
         if (GetCurrentConsoleFontEx(_outputHandle, false, ref font))
-            return new ConsoleFont { FontName = font.FontName, FontSize = font.FontSize };
+            return new HostFont { FontName = font.FontName, FontSize = font.FontSize };
 
         int er = Marshal.GetLastWin32Error();
         throw new Win32Exception(er);
     }
 
-    public void SetCurrentConsoleFont(ConsoleFont font)
+    public void SetCurrentConsoleFont(HostFont font)
     {
         var before = new FontInfo
         {
@@ -223,6 +209,7 @@ public class Host : IHost, IDisposable
                 int ex = Marshal.GetLastWin32Error();
                 throw new Win32Exception(ex);
             }
+            InitializeWindow();
         }
         else
         {
@@ -231,7 +218,7 @@ public class Host : IHost, IDisposable
         }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Only used on Windows")]
+    [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Only used on Windows")]
     public Graphics GetGraphics()
     {
         return Graphics.FromHwnd(_hwnd);
@@ -239,36 +226,37 @@ public class Host : IHost, IDisposable
 
     public (int Left, int Top) GetCursorPosition()
     {
-        return System.Console.GetCursorPosition();
+        return Console.GetCursorPosition();
     }
 
     public void SetCursorPosition(int column, int row)
     {
-        System.Console.SetCursorPosition(column, row);
+        Console.SetCursorPosition(column, row);
     }
 
     public void Clear()
     {
-        System.Console.Clear();
+        Console.Clear();
     }
 
     public ConsoleKeyInfo ReadKey()
     {
-        return System.Console.ReadKey();
+        return Console.ReadKey();
     }
 
     public void SetWindowSize(int width, int height)
     {
         if (!OperatingSystem.IsWindows()) return;
 
-        System.Console.SetWindowSize(width, height);
-        SetPixelSizes();
+        Console.SetWindowSize(width, height);
+        //SetPixelSizes();
+        InitializeWindow();
     }
 
     public void SetBufferSize(int width, int height)
     {
         if (OperatingSystem.IsWindows())
-            System.Console.SetBufferSize(width, height);
+            Console.SetBufferSize(width, height);
     }
 
     public void Fill(int x, int y, int width, int height)
@@ -296,6 +284,38 @@ public class Host : IHost, IDisposable
             (int)Math.Round(width * _pixelWidth + .5),
             (int)Math.Round(height * _pixelHeight + .5)
         );
+    }
+
+
+    public const string Filter = "BASIC files (*.bas)|*.bas|All files (*.*)|*.*";
+    public const string Title = "TRS-80 Level I BASIC File";
+
+    public string GetFileNameForSave()
+    {
+        var dialog = new SaveFileDialog
+        {
+            AddExtension = true,
+            DefaultExt = "bas",
+            Filter = Filter,
+            Title = $"Save {Title}",
+            OverwritePrompt = true
+        };
+
+        return dialog.ShowDialog() == DialogResult.OK ? dialog.FileName : null;
+    }
+
+    public string GetFileNameForLoad()
+    {
+        var dialog = new OpenFileDialog
+        {
+            DefaultExt = "bas",
+            Filter = Filter,
+            Title = $"Open {Title}",
+            CheckFileExists = true,
+            Multiselect = false,
+        };
+
+        return dialog.ShowDialog() == DialogResult.OK ? dialog.FileName : null;
     }
 
 
