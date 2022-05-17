@@ -60,12 +60,12 @@ public class Parser : IParser
                 Advance();
             else
             {
-                _currentLine.Statements = new List<Statement> { DeleteStatement(lineNumber) };
+                _currentLine.Statements = new List<Statement> { DeleteStatement() };
                 return _currentLine;
             }
         }
 
-        _currentLine.Statements = Statements(lineNumber);
+        _currentLine.Statements = Statements();
         return _currentLine;
     }
 
@@ -75,37 +75,37 @@ public class Parser : IParser
         _current = 0;
     }
 
-    private List<Statement> Statements(Token lineNumber)
+    private List<Statement> Statements()
     {
-        var statements = new List<Statement> { Statement(lineNumber) };
+        var statements = new List<Statement> { Statement() };
 
         while (Match(TokenType.Colon))
-            statements.Add(Statement(lineNumber));
+            statements.Add(Statement());
 
         return statements;
     }
-    private Statement Statement(Token lineNumber)
+    private Statement Statement()
     {
         if (Match(TokenType.Cls))
-            return ClsStatement(lineNumber);
+            return ClsStatement();
         if (Match(TokenType.Cont))
-            return ContStatement(lineNumber);
+            return ContStatement();
         if (Match(TokenType.Data))
-            return DataStatement(lineNumber);
+            return DataStatement();
         if (Match(TokenType.End))
-            return EndStatement(lineNumber);
+            return EndStatement();
         if (Match(TokenType.For))
-            return ForStatement(lineNumber);
+            return ForStatement();
         if (Match(TokenType.Gosub))
-            return GosubStatement(lineNumber);
+            return GosubStatement();
         if (Match(TokenType.Goto))
-            return GotoStatement(lineNumber);
+            return GotoStatement();
         if (Match(TokenType.If))
-            return IfStatement(lineNumber);
+            return IfStatement();
         if (Match(TokenType.Input))
-            return InputStatement(lineNumber);
+            return InputStatement();
         if (Match(TokenType.Let))
-            return LetStatement(lineNumber);
+            return LetStatement();
         if (Match(TokenType.List))
             return ListStatement();
         if (Match(TokenType.Load))
@@ -113,47 +113,47 @@ public class Parser : IParser
         if (Match(TokenType.Merge))
             return MergeStatement();
         if (Match(TokenType.N))
-            return lineNumber.Type == TokenType.Number ? NextStatement(lineNumber) : NewStatement(lineNumber);
+            return _currentLine.LineNumber >= 0 ? NextStatement() : NewStatement();
         if (Match(TokenType.New))
-            return NewStatement(lineNumber);
+            return NewStatement();
         if (Match(TokenType.Next))
-            return NextStatement(lineNumber);
+            return NextStatement();
         if (Match(TokenType.On))
-            return OnStatement(lineNumber);
+            return OnStatement();
         if (Match(TokenType.Print))
-            return PrintStatement(lineNumber);
+            return PrintStatement();
         if (Match(TokenType.Read))
-            return ReadStatement(lineNumber);
+            return ReadStatement();
         if (Match(TokenType.Rem))
-            return RemarkStatement(lineNumber);
+            return RemarkStatement();
         if (Match(TokenType.Restore))
-            return RestoreStatement(lineNumber);
+            return RestoreStatement();
         if (Match(TokenType.Return))
-            return ReturnStatement(lineNumber);
+            return ReturnStatement();
         if (Match(TokenType.Run))
             return RunStatement();
         if (Match(TokenType.Save))
             return SaveStatement();
         if (Match(TokenType.Stop))
-            return StopStatement(lineNumber);
+            return StopStatement();
         if (Peek().Type != TokenType.R || PeekNext().Type == TokenType.LeftParen)
-            return Peek().Type == TokenType.Identifier ? LetStatement(lineNumber) : ExpressionStatement();
+            return Peek().Type == TokenType.Identifier ? LetStatement() : ExpressionStatement();
 
         Advance();
         return RunStatement();
     }
 
-    private Statement StopStatement(Token lineNumber)
+    private Statement StopStatement()
     {
-        return StatementWrapper(new Stop(), lineNumber);
+        return StatementWrapper(new Stop());
     }
 
-    private Statement RestoreStatement(Token lineNumber)
+    private Statement RestoreStatement()
     {
-        return StatementWrapper(new Restore(), lineNumber);
+        return StatementWrapper(new Restore());
     }
 
-    private Statement ReadStatement(Token lineNumber)
+    private Statement ReadStatement()
     {
         var variables = new List<Expression>();
         do
@@ -164,31 +164,31 @@ public class Parser : IParser
             variables.Add(Expression());
         } while (Match(TokenType.Comma));
 
-        return StatementWrapper(new Read(variables), lineNumber);
+        return StatementWrapper(new Read(variables));
     }
 
-    private Statement DataStatement(Token lineNumber)
+    private Statement DataStatement()
     {
         var elements = new List<Expression>();
         do
             elements.Add(Expression());
         while (Match(TokenType.Comma));
 
-        return StatementWrapper(new Data(elements), lineNumber);
+        return StatementWrapper(new Data(elements));
     }
 
-    private Statement ReturnStatement(Token lineNumber)
+    private Statement ReturnStatement()
     {
-        return StatementWrapper(new Return(), lineNumber);
+        return StatementWrapper(new Return());
     }
 
-    private Statement GosubStatement(Token lineNumber)
+    private Statement GosubStatement()
     {
         Expression location = Expression();
-        return StatementWrapper(new Gosub(location), lineNumber);
+        return StatementWrapper(new Gosub(location));
     }
 
-    private Statement OnStatement(Token lineNumber)
+    private Statement OnStatement()
     {
         Expression selector = Expression();
         bool isGosub = false;
@@ -217,39 +217,34 @@ public class Parser : IParser
             throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
                 "Expected 'GOTO' or 'GOSUB' after 'ON'");
 
-        return StatementWrapper(new On(selector, locations, isGosub), lineNumber);
+        return StatementWrapper(new On(selector, locations, isGosub));
     }
 
-    private Statement StatementWrapper(Statement statement, Token lineNumber)
+    private Statement StatementWrapper(Statement statement)
     {
-        int lineNumberValue = GetLineNumberValue(lineNumber);
-        statement.LineNumber = lineNumberValue;
-
-        if (lineNumberValue == 0 && char.IsLetter(lineNumber.SourceLine[0]))
-            statement.SourceLine = lineNumber.SourceLine;
-        else if (lineNumber.SourceLine.StartsWith(lineNumberValue.ToString()))
-            statement.SourceLine = lineNumber.SourceLine.Replace(lineNumberValue.ToString(), "").TrimStart(' ');
-
+        statement.LineNumber = _currentLine.LineNumber;
+        statement.SourceLine = _currentLine.SourceLine;
+        
         return statement;
     }
 
-    private Statement ContStatement(Token lineNumber)
+    private Statement ContStatement()
     {
-        return StatementWrapper(new Cont(), lineNumber);
+        return StatementWrapper(new Cont());
     }
 
-    private Statement GotoStatement(Token lineNumber)
+    private Statement GotoStatement()
     {
         Expression location = Expression();
-        return StatementWrapper(new Goto(location), lineNumber);
+        return StatementWrapper(new Goto(location));
     }
 
-    private Statement ClsStatement(Token lineNumber)
+    private Statement ClsStatement()
     {
-        return StatementWrapper(new Cls(), lineNumber);
+        return StatementWrapper(new Cls());
     }
 
-    private Statement NextStatement(Token lineNumber)
+    private Statement NextStatement()
     {
         if (Peek().Type != TokenType.Identifier)
             throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
@@ -257,10 +252,10 @@ public class Parser : IParser
 
         Expression identifier = Identifier();
 
-        return StatementWrapper(new Next(identifier), lineNumber);
+        return StatementWrapper(new Next(identifier));
     }
 
-    private Statement ForStatement(Token lineNumber)
+    private Statement ForStatement()
     {
         Expression identifier = Identifier();
 
@@ -279,10 +274,10 @@ public class Parser : IParser
         else
             stepValue = new Literal(1);
 
-        return StatementWrapper(new For(identifier, startValue, endValue, stepValue), lineNumber);
+        return StatementWrapper(new For(identifier, startValue, endValue, stepValue));
     }
 
-    private Statement InputStatement(Token lineNumber)
+    private Statement InputStatement()
     {
         bool newline = true;
         var values = new List<Expression>();
@@ -308,27 +303,26 @@ public class Parser : IParser
                 newline = false;
         }
 
-        return StatementWrapper(new Input(values, newline), lineNumber);
+        return StatementWrapper(new Input(values, newline));
     }
 
-    private Statement NewStatement(Token lineNumber)
+    private Statement NewStatement()
     {
-        return StatementWrapper(new New(), lineNumber);
+        return StatementWrapper(new New());
     }
 
-    private Statement DeleteStatement(Token lineNumber)
+    private Statement DeleteStatement()
     {
-        int lineNumberValue = GetLineNumberValue(lineNumber);
         Advance();
-        return new Delete(lineNumberValue);
+        return new Delete(_currentLine.LineNumber);
     }
 
-    private Statement EndStatement(Token lineNumber)
+    private Statement EndStatement()
     {
-        return StatementWrapper(new End(), lineNumber);
+        return StatementWrapper(new End());
     }
 
-    private Statement IfStatement(Token lineNumber)
+    private Statement IfStatement()
     {
         Expression condition = Expression();
         Token current = Peek();
@@ -340,18 +334,18 @@ public class Parser : IParser
         {
             TokenType.Gosub => new Gosub(Expression()),
             TokenType.Goto => new Goto(Expression()),
-            _ => Peek().Type == TokenType.Number ? new Goto(Expression()) : Statement(lineNumber)
+            _ => Peek().Type == TokenType.Number ? new Goto(Expression()) : Statement()
         };
 
         Statement savedThenStatement = thenBranch;
 
         while (Match(TokenType.Colon))
         {
-            thenBranch.Next = Statement(lineNumber);
+            thenBranch.Next = Statement();
             thenBranch = thenBranch.Next;
         }
 
-        return StatementWrapper(new If(condition, savedThenStatement), lineNumber);
+        return StatementWrapper(new If(condition, savedThenStatement));
     }
 
     private Statement SaveStatement()
@@ -372,10 +366,10 @@ public class Parser : IParser
         Expression path = !IsAtEnd() ? Expression() : new Literal(string.Empty);
         return new Merge(path);
     }
-    private Statement RemarkStatement(Token lineNumber)
+    private Statement RemarkStatement()
     {
         var value = new Literal(Previous().Literal);
-        return StatementWrapper(new Rem(value), lineNumber);
+        return StatementWrapper(new Rem(value));
     }
 
     private Statement ListStatement()
@@ -396,7 +390,7 @@ public class Parser : IParser
         return new StatementExpression(expression);
     }
 
-    private Statement LetStatement(Token lineNumber)
+    private Statement LetStatement()
     {
         Token peek = Peek();
         Token peekNext = PeekNext();
@@ -405,14 +399,14 @@ public class Parser : IParser
             throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
                 "Expected variable name or function call.");
 
-        if (peekNext.Type != TokenType.Equal && _builtins.Get(peek.Lexeme) != null) return StatementWrapper(new StatementExpression(Call()), lineNumber);
+        if (peekNext.Type != TokenType.Equal && _builtins.Get(peek.Lexeme) != null) return StatementWrapper(new StatementExpression(Call()));
 
         Expression identifier = Identifier();
 
         Consume(TokenType.Equal, "Expected assignment.");
 
         Expression value = Expression();
-        return StatementWrapper(new Let(identifier, value), lineNumber);
+        return StatementWrapper(new Let(identifier, value));
     }
 
     private Expression Identifier()
@@ -437,7 +431,7 @@ public class Parser : IParser
         return IsAtEnd() || Peek().Type == TokenType.Colon;
     }
 
-    private Statement PrintStatement(Token lineNumber)
+    private Statement PrintStatement()
     {
         bool newline = true;
         var values = new List<Expression>();
@@ -473,7 +467,7 @@ public class Parser : IParser
 
         }
 
-        return StatementWrapper(new Print(atPosition, values, newline), lineNumber);
+        return StatementWrapper(new Print(atPosition, values, newline));
     }
 
     private int GetLineNumberValue(Token lineNumber)
