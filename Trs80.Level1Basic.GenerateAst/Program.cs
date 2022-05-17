@@ -37,7 +37,7 @@ internal static class Program
             "Data                   : List<Expression> dataElements",
             "Delete                 : int lineToDelete",
             "End",
-            "For                    : Expression variable, Expression startValue, Expression endValue, Expression stepValue",
+            "For                    : Expression identifier, Expression startValue, Expression endValue, Expression stepValue",
             "Gosub                  : Expression location",
             "Goto                   : Expression location",
             "If                     : Expression condition, Statement thenBranch",

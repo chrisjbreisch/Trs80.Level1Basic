@@ -13,7 +13,7 @@ using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
 
-namespace Trs80.Level1Basic.Console.Test;
+namespace Trs80.Level1Basic.Trs80.Test;
 
 [TestClass]
 public class Trs80Test

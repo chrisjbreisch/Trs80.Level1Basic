@@ -17,7 +17,7 @@ public class Environment : IEnvironment
 
     public int CursorX { get; set; }
     public int CursorY { get; set; }
-    public Stack<ForCheckCondition> ForChecks { get; } = new();
+    public Stack<ForCondition> ForConditions { get; } = new();
     public Stack<Statement> ProgramStack { get; } = new();
     public DataElements Data { get; } = new();
     public IProgram Program { get; }

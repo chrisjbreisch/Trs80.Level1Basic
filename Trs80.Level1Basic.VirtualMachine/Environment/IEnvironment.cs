@@ -6,7 +6,7 @@ namespace Trs80.Level1Basic.VirtualMachine.Environment;
 
 public interface IEnvironment
 {
-    Stack<ForCheckCondition> ForChecks { get; }
+    Stack<ForCondition> ForConditions { get; }
     Stack<Statement> ProgramStack { get; }
     DataElements Data { get; }
     IProgram Program { get; }
