@@ -31,12 +31,19 @@ public class Program : IProgram
 
         Statement last = null;
         foreach (Statement statement in _programLines.SelectMany(line => line.Statements))
-        {
-            if (last != null)
-                last.Next = statement;
-            _programStatements.Add(statement);
-            last = statement;
-        }
+            if (statement is Compound compound)
+                last = compound.Statements.Aggregate(last, AddStatementToList);
+            else
+                last = AddStatementToList(last, statement);
+    }
+
+    private Statement AddStatementToList(Statement last, Statement statement)
+    {
+        if (last != null)
+            last.Next = statement;
+        _programStatements.Add(statement);
+        last = statement;
+        return last;
     }
 
     public Statement GetExecutableStatement(int lineNumber)

@@ -33,6 +33,7 @@ internal static class Program
         DefineAst(outputDir, "Statement", new List<string>
         {
             "Cls",
+            "Compound               : List<Statement> statements",
             "Cont",
             "Data                   : List<Expression> dataElements",
             "Delete                 : int lineToDelete",

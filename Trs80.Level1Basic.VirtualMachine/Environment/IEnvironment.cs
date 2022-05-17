@@ -24,7 +24,7 @@ public interface IEnvironment
     void SaveProgram(string path);
     void LoadProgram(string path);
     void NewProgram();
-    void RunProgram(Statement statement, IInterpreter interpreter);
+    void RunStatementList(Statement statement, IInterpreter interpreter);
     void SetNextStatement(Statement statement);
     void HaltRun();
     Statement GetStatementByLineNumber(int lineNumber);

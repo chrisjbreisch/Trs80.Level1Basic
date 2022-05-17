@@ -10,17 +10,17 @@ using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
 
 namespace Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
-public class Next : Statement
+public class Compound : Statement
 {
-    public Expression Variable { get; }
+    public List<Statement> Statements { get; }
 
-    public Next(Expression variable)
+    public Compound(List<Statement> statements)
     {
-        Variable = variable;
+        Statements = statements;
     }
 
     public override T Accept<T>(IVisitor<T> visitor)
     {
-        return visitor.VisitNextStatement(this);
+        return visitor.VisitCompoundStatement(this);
     }
 }

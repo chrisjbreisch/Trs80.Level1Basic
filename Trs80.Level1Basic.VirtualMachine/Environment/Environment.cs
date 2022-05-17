@@ -131,7 +131,7 @@ public class Environment : IEnvironment
     }
 
     private Statement _nextStatement;
-    public void RunProgram(Statement statement, IInterpreter interpreter)
+    public void RunStatementList(Statement statement, IInterpreter interpreter)
     {
         ExecutionHalted = false;
 

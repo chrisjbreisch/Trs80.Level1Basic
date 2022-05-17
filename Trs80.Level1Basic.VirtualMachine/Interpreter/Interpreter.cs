@@ -264,6 +264,13 @@ public class Interpreter : IInterpreter
         return null!;
     }
 
+    public Void VisitCompoundStatement(Compound statement)
+    {
+        _environment.RunStatementList(statement.Statements[0], this);
+
+        return null!;
+    }
+
     public Void VisitContStatement(Cont statement)
     {
         RunProgram(_environment.GetNextStatement(), false);
@@ -276,7 +283,7 @@ public class Interpreter : IInterpreter
         if (initialize)
             _environment.Initialize();
 
-        _environment.RunProgram(statement, this);
+        _environment.RunStatementList(statement, this);
         _trs80.WriteLine();
         _trs80.WriteLine("READY");
     }
@@ -335,7 +342,7 @@ public class Interpreter : IInterpreter
         _environment.ProgramStack.Push(statement.Next ?? _program.CurrentStatement.Next);
 
         Statement jumpToStatement = GetJumpToStatement(statement, statement.Location, "GOSUB");
-        _environment.RunProgram(jumpToStatement, this);
+        _environment.RunStatementList(jumpToStatement, this);
 
         _environment.SetNextStatement(_environment.ProgramStack.Pop());
 
@@ -593,7 +600,7 @@ public class Interpreter : IInterpreter
             _environment.ProgramStack.Push(statement.Next);
             Expression location = new Literal(locations[selector]);
             Statement jumpToStatement = GetJumpToStatement(statement, location, "GOSUB");
-            _environment.RunProgram(jumpToStatement, this);
+            _environment.RunStatementList(jumpToStatement, this);
 
             _environment.SetNextStatement(_environment.ProgramStack.Pop());
             return null!;

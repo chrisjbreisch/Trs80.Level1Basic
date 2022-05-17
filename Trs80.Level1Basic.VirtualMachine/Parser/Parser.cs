@@ -77,13 +77,24 @@ public class Parser : IParser
 
     private List<Statement> Statements()
     {
-        var statements = new List<Statement> { Statement() };
+        var statements = new List<Statement> { Compound() };
 
         while (Match(TokenType.Colon))
             statements.Add(Statement());
 
         return statements;
     }
+
+    private Statement Compound()
+    {
+        var statements = new List<Statement> { Statement() };
+
+        while (Match(TokenType.Colon))
+            statements.Add(Statement());
+
+        return StatementWrapper(statements.Count == 1 ? statements[0] : new Compound(statements));
+    }
+
     private Statement Statement()
     {
         if (Match(TokenType.Cls))
@@ -224,7 +235,7 @@ public class Parser : IParser
     {
         statement.LineNumber = _currentLine.LineNumber;
         statement.SourceLine = _currentLine.SourceLine;
-        
+
         return statement;
     }
 
