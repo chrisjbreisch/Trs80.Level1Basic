@@ -30,9 +30,9 @@ public class ParserTest
 
         parsedLine.LineNumber.Should().Be(10);
         parsedLine.SourceLine.Should().Be("print \"Hello, World!\"");
-        parsedLine.Statements.Count.Should().Be(1);
+        //parsedLine.Statement.Count.Should().Be(1);
 
-        var printStatement = parsedLine.Statements[0] as Print;
+        var printStatement = parsedLine.Statement as Print;
         printStatement.Should().NotBeNull();
         printStatement!.Expressions.Count.Should().Be(1);
 

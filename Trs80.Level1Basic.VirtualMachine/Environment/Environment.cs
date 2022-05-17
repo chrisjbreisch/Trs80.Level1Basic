@@ -167,7 +167,7 @@ public class Environment : IEnvironment
     {
         Data.Clear();
 
-        foreach (Statement dataStatement in Program.List().SelectMany(s => s.Statements).Where(s => s is Data))
+        foreach (Statement dataStatement in Program.List().Select(s => s.Statement).Where(s => s is Data))
             interpreter.Execute(dataStatement);
     }
 

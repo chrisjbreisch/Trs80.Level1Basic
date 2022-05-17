@@ -30,7 +30,7 @@ public class Program : IProgram
         Sort();
 
         Statement last = null;
-        foreach (Statement statement in _programLines.SelectMany(line => line.Statements))
+        foreach (Statement statement in _programLines.Select(line => line.Statement))
             if (statement is Compound compound)
                 last = compound.Statements.Aggregate(last, AddStatementToList);
             else
@@ -85,10 +85,10 @@ public class Program : IProgram
 
     public void RemoveLine(ParsedLine line)
     {
-        IEnumerable<Statement> previousLines = _programLines.SelectMany(s => s.Statements).Where(p => p?.Next?.LineNumber == line.LineNumber);
+        IEnumerable<Statement> previousLines = _programLines.Select(s => s.Statement).Where(p => p?.Next?.LineNumber == line.LineNumber);
 
         foreach (Statement previousLine in previousLines)
-            previousLine.Next = line.Statements[0].Next;
+            previousLine.Next = line.Statement.Next;
 
         _programLines.Remove(line);
     }
@@ -125,7 +125,7 @@ public class Program : IProgram
         if (programLine != null)
         {
             programLine.SourceLine = line.SourceLine;
-            programLine.Statements = line.Statements;
+            programLine.Statement = line.Statement;
         }
         else
         {

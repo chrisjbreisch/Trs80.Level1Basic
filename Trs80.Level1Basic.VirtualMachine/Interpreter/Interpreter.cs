@@ -34,11 +34,7 @@ public class Interpreter : IInterpreter
 
     public void Interpret(ParsedLine line)
     {
-        if (line.LineNumber >= 0)
-            Execute(new Replace(line));
-        else
-            foreach (Statement statement in line.Statements)
-                Execute(statement);
+        Execute(line.LineNumber >= 0 ? new Replace(line) : line.Statement);
     }
 
     private dynamic Evaluate(Expression expression)
@@ -138,7 +134,7 @@ public class Interpreter : IInterpreter
         CheckNumericOperand(expression.UnaryOperator, right);
         return -1 * right;
     }
-    
+
     private static void CheckNumericOperand(Token operatorType, dynamic operand)
     {
         switch (operand)
@@ -150,7 +146,7 @@ public class Interpreter : IInterpreter
                 throw new RuntimeExpressionException(operatorType, "Operand must be a number.");
         }
     }
-    
+
     private static void CheckOperands(Token operatorType, dynamic left, dynamic right)
     {
         switch (left)
@@ -701,7 +697,7 @@ public class Interpreter : IInterpreter
 
         return null!;
     }
-    
+
     private int GetFirstLineNumber()
     {
         Statement statement = _environment.Program.GetFirstStatement();

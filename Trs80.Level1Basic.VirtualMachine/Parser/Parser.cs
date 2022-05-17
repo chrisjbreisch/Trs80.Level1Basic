@@ -60,12 +60,12 @@ public class Parser : IParser
                 Advance();
             else
             {
-                _currentLine.Statements = new List<Statement> { DeleteStatement() };
+                _currentLine.Statement = DeleteStatement();
                 return _currentLine;
             }
         }
 
-        _currentLine.Statements = Statements();
+        _currentLine.Statement = Compound();
         return _currentLine;
     }
 

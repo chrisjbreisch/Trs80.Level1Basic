@@ -7,5 +7,5 @@ public class ParsedLine
 {
     public int LineNumber { get; set; } = -1;
     public string SourceLine { get; set; }
-    public List<Statement> Statements { get; set; }
+    public Statement Statement { get; set; }
 }
