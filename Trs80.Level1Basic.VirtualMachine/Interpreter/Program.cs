@@ -12,8 +12,8 @@ namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
 public class Program : IProgram
 {
     private List<ParsedLine> _programLines = new();
-    private readonly List<Statement> _programStatements = new();
-    private bool _sorted;
+    //private readonly List<Statement> _programStatements = new();
+    private readonly LinkedList<Statement> _statements = new();
     private readonly IScanner _scanner;
     private readonly IParser _parser;
 
@@ -25,9 +25,8 @@ public class Program : IProgram
 
     public void Initialize()
     {
-        _programStatements.Clear();
-        _sorted = false;
-        Sort();
+
+        _statements.Clear();
 
         Statement last = null;
         foreach (Statement statement in _programLines.Select(line => line.Statement))
@@ -41,29 +40,49 @@ public class Program : IProgram
     {
         if (last != null)
             last.Next = statement;
-        _programStatements.Add(statement);
+
+        if (_statements.Count == 0)
+            _statements.AddFirst(statement);
+        else
+        {
+            Statement successor = _statements.FirstOrDefault(s => s.LineNumber > statement.LineNumber);
+            if (successor != null)
+            {
+                LinkedListNode<Statement> node = _statements.Find(successor);
+                _statements.AddBefore(node!, statement);
+            }
+            else
+            {
+                Statement predecessor = _statements.LastOrDefault(s => s.LineNumber < statement.LineNumber);
+                if (predecessor != null)
+                {
+                    LinkedListNode<Statement> node = _statements.Find(predecessor);
+                    _statements.AddAfter(node!, statement);
+                }
+            }
+        }
+
         last = statement;
         return last;
     }
 
     public Statement GetExecutableStatement(int lineNumber)
     {
-        Statement statement = _programStatements
+        Statement statement = _statements
             .FirstOrDefault(s => s.LineNumber == lineNumber && s is not Data);
 
         if (statement is not null) return statement;
-        statement = _programStatements
+        statement = _statements
             .FirstOrDefault(s => s.LineNumber == lineNumber && s is Data);
 
         if (statement is null) return null;
 
-        return _programStatements
+        return _statements
             .FirstOrDefault(s => s.LineNumber >= lineNumber && s is not Data);
     }
 
     public List<ParsedLine> List()
     {
-        Sort();
         return _programLines;
     }
 
@@ -107,8 +126,6 @@ public class Program : IProgram
             ReplaceLine(line);
         else
             _programLines.Add(line);
-
-        _sorted = false;
     }
 
     private ParsedLine GetProgramLine(ParsedLine line)
@@ -130,23 +147,13 @@ public class Program : IProgram
         else
         {
             AddLine(line);
-            Sort();
         }
     }
 
     public Statement GetFirstStatement()
     {
-        Sort();
-        return _programStatements.FirstOrDefault();
+        return _statements.FirstOrDefault();
     }
 
     public Statement CurrentStatement { get; set; }
-
-    public void Sort()
-    {
-        if (_sorted) return;
-
-        _programLines = _programLines.OrderBy(l => l.LineNumber).ToList();
-        _sorted = true;
-    }
 }
