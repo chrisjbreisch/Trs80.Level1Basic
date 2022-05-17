@@ -12,14 +12,14 @@ namespace Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
 public class For : Statement
 {
-    public Expression Variable { get; }
+    public Expression Identifier { get; }
     public Expression StartValue { get; }
     public Expression EndValue { get; }
     public Expression StepValue { get; }
 
-    public For(Expression variable, Expression startValue, Expression endValue, Expression stepValue)
+    public For(Expression identifier, Expression startValue, Expression endValue, Expression stepValue)
     {
-        Variable = variable;
+        Identifier = identifier;
         StartValue = startValue;
         EndValue = endValue;
         StepValue = stepValue;

@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Trs80.Level1Basic.Application\Trs80.Level1Basic.Application.csproj" />
-    <ProjectReference Include="..\Trs80.Level1Basic.Extensions\Trs80.Level1Basic.Common.csproj" />
+    <ProjectReference Include="..\Trs80.Level1Basic.Common\Trs80.Level1Basic.Common.csproj" />
     <ProjectReference Include="..\Trs80.Level1Basic.TestUtilities\Trs80.Level1Basic.TestUtilities.csproj" />
     <ProjectReference Include="..\Trs80.Level1Basic.VirtualMachine\Trs80.Level1Basic.VirtualMachine.csproj" />
   </ItemGroup>

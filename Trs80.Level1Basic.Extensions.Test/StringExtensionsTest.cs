@@ -2,7 +2,7 @@ using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Trs80.Level1Basic.Common.Extensions;
 
-namespace Trs80.Level1Basic.Extensions.Test
+namespace Trs80.Level1Basic.Common.Test
 {
     [TestClass]
     public class StringExtensionsTest

@@ -83,7 +83,7 @@ public class Interpreter : IInterpreter
         dynamic left = Evaluate(expression.Left);
         dynamic right = Evaluate(expression.Right);
 
-        CheckForProperOperands(expression.BinaryOperator, left, right);
+        CheckOperands(expression.BinaryOperator, left, right);
 
         return expression.BinaryOperator.Type switch
         {
@@ -135,11 +135,23 @@ public class Interpreter : IInterpreter
     {
         dynamic right = Evaluate(expression.Right);
 
-        CheckForNumericOperand(expression.UnaryOperator, right);
+        CheckNumericOperand(expression.UnaryOperator, right);
         return -1 * right;
     }
-
-    private static void CheckForProperOperands(Token operatorType, dynamic left, dynamic right)
+    
+    private static void CheckNumericOperand(Token operatorType, dynamic operand)
+    {
+        switch (operand)
+        {
+            case float:
+            case int:
+                return;
+            default:
+                throw new RuntimeExpressionException(operatorType, "Operand must be a number.");
+        }
+    }
+    
+    private static void CheckOperands(Token operatorType, dynamic left, dynamic right)
     {
         switch (left)
         {
@@ -151,18 +163,6 @@ public class Interpreter : IInterpreter
                 return;
             default:
                 throw new RuntimeExpressionException(operatorType, "Operands are of incompatible types.");
-        }
-    }
-
-    private static void CheckForNumericOperand(Token operatorType, dynamic operand)
-    {
-        switch (operand)
-        {
-            case float:
-            case int:
-                return;
-            default:
-                throw new RuntimeExpressionException(operatorType, "Operand must be a number.");
         }
     }
 
@@ -271,6 +271,16 @@ public class Interpreter : IInterpreter
         return null!;
     }
 
+    public void RunProgram(Statement statement, bool initialize)
+    {
+        if (initialize)
+            _environment.Initialize();
+
+        _environment.RunProgram(statement, this);
+        _trs80.WriteLine();
+        _trs80.WriteLine("READY");
+    }
+
     public Void VisitDataStatement(Data statement)
     {
         foreach (Expression element in statement.DataElements)
@@ -286,6 +296,13 @@ public class Interpreter : IInterpreter
         return null!;
     }
 
+    private void DeleteStatement(int lineNumber)
+    {
+        ParsedLine programLine = _environment.Program.List().FirstOrDefault(l => l.LineNumber == lineNumber);
+        if (programLine != null)
+            _environment.Program.RemoveLine(programLine);
+    }
+
     public Void VisitEndStatement(End statement)
     {
         _environment.HaltRun();
@@ -296,18 +313,18 @@ public class Interpreter : IInterpreter
     public Void VisitForStatement(For statement)
     {
         dynamic startValue = Evaluate(statement.StartValue);
-        Assign(statement.Variable, startValue);
+        Assign(statement.Identifier, startValue);
 
         dynamic endValue = Evaluate(statement.EndValue);
         dynamic stepValue = Evaluate(statement.StepValue);
 
-        _environment.ForChecks.Push(new ForCheckCondition
+        _environment.ForConditions.Push(new ForCondition
         {
-            Variable = statement.Variable,
+            Identifier = statement.Identifier,
             Start = (int)startValue,
             End = (int)endValue,
             Step = (int)stepValue,
-            Next = statement.Next
+            Goto = statement.Next
         });
 
         return null!;
@@ -323,6 +340,24 @@ public class Interpreter : IInterpreter
         _environment.SetNextStatement(_environment.ProgramStack.Pop());
 
         return null!;
+    }
+
+    private Statement GetJumpToStatement(Statement statement, Expression location, string jumpType)
+    {
+        dynamic jumpToLineNumber = Evaluate(location);
+
+        Statement jumpToStatement = GetStatementByLineNumber(jumpToLineNumber);
+
+        if (jumpToStatement is null)
+            throw new RuntimeStatementException(statement.LineNumber, statement.SourceLine,
+                $"Can't {jumpType} line {jumpToLineNumber}");
+
+        return jumpToStatement;
+    }
+
+    private Statement GetStatementByLineNumber(int lineNumber)
+    {
+        return _environment.GetStatementByLineNumber(lineNumber);
     }
 
     public Void VisitGotoStatement(Goto statement)
@@ -352,12 +387,72 @@ public class Interpreter : IInterpreter
         return null!;
     }
 
+    private void ExecuteThenBranch(Statement thenBranch)
+    {
+        Statement nextStatement = thenBranch;
+        while (nextStatement != null)
+        {
+            Execute(nextStatement);
+            if (nextStatement is Goto) break;
+            nextStatement = nextStatement.Next;
+        }
+    }
+
     public Void VisitInputStatement(Input statement)
     {
         foreach (Expression expression in statement.Expressions)
             ProcessInputExpression(expression, statement.WriteNewline);
 
         return null!;
+    }
+
+    private void ProcessInputExpression(Expression expression, bool writeNewline)
+    {
+        switch (expression)
+        {
+            case Literal:
+                _trs80.Write(Stringify(Evaluate(expression)));
+                break;
+            case Identifier variable:
+                GetInputValue(variable, writeNewline);
+                break;
+            case Array array:
+                GetInputValue(array, writeNewline);
+                break;
+        }
+    }
+
+    private void GetInputValue(Expression variable, bool writeNewline)
+    {
+        _trs80.Write("?");
+
+        if (writeNewline)
+            _trs80.WriteLine();
+
+        string value = _trs80.ReadLine();
+        if (value is null)
+            Assign(variable, null);
+        else if (int.TryParse(value, out int intValue))
+            Assign(variable, intValue);
+        else if (float.TryParse(value, out float floatValue))
+            Assign(variable, floatValue);
+        else if (_environment.Exists(value))
+        {
+            dynamic lookup = _environment.Get(value);
+            Assign(variable, lookup);
+        }
+        else
+        {
+            try
+            {
+                Assign(variable, value);
+            }
+            catch (ValueOutOfRangeException)
+            {
+                _trs80.WriteLine("WHAT?");
+                GetInputValue(variable, writeNewline);
+            }
+        }
     }
 
     public Void VisitLetStatement(Let statement)
@@ -377,6 +472,15 @@ public class Interpreter : IInterpreter
         _environment.ListProgram(lineNumber);
 
         return null!;
+    }
+
+    private int GetStartingLineNumber(Expression startAtLineNumber)
+    {
+        int lineNumber = -1;
+        dynamic value = Evaluate(startAtLineNumber);
+        if (value != null)
+            lineNumber = (int)value;
+        return lineNumber;
     }
 
     public Void VisitLoadStatement(Load statement)
@@ -410,26 +514,26 @@ public class Interpreter : IInterpreter
 
     public Void VisitNewStatement(New statement)
     {
-        NewProgram();
+        _environment.Program.Clear();
 
         return null!;
     }
 
     public Void VisitNextStatement(Next statement)
     {
-        ForCheckCondition checkCondition = GetCheckCondition(statement);
-        dynamic nextIndexerValue = IncrementIndexer(checkCondition);
-        if (ExitFor(checkCondition, nextIndexerValue)) return null!;
+        ForCondition condition = PopCondition(statement);
+        dynamic newValue = IncrementIndexer(condition.Identifier, condition.Step);
+        if (ConditionMet(newValue, condition.Step, condition.End)) return null!;
 
-        _environment.ForChecks.Push(checkCondition);
-        _environment.SetNextStatement(checkCondition.Next);
+        _environment.ForConditions.Push(condition);
+        _environment.SetNextStatement(condition.Goto);
 
         return null!;
     }
 
-    private ForCheckCondition GetCheckCondition(Next next)
+    private ForCondition PopCondition(Next next)
     {
-        ForCheckCondition checkCondition = null;
+        ForCondition checkCondition = null;
 
         if (next.Variable != null)
         {
@@ -437,12 +541,12 @@ public class Interpreter : IInterpreter
             var nextIdentifier = next.Variable as Identifier;
             do
             {
-                if (_environment.ForChecks.Count == 0)
+                if (_environment.ForConditions.Count == 0)
                     throw new ParseException(next.LineNumber, next.SourceLine,
                         "'NEXT' variable mismatch with 'FOR'");
 
-                checkCondition = _environment.ForChecks.Pop();
-                if (checkCondition.Variable is Identifier variable)
+                checkCondition = _environment.ForConditions.Pop();
+                if (checkCondition.Identifier is Identifier variable)
                     checkIdentifier = variable;
                 else
                     throw new ParseException(next.LineNumber, next.SourceLine,
@@ -458,21 +562,21 @@ public class Interpreter : IInterpreter
         return checkCondition;
     }
 
-    private dynamic IncrementIndexer(ForCheckCondition checkCondition)
+    private dynamic IncrementIndexer(Expression identifier, int step)
     {
-        dynamic indexerValue = Evaluate(checkCondition.Variable);
-        dynamic nextIndexerValue = indexerValue + checkCondition.Step;
-        Assign(checkCondition.Variable, nextIndexerValue);
-        return nextIndexerValue;
+        dynamic currentValue = Evaluate(identifier);
+        dynamic newValue = currentValue + step;
+        Assign(identifier, newValue);
+        return newValue;
     }
 
-    private static bool ExitFor(ForCheckCondition checkCondition, dynamic nextIndexerValue)
+    private static bool ConditionMet(dynamic nextValue, int step, int endValue)
     {
-        if (checkCondition.Step > 0)
+        if (step > 0)
         {
-            if (nextIndexerValue > checkCondition.End) return true;
+            if (nextValue > endValue) return true;
         }
-        else if (nextIndexerValue < checkCondition.End) return true;
+        else if (nextValue < endValue) return true;
 
         return false;
     }
@@ -590,6 +694,16 @@ public class Interpreter : IInterpreter
 
         return null!;
     }
+    
+    private int GetFirstLineNumber()
+    {
+        Statement statement = _environment.Program.GetFirstStatement();
+
+        if (statement is null)
+            return -1;
+
+        return statement.LineNumber;
+    }
 
     public Void VisitSaveStatement(Save statement)
     {
@@ -618,124 +732,5 @@ public class Interpreter : IInterpreter
         _environment.HaltRun();
 
         return null!;
-    }
-
-    private int GetFirstLineNumber()
-    {
-        Statement statement = _environment.Program.GetFirstStatement();
-
-        if (statement is null)
-            return -1;
-
-        return statement.LineNumber;
-    }
-
-    private int GetStartingLineNumber(Expression startAtLineNumber)
-    {
-        int lineNumber = -1;
-        dynamic value = Evaluate(startAtLineNumber);
-        if (value != null)
-            lineNumber = (int)value;
-        return lineNumber;
-    }
-
-    public void RunProgram(Statement statement, bool initialize)
-    {
-        if (initialize)
-            _environment.Initialize();
-
-        _environment.RunProgram(statement, this);
-        _trs80.WriteLine();
-        _trs80.WriteLine("READY");
-    }
-
-    private Statement GetJumpToStatement(Statement statement, Expression location, string jumpType)
-    {
-        dynamic jumpToLineNumber = Evaluate(location);
-
-        Statement jumpToStatement = GetStatementByLineNumber(jumpToLineNumber);
-
-        if (jumpToStatement is null)
-            throw new RuntimeStatementException(statement.LineNumber, statement.SourceLine,
-                $"Can't {jumpType} line {jumpToLineNumber}");
-
-        return jumpToStatement;
-    }
-
-    private void ExecuteThenBranch(Statement thenBranch)
-    {
-        Statement nextStatement = thenBranch;
-        while (nextStatement != null)
-        {
-            Execute(nextStatement);
-            if (nextStatement is Goto) break;
-            nextStatement = nextStatement.Next;
-        }
-    }
-
-    private void ProcessInputExpression(Expression expression, bool writeNewline)
-    {
-        switch (expression)
-        {
-            case Literal:
-                _trs80.Write(Stringify(Evaluate(expression)));
-                break;
-            case Identifier variable:
-                GetInputValue(variable, writeNewline);
-                break;
-            case Array array:
-                GetInputValue(array, writeNewline);
-                break;
-        }
-    }
-
-    private void GetInputValue(Expression variable, bool writeNewline)
-    {
-        _trs80.Write("?");
-
-        if (writeNewline)
-            _trs80.WriteLine();
-
-        string value = _trs80.ReadLine();
-        if (value is null)
-            Assign(variable, null);
-        else if (int.TryParse(value, out int intValue))
-            Assign(variable, intValue);
-        else if (float.TryParse(value, out float floatValue))
-            Assign(variable, floatValue);
-        else if (_environment.Exists(value))
-        {
-            dynamic lookup = _environment.Get(value);
-            Assign(variable, lookup);
-        }
-        else
-        {
-            try
-            {
-                Assign(variable, value);
-            }
-            catch (ValueOutOfRangeException)
-            {
-                _trs80.WriteLine("WHAT?");
-                GetInputValue(variable, writeNewline);
-            }
-        }
-    }
-
-    private Statement GetStatementByLineNumber(int lineNumber)
-    {
-        return _environment.GetStatementByLineNumber(lineNumber);
-    }
-
-    private void NewProgram()
-    {
-        _environment.Program.Clear();
-    }
-
-    private void DeleteStatement(int lineNumber)
-    {
-        ParsedLine programLine = _environment.Program.List().FirstOrDefault(l => l.LineNumber == lineNumber);
-        if (programLine != null)
-            _environment.Program.RemoveLine(programLine);
     }
 }
