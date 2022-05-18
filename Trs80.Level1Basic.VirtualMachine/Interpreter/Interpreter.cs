@@ -248,7 +248,7 @@ public class Interpreter : IInterpreter
         }
         catch (Exception ex)
         {
-            throw new RuntimeStatementException(statement.LineNumber, statement.SourceLine, ex.Message);
+            throw new RuntimeStatementException(statement.LineNumber, statement.SourceLine, ex.Message, ex);
         }
     }
 
@@ -262,7 +262,7 @@ public class Interpreter : IInterpreter
 
     public Void VisitCompoundStatement(Compound statement)
     {
-        _environment.RunStatementList(statement.Statements[0], this);
+        _environment.RunStatementList(statement.Statements.First(), this);
 
         return null!;
     }
@@ -301,7 +301,7 @@ public class Interpreter : IInterpreter
 
     private void DeleteStatement(int lineNumber)
     {
-        ParsedLine programLine = _environment.Program.List().FirstOrDefault(l => l.LineNumber == lineNumber);
+        Statement programLine = _environment.Program.List().FirstOrDefault(l => l.LineNumber == lineNumber);
         if (programLine != null)
             _environment.Program.RemoveLine(programLine);
     }
@@ -327,7 +327,7 @@ public class Interpreter : IInterpreter
             Start = (int)startValue,
             End = (int)endValue,
             Step = (int)stepValue,
-            Goto = statement.Next
+            Goto = _environment.GetNextStatement(statement)
         });
 
         return null!;
@@ -335,7 +335,7 @@ public class Interpreter : IInterpreter
 
     public Void VisitGosubStatement(Gosub statement)
     {
-        _environment.ProgramStack.Push(statement.Next ?? _program.CurrentStatement.Next);
+        _environment.ProgramStack.Push(_environment.GetNextStatement(statement) ?? _environment.GetNextStatement(_program.CurrentStatement));
 
         Statement jumpToStatement = GetJumpToStatement(statement, statement.Location, "GOSUB");
         _environment.RunStatementList(jumpToStatement, this);
@@ -397,7 +397,7 @@ public class Interpreter : IInterpreter
         {
             Execute(nextStatement);
             if (nextStatement is Goto) break;
-            nextStatement = nextStatement.Next;
+            nextStatement = _environment.GetNextStatement(nextStatement);
         }
     }
 
@@ -593,7 +593,7 @@ public class Interpreter : IInterpreter
 
         if (statement.IsGosub)
         {
-            _environment.ProgramStack.Push(statement.Next);
+            _environment.ProgramStack.Push(_environment.GetNextStatement(statement));
             Expression location = new Literal(locations[selector]);
             Statement jumpToStatement = GetJumpToStatement(statement, location, "GOSUB");
             _environment.RunStatementList(jumpToStatement, this);

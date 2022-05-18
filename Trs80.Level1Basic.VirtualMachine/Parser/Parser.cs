@@ -75,24 +75,24 @@ public class Parser : IParser
         _current = 0;
     }
 
-    private List<Statement> Statements()
-    {
-        var statements = new List<Statement> { Compound() };
-
-        while (Match(TokenType.Colon))
-            statements.Add(Statement());
-
-        return statements;
-    }
-
     private Statement Compound()
     {
-        var statements = new List<Statement> { Statement() };
+        Statement current = Statement();
+        Statement previous = current;
+        var compound = new Compound(new LinkedList<Statement>());
+        compound.Statements.AddFirst(current);
 
         while (Match(TokenType.Colon))
-            statements.Add(Statement());
+        {
+            current.Parent = compound;
+            current = Statement();
+            previous.Next = current;
+            previous = current;
+            current.Parent = compound;
+            compound.Statements.AddLast(current);
+        }
 
-        return StatementWrapper(statements.Count == 1 ? statements[0] : new Compound(statements));
+        return StatementWrapper(compound.Statements.Count == 1 ? compound.Statements.First() : compound);
     }
 
     private Statement Statement()

@@ -30,5 +30,6 @@ public interface IEnvironment
     Statement GetStatementByLineNumber(int lineNumber);
     void LoadData(IInterpreter interpreter);
     Statement GetNextStatement();
+    Statement GetNextStatement(Statement statement);
     void Initialize();
 }

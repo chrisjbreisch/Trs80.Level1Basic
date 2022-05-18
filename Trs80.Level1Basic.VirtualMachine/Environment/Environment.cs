@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
-using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
 namespace Trs80.Level1Basic.VirtualMachine.Environment;
@@ -80,7 +79,7 @@ public class Environment : IEnvironment
     {
         int index = 0;
         bool exitList = false;
-        foreach (ParsedLine line in Program.List().Where(s => s.LineNumber >= lineNumber))
+        foreach (Statement line in Program.List().Where(s => s.LineNumber >= lineNumber))
         {
             _trs80.WriteLine(line.LineNumber >= 0 ? $" {line.LineNumber}  {line.SourceLine}" : $"{line.SourceLine}");
             index++;
@@ -113,8 +112,8 @@ public class Environment : IEnvironment
         using var newWriter = new StreamWriter(path);
         _trs80.Out = newWriter;
 
-        foreach (ParsedLine line in Program.List())
-            _trs80.WriteLine(line.LineNumber >= 0 ? $" {line.LineNumber}  {line.SourceLine}" : $"{line.SourceLine}");
+        foreach (Statement statement in Program.List())
+            _trs80.WriteLine(statement.LineNumber >= 0 ? $" {statement.LineNumber}  {statement.SourceLine}" : $"{statement.SourceLine}");
 
         _trs80.Out = oldWriter;
     }
@@ -137,15 +136,26 @@ public class Environment : IEnvironment
 
         while (statement != null && !ExecutionHalted)
         {
-            _nextStatement = statement.Next;
+            _nextStatement = GetNextStatement(statement);
             interpreter.Execute(statement);
             statement = _nextStatement;
         }
     }
 
-    public int MemoryInUse()
+    public Statement GetNextStatement(Statement statement)
     {
-        return Program.Size();
+        while (true)
+        {
+            if (statement.Next != null) return statement.Next;
+            if (statement.Parent != null)
+            {
+                statement = statement.Parent;
+                continue;
+            }
+
+            LinkedListNode<Statement> node = Program.List().Find(statement);
+            return node != null ? node!.Next?.Value : null;
+        }
     }
 
     public Statement GetStatementByLineNumber(int lineNumber)
@@ -167,7 +177,7 @@ public class Environment : IEnvironment
     {
         Data.Clear();
 
-        foreach (Statement dataStatement in Program.List().Select(s => s.Statement).Where(s => s is Data))
+        foreach (Statement dataStatement in Program.List().Where(s => s is Data))
             interpreter.Execute(dataStatement);
     }
 

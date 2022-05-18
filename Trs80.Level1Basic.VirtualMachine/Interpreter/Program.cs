@@ -11,8 +11,7 @@ namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
 
 public class Program : IProgram
 {
-    private List<ParsedLine> _programLines = new();
-    //private readonly List<Statement> _programStatements = new();
+    //private List<ParsedLine> _programLines = new();
     private readonly LinkedList<Statement> _statements = new();
     private readonly IScanner _scanner;
     private readonly IParser _parser;
@@ -25,22 +24,10 @@ public class Program : IProgram
 
     public void Initialize()
     {
-
-        _statements.Clear();
-
-        Statement last = null;
-        foreach (Statement statement in _programLines.Select(line => line.Statement))
-            if (statement is Compound compound)
-                last = compound.Statements.Aggregate(last, AddStatementToList);
-            else
-                last = AddStatementToList(last, statement);
     }
 
-    private Statement AddStatementToList(Statement last, Statement statement)
+    private void AddStatement(Statement statement)
     {
-        if (last != null)
-            last.Next = statement;
-
         if (_statements.Count == 0)
             _statements.AddFirst(statement);
         else
@@ -61,9 +48,6 @@ public class Program : IProgram
                 }
             }
         }
-
-        last = statement;
-        return last;
     }
 
     public Statement GetExecutableStatement(int lineNumber)
@@ -81,14 +65,14 @@ public class Program : IProgram
             .FirstOrDefault(s => s.LineNumber >= lineNumber && s is not Data);
     }
 
-    public List<ParsedLine> List()
+    public LinkedList<Statement> List()
     {
-        return _programLines;
+        return _statements;
     }
 
     public void Clear()
     {
-        _programLines.Clear();
+        _statements.Clear();
     }
 
     public void Load(string path)
@@ -102,51 +86,63 @@ public class Program : IProgram
         }
     }
 
-    public void RemoveLine(ParsedLine line)
+    public void RemoveLine(Statement line)
     {
-        IEnumerable<Statement> previousLines = _programLines.Select(s => s.Statement).Where(p => p?.Next?.LineNumber == line.LineNumber);
+        Statement existing = _statements.FirstOrDefault(s => s.LineNumber == line.LineNumber);
+        if (existing == null) return;
 
-        foreach (Statement previousLine in previousLines)
-            previousLine.Next = line.Statement.Next;
-
-        _programLines.Remove(line);
+        _statements.Remove(existing);
     }
 
     public int Size()
     {
-        return _programLines.Sum(statement => 4 + statement.SourceLine.Length);
+        return _statements.Sum(statement => 4 + statement.SourceLine.Length);
     }
 
     private void AddLine(ParsedLine line)
     {
         if (line == null) return;
-        ParsedLine programLine = GetProgramLine(line);
+        Statement programLine = GetProgramLine(line);
 
         if (programLine != null)
             ReplaceLine(line);
         else
-            _programLines.Add(line);
+            AddStatement(line.Statement);
     }
 
-    private ParsedLine GetProgramLine(ParsedLine line)
+    private Statement GetProgramLine(ParsedLine line)
     {
-        ParsedLine programLine = _programLines.FirstOrDefault(l => l.LineNumber == line.LineNumber);
+        Statement programLine = _statements.FirstOrDefault(l => l.LineNumber == line.LineNumber);
         return programLine;
     }
 
     public void ReplaceLine(ParsedLine line)
     {
         if (line == null) return;
-        ParsedLine programLine = GetProgramLine(line);
-
-        if (programLine != null)
-        {
-            programLine.SourceLine = line.SourceLine;
-            programLine.Statement = line.Statement;
-        }
+        Statement statement = _statements.FirstOrDefault(s => s.LineNumber == line.LineNumber);
+        if (statement == null)
+            AddLine(line);
         else
         {
-            AddLine(line);
+            if (_statements.Count == 1)
+            {
+                _statements.RemoveFirst();
+                _statements.AddFirst(line.Statement);
+            }
+            else
+            {
+                LinkedListNode<Statement> originalNode = _statements.Find(statement);
+                LinkedListNode<Statement> successor = originalNode.Next;
+                if (successor != null)
+                    _statements.AddBefore(successor!, line.Statement);
+                else
+                {
+                    LinkedListNode<Statement> predecessor = originalNode.Previous;
+                    if (predecessor != null) _statements.AddAfter(predecessor, line.Statement);
+                }
+
+                _statements.Remove(statement);
+            }
         }
     }
 

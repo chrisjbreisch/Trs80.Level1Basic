@@ -8,10 +8,10 @@ public interface IProgram
 {
     void Initialize();
     Statement GetExecutableStatement(int lineNumber);
-    List<ParsedLine> List();
+    LinkedList<Statement> List();
     void Clear();
     void Load(string path);
-    void RemoveLine(ParsedLine line);
+    void RemoveLine(Statement line);
     int Size();
     void ReplaceLine(ParsedLine line);
     Statement GetFirstStatement();

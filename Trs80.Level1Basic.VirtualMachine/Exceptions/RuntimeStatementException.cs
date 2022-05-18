@@ -12,4 +12,11 @@ public class RuntimeStatementException : Exception
         LineNumber = lineNumber;
         Statement = statement;
     }
+
+    public RuntimeStatementException(int lineNumber, string statement, string message, Exception innerException) : base(message, innerException)
+    {
+        LineNumber = lineNumber;
+        Statement = statement;
+    }
+
 }

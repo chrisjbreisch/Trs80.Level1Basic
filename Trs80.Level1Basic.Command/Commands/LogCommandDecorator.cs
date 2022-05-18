@@ -22,7 +22,7 @@ public class LogCommandDecorator<TPo> : ICommand<TPo>
         try
         {
             _logger.LogInformation(
-                $"\r\nExecuting {_command.GetType().Name} ({_logger.JsonSerializeObject(parameterObject)})");
+                $"\r\nExecuting {_command.GetType().Name} ()");
             _command.Execute(parameterObject);
         }
         catch (Exception ex)

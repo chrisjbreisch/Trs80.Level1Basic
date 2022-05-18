@@ -33,7 +33,7 @@ internal static class Program
         DefineAst(outputDir, "Statement", new List<string>
         {
             "Cls",
-            "Compound               : List<Statement> statements",
+            "Compound               : LinkedList<Statement> statements",
             "Cont",
             "Data                   : List<Expression> dataElements",
             "Delete                 : int lineToDelete",
@@ -96,6 +96,7 @@ internal static class Program
             writer.WriteLine("    public int LineNumber { get; set; } = -1;");
             writer.WriteLine("    public string SourceLine { get; set; }");
             writer.WriteLine("    public Statement Next { get; set; }");
+            writer.WriteLine("    public Statement Parent { get; set; }");
             writer.WriteLine();
         }
 
