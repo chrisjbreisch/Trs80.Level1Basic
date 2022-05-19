@@ -10,17 +10,13 @@ using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
 
 namespace Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
-public class Save : Statement
+public interface IStatement
 {
-    public Expression Path { get; init; }
+    int LineNumber { get; set; }
+    string SourceLine { get; set; }
+    IStatement Next { get; set; }
+    IStatement Previous { get; set; }
+    IStatement Parent { get; set; }
 
-    public Save(Expression path)
-    {
-        Path = path;
-    }
-
-    public override T Accept<T>(IVisitor<T> visitor)
-    {
-        return visitor.VisitSaveStatement(this);
-    }
+    T Accept<T>(IVisitor<T> visitor);
 }

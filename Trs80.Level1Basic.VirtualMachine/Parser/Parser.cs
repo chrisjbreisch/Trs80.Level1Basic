@@ -335,14 +335,14 @@ public class Parser : IParser
             throw new ParseException(_lineNumber, _source,
                 "Expected 'THEN' or 'GOTO' before line number in 'IF' statement.");
 
-        Statement thenBranch = current.Type switch
+        IStatement thenBranch = current.Type switch
         {
             TokenType.Gosub => new Gosub(Expression()),
             TokenType.Goto => new Goto(Expression()),
             _ => Peek().Type == TokenType.Number ? new Goto(Expression()) : Statement()
         };
 
-        Statement savedThenStatement = thenBranch;
+        IStatement savedThenStatement = thenBranch;
 
         while (Match(TokenType.Colon))
         {
@@ -445,6 +445,7 @@ public class Parser : IParser
         Token current = Peek();
         Token next = PeekNext();
         if (current.Type != TokenType.EndOfLine && next.Type != TokenType.EndOfLine)
+#pragma warning disable S1066 // Collapsible "if" statements should be merged
             if (current.Type == TokenType.At || (current.Type == TokenType.A && next.Type != TokenType.LeftParen))
             {
                 Advance();
@@ -452,6 +453,7 @@ public class Parser : IParser
                 if (!Match(TokenType.Comma, TokenType.Semicolon))
                     throw new ParseException(_lineNumber, _source, "Expected ',' or ';' after AT clause.");
             }
+#pragma warning restore S1066 // Collapsible "if" statements should be merged
 
         while (!IsAtStatementEnd())
         {

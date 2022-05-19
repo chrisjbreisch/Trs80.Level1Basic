@@ -15,6 +15,6 @@ public interface IProgram
     int Size();
     void ReplaceStatement(Statement line);
     Statement GetFirstStatement();
-    Statement CurrentStatement { get; set; }
+    IStatement CurrentStatement { get; set; }
 
 }

@@ -13,11 +13,12 @@ public class Machine : IMachine
     private readonly Interpreter.Environment _globals = new();
     private readonly ITrs80 _trs80;
     private readonly INativeFunctions _natives;
+    private IStatement _nextStatement;
 
     public int CursorX { get; set; }
     public int CursorY { get; set; }
     public Stack<ForCondition> ForConditions { get; } = new();
-    public Stack<Statement> ProgramStack { get; } = new();
+    public Stack<IStatement> ProgramStack { get; } = new();
     public DataElements Data { get; } = new();
     public IProgram Program { get; }
     public bool ExecutionHalted { get; private set; }
@@ -58,11 +59,6 @@ public class Machine : IMachine
     public dynamic Assign(string name, int index, dynamic value)
     {
         return _globals.AssignArray(name, index, value);
-    }
-
-    public dynamic Get(string name)
-    {
-        return _globals.Get(name);
     }
 
     public List<Callable> Function(string name)
@@ -129,8 +125,7 @@ public class Machine : IMachine
         Initialize();
     }
 
-    private Statement _nextStatement;
-    public void RunStatementList(Statement statement, IInterpreter interpreter)
+    public void RunStatementList(IStatement statement, IInterpreter interpreter)
     {
         ExecutionHalted = false;
 
@@ -142,28 +137,12 @@ public class Machine : IMachine
         }
     }
 
-    public Statement GetNextStatement(Statement statement)
-    {
-        while (true)
-        {
-            if (statement.Next != null) return statement.Next;
-            if (statement.Parent != null)
-            {
-                statement = statement.Parent;
-                continue;
-            }
-
-            LinkedListNode<Statement> node = Program.List().Find(statement);
-            return node != null ? node!.Next?.Value : null;
-        }
-    }
-
     public Statement GetStatementByLineNumber(int lineNumber)
     {
         return Program.GetExecutableStatement(lineNumber);
     }
 
-    public void SetNextStatement(Statement statement)
+    public void SetNextStatement(IStatement statement)
     {
         _nextStatement = statement;
     }
@@ -181,7 +160,24 @@ public class Machine : IMachine
             interpreter.Execute(dataStatement);
     }
 
-    public Statement GetNextStatement()
+
+    public IStatement GetNextStatement(IStatement statement)
+    {
+        while (true)
+        {
+            if (statement.Next != null) return statement.Next;
+            if (statement.Parent != null)
+            {
+                statement = statement.Parent;
+                continue;
+            }
+
+            LinkedListNode<Statement> node = Program.List().Find(statement as Statement);
+            return node != null ? node!.Next?.Value : null;
+        }
+    }
+
+    public IStatement GetNextStatement()
     {
         return _nextStatement;
     }
@@ -190,6 +186,11 @@ public class Machine : IMachine
     {
         _globals.Clear();
         Data.MoveFirst();
+    }
+
+    public dynamic Get(string name)
+    {
+        return _globals.Get(name);
     }
 
     public dynamic Get(string name, int index)
