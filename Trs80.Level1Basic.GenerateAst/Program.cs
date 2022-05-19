@@ -51,7 +51,7 @@ internal static class Program
             "Next                   : Expression variable",
             "On                     : Expression selector, List<Expression> locations, bool isGosub",
             "Print                  : Expression atPosition, List<Expression> expressions, bool writeNewline",
-            "Replace                : ParsedLine line",
+            "Replace                : Statement statement",
             "Read                   : List<Expression> variables",
             "Rem                    : Literal remark",
             "Restore",

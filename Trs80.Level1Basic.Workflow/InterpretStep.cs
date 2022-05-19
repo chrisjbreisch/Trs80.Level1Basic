@@ -1,6 +1,6 @@
 ﻿using Trs80.Level1Basic.Command;
 using Trs80.Level1Basic.CommandModels;
-using Trs80.Level1Basic.VirtualMachine.Parser;
+using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
@@ -8,13 +8,13 @@ namespace Trs80.Level1Basic.Workflow;
 
 public interface IInterpretStep : IStepBody
 {
-    ParsedLine ParsedLine { get; set; }
+    Statement Statement { get; set; }
 }
 
 public class InterpretStep : StepBody, IInterpretStep
 {
     private readonly ICommand<InterpretModel> _command;
-    public ParsedLine ParsedLine { get; set; } = new();
+    public Statement Statement { get; set; } = null!;
 
     public InterpretStep(ICommand<InterpretModel> inboundCommand)
     {
@@ -25,7 +25,7 @@ public class InterpretStep : StepBody, IInterpretStep
     {
         var model = new InterpretModel
         {
-            ParsedLine = ParsedLine
+            Statement = Statement
         };
 
         _command.Execute(model);

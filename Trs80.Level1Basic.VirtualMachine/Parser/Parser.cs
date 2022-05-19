@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
+using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
@@ -14,14 +14,15 @@ namespace Trs80.Level1Basic.VirtualMachine.Parser;
 
 public interface IParser
 {
-    ParsedLine Parse(List<Token> tokens);
+    Statement Parse(List<Token> tokens);
 }
 
 public class Parser : IParser
 {
     private List<Token> _tokens;
     private int _current;
-    private ParsedLine _currentLine;
+     private int _lineNumber;
+    private string _source;
     private readonly INativeFunctions _natives;
 
     public Parser(INativeFunctions natives)
@@ -29,7 +30,7 @@ public class Parser : IParser
         _natives = natives ?? throw new ArgumentNullException(nameof(natives));
     }
 
-    public ParsedLine Parse(List<Token> tokens)
+    public Statement Parse(List<Token> tokens)
     {
         if (tokens == null) return null;
 
@@ -39,34 +40,27 @@ public class Parser : IParser
         return IsAtEnd() ? null : Line();
     }
 
-    private ParsedLine Line()
+    private Statement Line()
     {
-        _currentLine = new ParsedLine();
         Token lineNumber = Peek();
 
-        _currentLine.LineNumber = GetLineNumberValue(lineNumber);
+        _lineNumber = GetLineNumberValue(lineNumber);
 
-        if (_currentLine.LineNumber == -1 && char.IsLetter(lineNumber.SourceLine[0]))
-            _currentLine.SourceLine = lineNumber.SourceLine;
+        if (_lineNumber == -1 && char.IsLetter(lineNumber.SourceLine[0]))
+            _source = lineNumber.SourceLine;
         else
         {
-            int lineNumberLength = _currentLine.LineNumber.ToString().Length;
-            _currentLine.SourceLine = lineNumber.SourceLine[lineNumberLength..].TrimStart(' ');
+            int lineNumberLength = _lineNumber.ToString().Length;
+            _source = lineNumber.SourceLine[lineNumberLength..].TrimStart(' ');
         }
 
-        if (lineNumber.Type == TokenType.Number)
-        {
-            if (PeekNext().Type != TokenType.EndOfLine)
-                Advance();
-            else
-            {
-                _currentLine.Statement = DeleteStatement();
-                return _currentLine;
-            }
-        }
+        if (lineNumber.Type != TokenType.Number) return Compound();
 
-        _currentLine.Statement = Compound();
-        return _currentLine;
+        if (PeekNext().Type == TokenType.EndOfLine)
+            return DeleteStatement();
+
+        Advance();
+        return Compound();
     }
 
     private void Initialize()
@@ -124,7 +118,7 @@ public class Parser : IParser
         if (Match(TokenType.Merge))
             return MergeStatement();
         if (Match(TokenType.N))
-            return _currentLine.LineNumber >= 0 ? NextStatement() : NewStatement();
+            return _lineNumber >= 0 ? NextStatement() : NewStatement();
         if (Match(TokenType.New))
             return NewStatement();
         if (Match(TokenType.Next))
@@ -170,7 +164,7 @@ public class Parser : IParser
         do
         {
             if (Peek().Type != TokenType.Identifier)
-                throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, "Expected variable after 'READ'.");
+                throw new ParseException(_lineNumber, _source, "Expected variable after 'READ'.");
 
             variables.Add(Expression());
         } while (Match(TokenType.Comma));
@@ -225,7 +219,7 @@ public class Parser : IParser
                 Advance();
         }
         else
-            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
+            throw new ParseException(_lineNumber, _source,
                 "Expected 'GOTO' or 'GOSUB' after 'ON'");
 
         return StatementWrapper(new On(selector, locations, isGosub));
@@ -233,8 +227,8 @@ public class Parser : IParser
 
     private Statement StatementWrapper(Statement statement)
     {
-        statement.LineNumber = _currentLine.LineNumber;
-        statement.SourceLine = _currentLine.SourceLine;
+        statement.LineNumber = _lineNumber;
+        statement.SourceLine = _source;
 
         return statement;
     }
@@ -258,7 +252,7 @@ public class Parser : IParser
     private Statement NextStatement()
     {
         if (Peek().Type != TokenType.Identifier)
-            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
+            throw new ParseException(_lineNumber, _source,
                 "Expected variable name after 'NEXT'.");
 
         Expression identifier = Identifier();
@@ -325,7 +319,7 @@ public class Parser : IParser
     private Statement DeleteStatement()
     {
         Advance();
-        return new Delete(_currentLine.LineNumber);
+        return new Delete(_lineNumber);
     }
 
     private Statement EndStatement()
@@ -338,7 +332,7 @@ public class Parser : IParser
         Expression condition = Expression();
         Token current = Peek();
         if (!Match(TokenType.Then, TokenType.Goto, TokenType.T, TokenType.Gosub) && Peek().Type == TokenType.Number)
-            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
+            throw new ParseException(_lineNumber, _source,
                 "Expected 'THEN' or 'GOTO' before line number in 'IF' statement.");
 
         Statement thenBranch = current.Type switch
@@ -407,7 +401,7 @@ public class Parser : IParser
         Token peekNext = PeekNext();
 
         if (peek.Type != TokenType.Identifier)
-            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
+            throw new ParseException(_lineNumber, _source,
                 "Expected variable name or function call.");
 
         if (peekNext.Type != TokenType.Equal && _natives.Get(peek.Lexeme) != null) return StatementWrapper(new StatementExpression(Call()));
@@ -425,7 +419,7 @@ public class Parser : IParser
         Token peek = Peek();
 
         if (peek.Type != TokenType.Identifier)
-            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
+            throw new ParseException(_lineNumber, _source,
                 "Expected variable name or function call.");
 
         Advance();
@@ -456,7 +450,7 @@ public class Parser : IParser
                 Advance();
                 atPosition = Expression();
                 if (!Match(TokenType.Comma, TokenType.Semicolon))
-                    throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, "Expected ',' or ';' after AT clause.");
+                    throw new ParseException(_lineNumber, _source, "Expected ',' or ';' after AT clause.");
             }
 
         while (!IsAtStatementEnd())
@@ -490,7 +484,7 @@ public class Parser : IParser
         if (line is not int)
             throw new ParseException(-1, lineNumber.SourceLine, $"Invalid text at {line}");
         if (line > short.MaxValue)
-            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, $"Line number cannot exceed {short.MaxValue}.");
+            throw new ParseException(_lineNumber, _source, $"Line number cannot exceed {short.MaxValue}.");
 
         return line;
     }
@@ -568,7 +562,7 @@ public class Parser : IParser
         if (functions.Any(f => f.Arity == 0))
             return new Call(name, new List<Expression>());
 
-        throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
+        throw new ParseException(_lineNumber, _source,
             $"Invalid number of arguments passed to function '{previous.Lexeme}'");
     }
 
@@ -604,7 +598,7 @@ public class Parser : IParser
             _natives.Get(name.Lexeme).FirstOrDefault(f => f.Arity == arguments.Count);
 
         if (function == null)
-            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
+            throw new ParseException(_lineNumber, _source,
                 $"Unknown function '{name.Lexeme}' with argument count {arguments.Count}");
     }
 
@@ -624,12 +618,12 @@ public class Parser : IParser
             return new Identifier(Previous());
 
         if (!IsIdentifierShortHand())
-            throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
+            throw new ParseException(_lineNumber, _source,
                 "Expected expression.");
 
         Token current = Peek();
         Advance();
-        return new Identifier(new Token(TokenType.Identifier, current.Lexeme, current.Lexeme, _currentLine.SourceLine));
+        return new Identifier(new Token(TokenType.Identifier, current.Lexeme, current.Lexeme, _source));
     }
 
     private bool IsIdentifierShortHand()
@@ -646,7 +640,7 @@ public class Parser : IParser
 
     private void Consume(TokenType type, string message)
     {
-        if (!Check(type)) throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine, message);
+        if (!Check(type)) throw new ParseException(_lineNumber, _source, message);
 
         Advance();
     }

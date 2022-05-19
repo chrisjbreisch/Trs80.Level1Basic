@@ -32,9 +32,9 @@ public class Interpreter : IInterpreter
         _program = program ?? throw new ArgumentNullException(nameof(program));
     }
 
-    public void Interpret(ParsedLine line)
+    public void Interpret(Statement statement)
     {
-        Execute(line.LineNumber >= 0 ? new Replace(line) : line.Statement);
+        Execute(statement.LineNumber >= 0 ? new Replace(statement) : statement);
     }
 
     private dynamic Evaluate(Expression expression)
@@ -303,7 +303,7 @@ public class Interpreter : IInterpreter
     {
         Statement programLine = _machine.Program.List().FirstOrDefault(l => l.LineNumber == lineNumber);
         if (programLine != null)
-            _machine.Program.RemoveLine(programLine);
+            _machine.Program.RemoveStatement(programLine);
     }
 
     public Void VisitEndStatement(End statement)
@@ -657,10 +657,10 @@ public class Interpreter : IInterpreter
 
     public Void VisitReplaceStatement(Replace statement)
     {
-        if (string.IsNullOrEmpty(statement.Line.SourceLine))
-            DeleteStatement(statement.Line.LineNumber);
+        if (string.IsNullOrEmpty(statement.Statement.SourceLine))
+            DeleteStatement(statement.Statement.LineNumber);
         else
-            _machine.Program.ReplaceLine(statement.Line);
+            _machine.Program.ReplaceStatement(statement.Statement);
 
         return null!;
     }

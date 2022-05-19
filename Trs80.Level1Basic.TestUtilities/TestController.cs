@@ -6,6 +6,7 @@ using Trs80.Level1Basic.HostMachine;
 using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser;
+using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
 
 using Environment = Trs80.Level1Basic.VirtualMachine.Machine.Machine;
@@ -51,8 +52,8 @@ public class TestController : IDisposable
     public void ExecuteLine(string input)
     {
         List<Token> tokens = _scanner.ScanTokens(input);
-        ParsedLine parsedLine = _parser.Parse(tokens);
-        _interpreter.Interpret(parsedLine);
+        Statement statement = _parser.Parse(tokens);
+        _interpreter.Interpret(statement);
     }
 
     public void ExecuteStatements(List<string> statements)

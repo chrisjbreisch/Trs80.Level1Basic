@@ -26,13 +26,13 @@ public class ParserTest
         IParser parser = new Parser(natives);
 
         List<Token> tokens = scanner.ScanTokens(input);
-        ParsedLine parsedLine = parser.Parse(tokens);
+        Statement statement = parser.Parse(tokens);
 
-        parsedLine.LineNumber.Should().Be(10);
-        parsedLine.SourceLine.Should().Be("print \"Hello, World!\"");
+        statement.LineNumber.Should().Be(10);
+        statement.SourceLine.Should().Be("print \"Hello, World!\"");
         //parsedLine.Statement.Count.Should().Be(1);
 
-        var printStatement = parsedLine.Statement as Print;
+        var printStatement = statement as Print;
         printStatement.Should().NotBeNull();
         printStatement!.Expressions.Count.Should().Be(1);
 

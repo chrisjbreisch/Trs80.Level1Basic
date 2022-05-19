@@ -11,7 +11,6 @@ namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
 
 public class Program : IProgram
 {
-    //private List<ParsedLine> _programLines = new();
     private readonly LinkedList<Statement> _statements = new();
     private readonly IScanner _scanner;
     private readonly IParser _parser;
@@ -26,7 +25,7 @@ public class Program : IProgram
     {
     }
 
-    private void AddStatement(Statement statement)
+    private void InsertStatementIntoList(Statement statement)
     {
         if (_statements.Count == 0)
             _statements.AddFirst(statement);
@@ -41,11 +40,10 @@ public class Program : IProgram
             else
             {
                 Statement predecessor = _statements.LastOrDefault(s => s.LineNumber < statement.LineNumber);
-                if (predecessor != null)
-                {
-                    LinkedListNode<Statement> node = _statements.Find(predecessor);
-                    _statements.AddAfter(node!, statement);
-                }
+                if (predecessor == null) return;
+
+                LinkedListNode<Statement> node = _statements.Find(predecessor);
+                _statements.AddAfter(node!, statement);
             }
         }
     }
@@ -81,14 +79,14 @@ public class Program : IProgram
         while (!reader.EndOfStream)
         {
             List<Token> tokens = _scanner.ScanTokens(reader.ReadLine());
-            ParsedLine line = _parser.Parse(tokens);
-            AddLine(line);
+            Statement statement = _parser.Parse(tokens);
+            AddStatement(statement);
         }
     }
 
-    public void RemoveLine(Statement line)
+    public void RemoveStatement(Statement statement)
     {
-        Statement existing = _statements.FirstOrDefault(s => s.LineNumber == line.LineNumber);
+        Statement existing = _statements.FirstOrDefault(s => s.LineNumber == statement.LineNumber);
         if (existing == null) return;
 
         _statements.Remove(existing);
@@ -99,49 +97,48 @@ public class Program : IProgram
         return _statements.Sum(statement => 4 + statement.SourceLine.Length);
     }
 
-    private void AddLine(ParsedLine line)
+    private void AddStatement(Statement statement)
     {
-        if (line == null) return;
-        Statement programLine = GetProgramLine(line);
+        if (statement == null) return;
 
-        if (programLine != null)
-            ReplaceLine(line);
+        if (FindMatchingStatement(statement) != null)
+            ReplaceStatement(statement);
         else
-            AddStatement(line.Statement);
+            InsertStatementIntoList(statement);
     }
 
-    private Statement GetProgramLine(ParsedLine line)
+    private Statement FindMatchingStatement(Statement statement)
     {
-        Statement programLine = _statements.FirstOrDefault(l => l.LineNumber == line.LineNumber);
-        return programLine;
+        Statement match = _statements.FirstOrDefault(l => l.LineNumber == statement.LineNumber);
+        return match;
     }
 
-    public void ReplaceLine(ParsedLine line)
+    public void ReplaceStatement(Statement statement)
     {
-        if (line == null) return;
-        Statement statement = _statements.FirstOrDefault(s => s.LineNumber == line.LineNumber);
-        if (statement == null)
-            AddLine(line);
+        if (statement == null) return;
+        Statement originalStatement = FindMatchingStatement(statement);
+        if (originalStatement == null)
+            InsertStatementIntoList(statement);
         else
         {
             if (_statements.Count == 1)
             {
                 _statements.RemoveFirst();
-                _statements.AddFirst(line.Statement);
+                _statements.AddFirst(statement);
             }
             else
             {
-                LinkedListNode<Statement> originalNode = _statements.Find(statement);
-                LinkedListNode<Statement> successor = originalNode.Next;
+                LinkedListNode<Statement> originalNode = _statements.Find(originalStatement);
+                LinkedListNode<Statement> successor = originalNode!.Next;
                 if (successor != null)
-                    _statements.AddBefore(successor!, line.Statement);
+                    _statements.AddBefore(successor!, statement);
                 else
                 {
                     LinkedListNode<Statement> predecessor = originalNode.Previous;
-                    if (predecessor != null) _statements.AddAfter(predecessor, line.Statement);
+                    if (predecessor != null) _statements.AddAfter(predecessor, statement);
                 }
 
-                _statements.Remove(statement);
+                _statements.Remove(originalStatement);
             }
         }
     }

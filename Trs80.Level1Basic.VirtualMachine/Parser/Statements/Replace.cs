@@ -12,11 +12,11 @@ namespace Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
 public class Replace : Statement
 {
-    public ParsedLine Line { get; }
+    public Statement Statement { get; }
 
-    public Replace(ParsedLine line)
+    public Replace(Statement statement)
     {
-        Line = line;
+        Statement = statement;
     }
 
     public override T Accept<T>(IVisitor<T> visitor)

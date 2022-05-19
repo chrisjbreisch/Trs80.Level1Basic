@@ -1,8 +1,8 @@
-﻿using Trs80.Level1Basic.VirtualMachine.Parser;
+﻿using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
 namespace Trs80.Level1Basic.CommandModels;
 
 public class InterpretModel
 {
-    public ParsedLine ParsedLine { get; set; } = new();
+    public Statement Statement { get; set; } = null!;
 }

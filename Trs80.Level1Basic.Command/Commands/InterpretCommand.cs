@@ -5,6 +5,7 @@ using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser;
+using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
 namespace Trs80.Level1Basic.Command.Commands;
 
@@ -21,7 +22,7 @@ public class InterpretCommand : ICommand<InterpretModel>
 
     public void Execute(InterpretModel parameterObject)
     {
-        InterpretParsedLine(parameterObject.ParsedLine);
+        InterpretParsedStatement(parameterObject.Statement);
     }
 
     private void WritePrompt()
@@ -30,13 +31,13 @@ public class InterpretCommand : ICommand<InterpretModel>
         _trs80.WriteLine("READY");
     }
 
-    private void InterpretParsedLine(ParsedLine? parsedLine)
+    private void InterpretParsedStatement(Statement? statement)
     {
-        if (parsedLine == null) return;
+        if (statement == null) return;
 
         try
         {
-            _interpreter.Interpret(parsedLine);
+            _interpreter.Interpret(statement);
         }
         catch (Exception ex)
         {

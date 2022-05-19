@@ -11,9 +11,9 @@ public interface IProgram
     LinkedList<Statement> List();
     void Clear();
     void Load(string path);
-    void RemoveLine(Statement line);
+    void RemoveStatement(Statement statement);
     int Size();
-    void ReplaceLine(ParsedLine line);
+    void ReplaceStatement(Statement line);
     Statement GetFirstStatement();
     Statement CurrentStatement { get; set; }
 
