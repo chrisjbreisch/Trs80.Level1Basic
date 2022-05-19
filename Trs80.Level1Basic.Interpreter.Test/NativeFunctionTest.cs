@@ -9,7 +9,7 @@ using Trs80.Level1Basic.TestUtilities;
 namespace Trs80.Level1Basic.Interpreter.Test;
 
 [TestClass]
-public class BuiltinTest
+public class NativeFunctionTest
 {
     [TestMethod]
     public void Interpreter_Can_Call_Abs()

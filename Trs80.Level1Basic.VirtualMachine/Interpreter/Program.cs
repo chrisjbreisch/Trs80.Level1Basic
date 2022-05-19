@@ -15,6 +15,8 @@ public class Program : IProgram
     private readonly IScanner _scanner;
     private readonly IParser _parser;
 
+    public IStatement CurrentStatement { get; set; }
+
     public Program(IScanner scanner, IParser parser)
     {
         _parser = parser ?? throw new ArgumentNullException(nameof(parser));
@@ -150,6 +152,4 @@ public class Program : IProgram
     {
         return _statements.FirstOrDefault();
     }
-
-    public Statement CurrentStatement { get; set; }
 }

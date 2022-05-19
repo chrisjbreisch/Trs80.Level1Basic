@@ -9,5 +9,5 @@ public class ForCondition
     public int Step { get; set; }
     public int Start { get; set; }
     public int End { get; set; }
-    public Statement Goto { get; set; }
+    public IStatement Goto { get; set; }
 }

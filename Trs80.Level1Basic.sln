@@ -43,7 +43,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.TestUtili
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.VirtualMachine", "Trs80.Level1Basic.VirtualMachine\Trs80.Level1Basic.VirtualMachine.csproj", "{827C9838-033A-4044-B091-E0C6FE509DDC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.Extensions.Test", "Trs80.Level1Basic.Extensions.Test\Trs80.Level1Basic.Extensions.Test.csproj", "{B745908C-EE13-4C63-9167-B96015BBE529}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.Common.Test", "Trs80.Level1Basic.Extensions.Test\Trs80.Level1Basic.Common.Test.csproj", "{B745908C-EE13-4C63-9167-B96015BBE529}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.HostMachine", "Trs80.Level1Basic.HostMachine\Trs80.Level1Basic.HostMachine.csproj", "{846802B4-3D03-4817-A220-D134E110DDAC}"
 EndProject

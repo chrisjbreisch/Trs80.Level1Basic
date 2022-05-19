@@ -227,7 +227,7 @@ public class Interpreter : IInterpreter
         return value.ToString("######");
     }
 
-    public void Execute(Statement statement)
+    public void Execute(IStatement statement)
     {
         _program.CurrentStatement = statement;
         try
@@ -274,7 +274,7 @@ public class Interpreter : IInterpreter
         return null!;
     }
 
-    public void RunProgram(Statement statement, bool initialize)
+    public void RunProgram(IStatement statement, bool initialize)
     {
         if (initialize)
             _machine.Initialize();
@@ -390,9 +390,9 @@ public class Interpreter : IInterpreter
         return null!;
     }
 
-    private void ExecuteThenBranch(Statement thenBranch)
+    private void ExecuteThenBranch(IStatement thenBranch)
     {
-        Statement nextStatement = thenBranch;
+        IStatement nextStatement = thenBranch;
         while (nextStatement != null)
         {
             Execute(nextStatement);
@@ -665,7 +665,9 @@ public class Interpreter : IInterpreter
         return null!;
     }
 
+#pragma warning disable S927 // Parameter names should match base declaration and other partial definitions
     public Void VisitRestoreStatement(Restore _)
+#pragma warning restore S927 // Parameter names should match base declaration and other partial definitions
     {
         _machine.Data.MoveFirst();
 

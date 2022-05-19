@@ -7,7 +7,7 @@ namespace Trs80.Level1Basic.VirtualMachine.Machine;
 public interface IMachine
 {
     Stack<ForCondition> ForConditions { get; }
-    Stack<Statement> ProgramStack { get; }
+    Stack<IStatement> ProgramStack { get; }
     DataElements Data { get; }
     IProgram Program { get; }
     int CursorX { get; set;  }
@@ -24,12 +24,12 @@ public interface IMachine
     void SaveProgram(string path);
     void LoadProgram(string path);
     void NewProgram();
-    void RunStatementList(Statement statement, IInterpreter interpreter);
-    void SetNextStatement(Statement statement);
+    void RunStatementList(IStatement statement, IInterpreter interpreter);
+    void SetNextStatement(IStatement statement);
     void HaltRun();
     Statement GetStatementByLineNumber(int lineNumber);
     void LoadData(IInterpreter interpreter);
-    Statement GetNextStatement();
-    Statement GetNextStatement(Statement statement);
+    IStatement GetNextStatement();
+    IStatement GetNextStatement(IStatement statement);
     void Initialize();
 }

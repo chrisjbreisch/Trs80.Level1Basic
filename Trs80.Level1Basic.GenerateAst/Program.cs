@@ -41,7 +41,7 @@ internal static class Program
             "For                    : Expression identifier, Expression startValue, Expression endValue, Expression stepValue",
             "Gosub                  : Expression location",
             "Goto                   : Expression location",
-            "If                     : Expression condition, Statement thenBranch",
+            "If                     : Expression condition, IStatement thenBranch",
             "Input                  : List<Expression> expressions, bool writeNewline",
             "Let                    : Expression variable, Expression initializer",
             "List                   : Expression startAtLineNumber",
@@ -66,6 +66,8 @@ internal static class Program
     private static void DefineAst(string outputDir, string baseName, List<string> types)
     {
         DefineVisitorInterface(outputDir, baseName, types);
+        if (baseName.Contains("Statement"))
+            DefineInterface(outputDir, baseName);
         DefineBaseClass(outputDir, baseName);
         DefineSubClasses(outputDir, baseName, types);
     }
@@ -82,21 +84,45 @@ internal static class Program
         }
     }
 
+    private static void DefineInterface(string outputDir, string baseName)
+    {
+        string path = $"{outputDir}\\{baseName}s\\I{baseName}.cs";
+        using var writer = new StreamWriter(path);
+
+        WriteHeaders(baseName, writer);
+        writer.WriteLine($"public interface I{baseName}");
+        writer.WriteLine("{");
+        writer.WriteLine("    int LineNumber { get; set; }");
+        writer.WriteLine("    string SourceLine { get; set; }");
+        writer.WriteLine("    IStatement Next { get; set; }");
+        writer.WriteLine("    IStatement Previous { get; set; }");
+        writer.WriteLine("    IStatement Parent { get; set; }");
+        writer.WriteLine();
+
+        writer.WriteLine("    T Accept<T>(IVisitor<T> visitor);");
+        writer.WriteLine("}");
+        WriteEnd(writer);
+    }
+
     private static void DefineBaseClass(string outputDir, string baseName)
     {
         string path = $"{outputDir}\\{baseName}s\\{baseName}.cs";
         using var writer = new StreamWriter(path);
+        string implements = string.Empty;
 
+        if (baseName.Contains("Statement"))
+            implements = $": I{baseName}";
 
         WriteHeaders(baseName, writer);
-        writer.WriteLine($"public abstract class {baseName}");
+        writer.WriteLine($"public abstract class {baseName}{implements}");
         writer.WriteLine("{");
         if (baseName.Contains("Statement"))
         {
             writer.WriteLine("    public int LineNumber { get; set; } = -1;");
             writer.WriteLine("    public string SourceLine { get; set; }");
-            writer.WriteLine("    public Statement Next { get; set; }");
-            writer.WriteLine("    public Statement Parent { get; set; }");
+            writer.WriteLine("    public IStatement Next { get; set; }");
+            writer.WriteLine("    public IStatement Previous { get; set; }");
+            writer.WriteLine("    public IStatement Parent { get; set; }");
             writer.WriteLine();
         }
 
