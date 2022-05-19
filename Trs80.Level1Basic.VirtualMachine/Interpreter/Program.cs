@@ -120,26 +120,29 @@ public class Program : IProgram
         if (originalStatement == null)
             InsertStatementIntoList(statement);
         else
+            ReplaceStatementInList(statement, originalStatement);
+    }
+
+    private void ReplaceStatementInList(Statement statement, Statement originalStatement)
+    {
+        if (_statements.Count == 1)
         {
-            if (_statements.Count == 1)
-            {
-                _statements.RemoveFirst();
-                _statements.AddFirst(statement);
-            }
+            _statements.RemoveFirst();
+            _statements.AddFirst(statement);
+        }
+        else
+        {
+            LinkedListNode<Statement> originalNode = _statements.Find(originalStatement);
+            LinkedListNode<Statement> successor = originalNode!.Next;
+            if (successor != null)
+                _statements.AddBefore(successor!, statement);
             else
             {
-                LinkedListNode<Statement> originalNode = _statements.Find(originalStatement);
-                LinkedListNode<Statement> successor = originalNode!.Next;
-                if (successor != null)
-                    _statements.AddBefore(successor!, statement);
-                else
-                {
-                    LinkedListNode<Statement> predecessor = originalNode.Previous;
-                    if (predecessor != null) _statements.AddAfter(predecessor, statement);
-                }
-
-                _statements.Remove(originalStatement);
+                LinkedListNode<Statement> predecessor = originalNode.Previous;
+                if (predecessor != null) _statements.AddAfter(predecessor, statement);
             }
+
+            _statements.Remove(originalStatement);
         }
     }
 
