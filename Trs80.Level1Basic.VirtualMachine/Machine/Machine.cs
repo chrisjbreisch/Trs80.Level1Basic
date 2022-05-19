@@ -6,13 +6,13 @@ using System.Linq;
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
-namespace Trs80.Level1Basic.VirtualMachine.Environment;
+namespace Trs80.Level1Basic.VirtualMachine.Machine;
 
-public class Environment : IEnvironment
+public class Machine : IMachine
 {
-    private readonly GlobalVariables _globals = new();
+    private readonly Interpreter.Environment _globals = new();
     private readonly ITrs80 _trs80;
-    private readonly IBuiltinFunctions _builtins;
+    private readonly INativeFunctions _natives;
 
     public int CursorX { get; set; }
     public int CursorY { get; set; }
@@ -22,11 +22,11 @@ public class Environment : IEnvironment
     public IProgram Program { get; }
     public bool ExecutionHalted { get; private set; }
 
-    public Environment(ITrs80 trs80, IProgram program, IBuiltinFunctions builtins)
+    public Machine(ITrs80 trs80, IProgram program, INativeFunctions natives)
     {
         _trs80 = trs80 ?? throw new ArgumentNullException(nameof(trs80));
         Program = program ?? throw new ArgumentNullException(nameof(program));
-        _builtins = builtins ?? throw new ArgumentNullException(nameof(builtins));
+        _natives = natives ?? throw new ArgumentNullException(nameof(natives));
 
         Console.CancelKeyPress += delegate (object _, ConsoleCancelEventArgs e)
         {
@@ -65,9 +65,9 @@ public class Environment : IEnvironment
         return _globals.Get(name);
     }
 
-    public List<FunctionDefinition> Function(string name)
+    public List<Callable> Function(string name)
     {
-        return _builtins.Get(name);
+        return _natives.Get(name);
     }
 
     public bool Exists(string name)

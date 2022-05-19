@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Trs80.Level1Basic.VirtualMachine.Environment;
+using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
 using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
@@ -22,11 +22,11 @@ public class Parser : IParser
     private List<Token> _tokens;
     private int _current;
     private ParsedLine _currentLine;
-    private readonly IBuiltinFunctions _builtins;
+    private readonly INativeFunctions _natives;
 
-    public Parser(IBuiltinFunctions builtins)
+    public Parser(INativeFunctions natives)
     {
-        _builtins = builtins ?? throw new ArgumentNullException(nameof(builtins));
+        _natives = natives ?? throw new ArgumentNullException(nameof(natives));
     }
 
     public ParsedLine Parse(List<Token> tokens)
@@ -410,7 +410,7 @@ public class Parser : IParser
             throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
                 "Expected variable name or function call.");
 
-        if (peekNext.Type != TokenType.Equal && _builtins.Get(peek.Lexeme) != null) return StatementWrapper(new StatementExpression(Call()));
+        if (peekNext.Type != TokenType.Equal && _natives.Get(peek.Lexeme) != null) return StatementWrapper(new StatementExpression(Call()));
 
         Expression identifier = Identifier();
 
@@ -557,12 +557,12 @@ public class Parser : IParser
         Expression expression = Primary();
 
         if (Match(TokenType.LeftParen) && expression is Identifier)
-            return _builtins.Get(name.Lexeme) != null ? FinishCall(name) : FinishArray(name);
+            return _natives.Get(name.Lexeme) != null ? FinishCall(name) : FinishArray(name);
 
         Token previous = Previous();
         if (previous.Type != TokenType.Identifier) return expression;
 
-        List<FunctionDefinition> functions = _builtins.Get(previous.Lexeme);
+        List<Callable> functions = _natives.Get(previous.Lexeme);
         if (functions == null) return expression;
 
         if (functions.Any(f => f.Arity == 0))
@@ -600,8 +600,8 @@ public class Parser : IParser
 
     private void CheckArgs(Token name, List<Expression> arguments)
     {
-        FunctionDefinition function =
-            _builtins.Get(name.Lexeme).FirstOrDefault(f => f.Arity == arguments.Count);
+        Callable function =
+            _natives.Get(name.Lexeme).FirstOrDefault(f => f.Arity == arguments.Count);
 
         if (function == null)
             throw new ParseException(_currentLine.LineNumber, _currentLine.SourceLine,
@@ -639,7 +639,7 @@ public class Parser : IParser
         if (token == null) return false;
         if (token.Type == TokenType.EndOfLine) return false;
 
-        FunctionDefinition function = _builtins.Get(token.Lexeme).FirstOrDefault();
+        Callable function = _natives.Get(token.Lexeme).FirstOrDefault();
 
         return function != null;
     }

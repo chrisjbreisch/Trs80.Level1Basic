@@ -2,9 +2,9 @@
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
-namespace Trs80.Level1Basic.VirtualMachine.Environment;
+namespace Trs80.Level1Basic.VirtualMachine.Machine;
 
-public interface IEnvironment
+public interface IMachine
 {
     Stack<ForCondition> ForConditions { get; }
     Stack<Statement> ProgramStack { get; }
@@ -17,7 +17,7 @@ public interface IEnvironment
     dynamic Assign(string name, int index, dynamic value);
     dynamic Get(string name);
     dynamic Get(string name, int index);
-    List<FunctionDefinition> Function(string name);
+    List<Callable> Function(string name);
     bool Exists(string name);
     void InitializeProgram();
     void ListProgram(int lineNumber);

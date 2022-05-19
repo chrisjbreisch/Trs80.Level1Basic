@@ -12,12 +12,12 @@ namespace Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
 
 public class Call : Expression
 {
-    public Token Name { get; }
+    public Token Callee { get; }
     public List<Expression> Arguments { get; }
 
-    public Call(Token name, List<Expression> arguments)
+    public Call(Token callee, List<Expression> arguments)
     {
-        Name = name;
+        Callee = callee;
         Arguments = arguments;
     }
 

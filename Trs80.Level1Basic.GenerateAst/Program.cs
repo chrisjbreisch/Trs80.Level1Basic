@@ -23,7 +23,7 @@ internal static class Program
             "Array      : Token name, Expression index",
             "Assign     : Token name, Expression value",
             "Binary     : Expression left, Token binaryOperator, Expression right",
-            "Call       : Token name, List<Expression> arguments",
+            "Call       : Token callee, List<Expression> arguments",
             "Grouping   : Expression expression",
             "Identifier : Token name",
             "Literal    : dynamic value",
@@ -171,7 +171,7 @@ internal static class Program
         foreach (string field in fields.Where(s => !string.IsNullOrEmpty(s)))
         {
             string[] fieldPieces = field.Split(" ");
-            writer.WriteLine($"    public {fieldPieces[0]} {fieldPieces[1].SeparateWordsByCase('_').ToPascalCase()} {{ get; }}");
+            writer.WriteLine($"    public {fieldPieces[0]} {fieldPieces[1].SeparateWordsByCase('_').ToPascalCase()} {{ get; init; }}");
         }
 
         writer.WriteLine();

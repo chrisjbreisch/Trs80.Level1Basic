@@ -8,7 +8,7 @@ using Trs80.Level1Basic.HostMachine;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
 
-namespace Trs80.Level1Basic.VirtualMachine.Environment;
+namespace Trs80.Level1Basic.VirtualMachine.Machine;
 
 
 public class Trs80 : ITrs80

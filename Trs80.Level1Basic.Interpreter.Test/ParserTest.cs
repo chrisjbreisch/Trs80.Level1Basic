@@ -4,7 +4,7 @@ using FluentAssertions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using Trs80.Level1Basic.VirtualMachine.Environment;
+using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
@@ -21,9 +21,9 @@ public class ParserTest
     {
         string input = "10 print \"Hello, World!\"";
 
-        IBuiltinFunctions builtins = new BuiltinFunctions();
-        IScanner scanner = new Scanner(builtins);
-        IParser parser = new Parser(builtins);
+        INativeFunctions natives = new NativeFunctions();
+        IScanner scanner = new Scanner(natives);
+        IParser parser = new Parser(natives);
 
         List<Token> tokens = scanner.ScanTokens(input);
         ParsedLine parsedLine = parser.Parse(tokens);

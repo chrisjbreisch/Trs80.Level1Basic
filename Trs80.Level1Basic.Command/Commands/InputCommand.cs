@@ -1,5 +1,5 @@
 ﻿using Trs80.Level1Basic.CommandModels;
-using Trs80.Level1Basic.VirtualMachine.Environment;
+using Trs80.Level1Basic.VirtualMachine.Machine;
 
 namespace Trs80.Level1Basic.Command.Commands;
 
