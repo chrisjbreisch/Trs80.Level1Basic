@@ -3,122 +3,215 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Trs80.Level1Basic.VirtualMachine.Parser.Statements
+namespace Trs80.Level1Basic.VirtualMachine.Parser.Statements;
+
+public class StatementList : Statement, IList<IStatement>
 {
-    public class StatementList : Statement, IEnumerable<IStatement>
+    private readonly List<IListStatementDecorator> _statements = new();
+
+    private IListStatementDecorator Decorate(IStatement statement)
     {
-        private readonly List<IListStatementDecorator> _statements = new();
+        return new ListStatementDecorator(statement);
+    }
 
-        private IListStatementDecorator Decorate(IStatement statement)
+    public StatementList Insert(IStatement item)
+    {
+        IListStatementDecorator original = item is IListStatementDecorator d ? d : _statements.FirstOrDefault(s => s.LineNumber == item.LineNumber);
+
+        if (original != null)
+            return Replace(item);
+
+        IListStatementDecorator decorated = Decorate(item);
+
+        IListStatementDecorator predecessor = _statements.LastOrDefault(s => s.LineNumber < item.LineNumber);
+        if (predecessor != null)
         {
-            return new ListStatementDecorator(statement);
+            predecessor.Next = decorated;
+            int index = _statements.IndexOf(predecessor);
+            _statements.Insert(Math.Min(index + 1, _statements.Count), decorated);
         }
 
-        public StatementList AddEnd(IStatement statement)
+        IListStatementDecorator successor = _statements.FirstOrDefault(s => s.LineNumber > item.LineNumber);
+
+        if (successor != null)
         {
-            _statements.Add(Decorate(statement));
-            return this;
-        }
-
-        public StatementList Insert(IStatement statement)
-        {
-            IListStatementDecorator original = _statements.FirstOrDefault(s => s.LineNumber == statement.LineNumber);
-            if (original != null)
-                return Replace(statement);
-
-            IListStatementDecorator decorated = Decorate(statement);
-
-            IListStatementDecorator predecessor = _statements.LastOrDefault(s => s.LineNumber < statement.LineNumber);
-            if (predecessor != null)
+            decorated.Next = successor;
+            if (predecessor == null)
             {
-                predecessor.Next = decorated;
-                int index = _statements.IndexOf(predecessor);
-                _statements.Insert(Math.Min(index + 1, _statements.Count), decorated);
+                int index = _statements.IndexOf(successor);
+                _statements.Insert(index, decorated);
             }
-
-            IListStatementDecorator successor = _statements.FirstOrDefault(s => s.LineNumber > statement.LineNumber);
-
-            if (successor != null)
-            {
-                decorated.Next = successor;
-                if (predecessor == null)
-                {
-                    int index = _statements.IndexOf(successor);
-                    _statements.Insert(index, decorated);
-                }
-            }
-
-            decorated.Parent = this;
-            return this;
         }
 
-        private StatementList Replace(IStatement statement)
+        decorated.Parent = this;
+        return this;
+    }
+
+    private StatementList Replace(IStatement item)
+    {
+        IListStatementDecorator original = item is IListStatementDecorator o ? o : _statements.FirstOrDefault(s => s.LineNumber == item.LineNumber);
+
+        if (original == null)
+            return Insert(item);
+
+        IListStatementDecorator decorated = item is IListStatementDecorator d ? d : Decorate(item);
+
+        if (original.Previous is IListStatementDecorator predecessor)
         {
-            IListStatementDecorator original = _statements.FirstOrDefault(s => s.LineNumber == statement.LineNumber);
-
-            if (original == null)
-                return Insert(statement);
-
-            IListStatementDecorator decorated = Decorate(statement);
-            int index = _statements.IndexOf(original);
-            _statements.Insert(index, decorated);
-
-            if (original.Previous is IListStatementDecorator predecessor)
-                predecessor.Next = decorated;
-
-            if (original.Next is IListStatementDecorator successor)
-                decorated.Next = successor;
-
-            decorated.Parent = this;
-
-            return Remove(original);
+            predecessor.Next = decorated;
+            decorated.Previous = predecessor;
         }
 
-        public StatementList AddOrReplace(IStatement statement)
+        if (original.Next is IListStatementDecorator successor)
         {
-            IListStatementDecorator original = _statements.FirstOrDefault(s => s.LineNumber == statement.LineNumber);
-
-            if (original == null)
-                Insert(statement);
-            else
-                Replace(statement);
-
-            return this;
+            decorated.Next = successor;
+            successor.Previous = decorated;
         }
 
-        public StatementList Remove(IStatement statement)
+        decorated.Parent = this;
+        int index = _statements.IndexOf(original);
+
+        _statements.Remove(original);
+
+        _statements.Insert(index, decorated);
+
+
+        return this;
+    }
+
+    public StatementList AddOrReplace(IStatement item)
+    {
+        IListStatementDecorator original = item is IListStatementDecorator d ? d : _statements.FirstOrDefault(s => s.LineNumber == item.LineNumber);
+
+        if (original == null)
+            Insert(item);
+        else
+            Replace(item);
+
+        return this;
+    }
+
+    public void Add(IStatement item)
+    {
+        IListStatementDecorator decorated = item is IListStatementDecorator d ? d : Decorate(item);
+        
+        if (_statements.Count > 0)
         {
-            IListStatementDecorator original = _statements.FirstOrDefault(s => s.LineNumber == statement.LineNumber);
-            if (original == null) return this;
-
-            _statements.Remove(original);
-
-            original.Next = null;
-            original.Previous = null;
-            original.Parent = null;
-
-            return this;
+            IListStatementDecorator last = _statements[^1];
+            last.Next = decorated;
+            decorated.Previous = last;
         }
 
-        public IStatement this[int index]
+        decorated.Parent = this;
+        _statements.Add(decorated);
+    }
+
+    public void Clear()
+    {
+        _statements.Clear();
+    }
+
+    public bool Contains(IStatement item)
+    {
+        return _statements.Contains(Decorate(item));
+    }
+
+    public void CopyTo(IStatement[] array, int arrayIndex)
+    {
+        for (int i = 0; i < array.Length; i++)
+            array[arrayIndex + i] = this[i];
+    }
+
+    public bool Remove(IStatement item)
+    {
+        if (item == null) return false;
+        IListStatementDecorator original = item is IListStatementDecorator d ? d : _statements.FirstOrDefault(s => s.LineNumber == item.LineNumber);
+
+        if (original == null) return false;
+
+        if (original.Previous is IListStatementDecorator predecessor)
+            predecessor.Next = original.Next;
+
+        if (original.Next is IListStatementDecorator successor)
+            successor.Previous = original.Previous;
+
+        _statements.Remove(original);
+
+        original.Next = null;
+        original.Previous = null;
+        original.Parent = null;
+
+        return true;
+    }
+
+    public int Count => _statements.Count;
+    public bool IsReadOnly => false;
+
+    public int IndexOf(IStatement item)
+    {
+        if (item is IListStatementDecorator decorated)
+            return _statements.IndexOf(decorated);
+
+        return _statements.IndexOf(Decorate(item));
+    }
+
+    public void Insert(int index, IStatement item)
+    {
+        if (index > 0)
         {
-            get { return _statements[index]; }
-            set { AddOrReplace(value); }
+            IListStatementDecorator predecessor = _statements[index - 1];
+            item!.Previous = predecessor;
+            predecessor.Next = item;
         }
 
-        public override T Accept<T>(IVisitor<T> visitor)
+        if (index <= _statements.Count)
         {
-            throw new NotImplementedException();
+            IListStatementDecorator successor = _statements[index];
+            item!.Next = successor;
+            successor.Previous = item;
+        }
+        IListStatementDecorator decorated = item is IListStatementDecorator d ? d : Decorate(item);
+        decorated.Parent = this;
+        _statements.Insert(index, decorated);
+    }
+
+    public void RemoveAt(int index)
+    {
+        if (index > 0)
+        {
+            IListStatementDecorator predecessor = _statements[index - 1];
+            predecessor.Next = _statements[index].Next;
         }
 
-        public IEnumerator<IStatement> GetEnumerator()
+        if (index < _statements.Count)
         {
-            return _statements.GetEnumerator();
+            IListStatementDecorator successor = _statements[index + 1];
+            successor.Previous = _statements[index].Previous;
         }
+        _statements[index].Previous = null;
+        _statements[index].Next = null;
+        _statements[index].Parent = null;
+        _statements.RemoveAt(index);
+    }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _statements.GetEnumerator();
-        }
+    public IStatement this[int index]
+    {
+        get { return _statements[index]; }
+        set { AddOrReplace(value); }
+    }
+
+    public override T Accept<T>(IVisitor<T> visitor)
+    {
+        return default;
+    }
+
+    public IEnumerator<IStatement> GetEnumerator()
+    {
+        return _statements.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return _statements.GetEnumerator();
     }
 }
