@@ -26,12 +26,12 @@ public class ParserTest
         IParser parser = new Parser(natives);
 
         List<Token> tokens = scanner.ScanTokens(input);
-        Statement statement = parser.Parse(tokens);
+        IStatement statement = parser.Parse(tokens);
 
         statement.LineNumber.Should().Be(10);
         statement.SourceLine.Should().Be("print \"Hello, World!\"");
         
-        var printStatement = statement as Print;
+        var printStatement = ((IListItemDecorator)statement).UnDecorate() as Print;
         printStatement.Should().NotBeNull();
         printStatement!.Expressions.Count.Should().Be(1);
 

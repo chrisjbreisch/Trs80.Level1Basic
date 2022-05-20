@@ -7,11 +7,11 @@ namespace Trs80.Level1Basic.VirtualMachine.Machine;
 public interface IMachine
 {
     Stack<ForCondition> ForConditions { get; }
-    Stack<IStatement> ProgramStack { get; }
     DataElements Data { get; }
     IProgram Program { get; }
     int CursorX { get; set;  }
     int CursorY { get; set;  }
+    public bool ExecutionHalted { get; set; }
 
     dynamic Assign(string name, dynamic value);
     dynamic Assign(string name, int index, dynamic value);
@@ -24,10 +24,10 @@ public interface IMachine
     void SaveProgram(string path);
     void LoadProgram(string path);
     void NewProgram();
-    void RunStatementList(IStatement statement, IInterpreter interpreter);
+    void RunStatementList(IStatement statement, IInterpreter interpreter, bool breakOnLineChange);
     void SetNextStatement(IStatement statement);
     void HaltRun();
-    Statement GetStatementByLineNumber(int lineNumber);
+    IStatement GetStatementByLineNumber(int lineNumber);
     void LoadData(IInterpreter interpreter);
     IStatement GetNextStatement();
     IStatement GetNextStatement(IStatement statement);

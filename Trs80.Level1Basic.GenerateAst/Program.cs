@@ -33,7 +33,7 @@ internal static class Program
         DefineAst(outputDir, "Statement", new List<string>
         {
             "Cls",
-            "Compound               : LinkedList<Statement> statements",
+            "Compound               : StatementList statements",
             "Cont",
             "Data                   : List<Expression> dataElements",
             "Delete                 : int lineToDelete",
@@ -41,7 +41,7 @@ internal static class Program
             "For                    : Expression identifier, Expression startValue, Expression endValue, Expression stepValue",
             "Gosub                  : Expression location",
             "Goto                   : Expression location",
-            "If                     : Expression condition, IStatement thenBranch",
+            "If                     : Expression condition, StatementList thenBranch",
             "Input                  : List<Expression> expressions, bool writeNewline",
             "Let                    : Expression variable, Expression initializer",
             "List                   : Expression startAtLineNumber",
@@ -51,7 +51,7 @@ internal static class Program
             "Next                   : Expression variable",
             "On                     : Expression selector, List<Expression> locations, bool isGosub",
             "Print                  : Expression atPosition, List<Expression> expressions, bool writeNewline",
-            "Replace                : Statement statement",
+            "Replace                : IStatement statement",
             "Read                   : List<Expression> variables",
             "Rem                    : Literal remark",
             "Restore",

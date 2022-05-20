@@ -1,108 +1,34 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
-public class StatementList : Statement, IList<IStatement>
+public class StatementList : Statement, ICollection<IStatement>
 {
-    private readonly List<IListStatementDecorator> _statements = new();
+    private readonly List<IListItemDecorator> _statements = new();
 
-    private IListStatementDecorator Decorate(IStatement statement)
+    public StatementList()
     {
-        return new ListStatementDecorator(statement);
     }
-
-    public StatementList Insert(IStatement item)
+    private IListItemDecorator Decorate(IStatement statement)
     {
-        IListStatementDecorator original = item is IListStatementDecorator d ? d : _statements.FirstOrDefault(s => s.LineNumber == item.LineNumber);
-
-        if (original != null)
-            return Replace(item);
-
-        IListStatementDecorator decorated = Decorate(item);
-
-        IListStatementDecorator predecessor = _statements.LastOrDefault(s => s.LineNumber < item.LineNumber);
-        if (predecessor != null)
-        {
-            predecessor.Next = decorated;
-            int index = _statements.IndexOf(predecessor);
-            _statements.Insert(Math.Min(index + 1, _statements.Count), decorated);
-        }
-
-        IListStatementDecorator successor = _statements.FirstOrDefault(s => s.LineNumber > item.LineNumber);
-
-        if (successor != null)
-        {
-            decorated.Next = successor;
-            if (predecessor == null)
-            {
-                int index = _statements.IndexOf(successor);
-                _statements.Insert(index, decorated);
-            }
-        }
-
-        decorated.Parent = this;
-        return this;
-    }
-
-    private StatementList Replace(IStatement item)
-    {
-        IListStatementDecorator original = item is IListStatementDecorator o ? o : _statements.FirstOrDefault(s => s.LineNumber == item.LineNumber);
-
-        if (original == null)
-            return Insert(item);
-
-        IListStatementDecorator decorated = item is IListStatementDecorator d ? d : Decorate(item);
-
-        if (original.Previous is IListStatementDecorator predecessor)
-        {
-            predecessor.Next = decorated;
-            decorated.Previous = predecessor;
-        }
-
-        if (original.Next is IListStatementDecorator successor)
-        {
-            decorated.Next = successor;
-            successor.Previous = decorated;
-        }
-
-        decorated.Parent = this;
-        int index = _statements.IndexOf(original);
-
-        _statements.Remove(original);
-
-        _statements.Insert(index, decorated);
-
-        return this;
-    }
-
-    public StatementList AddOrReplace(IStatement item)
-    {
-        IListStatementDecorator original = item is IListStatementDecorator d ? d : _statements.FirstOrDefault(s => s.LineNumber == item.LineNumber);
-
-        if (original == null)
-            Insert(item);
-        else
-            Replace(item);
-
-        return this;
+        return statement is IListItemDecorator decorated ? decorated : new ListItemDecorator(statement);
     }
 
     public void Add(IStatement item)
     {
-        IListStatementDecorator decorated = item is IListStatementDecorator d ? d : Decorate(item);
-        
+        IListItemDecorator decorated = Decorate(item);
+
         if (_statements.Count > 0)
         {
-            IListStatementDecorator last = _statements[^1];
-            last.Next = decorated;
-            decorated.Previous = last;
+            IListItemDecorator predecessor = _statements[^1];
+            predecessor.Next = decorated;
+            decorated.Previous = predecessor;
         }
-
-        decorated.Parent = this;
         _statements.Add(decorated);
+
+        decorated.Parent = Parent;
     }
 
     public void Clear()
@@ -112,7 +38,7 @@ public class StatementList : Statement, IList<IStatement>
 
     public bool Contains(IStatement item)
     {
-        return _statements.Contains(Decorate(item));
+        throw new InvalidOperationException();
     }
 
     public void CopyTo(IStatement[] array, int arrayIndex)
@@ -123,66 +49,26 @@ public class StatementList : Statement, IList<IStatement>
 
     public bool Remove(IStatement item)
     {
-        if (item == null) return false;
-        IListStatementDecorator original = item is IListStatementDecorator d ? d : _statements.FirstOrDefault(s => s.LineNumber == item.LineNumber);
-
-        if (original == null) return false;
-
-        if (original.Previous is IListStatementDecorator predecessor)
-            predecessor.Next = original.Next;
-
-        if (original.Next is IListStatementDecorator successor)
-            successor.Previous = original.Previous;
-
-        _statements.Remove(original);
-        return true;
+        throw new InvalidOperationException();
     }
 
     public int Count => _statements.Count;
     public bool IsReadOnly => false;
 
-    public int IndexOf(IStatement item)
-    {
-        if (item is null) return -1;
-
-        if (item is IListStatementDecorator decorated)
-            return _statements.IndexOf(decorated);
-
-        IListStatementDecorator original = _statements.FirstOrDefault(s => s.LineNumber == item.LineNumber);
-        if (original == null) return -1;
-        return _statements.IndexOf(original);
-    }
-
-    public void Insert(int index, IStatement item)
-    {
-        throw new InvalidOperationException();
-    }
-
-    public void RemoveAt(int index)
-    {
-        if (index > 0)
-        {
-            IListStatementDecorator predecessor = _statements[index - 1];
-            predecessor.Next = _statements[index].Next;
-        }
-
-        if (index < _statements.Count)
-        {
-            IListStatementDecorator successor = _statements[index + 1];
-            successor.Previous = _statements[index].Previous;
-        }
-        _statements.RemoveAt(index);
-    }
-
-    public IStatement this[int index]
-    {
-        get { return _statements[index]; }
-        set { throw new InvalidOperationException(); }
-    }
+    public IStatement this[int index] => _statements[index];
 
     public override T Accept<T>(IVisitor<T> visitor)
     {
-        return default;
+        T result = default;
+
+        foreach (IListItemDecorator statement in _statements)
+        {
+            result = statement.Accept(visitor);
+            if (statement.BaseType() == typeof(Goto))
+                break;
+        }
+
+        return result;
     }
 
     public IEnumerator<IStatement> GetEnumerator()

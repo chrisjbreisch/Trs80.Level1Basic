@@ -4,9 +4,8 @@ using System.Text;
 using System.Threading;
 
 using Trs80.Level1Basic.HostMachine;
-using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
-using Trs80.Level1Basic.VirtualMachine.Parser;
+using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
@@ -32,7 +31,7 @@ public class Interpreter : IInterpreter
         _program = program ?? throw new ArgumentNullException(nameof(program));
     }
 
-    public void Interpret(Statement statement)
+    public void Interpret(IStatement statement)
     {
         Execute(statement.LineNumber >= 0 ? new Replace(statement) : statement);
     }
@@ -262,7 +261,7 @@ public class Interpreter : IInterpreter
 
     public Void VisitCompoundStatement(Compound statement)
     {
-        _machine.RunStatementList(statement.Statements.First(), this);
+        _machine.RunStatementList(statement.Statements[0], this, true);
 
         return null!;
     }
@@ -279,7 +278,7 @@ public class Interpreter : IInterpreter
         if (initialize)
             _machine.Initialize();
 
-        _machine.RunStatementList(statement, this);
+        _machine.RunStatementList(statement, this, false);
         _trs80.WriteLine();
         _trs80.WriteLine("READY");
     }
@@ -301,9 +300,9 @@ public class Interpreter : IInterpreter
 
     private void DeleteStatement(int lineNumber)
     {
-        Statement programLine = _machine.Program.List().FirstOrDefault(l => l.LineNumber == lineNumber);
-        if (programLine != null)
-            _machine.Program.RemoveStatement(programLine);
+        IStatement statement = _machine.Program.List().FirstOrDefault(l => l.LineNumber == lineNumber);
+        if (statement != null)
+            _machine.Program.RemoveStatement(statement);
     }
 
     public Void VisitEndStatement(End statement)
@@ -335,21 +334,21 @@ public class Interpreter : IInterpreter
 
     public Void VisitGosubStatement(Gosub statement)
     {
-        _machine.ProgramStack.Push(_machine.GetNextStatement(statement) ?? _machine.GetNextStatement(_program.CurrentStatement));
+        IStatement nextStatement = _machine.GetNextStatement(_program.CurrentStatement);
 
-        Statement jumpToStatement = GetJumpToStatement(statement, statement.Location, "GOSUB");
-        _machine.RunStatementList(jumpToStatement, this);
+        IStatement jumpToStatement = GetJumpToStatement(statement, statement.Location, "GOSUB");
+        _machine.RunStatementList(jumpToStatement, this, false);
 
-        _machine.SetNextStatement(_machine.ProgramStack.Pop());
+        _machine.SetNextStatement(nextStatement);
 
         return null!;
     }
 
-    private Statement GetJumpToStatement(Statement statement, Expression location, string jumpType)
+    private IStatement GetJumpToStatement(Statement statement, Expression location, string jumpType)
     {
         dynamic jumpToLineNumber = Evaluate(location);
 
-        Statement jumpToStatement = GetStatementByLineNumber(jumpToLineNumber);
+        IStatement jumpToStatement = GetStatementByLineNumber(jumpToLineNumber);
 
         if (jumpToStatement is null)
             throw new RuntimeStatementException(statement.LineNumber, statement.SourceLine,
@@ -358,15 +357,16 @@ public class Interpreter : IInterpreter
         return jumpToStatement;
     }
 
-    private Statement GetStatementByLineNumber(int lineNumber)
+    private IStatement GetStatementByLineNumber(int lineNumber)
     {
         return _machine.GetStatementByLineNumber(lineNumber);
     }
 
     public Void VisitGotoStatement(Goto statement)
     {
-        Statement jumpToStatement = GetJumpToStatement(statement, statement.Location, "GOTO");
-        _machine.SetNextStatement(jumpToStatement);
+        IStatement jumpToStatement = GetJumpToStatement(statement, statement.Location, "GOTO");
+        _machine.RunStatementList(jumpToStatement, this, false);
+        _machine.ExecutionHalted = true;
 
         return null!;
     }
@@ -375,13 +375,13 @@ public class Interpreter : IInterpreter
     {
         if (!IsTruthy(Evaluate(statement.Condition))) return null!;
 
-        switch (statement.ThenBranch)
+        IStatement thenStatement = statement.ThenBranch?[0];
+        if (thenStatement == null) return null!;
+
+        switch (thenStatement)
         {
             case Goto gotoStatement:
                 VisitGotoStatement(gotoStatement);
-                break;
-            case Gosub gosubStatement:
-                VisitGosubStatement(gosubStatement);
                 break;
             default:
                 ExecuteThenBranch(statement.ThenBranch);
@@ -390,15 +390,13 @@ public class Interpreter : IInterpreter
         return null!;
     }
 
-    private void ExecuteThenBranch(IStatement thenBranch)
+    private void ExecuteThenBranch(StatementList thenBranch)
     {
-        IStatement nextStatement = thenBranch;
-        while (nextStatement != null)
-        {
-            Execute(nextStatement);
-            if (nextStatement is Goto) break;
-            nextStatement = _machine.GetNextStatement(nextStatement);
-        }
+        IStatement nextStatement = _machine.GetNextStatement(_program.CurrentStatement);
+
+        _machine.RunStatementList(thenBranch[0], this, true);
+
+        _machine.SetNextStatement(nextStatement);
     }
 
     public Void VisitInputStatement(Input statement)
@@ -593,16 +591,16 @@ public class Interpreter : IInterpreter
 
         if (statement.IsGosub)
         {
-            _machine.ProgramStack.Push(_machine.GetNextStatement(statement));
+            IStatement resumeStatement = _machine.GetNextStatement(statement);
             Expression location = new Literal(locations[selector]);
-            Statement jumpToStatement = GetJumpToStatement(statement, location, "GOSUB");
-            _machine.RunStatementList(jumpToStatement, this);
+            IStatement jumpToStatement = GetJumpToStatement(statement, location, "GOSUB");
+            _machine.RunStatementList(jumpToStatement, this, false);
+            _machine.SetNextStatement(resumeStatement);
 
-            _machine.SetNextStatement(_machine.ProgramStack.Pop());
             return null!;
         }
 
-        Statement nextStatement = GetStatementByLineNumber(locations[selector]);
+        IStatement nextStatement = GetStatementByLineNumber(locations[selector]);
 
         if (nextStatement is null)
             throw new RuntimeStatementException(statement.LineNumber, statement.SourceLine,
@@ -691,7 +689,7 @@ public class Interpreter : IInterpreter
         if (lineNumber < 0) return null!;
 
         _machine.LoadData(this);
-        Statement firstStatement = GetStatementByLineNumber(lineNumber);
+        IStatement firstStatement = GetStatementByLineNumber(lineNumber);
         if (firstStatement is null)
             throw new RuntimeStatementException(-1, statement.SourceLine, $"Can't start execution at {lineNumber}");
 
@@ -702,7 +700,7 @@ public class Interpreter : IInterpreter
 
     private int GetFirstLineNumber()
     {
-        Statement statement = _machine.Program.GetFirstStatement();
+        IStatement statement = _machine.Program.GetFirstStatement();
 
         if (statement is null)
             return -1;

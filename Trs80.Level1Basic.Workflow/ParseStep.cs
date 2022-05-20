@@ -11,14 +11,14 @@ namespace Trs80.Level1Basic.Workflow;
 public interface IParseStep : IStepBody
 {
     List<Token> Tokens { get; set; }
-    Statement Statement { get; set; }
+    IStatement Statement { get; set; }
 }
 
 public class ParseStep : StepBody, IParseStep
 {
     private readonly ICommand<ParseModel> _command;
     public List<Token> Tokens { get; set; } = new();
-    public Statement Statement { get; set; } = null!;
+    public IStatement Statement { get; set; } = null!;
 
     public ParseStep(ICommand<ParseModel> inboundCommand)
     {

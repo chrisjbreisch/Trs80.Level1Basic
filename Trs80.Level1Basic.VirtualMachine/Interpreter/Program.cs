@@ -11,7 +11,7 @@ namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
 
 public class Program : IProgram
 {
-    private readonly LinkedList<Statement> _statements = new();
+    private readonly LineList _statements = new();
     private readonly IScanner _scanner;
     private readonly IParser _parser;
 
@@ -27,45 +27,22 @@ public class Program : IProgram
     {
     }
 
-    private void InsertStatementIntoList(Statement statement)
+    public IStatement GetExecutableStatement(int lineNumber)
     {
-        if (_statements.Count == 0)
-            _statements.AddFirst(statement);
-        else
-        {
-            Statement successor = _statements.FirstOrDefault(s => s.LineNumber > statement.LineNumber);
-            if (successor != null)
-            {
-                LinkedListNode<Statement> node = _statements.Find(successor);
-                _statements.AddBefore(node!, statement);
-            }
-            else
-            {
-                Statement predecessor = _statements.LastOrDefault(s => s.LineNumber < statement.LineNumber);
-                if (predecessor == null) return;
-
-                LinkedListNode<Statement> node = _statements.Find(predecessor);
-                _statements.AddAfter(node!, statement);
-            }
-        }
-    }
-
-    public Statement GetExecutableStatement(int lineNumber)
-    {
-        Statement statement = _statements
-            .FirstOrDefault(s => s.LineNumber == lineNumber && s is not Data);
+        IStatement statement = _statements
+            .FirstOrDefault(s => s.LineNumber == lineNumber && ((IListItemDecorator)s).BaseType() != typeof(Data));
 
         if (statement is not null) return statement;
         statement = _statements
-            .FirstOrDefault(s => s.LineNumber == lineNumber && s is Data);
+            .FirstOrDefault(s => s.LineNumber == lineNumber && ((IListItemDecorator)s).BaseType() == typeof(Data));
 
         if (statement is null) return null;
 
         return _statements
-            .FirstOrDefault(s => s.LineNumber >= lineNumber && s is not Data);
+            .FirstOrDefault(s => s.LineNumber >= lineNumber && ((IListItemDecorator)s).BaseType() != typeof(Data));
     }
 
-    public LinkedList<Statement> List()
+    public LineList List()
     {
         return _statements;
     }
@@ -81,17 +58,14 @@ public class Program : IProgram
         while (!reader.EndOfStream)
         {
             List<Token> tokens = _scanner.ScanTokens(reader.ReadLine());
-            Statement statement = _parser.Parse(tokens);
+            IStatement statement = _parser.Parse(tokens);
             AddStatement(statement);
         }
     }
 
-    public void RemoveStatement(Statement statement)
+    public void RemoveStatement(IStatement statement)
     {
-        Statement existing = _statements.FirstOrDefault(s => s.LineNumber == statement.LineNumber);
-        if (existing == null) return;
-
-        _statements.Remove(existing);
+        _statements.Remove(statement);
     }
 
     public int Size()
@@ -99,56 +73,22 @@ public class Program : IProgram
         return _statements.Sum(statement => 4 + statement.SourceLine.Length);
     }
 
-    private void AddStatement(Statement statement)
+    public void ReplaceStatement(IStatement statement)
+    {
+        _statements.Replace(statement.LineNumber, statement);
+    }
+
+    private void AddStatement(IStatement statement)
     {
         if (statement == null) return;
 
-        if (FindMatchingStatement(statement) != null)
-            ReplaceStatement(statement);
+        if (_statements.ContainsLine(statement.LineNumber))
+            _statements.Replace(statement.LineNumber, statement);
         else
-            InsertStatementIntoList(statement);
+            _statements.Add(statement);
     }
 
-    private Statement FindMatchingStatement(Statement statement)
-    {
-        Statement match = _statements.FirstOrDefault(l => l.LineNumber == statement.LineNumber);
-        return match;
-    }
-
-    public void ReplaceStatement(Statement statement)
-    {
-        if (statement == null) return;
-        Statement originalStatement = FindMatchingStatement(statement);
-        if (originalStatement == null)
-            InsertStatementIntoList(statement);
-        else
-            ReplaceStatementInList(statement, originalStatement);
-    }
-
-    private void ReplaceStatementInList(Statement statement, Statement originalStatement)
-    {
-        if (_statements.Count == 1)
-        {
-            _statements.RemoveFirst();
-            _statements.AddFirst(statement);
-        }
-        else
-        {
-            LinkedListNode<Statement> originalNode = _statements.Find(originalStatement);
-            LinkedListNode<Statement> successor = originalNode!.Next;
-            if (successor != null)
-                _statements.AddBefore(successor!, statement);
-            else
-            {
-                LinkedListNode<Statement> predecessor = originalNode.Previous;
-                if (predecessor != null) _statements.AddAfter(predecessor, statement);
-            }
-
-            _statements.Remove(originalStatement);
-        }
-    }
-
-    public Statement GetFirstStatement()
+    public IStatement GetFirstStatement()
     {
         return _statements.FirstOrDefault();
     }

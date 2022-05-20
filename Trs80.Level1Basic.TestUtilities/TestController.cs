@@ -52,7 +52,7 @@ public class TestController : IDisposable
     public void ExecuteLine(string input)
     {
         List<Token> tokens = _scanner.ScanTokens(input);
-        Statement statement = _parser.Parse(tokens);
+        IStatement statement = _parser.Parse(tokens);
         _interpreter.Interpret(statement);
     }
 

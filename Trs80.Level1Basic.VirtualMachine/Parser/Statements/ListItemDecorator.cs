@@ -2,15 +2,17 @@ using System;
 
 namespace Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
-public interface IListStatementDecorator : IStatement
+public interface IListItemDecorator : IStatement
 {
+    public Type BaseType();
+    public IStatement UnDecorate();
 }
 
-public class ListStatementDecorator : IListStatementDecorator
+public class ListItemDecorator : IListItemDecorator
 {
     private readonly IStatement _statement;
 
-    public ListStatementDecorator(IStatement statement)
+    public ListItemDecorator(IStatement statement)
     {
         _statement = statement ?? throw new ArgumentNullException(nameof(statement));
     }
@@ -47,6 +49,16 @@ public class ListStatementDecorator : IListStatementDecorator
 
     public T Accept<T>(IVisitor<T> visitor)
     {
-        throw new NotImplementedException();
+        return _statement.Accept(visitor);
+    }
+
+    public IStatement UnDecorate()
+    {
+        return _statement;
+    }
+
+    public Type BaseType()
+    {
+        return _statement.GetType();
     }
 }

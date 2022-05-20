@@ -73,11 +73,11 @@ public class ParseCommand : ICommand<ParseModel>
             : $" {voore.Statement}?\r\n[{voore.Message}]");
     }
 
-    private Statement? ParseTokens(List<Token>? tokens)
+    private IStatement? ParseTokens(List<Token>? tokens)
     {
         if (tokens == null) return null;
 
-        Statement? statement = null;
+        IStatement? statement = null;
         try
         {
             statement = _parser.Parse(tokens);

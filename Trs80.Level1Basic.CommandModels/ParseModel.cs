@@ -6,6 +6,6 @@ namespace Trs80.Level1Basic.CommandModels;
 public class ParseModel
 {
     public List<Token> Tokens { get; set; } = new();
-    public Statement Statement { get; set; } = null!;
+    public IStatement Statement { get; set; } = null!;
 
 }

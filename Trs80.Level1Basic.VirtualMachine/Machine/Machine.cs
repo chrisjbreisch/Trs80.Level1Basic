@@ -18,10 +18,9 @@ public class Machine : IMachine
     public int CursorX { get; set; }
     public int CursorY { get; set; }
     public Stack<ForCondition> ForConditions { get; } = new();
-    public Stack<IStatement> ProgramStack { get; } = new();
     public DataElements Data { get; } = new();
     public IProgram Program { get; }
-    public bool ExecutionHalted { get; private set; }
+    public bool ExecutionHalted { get; set; }
 
     public Machine(ITrs80 trs80, IProgram program, INativeFunctions natives)
     {
@@ -70,14 +69,14 @@ public class Machine : IMachine
     {
         return _globals.Exists(name);
     }
-    
+
     public void ListProgram(int lineNumber)
     {
         int index = 0;
         bool exitList = false;
-        foreach (Statement line in Program.List().Where(s => s.LineNumber >= lineNumber))
+        foreach (IStatement statement in Program.List().Where(s => s.LineNumber >= lineNumber))
         {
-            _trs80.WriteLine(line.LineNumber >= 0 ? $" {line.LineNumber}  {line.SourceLine}" : $"{line.SourceLine}");
+            _trs80.WriteLine(statement.LineNumber >= 0 ? $" {statement.LineNumber}  {statement.SourceLine}" : $"{statement.SourceLine}");
             index++;
             if (index < 12) continue;
 
@@ -125,19 +124,22 @@ public class Machine : IMachine
         Initialize();
     }
 
-    public void RunStatementList(IStatement statement, IInterpreter interpreter)
+    public void RunStatementList(IStatement statement, IInterpreter interpreter, bool breakOnLineChange)
     {
         ExecutionHalted = false;
+        if (statement == null) return;
+        int lineNumber = statement.LineNumber;
 
         while (statement != null && !ExecutionHalted)
         {
             _nextStatement = GetNextStatement(statement);
             interpreter.Execute(statement);
             statement = _nextStatement;
+            if (breakOnLineChange && statement?.LineNumber != lineNumber) break;
         }
     }
 
-    public Statement GetStatementByLineNumber(int lineNumber)
+    public IStatement GetStatementByLineNumber(int lineNumber)
     {
         return Program.GetExecutableStatement(lineNumber);
     }
@@ -156,25 +158,14 @@ public class Machine : IMachine
     {
         Data.Clear();
 
-        foreach (Statement dataStatement in Program.List().Where(s => s is Data))
+        foreach (IStatement dataStatement in Program.List().Where(s => ((IListItemDecorator)s).BaseType() == typeof(Data)))
             interpreter.Execute(dataStatement);
     }
 
 
     public IStatement GetNextStatement(IStatement statement)
     {
-        while (true)
-        {
-            if (statement.Next != null) return statement.Next;
-            if (statement.Parent != null)
-            {
-                statement = statement.Parent;
-                continue;
-            }
-
-            LinkedListNode<Statement> node = Program.List().Find(statement as Statement);
-            return node != null ? node!.Next?.Value : null;
-        }
+        return statement.Next ?? statement.Parent?.Next;
     }
 
     public IStatement GetNextStatement()
