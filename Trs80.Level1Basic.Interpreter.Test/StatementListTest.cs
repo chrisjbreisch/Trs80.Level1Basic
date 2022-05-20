@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-
+using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -36,6 +35,7 @@ public class StatementListTest
     }
 
     [TestMethod]
+    [SuppressMessage("ReSharper", "CollectionNeverUpdated.Local")]
     public void Can_Create_StatementList()
     {
         var list = new StatementList();
@@ -113,7 +113,7 @@ public class StatementListTest
             list.Add(forStatement);
         }
 
-        string input = $"15 {_statement}";
+        string input = $"15 {_statement}15";
         Statement statement = ParseInput(input);
         list.AddOrReplace(statement);
 
@@ -162,39 +162,7 @@ public class StatementListTest
         thirdStatement.Should().NotBeNull();
         thirdStatement.LineNumber.Should().Be(30);
     }
-
-    [TestMethod]
-    public void Can_Replace_A_Statement_In_The_Middle_Of_StatementList_With_Wrong_Indexer()
-    {
-        var list = new StatementList();
-        for (int i = 0; i < 3; i++)
-        {
-            string forInput = GetNextStatement();
-            Statement forStatement = ParseInput(forInput);
-            list.Add(forStatement);
-        }
-
-        string newStatement = "i = i * 2";
-        string input = $"20 {newStatement}";
-        Statement statement = ParseInput(input);
-        list[2] = statement;
-
-        list.Count.Should().Be(3);
-        list[0].LineNumber.Should().Be(10);
-        IStatement? firstStatement = list[0];
-        IStatement? secondStatement = firstStatement.Next;
-        IStatement? thirdStatement = secondStatement.Next;
-        IStatement? indexedStatement = list[1];
-
-        secondStatement.Should().NotBeNull();
-        secondStatement.LineNumber.Should().Be(20);
-        secondStatement.SourceLine.Should().Be(newStatement);
-        indexedStatement.Should().Be(secondStatement);
-
-        thirdStatement.Should().NotBeNull();
-        thirdStatement.LineNumber.Should().Be(30);
-    }
-
+    
     [TestMethod]
     public void Can_Replace_A_Statement_In_The_Middle_Of_StatementList()
     {

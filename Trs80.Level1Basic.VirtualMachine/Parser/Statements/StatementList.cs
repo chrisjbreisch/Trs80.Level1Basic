@@ -75,7 +75,6 @@ public class StatementList : Statement, IList<IStatement>
 
         _statements.Insert(index, decorated);
 
-
         return this;
     }
 
@@ -136,11 +135,6 @@ public class StatementList : Statement, IList<IStatement>
             successor.Previous = original.Previous;
 
         _statements.Remove(original);
-
-        original.Next = null;
-        original.Previous = null;
-        original.Parent = null;
-
         return true;
     }
 
@@ -149,30 +143,19 @@ public class StatementList : Statement, IList<IStatement>
 
     public int IndexOf(IStatement item)
     {
+        if (item is null) return -1;
+
         if (item is IListStatementDecorator decorated)
             return _statements.IndexOf(decorated);
 
-        return _statements.IndexOf(Decorate(item));
+        IListStatementDecorator original = _statements.FirstOrDefault(s => s.LineNumber == item.LineNumber);
+        if (original == null) return -1;
+        return _statements.IndexOf(original);
     }
 
     public void Insert(int index, IStatement item)
     {
-        if (index > 0)
-        {
-            IListStatementDecorator predecessor = _statements[index - 1];
-            item!.Previous = predecessor;
-            predecessor.Next = item;
-        }
-
-        if (index <= _statements.Count)
-        {
-            IListStatementDecorator successor = _statements[index];
-            item!.Next = successor;
-            successor.Previous = item;
-        }
-        IListStatementDecorator decorated = item is IListStatementDecorator d ? d : Decorate(item);
-        decorated.Parent = this;
-        _statements.Insert(index, decorated);
+        throw new InvalidOperationException();
     }
 
     public void RemoveAt(int index)
@@ -188,16 +171,13 @@ public class StatementList : Statement, IList<IStatement>
             IListStatementDecorator successor = _statements[index + 1];
             successor.Previous = _statements[index].Previous;
         }
-        _statements[index].Previous = null;
-        _statements[index].Next = null;
-        _statements[index].Parent = null;
         _statements.RemoveAt(index);
     }
 
     public IStatement this[int index]
     {
         get { return _statements[index]; }
-        set { AddOrReplace(value); }
+        set { throw new InvalidOperationException(); }
     }
 
     public override T Accept<T>(IVisitor<T> visitor)
