@@ -4,25 +4,24 @@ using System.Collections.Generic;
 
 namespace Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
-public class StatementList : Statement, ICollection<IStatement>
+public class CompoundStatementList : Statement, ICollection<IStatement>
 {
-    private readonly List<IListItemDecorator> _statements = new();
+    private readonly List<IListStatementDecorator> _statements = new();
+    
+    public IStatement Parent { get; set; }
 
-    public StatementList()
+    private IListStatementDecorator Decorate(IStatement statement)
     {
-    }
-    private IListItemDecorator Decorate(IStatement statement)
-    {
-        return statement is IListItemDecorator decorated ? decorated : new ListItemDecorator(statement);
+        return statement is IListStatementDecorator decorated ? decorated : new ListStatementDecorator(statement);
     }
 
     public void Add(IStatement item)
     {
-        IListItemDecorator decorated = Decorate(item);
+        IListStatementDecorator decorated = Decorate(item);
 
         if (_statements.Count > 0)
         {
-            IListItemDecorator predecessor = _statements[^1];
+            IListStatementDecorator predecessor = _statements[^1];
             predecessor.Next = decorated;
             decorated.Previous = predecessor;
         }
@@ -61,7 +60,7 @@ public class StatementList : Statement, ICollection<IStatement>
     {
         T result = default;
 
-        foreach (IListItemDecorator statement in _statements)
+        foreach (IListStatementDecorator statement in _statements)
         {
             result = statement.Accept(visitor);
             if (statement.BaseType() == typeof(Goto))

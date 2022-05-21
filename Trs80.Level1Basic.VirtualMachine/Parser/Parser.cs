@@ -72,7 +72,7 @@ public class Parser : IParser
 
     private IStatement Compound()
     {
-        var compound = new Compound(new StatementList());
+        var compound = new Compound(new CompoundStatementList());
         compound.Statements.Parent = compound;
         do
         {
@@ -84,7 +84,7 @@ public class Parser : IParser
         if (compound.Statements.Count != 1) return StatementWrapper(compound);
 
         IStatement statement = compound.Statements[0];
-        statement.Parent = null;
+        ((IListStatementDecorator)statement).Parent = null;
         return StatementWrapper(statement);
     }
 
@@ -334,7 +334,7 @@ public class Parser : IParser
             throw new ParseException(_lineNumber, _source,
                 "Expected 'THEN' or 'GOTO' before line number in 'IF' statement.");
 
-        var thenBranch = new StatementList {
+        var thenBranch = new CompoundStatementList {
             StatementWrapper(
             current.Type switch
             {

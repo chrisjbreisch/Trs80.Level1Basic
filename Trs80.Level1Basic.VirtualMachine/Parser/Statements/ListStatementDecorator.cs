@@ -2,17 +2,19 @@ using System;
 
 namespace Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
-public interface IListItemDecorator : IStatement
+public interface IListStatementDecorator : IListLineDecorator
 {
-    public Type BaseType();
-    public IStatement UnDecorate();
+    IStatement Parent { get; set; }
 }
 
-public class ListItemDecorator : IListItemDecorator
+public class ListStatementDecorator : IListStatementDecorator
 {
     private readonly IStatement _statement;
 
-    public ListItemDecorator(IStatement statement)
+    public IStatement Parent { get; set; }
+
+
+    public ListStatementDecorator(IStatement statement)
     {
         _statement = statement ?? throw new ArgumentNullException(nameof(statement));
     }
@@ -40,13 +42,7 @@ public class ListItemDecorator : IListItemDecorator
         get => _statement.Previous;
         set => _statement.Previous = value;
     }
-
-    public IStatement Parent
-    {
-        get => _statement.Parent;
-        set => _statement.Parent = value;
-    }
-
+    
     public T Accept<T>(IVisitor<T> visitor)
     {
         return _statement.Accept(visitor);

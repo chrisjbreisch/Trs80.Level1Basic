@@ -390,7 +390,7 @@ public class Interpreter : IInterpreter
         return null!;
     }
 
-    private void ExecuteThenBranch(StatementList thenBranch)
+    private void ExecuteThenBranch(CompoundStatementList thenBranch)
     {
         IStatement nextStatement = _machine.GetNextStatement(_program.CurrentStatement);
 

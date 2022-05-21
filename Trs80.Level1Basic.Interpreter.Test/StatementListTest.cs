@@ -30,7 +30,7 @@ public class StatementListTest
     [SuppressMessage("ReSharper", "CollectionNeverUpdated.Local")]
     public void Can_Create_StatementList()
     {
-        var list = new StatementList();
+        var list = new CompoundStatementList();
 
         list.Should().NotBeNull();
     }
@@ -41,7 +41,7 @@ public class StatementListTest
 
         string input = "10 i = i + 1";
         IStatement statement = ParseInput(input);
-        statement.Should().NotBeOfType<StatementList>();
+        statement.Should().NotBeOfType<CompoundStatementList>();
     }
 
     [TestMethod]
@@ -50,17 +50,16 @@ public class StatementListTest
         string input = "10 i = i + 1 : i = i * 2";
         IStatement statement = ParseInput(input);
         statement.Should().BeOfType<Compound>();
-        StatementList? list = (statement as Compound)?.Statements;
+        CompoundStatementList? list = (statement as Compound)?.Statements;
 
         list!.Count.Should().Be(2);
         list[0].LineNumber.Should().Be(10);
         IStatement? firstStatement = list[0];
-        IStatement? secondStatement = firstStatement.Next;
-        IStatement? previousStatement = secondStatement.Previous;
+        IStatement? secondStatement = ((IListLineDecorator)firstStatement).Next;
+        IStatement? previousStatement = ((IListLineDecorator)secondStatement).Previous;
 
         secondStatement.Should().NotBeNull();
         previousStatement.Should().Be(firstStatement);
-
     }
 
     [TestMethod]
@@ -69,13 +68,13 @@ public class StatementListTest
         string input = "10 i = i + 1 : i = i * 2 : print i";
         IStatement statement = ParseInput(input);
         statement.Should().BeOfType<Compound>();
-        StatementList? list = (statement as Compound)?.Statements;
+        CompoundStatementList? list = (statement as Compound)?.Statements;
 
         list!.Count.Should().Be(3);
         list[0].LineNumber.Should().Be(10);
         IStatement? firstStatement = list[0];
-        IStatement? secondStatement = firstStatement.Next;
-        IStatement? thirdStatement = secondStatement.Next;
+        IStatement? secondStatement = ((IListLineDecorator)firstStatement).Next;
+        IStatement? thirdStatement = ((IListLineDecorator)secondStatement).Next;
 
         thirdStatement.Should().NotBeNull();
     }

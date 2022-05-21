@@ -158,14 +158,19 @@ public class Machine : IMachine
     {
         Data.Clear();
 
-        foreach (IStatement dataStatement in Program.List().Where(s => ((IListItemDecorator)s).BaseType() == typeof(Data)))
+        foreach (IStatement dataStatement in Program.List().Where(s => ((IListLineDecorator)s).BaseType() == typeof(Data)))
             interpreter.Execute(dataStatement);
     }
 
 
     public IStatement GetNextStatement(IStatement statement)
     {
-        return statement.Next ?? statement.Parent?.Next;
+        if (statement == null) return null;
+        if (statement.Next != null) return statement.Next;
+        var statementDecorator = statement as IListStatementDecorator;
+        if (statementDecorator == null) return null;
+        if (statementDecorator.Parent == null) return null;
+        return statementDecorator.Parent.Next;
     }
 
     public IStatement GetNextStatement()
