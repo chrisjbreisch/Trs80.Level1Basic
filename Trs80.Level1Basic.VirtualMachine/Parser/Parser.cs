@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -83,9 +82,8 @@ public class Parser : IParser
 
         if (compound.Statements.Count != 1) return StatementWrapper(compound);
 
-        IStatement statement = compound.Statements[0];
-        ((IListStatementDecorator)statement).Parent = null;
-        return StatementWrapper(statement);
+        var statement = (IListStatementDecorator)compound.Statements[0];
+        return StatementWrapper(statement.UnDecorate());
     }
 
     private IStatement Statement()

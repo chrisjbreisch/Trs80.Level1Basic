@@ -7,16 +7,11 @@ namespace Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
 public class LineList : Statement, ICollection<IStatement>
 {
-    private readonly List<IListLineDecorator> _statements = new();
-
-    private IListLineDecorator Decorate(IStatement statement)
-    {
-        return statement is IListLineDecorator decorated ? decorated : new ListLineDecorator(statement);
-    }
+    private readonly List<IStatement> _statements = new();
 
     public void Replace(int lineNumber, IStatement item)
     {
-        IListLineDecorator original = _statements.FirstOrDefault(s => s.LineNumber == lineNumber);
+        IStatement original = _statements.FirstOrDefault(s => s.LineNumber == lineNumber);
 
         if (original == null)
         {
@@ -24,18 +19,16 @@ public class LineList : Statement, ICollection<IStatement>
             return;
         }
 
-        IListLineDecorator decorated = Decorate(item);
-
-        if (original.Previous is IListLineDecorator predecessor)
+        if (original.Previous != null)
         {
-            predecessor.Next = decorated;
-            decorated.Previous = predecessor;
+            original.Previous.Next = item;
+            item.Previous = original.Previous;
         }
 
-        if (original.Next is IListLineDecorator successor)
+        if (original.Next != null)
         {
-            decorated.Next = successor;
-            successor.Previous = decorated;
+            item.Next = original.Next;
+            original.Next.Previous = item;
         }
 
         int index = _statements.IndexOf(original);
@@ -43,14 +36,10 @@ public class LineList : Statement, ICollection<IStatement>
         if (index >= 0)
         {
             _statements.RemoveAt(index);
-            _statements.Insert(index, decorated);
+            _statements.Insert(index, item);
         }
         else
-            _statements.Add(decorated);
-
-        if (item is Compound compound)
-            DecorateCompound(decorated, compound);
-
+            _statements.Add(item);
     }
 
     public void Add(IStatement item)
@@ -59,46 +48,36 @@ public class LineList : Statement, ICollection<IStatement>
             throw new ArgumentNullException(nameof(item));
 
         int lineNumber = item.LineNumber;
-        IListLineDecorator original = _statements.FirstOrDefault(s => s.LineNumber == lineNumber);
+        IStatement original = _statements.FirstOrDefault(s => s.LineNumber == lineNumber);
 
         if (original != null)
             throw new InvalidOperationException("An item with the same line number has already been added.");
-
-        IListLineDecorator decorated = Decorate(item);
-
+        
         if (_statements.Count == 0)
-            _statements.Add(decorated);
+            _statements.Add(item);
         else
         {
-            IListLineDecorator predecessor = _statements.LastOrDefault(s => s.LineNumber < lineNumber);
+            IStatement predecessor = _statements.LastOrDefault(s => s.LineNumber < lineNumber);
             if (predecessor != null)
             {
-                predecessor.Next = decorated;
+                predecessor.Next = item;
                 int index = _statements.IndexOf(predecessor);
-                _statements.Insert(Math.Min(index + 1, _statements.Count), decorated);
-                decorated.Previous = predecessor;
+                _statements.Insert(Math.Min(index + 1, _statements.Count), item);
+                item.Previous = predecessor;
             }
 
-            IListLineDecorator successor = _statements.FirstOrDefault(s => s.LineNumber > lineNumber);
+            IStatement successor = _statements.FirstOrDefault(s => s.LineNumber > lineNumber);
             if (successor == null) return;
 
-            decorated.Next = successor;
+            item.Next = successor;
             if (predecessor == null)
             {
                 int index = _statements.IndexOf(successor);
-                _statements.Insert(index, decorated);
+                _statements.Insert(index, item);
             }
 
-            successor.Previous = decorated;
+            successor.Previous = item;
         }
-        if (item is Compound compound)
-            DecorateCompound(decorated, compound);
-    }
-
-    private void DecorateCompound(IStatement decorated, Compound compound)
-    {
-        foreach (IStatement statement in compound.Statements)
-            ((IListStatementDecorator)statement).Parent = decorated;
     }
 
     public void Clear()
@@ -110,9 +89,7 @@ public class LineList : Statement, ICollection<IStatement>
     {
         if (item == null) return false;
 
-        return item is IListLineDecorator ?
-            _statements.Contains(item) :
-            _statements.Any(s => s.LineNumber == item.LineNumber && s.SourceLine == item.SourceLine);
+        return _statements.Contains(item);
     }
 
     public bool ContainsLine(int lineNumber)
@@ -129,15 +106,15 @@ public class LineList : Statement, ICollection<IStatement>
     public bool Remove(IStatement item)
     {
         if (item == null) return false;
-        IListLineDecorator original = _statements.FirstOrDefault(s => s.LineNumber == item.LineNumber && s.SourceLine == item.SourceLine);
+        IStatement original = _statements.FirstOrDefault(s => s.LineNumber == item.LineNumber && s.SourceLine == item.SourceLine);
 
         if (original == null) return false;
 
-        if (original.Previous is IListLineDecorator predecessor)
-            predecessor.Next = original.Next;
+        if (original.Previous != null)
+            original.Previous.Next = original.Next;
 
-        if (original.Next is IListLineDecorator successor)
-            successor.Previous = original.Previous;
+        if (original.Next != null)
+            original.Next.Previous = original.Previous;
 
         _statements.Remove(original);
         return true;

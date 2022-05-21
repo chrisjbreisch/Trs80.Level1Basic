@@ -6,7 +6,7 @@
 //
 namespace Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
-public interface IVisitor<T>
+public interface IVisitor<out T>
 {
     T VisitClsStatement(Cls statement);
     T VisitCompoundStatement(Compound statement);

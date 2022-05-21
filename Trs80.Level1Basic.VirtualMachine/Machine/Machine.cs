@@ -107,7 +107,7 @@ public class Machine : IMachine
         using var newWriter = new StreamWriter(path);
         _trs80.Out = newWriter;
 
-        foreach (Statement statement in Program.List())
+        foreach (IStatement statement in Program.List())
             _trs80.WriteLine(statement.LineNumber >= 0 ? $" {statement.LineNumber}  {statement.SourceLine}" : $"{statement.SourceLine}");
 
         _trs80.Out = oldWriter;
@@ -158,7 +158,7 @@ public class Machine : IMachine
     {
         Data.Clear();
 
-        foreach (IStatement dataStatement in Program.List().Where(s => ((IListLineDecorator)s).BaseType() == typeof(Data)))
+        foreach (IStatement dataStatement in Program.List().Where(s => s is Data))
             interpreter.Execute(dataStatement);
     }
 
@@ -167,10 +167,7 @@ public class Machine : IMachine
     {
         if (statement == null) return null;
         if (statement.Next != null) return statement.Next;
-        var statementDecorator = statement as IListStatementDecorator;
-        if (statementDecorator == null) return null;
-        if (statementDecorator.Parent == null) return null;
-        return statementDecorator.Parent.Next;
+        return statement is not IListStatementDecorator statementDecorator ? null : statementDecorator.Parent?.Next;
     }
 
     public IStatement GetNextStatement()

@@ -74,10 +74,10 @@ public class LineListTest
         list[0].LineNumber.Should().Be(10);
         IStatement? firstStatement = list[0];
         IStatement? secondStatement = list[1];
-        IStatement? previousStatement = (secondStatement as IListLineDecorator)?.Previous;
+        IStatement? previousStatement = secondStatement?.Previous;
 
         secondStatement.Should().NotBeNull();
-        secondStatement.LineNumber.Should().Be(20);
+        secondStatement?.LineNumber.Should().Be(20);
         previousStatement.Should().Be(firstStatement);
 
     }
@@ -202,8 +202,8 @@ public class LineListTest
         thirdStatement.Should().NotBeNull();
         thirdStatement.LineNumber.Should().Be(30);
         thirdStatement.SourceLine.Should().Be(newStatement);
-        ((IListLineDecorator)thirdStatement).Next.Should().BeNull();
-        ((IListLineDecorator)thirdStatement).Previous.Should().Be(secondStatement);
+        thirdStatement.Next.Should().BeNull();
+        thirdStatement.Previous.Should().Be(secondStatement);
     }
 
     [TestMethod]
@@ -225,14 +225,14 @@ public class LineListTest
         list.Count.Should().Be(3);
         list[0].LineNumber.Should().Be(10);
         IStatement? firstStatement = list[0];
-        IStatement? secondStatement = ((IListLineDecorator)firstStatement).Next;
+        IStatement? secondStatement = firstStatement.Next;
         IStatement? indexedStatement = list[0];
 
         firstStatement.Should().NotBeNull();
         firstStatement.LineNumber.Should().Be(10);
         firstStatement.SourceLine.Should().Be(newStatement);
         indexedStatement.Should().Be(firstStatement);
-        ((IListLineDecorator)secondStatement).Previous.Should().Be(firstStatement);
+        secondStatement.Previous.Should().Be(firstStatement);
     }
 
     [TestMethod]
@@ -251,12 +251,12 @@ public class LineListTest
         list.Count.Should().Be(2);
         list[1].LineNumber.Should().Be(30);
         IStatement? firstStatement = list[0];
-        IStatement? secondStatement = ((IListLineDecorator)firstStatement).Next;
+        IStatement? secondStatement = firstStatement.Next;
         IStatement? indexedSecondStatement = list[1];
 
         secondStatement.Should().NotBeNull();
         secondStatement.LineNumber.Should().Be(30);
-        ((IListLineDecorator)secondStatement).Next.Should().BeNull();
+        secondStatement.Next.Should().BeNull();
         indexedSecondStatement.Should().Be(secondStatement);
     }
 
@@ -276,14 +276,14 @@ public class LineListTest
         list.Count.Should().Be(2);
         list[1].LineNumber.Should().Be(20);
         IStatement? firstStatement = list[0];
-        IStatement? secondStatement = ((IListLineDecorator)firstStatement).Next;
+        IStatement? secondStatement = firstStatement.Next;
         IStatement? indexedStatement = list[1];
 
         secondStatement.Should().NotBeNull();
         secondStatement.LineNumber.Should().Be(20);
-        ((IListLineDecorator)secondStatement).Next.Should().BeNull();
+        secondStatement.Next.Should().BeNull();
         indexedStatement.Should().Be(secondStatement);
-        ((IListLineDecorator)secondStatement).Previous.Should().Be(firstStatement);
+        secondStatement.Previous.Should().Be(firstStatement);
     }
 
     [TestMethod]
@@ -302,11 +302,11 @@ public class LineListTest
         list.Count.Should().Be(2);
         list[0].LineNumber.Should().Be(20);
         IStatement? firstStatement = list[0];
-        IStatement? secondStatement = ((IListLineDecorator)firstStatement).Next;
+        IStatement? secondStatement = firstStatement.Next;
 
         firstStatement.Should().NotBeNull();
         firstStatement.LineNumber.Should().Be(20);
-        ((IListLineDecorator)firstStatement).Previous.Should().BeNull();
-        ((IListLineDecorator)secondStatement).Previous.Should().Be(firstStatement);
+        firstStatement.Previous.Should().BeNull();
+        secondStatement.Previous.Should().Be(firstStatement);
     }
 }

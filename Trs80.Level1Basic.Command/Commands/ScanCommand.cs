@@ -22,8 +22,7 @@ public class ScanCommand : ICommand<ScanModel>
     {
         parameterObject.Tokens = ScanLine(parameterObject.SourceLine)!;
     }
-
-
+    
     private void HandleError(Exception ex)
     {
         switch (ex)

@@ -96,7 +96,6 @@ internal static class Program
         writer.WriteLine("    string SourceLine { get; set; }");
         writer.WriteLine("    IStatement Next { get; set; }");
         writer.WriteLine("    IStatement Previous { get; set; }");
-        writer.WriteLine("    IStatement Parent { get; set; }");
         writer.WriteLine();
 
         writer.WriteLine("    T Accept<T>(IVisitor<T> visitor);");
@@ -172,7 +171,7 @@ internal static class Program
 
         writer.WriteLine($"namespace Trs80.Level1Basic.VirtualMachine.Parser.{baseName}s;");
         writer.WriteLine();
-        writer.WriteLine("public interface IVisitor<T>");
+        writer.WriteLine("public interface IVisitor<out T>");
         writer.WriteLine("{");
 
         foreach (string type in types)

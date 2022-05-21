@@ -55,8 +55,8 @@ public class StatementListTest
         list!.Count.Should().Be(2);
         list[0].LineNumber.Should().Be(10);
         IStatement? firstStatement = list[0];
-        IStatement? secondStatement = ((IListLineDecorator)firstStatement).Next;
-        IStatement? previousStatement = ((IListLineDecorator)secondStatement).Previous;
+        IStatement? secondStatement = firstStatement.Next;
+        IStatement? previousStatement = secondStatement.Previous;
 
         secondStatement.Should().NotBeNull();
         previousStatement.Should().Be(firstStatement);
@@ -73,8 +73,8 @@ public class StatementListTest
         list!.Count.Should().Be(3);
         list[0].LineNumber.Should().Be(10);
         IStatement? firstStatement = list[0];
-        IStatement? secondStatement = ((IListLineDecorator)firstStatement).Next;
-        IStatement? thirdStatement = ((IListLineDecorator)secondStatement).Next;
+        IStatement? secondStatement = firstStatement.Next;
+        IStatement? thirdStatement = secondStatement.Next;
 
         thirdStatement.Should().NotBeNull();
     }

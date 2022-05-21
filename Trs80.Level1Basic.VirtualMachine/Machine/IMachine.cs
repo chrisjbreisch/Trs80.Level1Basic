@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
@@ -9,8 +10,8 @@ public interface IMachine
     Stack<ForCondition> ForConditions { get; }
     DataElements Data { get; }
     IProgram Program { get; }
-    int CursorX { get; set;  }
-    int CursorY { get; set;  }
+    int CursorX { get; set; }
+    int CursorY { get; set; }
     public bool ExecutionHalted { get; set; }
 
     dynamic Assign(string name, dynamic value);

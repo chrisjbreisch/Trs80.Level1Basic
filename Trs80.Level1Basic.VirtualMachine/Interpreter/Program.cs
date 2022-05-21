@@ -30,16 +30,16 @@ public class Program : IProgram
     public IStatement GetExecutableStatement(int lineNumber)
     {
         IStatement statement = _statements
-            .FirstOrDefault(s => s.LineNumber == lineNumber && ((IListLineDecorator)s).BaseType() != typeof(Data));
+            .FirstOrDefault(s => s.LineNumber == lineNumber && s is not Data);
 
         if (statement is not null) return statement;
         statement = _statements
-            .FirstOrDefault(s => s.LineNumber == lineNumber && ((IListLineDecorator)s).BaseType() == typeof(Data));
+            .FirstOrDefault(s => s.LineNumber == lineNumber && s is Data);
 
         if (statement is null) return null;
 
         return _statements
-            .FirstOrDefault(s => s.LineNumber >= lineNumber && ((IListLineDecorator)s).BaseType() != typeof(Data));
+            .FirstOrDefault(s => s.LineNumber >= lineNumber && s is not Data);
     }
 
     public LineList List()

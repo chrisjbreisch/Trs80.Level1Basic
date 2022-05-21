@@ -31,7 +31,7 @@ public class ParserTest
         statement.LineNumber.Should().Be(10);
         statement.SourceLine.Should().Be("print \"Hello, World!\"");
         
-        var printStatement = ((IListLineDecorator)statement).UnDecorate() as Print;
+        var printStatement = statement as Print;
         printStatement.Should().NotBeNull();
         printStatement!.Expressions.Count.Should().Be(1);
 
