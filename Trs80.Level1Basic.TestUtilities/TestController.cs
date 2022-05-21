@@ -3,12 +3,13 @@
 using Trs80.Level1Basic.Application;
 using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.HostMachine;
-using Trs80.Level1Basic.VirtualMachine.Environment;
+using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser;
+using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
 
-using Environment = Trs80.Level1Basic.VirtualMachine.Environment.Environment;
+using Environment = Trs80.Level1Basic.VirtualMachine.Machine.Machine;
 
 namespace Trs80.Level1Basic.TestUtilities;
 
@@ -35,24 +36,24 @@ public class TestController : IDisposable
         IAppSettings? appSettings = bootstrapper.AppSettings;
         ILoggerFactory? loggerFactory = bootstrapper.LogFactory;
 
-        IBuiltinFunctions builtins = new BuiltinFunctions();
-        _scanner = new Scanner(builtins);
-        _parser = new Parser(builtins);
+        INativeFunctions natives = new NativeFunctions();
+        _scanner = new Scanner(natives);
+        _parser = new Parser(natives);
         IProgram program = new Program(_scanner, _parser);
         IHost host = new FakeHost();
-        Trs80 = new VirtualMachine.Environment.Trs80(program, appSettings, loggerFactory, host)
+        Trs80 = new VirtualMachine.Machine.Trs80(program, appSettings, loggerFactory, host)
         {
             Out = _output
         };
-        IEnvironment environment = new Environment(Trs80, program, builtins);
+        IMachine environment = new Environment(Trs80, program, natives);
         _interpreter = new Interpreter(host, Trs80, environment, program);
     }
 
     public void ExecuteLine(string input)
     {
         List<Token> tokens = _scanner.ScanTokens(input);
-        ParsedLine parsedLine = _parser.Parse(tokens);
-        _interpreter.Interpret(parsedLine);
+        IStatement statement = _parser.Parse(tokens);
+        _interpreter.Interpret(statement);
     }
 
     public void ExecuteStatements(List<string> statements)

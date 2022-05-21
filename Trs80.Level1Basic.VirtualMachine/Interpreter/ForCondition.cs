@@ -3,11 +3,11 @@ using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
 namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
 
-public class ForCheckCondition
+public class ForCondition
 {
-    public Expression Variable { get; set; }
+    public Expression Identifier { get; set; }
     public int Step { get; set; }
     public int Start { get; set; }
     public int End { get; set; }
-    public Statement Next { get; set; }
+    public IStatement Goto { get; set; }
 }

@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Trs80.Level1Basic.Application;
 using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.TestUtilities;
-using Trs80.Level1Basic.VirtualMachine.Environment;
+using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
@@ -32,11 +32,11 @@ public class Trs80Test
     [TestMethod]
     public void Can_Replace_In_And_Out()
     {
-        IBuiltinFunctions builtins = new BuiltinFunctions();
-        var scanner = new Scanner(builtins);
-        var parser = new Parser(builtins);
+        INativeFunctions natives = new NativeFunctions();
+        var scanner = new Scanner(natives);
+        var parser = new Parser(natives);
         IProgram program = new Program(scanner, parser);
-        var trs80 = new VirtualMachine.Environment.Trs80(program, _appSettings, _loggerFactory, new FakeHost());
+        var trs80 = new VirtualMachine.Machine.Trs80(program, _appSettings, _loggerFactory, new FakeHost());
 
         const string input = "Hello, World!\r\n";
         var sw = new StringWriter();

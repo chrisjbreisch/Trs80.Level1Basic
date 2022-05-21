@@ -15,7 +15,7 @@ using Trs80.Level1Basic.Command.Commands;
 using Trs80.Level1Basic.CommandModels;
 using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.HostMachine;
-using Trs80.Level1Basic.VirtualMachine.Environment;
+using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
@@ -25,7 +25,7 @@ using WorkflowCore.Interface;
 using WorkflowCore.Models;
 using WorkflowCore.Services.DefinitionStorage;
 
-using Environment = Trs80.Level1Basic.VirtualMachine.Environment.Environment;
+using Machine = Trs80.Level1Basic.VirtualMachine.Machine.Machine;
 
 namespace Trs80.Level1Basic.Application;
 
@@ -230,12 +230,12 @@ public sealed class Bootstrapper : IDisposable
         _services
             .AddSingleton<IScanner, Scanner>()
             .AddSingleton<IParser, Parser>()
-            .AddSingleton<ITrs80, VirtualMachine.Environment.Trs80>()
+            .AddSingleton<ITrs80, VirtualMachine.Machine.Trs80>()
             .AddSingleton<IInterpreter, Interpreter>()
-            .AddSingleton<IEnvironment, Environment>()
+            .AddSingleton<IMachine, Machine>()
             .AddSingleton<ITrs80DataModel, Trs80DataModel>()
             .AddSingleton<IHost, Host>()
-            .AddSingleton<IBuiltinFunctions, BuiltinFunctions>()
+            .AddSingleton<INativeFunctions, NativeFunctions>()
             .AddSingleton<IProgram, Program>()
             .AddSingleton<IAppSettings, AppSettings>()
             .BuildServiceProvider();

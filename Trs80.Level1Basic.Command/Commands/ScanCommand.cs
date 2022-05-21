@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 
 using Trs80.Level1Basic.CommandModels;
-using Trs80.Level1Basic.VirtualMachine.Environment;
+using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
 
@@ -22,8 +22,7 @@ public class ScanCommand : ICommand<ScanModel>
     {
         parameterObject.Tokens = ScanLine(parameterObject.SourceLine)!;
     }
-
-
+    
     private void HandleError(Exception ex)
     {
         switch (ex)

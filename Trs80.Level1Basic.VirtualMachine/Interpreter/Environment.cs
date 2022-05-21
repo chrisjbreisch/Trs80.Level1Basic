@@ -3,7 +3,7 @@ using Trs80.Level1Basic.VirtualMachine.Exceptions;
 
 namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
 
-public class GlobalVariables
+public class Environment
 {
     private readonly Dictionary<string, dynamic> _variables = new();
     private readonly Dictionary<string, Dictionary<int, dynamic>> _arrays = new();

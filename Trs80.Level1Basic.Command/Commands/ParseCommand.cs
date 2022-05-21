@@ -1,9 +1,10 @@
 ﻿using System.Diagnostics;
 
 using Trs80.Level1Basic.CommandModels;
-using Trs80.Level1Basic.VirtualMachine.Environment;
+using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
 using Trs80.Level1Basic.VirtualMachine.Parser;
+using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
 
 namespace Trs80.Level1Basic.Command.Commands;
@@ -21,7 +22,7 @@ public class ParseCommand : ICommand<ParseModel>
 
     public void Execute(ParseModel parameterObject)
     {
-        parameterObject.ParsedLine = ParseTokens(parameterObject.Tokens)!;
+        parameterObject.Statement = ParseTokens(parameterObject.Tokens)!;
     }
 
     private void WritePrompt()
@@ -72,21 +73,21 @@ public class ParseCommand : ICommand<ParseModel>
             : $" {voore.Statement}?\r\n[{voore.Message}]");
     }
 
-    private ParsedLine? ParseTokens(List<Token>? tokens)
+    private IStatement? ParseTokens(List<Token>? tokens)
     {
         if (tokens == null) return null;
 
-        ParsedLine? parsedLine = null;
+        IStatement? statement = null;
         try
         {
-            parsedLine = _parser.Parse(tokens);
+            statement = _parser.Parse(tokens);
         }
         catch (Exception ex)
         {
             HandleError(ex);
             WritePrompt();
         }
-        return parsedLine;
+        return statement;
     }
 
     private void ScanError(ScanException se)

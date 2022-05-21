@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Trs80.Level1Basic.VirtualMachine.Environment;
+using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
 
 namespace Trs80.Level1Basic.VirtualMachine.Scanner;
@@ -19,15 +19,15 @@ public class Scanner : IScanner
     private int TokenStart { get; set; }
     private int TokenLength => _currentIndex - TokenStart;
     private int _currentIndex;
-    private readonly IBuiltinFunctions _builtins;
+    private readonly INativeFunctions _natives;
 
     private static readonly Dictionary<int, Dictionary<string, TokenType>> KeywordsByLetter =
         CreateKeywordsByLetterDictionary();
     private string _currentLine;
 
-    public Scanner(IBuiltinFunctions builtins)
+    public Scanner(INativeFunctions natives)
     {
-        _builtins = builtins ?? throw new ArgumentNullException(nameof(builtins));
+        _natives = natives ?? throw new ArgumentNullException(nameof(natives));
     }
     private string CurrentLine
     {
@@ -340,7 +340,7 @@ public class Scanner : IScanner
             identifier = _source.Substring(TokenStart, TokenLength);
         }
 
-        if (TokenLength == 1 || _builtins.Get(identifier) != null)
+        if (TokenLength == 1 || _natives.Get(identifier) != null)
             AddToken(TokenType.Identifier, identifier);
         else if (!KeywordsByLetter
                      .Select(d => d.Value)

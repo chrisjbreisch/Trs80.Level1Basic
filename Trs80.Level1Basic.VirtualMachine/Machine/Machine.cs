@@ -4,30 +4,29 @@ using System.IO;
 using System.Linq;
 
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
-using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
-namespace Trs80.Level1Basic.VirtualMachine.Environment;
+namespace Trs80.Level1Basic.VirtualMachine.Machine;
 
-public class Environment : IEnvironment
+public class Machine : IMachine
 {
-    private readonly GlobalVariables _globals = new();
+    private readonly Interpreter.Environment _globals = new();
     private readonly ITrs80 _trs80;
-    private readonly IBuiltinFunctions _builtins;
+    private readonly INativeFunctions _natives;
+    private IStatement _nextStatement;
 
     public int CursorX { get; set; }
     public int CursorY { get; set; }
-    public Stack<ForCheckCondition> ForChecks { get; } = new();
-    public Stack<Statement> ProgramStack { get; } = new();
+    public Stack<ForCondition> ForConditions { get; } = new();
     public DataElements Data { get; } = new();
     public IProgram Program { get; }
-    public bool ExecutionHalted { get; private set; }
+    public bool ExecutionHalted { get; set; }
 
-    public Environment(ITrs80 trs80, IProgram program, IBuiltinFunctions builtins)
+    public Machine(ITrs80 trs80, IProgram program, INativeFunctions natives)
     {
         _trs80 = trs80 ?? throw new ArgumentNullException(nameof(trs80));
         Program = program ?? throw new ArgumentNullException(nameof(program));
-        _builtins = builtins ?? throw new ArgumentNullException(nameof(builtins));
+        _natives = natives ?? throw new ArgumentNullException(nameof(natives));
 
         Console.CancelKeyPress += delegate (object _, ConsoleCancelEventArgs e)
         {
@@ -61,28 +60,23 @@ public class Environment : IEnvironment
         return _globals.AssignArray(name, index, value);
     }
 
-    public dynamic Get(string name)
+    public List<Callable> Function(string name)
     {
-        return _globals.Get(name);
-    }
-
-    public List<FunctionDefinition> Function(string name)
-    {
-        return _builtins.Get(name);
+        return _natives.Get(name);
     }
 
     public bool Exists(string name)
     {
         return _globals.Exists(name);
     }
-    
+
     public void ListProgram(int lineNumber)
     {
         int index = 0;
         bool exitList = false;
-        foreach (ParsedLine line in Program.List().Where(s => s.LineNumber >= lineNumber))
+        foreach (IStatement statement in Program.List().Where(s => s.LineNumber >= lineNumber))
         {
-            _trs80.WriteLine(line.LineNumber >= 0 ? $" {line.LineNumber}  {line.SourceLine}" : $"{line.SourceLine}");
+            _trs80.WriteLine(statement.LineNumber >= 0 ? $" {statement.LineNumber}  {statement.SourceLine}" : $"{statement.SourceLine}");
             index++;
             if (index < 12) continue;
 
@@ -113,8 +107,8 @@ public class Environment : IEnvironment
         using var newWriter = new StreamWriter(path);
         _trs80.Out = newWriter;
 
-        foreach (ParsedLine line in Program.List())
-            _trs80.WriteLine(line.LineNumber >= 0 ? $" {line.LineNumber}  {line.SourceLine}" : $"{line.SourceLine}");
+        foreach (IStatement statement in Program.List())
+            _trs80.WriteLine(statement.LineNumber >= 0 ? $" {statement.LineNumber}  {statement.SourceLine}" : $"{statement.SourceLine}");
 
         _trs80.Out = oldWriter;
     }
@@ -130,30 +124,27 @@ public class Environment : IEnvironment
         Initialize();
     }
 
-    private Statement _nextStatement;
-    public void RunProgram(Statement statement, IInterpreter interpreter)
+    public void RunStatementList(IStatement statement, IInterpreter interpreter, bool breakOnLineChange)
     {
         ExecutionHalted = false;
+        if (statement == null) return;
+        int lineNumber = statement.LineNumber;
 
         while (statement != null && !ExecutionHalted)
         {
-            _nextStatement = statement.Next;
+            _nextStatement = GetNextStatement(statement);
             interpreter.Execute(statement);
             statement = _nextStatement;
+            if (breakOnLineChange && statement?.LineNumber != lineNumber) break;
         }
     }
 
-    public int MemoryInUse()
-    {
-        return Program.Size();
-    }
-
-    public Statement GetStatementByLineNumber(int lineNumber)
+    public IStatement GetStatementByLineNumber(int lineNumber)
     {
         return Program.GetExecutableStatement(lineNumber);
     }
 
-    public void SetNextStatement(Statement statement)
+    public void SetNextStatement(IStatement statement)
     {
         _nextStatement = statement;
     }
@@ -167,11 +158,19 @@ public class Environment : IEnvironment
     {
         Data.Clear();
 
-        foreach (Statement dataStatement in Program.List().SelectMany(s => s.Statements).Where(s => s is Data))
+        foreach (IStatement dataStatement in Program.List().Where(s => s is Data))
             interpreter.Execute(dataStatement);
     }
 
-    public Statement GetNextStatement()
+
+    public IStatement GetNextStatement(IStatement statement)
+    {
+        if (statement == null) return null;
+        if (statement.Next != null) return statement.Next;
+        return statement is not IListStatementDecorator statementDecorator ? null : statementDecorator.Parent?.Next;
+    }
+
+    public IStatement GetNextStatement()
     {
         return _nextStatement;
     }
@@ -180,6 +179,11 @@ public class Environment : IEnvironment
     {
         _globals.Clear();
         Data.MoveFirst();
+    }
+
+    public dynamic Get(string name)
+    {
+        return _globals.Get(name);
     }
 
     public dynamic Get(string name, int index)

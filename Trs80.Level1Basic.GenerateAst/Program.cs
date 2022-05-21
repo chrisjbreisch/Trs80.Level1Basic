@@ -23,7 +23,7 @@ internal static class Program
             "Array      : Token name, Expression index",
             "Assign     : Token name, Expression value",
             "Binary     : Expression left, Token binaryOperator, Expression right",
-            "Call       : Token name, List<Expression> arguments",
+            "Call       : Token callee, List<Expression> arguments",
             "Grouping   : Expression expression",
             "Identifier : Token name",
             "Literal    : dynamic value",
@@ -33,14 +33,15 @@ internal static class Program
         DefineAst(outputDir, "Statement", new List<string>
         {
             "Cls",
+            "Compound               : StatementList statements",
             "Cont",
             "Data                   : List<Expression> dataElements",
             "Delete                 : int lineToDelete",
             "End",
-            "For                    : Expression variable, Expression startValue, Expression endValue, Expression stepValue",
+            "For                    : Expression identifier, Expression startValue, Expression endValue, Expression stepValue",
             "Gosub                  : Expression location",
             "Goto                   : Expression location",
-            "If                     : Expression condition, Statement thenBranch",
+            "If                     : Expression condition, StatementList thenBranch",
             "Input                  : List<Expression> expressions, bool writeNewline",
             "Let                    : Expression variable, Expression initializer",
             "List                   : Expression startAtLineNumber",
@@ -50,7 +51,7 @@ internal static class Program
             "Next                   : Expression variable",
             "On                     : Expression selector, List<Expression> locations, bool isGosub",
             "Print                  : Expression atPosition, List<Expression> expressions, bool writeNewline",
-            "Replace                : ParsedLine line",
+            "Replace                : IStatement statement",
             "Read                   : List<Expression> variables",
             "Rem                    : Literal remark",
             "Restore",
@@ -65,6 +66,8 @@ internal static class Program
     private static void DefineAst(string outputDir, string baseName, List<string> types)
     {
         DefineVisitorInterface(outputDir, baseName, types);
+        if (baseName.Contains("Statement"))
+            DefineInterface(outputDir, baseName);
         DefineBaseClass(outputDir, baseName);
         DefineSubClasses(outputDir, baseName, types);
     }
@@ -81,20 +84,44 @@ internal static class Program
         }
     }
 
+    private static void DefineInterface(string outputDir, string baseName)
+    {
+        string path = $"{outputDir}\\{baseName}s\\I{baseName}.cs";
+        using var writer = new StreamWriter(path);
+
+        WriteHeaders(baseName, writer);
+        writer.WriteLine($"public interface I{baseName}");
+        writer.WriteLine("{");
+        writer.WriteLine("    int LineNumber { get; set; }");
+        writer.WriteLine("    string SourceLine { get; set; }");
+        writer.WriteLine("    IStatement Next { get; set; }");
+        writer.WriteLine("    IStatement Previous { get; set; }");
+        writer.WriteLine();
+
+        writer.WriteLine("    T Accept<T>(IVisitor<T> visitor);");
+        writer.WriteLine("}");
+        WriteEnd(writer);
+    }
+
     private static void DefineBaseClass(string outputDir, string baseName)
     {
         string path = $"{outputDir}\\{baseName}s\\{baseName}.cs";
         using var writer = new StreamWriter(path);
+        string implements = string.Empty;
 
+        if (baseName.Contains("Statement"))
+            implements = $": I{baseName}";
 
         WriteHeaders(baseName, writer);
-        writer.WriteLine($"public abstract class {baseName}");
+        writer.WriteLine($"public abstract class {baseName}{implements}");
         writer.WriteLine("{");
         if (baseName.Contains("Statement"))
         {
             writer.WriteLine("    public int LineNumber { get; set; } = -1;");
             writer.WriteLine("    public string SourceLine { get; set; }");
-            writer.WriteLine("    public Statement Next { get; set; }");
+            writer.WriteLine("    public IStatement Next { get; set; }");
+            writer.WriteLine("    public IStatement Previous { get; set; }");
+            writer.WriteLine("    public IStatement Parent { get; set; }");
             writer.WriteLine();
         }
 
@@ -144,7 +171,7 @@ internal static class Program
 
         writer.WriteLine($"namespace Trs80.Level1Basic.VirtualMachine.Parser.{baseName}s;");
         writer.WriteLine();
-        writer.WriteLine("public interface IVisitor<T>");
+        writer.WriteLine("public interface IVisitor<out T>");
         writer.WriteLine("{");
 
         foreach (string type in types)
@@ -169,7 +196,7 @@ internal static class Program
         foreach (string field in fields.Where(s => !string.IsNullOrEmpty(s)))
         {
             string[] fieldPieces = field.Split(" ");
-            writer.WriteLine($"    public {fieldPieces[0]} {fieldPieces[1].SeparateWordsByCase('_').ToPascalCase()} {{ get; }}");
+            writer.WriteLine($"    public {fieldPieces[0]} {fieldPieces[1].SeparateWordsByCase('_').ToPascalCase()} {{ get; init; }}");
         }
 
         writer.WriteLine();

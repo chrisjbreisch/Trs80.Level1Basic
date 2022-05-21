@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Trs80.Level1Basic.Common.Extensions;
 
 namespace Trs80.Level1Basic.Command.Commands;
 
@@ -18,15 +17,16 @@ public class LogCommandDecorator<TPo> : ICommand<TPo>
         _logger = logFactory.CreateLogger<LogCommandDecorator<TPo>>();
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Usage", 
         "CA2254:Template should be a static expression", 
-        Justification = "Minimal performance benefit not worth the effort.")]
+        Justification = "Minimal performance gain not worth effort")]
     public void Execute(TPo parameterObject)
     {
         try
         {
             _logger.LogInformation(
-                $"\r\nExecuting {_command.GetType().Name} ({_logger.JsonSerializeObject(parameterObject)})");
+                $"\r\nExecuting {_command.GetType().Name} ()");
             _command.Execute(parameterObject);
         }
         catch (Exception ex)

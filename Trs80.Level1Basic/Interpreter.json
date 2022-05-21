@@ -52,14 +52,14 @@
                     "Tokens": "data.Tokens"
                   },
                   "Outputs": {
-                    "ParsedLine": "step.ParsedLine"
+                    "Statement": "step.Statement"
                   }
                 },
                 {
                   "Id": "InterpretStep",
                   "StepType": "Trs80.Level1Basic.Workflow.IInterpretStep, Trs80.Level1Basic.Workflow",
                   "Inputs": {
-                    "ParsedLine": "data.ParsedLine"
+                    "Statement": "data.Statement"
                   }
                 }
               ]

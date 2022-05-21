@@ -11,11 +11,11 @@ namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
 
 public class Program : IProgram
 {
-    private List<ParsedLine> _programLines = new();
-    private readonly List<Statement> _programStatements = new();
-    private bool _sorted;
+    private readonly LineList _statements = new();
     private readonly IScanner _scanner;
     private readonly IParser _parser;
+
+    public IStatement CurrentStatement { get; set; }
 
     public Program(IScanner scanner, IParser parser)
     {
@@ -25,44 +25,31 @@ public class Program : IProgram
 
     public void Initialize()
     {
-        _programStatements.Clear();
-        _sorted = false;
-        Sort();
-
-        Statement last = null;
-        foreach (Statement statement in _programLines.SelectMany(line => line.Statements))
-        {
-            if (last != null)
-                last.Next = statement;
-            _programStatements.Add(statement);
-            last = statement;
-        }
     }
 
-    public Statement GetExecutableStatement(int lineNumber)
+    public IStatement GetExecutableStatement(int lineNumber)
     {
-        Statement statement = _programStatements
+        IStatement statement = _statements
             .FirstOrDefault(s => s.LineNumber == lineNumber && s is not Data);
 
         if (statement is not null) return statement;
-        statement = _programStatements
+        statement = _statements
             .FirstOrDefault(s => s.LineNumber == lineNumber && s is Data);
 
         if (statement is null) return null;
 
-        return _programStatements
+        return _statements
             .FirstOrDefault(s => s.LineNumber >= lineNumber && s is not Data);
     }
 
-    public List<ParsedLine> List()
+    public LineList List()
     {
-        Sort();
-        return _programLines;
+        return _statements;
     }
 
     public void Clear()
     {
-        _programLines.Clear();
+        _statements.Clear();
     }
 
     public void Load(string path)
@@ -71,75 +58,38 @@ public class Program : IProgram
         while (!reader.EndOfStream)
         {
             List<Token> tokens = _scanner.ScanTokens(reader.ReadLine());
-            ParsedLine line = _parser.Parse(tokens);
-            AddLine(line);
+            IStatement statement = _parser.Parse(tokens);
+            AddStatement(statement);
         }
     }
 
-    public void RemoveLine(ParsedLine line)
+    public void RemoveStatement(IStatement statement)
     {
-        IEnumerable<Statement> previousLines = _programLines.SelectMany(s => s.Statements).Where(p => p?.Next?.LineNumber == line.LineNumber);
-
-        foreach (Statement previousLine in previousLines)
-            previousLine.Next = line.Statements[0].Next;
-
-        _programLines.Remove(line);
+        _statements.Remove(statement);
     }
 
     public int Size()
     {
-        return _programLines.Sum(statement => 4 + statement.SourceLine.Length);
+        return _statements.Sum(statement => 4 + statement.SourceLine.Length);
     }
 
-    private void AddLine(ParsedLine line)
+    public void ReplaceStatement(IStatement statement)
     {
-        if (line == null) return;
-        ParsedLine programLine = GetProgramLine(line);
+        _statements.Replace(statement.LineNumber, statement);
+    }
 
-        if (programLine != null)
-            ReplaceLine(line);
+    private void AddStatement(IStatement statement)
+    {
+        if (statement == null) return;
+
+        if (_statements.ContainsLine(statement.LineNumber))
+            _statements.Replace(statement.LineNumber, statement);
         else
-            _programLines.Add(line);
-
-        _sorted = false;
+            _statements.Add(statement);
     }
 
-    private ParsedLine GetProgramLine(ParsedLine line)
+    public IStatement GetFirstStatement()
     {
-        ParsedLine programLine = _programLines.FirstOrDefault(l => l.LineNumber == line.LineNumber);
-        return programLine;
-    }
-
-    public void ReplaceLine(ParsedLine line)
-    {
-        if (line == null) return;
-        ParsedLine programLine = GetProgramLine(line);
-
-        if (programLine != null)
-        {
-            programLine.SourceLine = line.SourceLine;
-            programLine.Statements = line.Statements;
-        }
-        else
-        {
-            AddLine(line);
-            Sort();
-        }
-    }
-
-    public Statement GetFirstStatement()
-    {
-        Sort();
-        return _programStatements.FirstOrDefault();
-    }
-
-    public Statement CurrentStatement { get; set; }
-
-    public void Sort()
-    {
-        if (_sorted) return;
-
-        _programLines = _programLines.OrderBy(l => l.LineNumber).ToList();
-        _sorted = true;
+        return _statements.FirstOrDefault();
     }
 }
