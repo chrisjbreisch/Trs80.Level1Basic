@@ -36,7 +36,7 @@ public sealed class Bootstrapper : IDisposable
     private ILogger _logger;
 
     public string ApplicationName { get; private set; }
-    public ILoggerFactory LogFactory;
+    public ILoggerFactory LogFactory { get; private set; }
 
     public IServiceProvider ScopedServiceProvider { get; private set; }
     public ServiceProvider RootServiceProvider { get; private set; }
