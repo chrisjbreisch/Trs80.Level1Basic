@@ -145,7 +145,6 @@ public class Machine : IMachine
 
         ExecutionHalted = false;
         if (thenBranch == null) return;
-        int lineNumber = thenBranch.LineNumber;
         IStatement statement = thenBranch[0];
 
         while (statement != null && !ExecutionHalted)
