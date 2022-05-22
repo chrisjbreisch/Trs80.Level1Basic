@@ -136,7 +136,7 @@ implementation predates [IEEE 754](https://en.wikipedia.org/wiki/IEEE_754) and s
 in some cases that don't apply to modern computers. Some examples in the book display the issues with 
 these rounding errors. My emulator will display the numbers with more accuracy.
 - I've given you 16 K or RAM. The original Level I's had 4K, but 16K models were available. It's just a 
-number for the emulator thorugh, so that `PRINT MEM` works. It has no meaning. Feel free to write 
+number for the emulator though, so that `PRINT MEM` works. It has no meaning. Feel free to write 
 programs as large as you like. The numbers displayed by `PRINT MEM` will drop accordingly, and 
 eventually go negative, but you can keep on typing.
 - I'm probobaly not as strict on expressions as Level I BASIC was. I allow full expressions anywhere. 
