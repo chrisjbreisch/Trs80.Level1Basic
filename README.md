@@ -130,12 +130,12 @@ have screwed up the `LOAD`, `SAVE`, and `MERGE` commands if you're working on a 
 string variables (A$, B$), and one array(A()). I've expanded on that __slightly__. I still only allow 
 1 letter variables, but all of them can also be strings or arrays. So `10 C$="Chris"` is legal. So is 
 `10 F(10) = 3.14159`.
-- I'm sure I've read details on floating-point numbers on the TRS-80 somewhere, but I can't find it. 
+- I'm sure I've read details on the floating-point implementation on the TRS-80 somewhere, but I can't find it now. 
 It's all 32-bit single-precision in Level I, and that's what I've implemented also. However, the TRS-80 
 implementation predates [IEEE 754](https://en.wikipedia.org/wiki/IEEE_754) and suffers from rounding error
 in some cases that don't apply to modern computers. Some examples in the book display the issues with 
 these rounding errors. My emulator will display the numbers with more accuracy.
-- I've given you 16 K or RAM. The original Level I's had 4K, but 16K models were avilable. It's just a 
+- I've given you 16 K or RAM. The original Level I's had 4K, but 16K models were available. It's just a 
 number for the emulator thorugh, so that `PRINT MEM` works. It has no meaning. Feel free to write 
 programs as large as you like. The numbers displayed by `PRINT MEM` will drop accordingly, and 
 eventually go negative, but you can keep on typing.
