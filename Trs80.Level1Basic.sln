@@ -31,6 +31,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EB5F1053-2F8B-439E-ABF0-303B782EDAB9}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		AnotherMansTreasureMIB64C2X3Y.ttf = AnotherMansTreasureMIB64C2X3Y.ttf
 		Directory.build.props = Directory.build.props
 		README.md = README.md
 	EndProjectSection
