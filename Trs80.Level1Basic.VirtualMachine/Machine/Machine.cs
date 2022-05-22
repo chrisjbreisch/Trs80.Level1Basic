@@ -139,6 +139,25 @@ public class Machine : IMachine
         }
     }
 
+    public void RunThenBranch(CompoundStatementList thenBranch, IInterpreter interpreter)
+    {
+        IStatement nextStatement = _nextStatement;
+
+        ExecutionHalted = false;
+        if (thenBranch == null) return;
+        int lineNumber = thenBranch.LineNumber;
+        IStatement statement = thenBranch[0];
+
+        while (statement != null && !ExecutionHalted)
+        {
+            _nextStatement = GetNextStatement(statement);
+            interpreter.Execute(statement);
+            if (statement is IListStatementDecorator decorated && decorated.BaseType() == typeof(Goto)) return;
+            statement = _nextStatement;
+        }
+        SetNextStatement(nextStatement);
+    }
+
     public IStatement GetStatementByLineNumber(int lineNumber)
     {
         return Program.GetExecutableStatement(lineNumber);

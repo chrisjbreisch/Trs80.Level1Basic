@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 using System.Threading;
-
+using Microsoft.CSharp.RuntimeBinder;
 using Trs80.Level1Basic.HostMachine;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
 using Trs80.Level1Basic.VirtualMachine.Machine;
@@ -233,6 +233,10 @@ public class Interpreter : IInterpreter
         {
             statement.Accept(this);
         }
+        catch (ReturnFromGosub)
+        {
+            throw;
+        }
         catch (ScanException)
         {
             throw;
@@ -334,12 +338,10 @@ public class Interpreter : IInterpreter
 
     public Void VisitGosubStatement(Gosub statement)
     {
-        IStatement nextStatement = _machine.GetNextStatement(_program.CurrentStatement);
+        IStatement resumeStatement = _machine.GetNextStatement(_program.CurrentStatement);
 
         IStatement jumpToStatement = GetJumpToStatement(statement, statement.Location, "GOSUB");
-        _machine.RunStatementList(jumpToStatement, this, false);
-
-        _machine.SetNextStatement(nextStatement);
+        ExecuteGosub(jumpToStatement, resumeStatement);
 
         return null!;
     }
@@ -365,9 +367,7 @@ public class Interpreter : IInterpreter
     public Void VisitGotoStatement(Goto statement)
     {
         IStatement jumpToStatement = GetJumpToStatement(statement, statement.Location, "GOTO");
-        _machine.RunStatementList(jumpToStatement, this, false);
-        _machine.ExecutionHalted = true;
-
+        _machine.SetNextStatement(jumpToStatement);
         return null!;
     }
 
@@ -375,28 +375,9 @@ public class Interpreter : IInterpreter
     {
         if (!IsTruthy(Evaluate(statement.Condition))) return null!;
 
-        IStatement thenStatement = statement.ThenBranch?[0];
-        if (thenStatement == null) return null!;
+        _machine.RunThenBranch(statement.ThenBranch, this);
 
-        switch (thenStatement)
-        {
-            case Goto gotoStatement:
-                VisitGotoStatement(gotoStatement);
-                break;
-            default:
-                ExecuteThenBranch(statement.ThenBranch);
-                break;
-        }
         return null!;
-    }
-
-    private void ExecuteThenBranch(CompoundStatementList thenBranch)
-    {
-        IStatement nextStatement = _machine.GetNextStatement(_program.CurrentStatement);
-
-        _machine.RunStatementList(thenBranch[0], this, true);
-
-        _machine.SetNextStatement(nextStatement);
     }
 
     public Void VisitInputStatement(Input statement)
@@ -594,8 +575,7 @@ public class Interpreter : IInterpreter
             IStatement resumeStatement = _machine.GetNextStatement(statement);
             Expression location = new Literal(locations[selector]);
             IStatement jumpToStatement = GetJumpToStatement(statement, location, "GOSUB");
-            _machine.RunStatementList(jumpToStatement, this, false);
-            _machine.SetNextStatement(resumeStatement);
+            ExecuteGosub(jumpToStatement, resumeStatement);
 
             return null!;
         }
@@ -609,6 +589,18 @@ public class Interpreter : IInterpreter
         _machine.SetNextStatement(nextStatement);
 
         return null!;
+    }
+
+    private void ExecuteGosub(IStatement jumpToStatement, IStatement resumeStatement)
+    {
+        try
+        {
+            _machine.RunStatementList(jumpToStatement, this, false);
+        }
+        catch (ReturnFromGosub)
+        {
+            _machine.SetNextStatement(resumeStatement);
+        }
     }
 
     public Void VisitPrintStatement(Print statement)
@@ -674,9 +666,7 @@ public class Interpreter : IInterpreter
 
     public Void VisitReturnStatement(Return statement)
     {
-        _machine.SetNextStatement(null);
-
-        return null!;
+        throw new ReturnFromGosub();
     }
 
     public Void VisitRunStatement(Run statement)

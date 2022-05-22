@@ -26,6 +26,7 @@ public interface IMachine
     void LoadProgram(string path);
     void NewProgram();
     void RunStatementList(IStatement statement, IInterpreter interpreter, bool breakOnLineChange);
+    void RunThenBranch(CompoundStatementList thenBranch, IInterpreter interpreter);
     void SetNextStatement(IStatement statement);
     void HaltRun();
     IStatement GetStatementByLineNumber(int lineNumber);

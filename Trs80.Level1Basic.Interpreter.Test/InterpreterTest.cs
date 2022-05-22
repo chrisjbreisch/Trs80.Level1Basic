@@ -934,4 +934,44 @@ public class InterpreterTest
         controller.ReadOutputLine().Should().Be("FALSE");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Interpreter_Executes_Return_After_Then()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 a=0",
+            "20 gosub 100",
+            "30 print \"SUCCESS!\"",
+            "40 end",
+            "100 if a = 0 then return",
+            "110 print \"FAIL!\"",
+            "120 end"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("SUCCESS!");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Executes_Goto_After_Multiple_Thens()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 a=0",
+            "20 if a = 0 then a = 1 : goto 100",
+            "30 print a",
+            "40 end",
+            "100 a = 2",
+            "110 print a",
+            "120 end"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 2 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
