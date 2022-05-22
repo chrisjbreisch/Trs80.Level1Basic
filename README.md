@@ -163,6 +163,12 @@ The other "new" features should be easier to deal with.
 - Visual Studio 2022 solution with all the code. I'm sure it can be built in Visual Studio Code, but 
 I've not attempted it. If I get the time, I'll work on that and supply directions.
 - David Lien's book in PDF form in the Radio Shack BASIC Computer Language folder.
+- The "Another Man's Treasure" font to make you feel you're really using a TRS-80. This font is from
+a collection of 22 fonts which can be found [here](https://www.kreativekorp.com/software/fonts/trs80.shtml).
+I am using "Another Mans Treasure MIB 64C 2X3Y", which most closely resembles the one used on
+my TRS-80 Model I Level II. This font can be found in the root folder. I recommend you install it
+to get the true "feel" of using the TRS-80. The font is not installed for you automatically. You'll
+have to do it yourself.
 - All of the samples and exercises from the book, excluding the progams in Part C, which are mostly 
 worthless. This includes the subroutines in Appendix A with my slight modifications. All of the 
 subroutines have built-in unit tests which can be executed by loading the subroutine (`LOAD`) and 
