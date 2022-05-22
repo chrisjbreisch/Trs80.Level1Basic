@@ -265,8 +265,8 @@ public class Interpreter : IInterpreter
 
     public Void VisitCompoundStatement(Compound statement)
     {
-        _machine.RunStatementList(statement.Statements[0], this, true);
-
+        _machine.RunCompoundStatement(statement.Statements, this);
+        
         return null!;
     }
 
@@ -282,7 +282,7 @@ public class Interpreter : IInterpreter
         if (initialize)
             _machine.Initialize();
 
-        _machine.RunStatementList(statement, this, false);
+        _machine.RunStatementList(statement, this);
         _trs80.WriteLine();
         _trs80.WriteLine("READY");
     }
@@ -375,7 +375,7 @@ public class Interpreter : IInterpreter
     {
         if (!IsTruthy(Evaluate(statement.Condition))) return null!;
 
-        _machine.RunThenBranch(statement.ThenBranch, this);
+        _machine.RunCompoundStatement(statement.ThenBranch, this);
 
         return null!;
     }
@@ -595,7 +595,7 @@ public class Interpreter : IInterpreter
     {
         try
         {
-            _machine.RunStatementList(jumpToStatement, this, false);
+            _machine.RunStatementList(jumpToStatement, this);
         }
         catch (ReturnFromGosub)
         {

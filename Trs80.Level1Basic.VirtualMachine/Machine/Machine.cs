@@ -124,32 +124,30 @@ public class Machine : IMachine
         Initialize();
     }
 
-    public void RunStatementList(IStatement statement, IInterpreter interpreter, bool breakOnLineChange)
+    public void RunStatementList(IStatement statement, IInterpreter interpreter)
     {
         ExecutionHalted = false;
         if (statement == null) return;
-        int lineNumber = statement.LineNumber;
 
         while (statement != null && !ExecutionHalted)
         {
             _nextStatement = GetNextStatement(statement);
             interpreter.Execute(statement);
             statement = _nextStatement;
-            if (breakOnLineChange && statement?.LineNumber != lineNumber) break;
         }
     }
 
-    public void RunThenBranch(CompoundStatementList thenBranch, IInterpreter interpreter)
+    public void RunCompoundStatement(CompoundStatementList compound, IInterpreter interpreter)
     {
         IStatement nextStatement = _nextStatement;
 
         ExecutionHalted = false;
-        if (thenBranch == null) return;
-        IStatement statement = thenBranch[0];
+        if (compound == null) return;
+        IStatement statement = compound[0];
 
         while (statement != null && !ExecutionHalted)
         {
-            _nextStatement = GetNextStatement(statement);
+            _nextStatement = statement.Next;
             interpreter.Execute(statement);
             if (statement is IListStatementDecorator decorated && decorated.BaseType() == typeof(Goto)) return;
             statement = _nextStatement;
