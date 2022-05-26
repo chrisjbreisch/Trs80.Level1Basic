@@ -185,7 +185,8 @@ Trs80.Level1Basic/Samples/Radio Shack BASIC Computer Language folder. They are o
 ## Bugs?
 There are probably many. I've lost count of how many times that I've rewritten `PRINT`. I discovered 
 four issues while typing in the summary below, one of which caused me to rewrite `PRINT` __again__.
-I do have some limited unit tests. But the unit tests for the scanner and parser are essentially
+I do have in the neighborhood of 200 unit tests. But the code base could easily support 2,000. Or
+even 10,000. The unit tests for the scanner and parser are essentially
 smoke tests. And the unit tests for the interpreter are light except on areas that have caused me 
 issues (like `PRINT`, for example). And I had to rewrite `PRINT` once more just to make it properly testable.
 
