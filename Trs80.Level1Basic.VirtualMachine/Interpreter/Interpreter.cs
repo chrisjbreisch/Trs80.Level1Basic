@@ -329,7 +329,7 @@ public class Interpreter : IInterpreter
         dynamic step = Evaluate(statement.StepValue);
         IStatement next = _machine.GetNextStatement(statement);
 
-        while (true)
+        do
             try
             {
                 _machine.RunStatementList(next, this);
@@ -337,8 +337,8 @@ public class Interpreter : IInterpreter
             catch (LoopAfterNext)
             {
                 current = IncrementIndexer(statement.Identifier, step);
-                if (step > 0 && current > end || step < 0 && current < end) break;
             }
+        while (step > 0 && current <= end || step < 0 && current >= end);
 
         return null!;
     }
