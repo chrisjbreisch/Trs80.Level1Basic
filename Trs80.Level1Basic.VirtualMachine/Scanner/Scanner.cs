@@ -247,6 +247,7 @@ public class Scanner : IScanner
         if (Peek() == '$')
             AddStringIdentifierToken();
         else if (IsAlpha(Peek()) || Peek() == '.')
+            // makeToken
             Add2PlusCharsToken();
         else
             AddIdentifierToken();
@@ -342,9 +343,10 @@ public class Scanner : IScanner
 
         if (TokenLength == 1 || _natives.Get(identifier) != null)
             AddToken(TokenType.Identifier, identifier);
-        else if (!KeywordsByLetter
-                     .Select(d => d.Value)
-                     .Any(kw => kw.ContainsKey(identifier)))
+        else 
+        //if (!KeywordsByLetter
+        //             .Select(d => d.Value)
+        //             .Any(kw => kw.ContainsKey(identifier)))
         {
             if (!IsAtEnd())
             {

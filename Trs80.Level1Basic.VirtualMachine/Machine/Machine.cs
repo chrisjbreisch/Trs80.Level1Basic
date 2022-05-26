@@ -17,7 +17,6 @@ public class Machine : IMachine
 
     public int CursorX { get; set; }
     public int CursorY { get; set; }
-    public Stack<ForCondition> ForConditions { get; } = new();
     public DataElements Data { get; } = new();
     public IProgram Program { get; }
     public bool ExecutionHalted { get; set; }
@@ -144,12 +143,14 @@ public class Machine : IMachine
         ExecutionHalted = false;
         if (compound == null) return;
         IStatement statement = compound[0];
+        int lineNumber = statement.LineNumber;
 
         while (statement != null && !ExecutionHalted)
         {
             _nextStatement = statement.Next;
             interpreter.Execute(statement);
             if (statement is IListStatementDecorator decorated && decorated.BaseType() == typeof(Goto)) return;
+            if (_nextStatement != null && _nextStatement.LineNumber != lineNumber) return;
             statement = _nextStatement;
         }
         SetNextStatement(nextStatement);

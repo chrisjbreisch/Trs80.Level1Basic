@@ -7,7 +7,6 @@ namespace Trs80.Level1Basic.VirtualMachine.Machine;
 
 public interface IMachine
 {
-    Stack<ForCondition> ForConditions { get; }
     DataElements Data { get; }
     IProgram Program { get; }
     int CursorX { get; set; }

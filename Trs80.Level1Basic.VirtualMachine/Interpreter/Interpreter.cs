@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 using System.Threading;
-using Microsoft.CSharp.RuntimeBinder;
+
 using Trs80.Level1Basic.HostMachine;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
 using Trs80.Level1Basic.VirtualMachine.Machine;
@@ -233,6 +233,10 @@ public class Interpreter : IInterpreter
         {
             statement.Accept(this);
         }
+        catch (LoopAfterNext)
+        {
+            throw;
+        }
         catch (ReturnFromGosub)
         {
             throw;
@@ -266,7 +270,7 @@ public class Interpreter : IInterpreter
     public Void VisitCompoundStatement(Compound statement)
     {
         _machine.RunCompoundStatement(statement.Statements, this);
-        
+
         return null!;
     }
 
@@ -318,20 +322,23 @@ public class Interpreter : IInterpreter
 
     public Void VisitForStatement(For statement)
     {
-        dynamic startValue = Evaluate(statement.StartValue);
-        Assign(statement.Identifier, startValue);
+        dynamic current = Evaluate(statement.StartValue);
+        Assign(statement.Identifier, current);
 
-        dynamic endValue = Evaluate(statement.EndValue);
-        dynamic stepValue = Evaluate(statement.StepValue);
+        dynamic end = Evaluate(statement.EndValue);
+        dynamic step = Evaluate(statement.StepValue);
+        IStatement next = _machine.GetNextStatement(statement);
 
-        _machine.ForConditions.Push(new ForCondition
-        {
-            Identifier = statement.Identifier,
-            Start = (int)startValue,
-            End = (int)endValue,
-            Step = (int)stepValue,
-            Goto = _machine.GetNextStatement(statement)
-        });
+        while (true)
+            try
+            {
+                _machine.RunStatementList(next, this);
+            }
+            catch (LoopAfterNext)
+            {
+                current = IncrementIndexer(statement.Identifier, step);
+                if (step > 0 && current > end || step < 0 && current < end) break;
+            }
 
         return null!;
     }
@@ -503,45 +510,7 @@ public class Interpreter : IInterpreter
 
     public Void VisitNextStatement(Next statement)
     {
-        ForCondition condition = PopCondition(statement);
-        dynamic newValue = IncrementIndexer(condition.Identifier, condition.Step);
-        if (ConditionMet(newValue, condition.Step, condition.End)) return null!;
-
-        _machine.ForConditions.Push(condition);
-        _machine.SetNextStatement(condition.Goto);
-
-        return null!;
-    }
-
-    private ForCondition PopCondition(Next next)
-    {
-        ForCondition checkCondition = null;
-
-        if (next.Variable != null)
-        {
-            Identifier checkIdentifier;
-            var nextIdentifier = next.Variable as Identifier;
-            do
-            {
-                if (_machine.ForConditions.Count == 0)
-                    throw new ParseException(next.LineNumber, next.SourceLine,
-                        "'NEXT' variable mismatch with 'FOR'");
-
-                checkCondition = _machine.ForConditions.Pop();
-                if (checkCondition.Identifier is Identifier variable)
-                    checkIdentifier = variable;
-                else
-                    throw new ParseException(next.LineNumber, next.SourceLine,
-                        "Expected variable name after 'FOR'.");
-            } while (checkIdentifier.Name.Lexeme != nextIdentifier?.Name.Lexeme);
-        }
-        else
-        {
-            if (next.Variable is not Identifier)
-                throw new ParseException(next.LineNumber, next.SourceLine,
-                    "Expected variable name after 'NEXT'.");
-        }
-        return checkCondition;
+        throw new LoopAfterNext();
     }
 
     private dynamic IncrementIndexer(Expression identifier, int step)
@@ -550,17 +519,6 @@ public class Interpreter : IInterpreter
         dynamic newValue = currentValue + step;
         Assign(identifier, newValue);
         return newValue;
-    }
-
-    private static bool ConditionMet(dynamic nextValue, int step, int endValue)
-    {
-        if (step > 0)
-        {
-            if (nextValue > endValue) return true;
-        }
-        else if (nextValue < endValue) return true;
-
-        return false;
     }
 
     public Void VisitOnStatement(On statement)

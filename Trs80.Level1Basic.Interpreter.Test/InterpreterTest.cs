@@ -974,4 +974,22 @@ public class InterpreterTest
         controller.ReadOutputLine().Should().Be(" 2 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Interpreter_Always_Executes_For_Loop_At_Least_Once()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 for i = 1 to 0",
+            "20 print i",
+            "30 next i",
+            "40 print i"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.ReadOutputLine().Should().Be(" 2 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
