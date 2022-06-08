@@ -192,7 +192,7 @@ issues (like `PRINT`, for example). And I had to rewrite `PRINT` once more just 
 
 # TL;DR
 If you don't want to read the book, and just want to play, I'm mimicking the final pages of the book here,
-which should be just enough to get you started
+which should be just enough to get you started.
 
 ## Summary of LEVEL 1 BASIC
 
