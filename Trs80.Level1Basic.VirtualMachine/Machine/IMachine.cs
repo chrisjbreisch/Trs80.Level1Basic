@@ -13,12 +13,12 @@ public interface IMachine
     int CursorY { get; set; }
     public bool ExecutionHalted { get; set; }
 
-    dynamic Assign(bool isString, string name, dynamic value);
-    dynamic Assign(string name, int index, dynamic value);
-    dynamic Get(bool isString, string name);
+    dynamic Set(string name, dynamic value);
+    dynamic Set(string name, int index, dynamic value);
+    dynamic Get(string name);
     dynamic Get(string name, int index);
-    List<Callable> Function(string name);
     bool Exists(string name);
+    List<Callable> Function(string name);
     void InitializeProgram();
     void ListProgram(int lineNumber);
     void SaveProgram(string path);

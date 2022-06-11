@@ -47,12 +47,12 @@ public class Machine : IMachine
         CursorY = top;
     }
     
-    public dynamic Assign(bool isString, string name, dynamic value)
+    public dynamic Set(string name, dynamic value)
     {
-        return _globals.Assign(isString, name, value);
+        return _globals.Set(name, value);
     }
 
-    public dynamic Assign(string name, int index, dynamic value)
+    public dynamic Set(string name, int index, dynamic value)
     {
         return _globals.AssignArray(name, index, value);
     }
@@ -192,13 +192,13 @@ public class Machine : IMachine
 
     public void Initialize()
     {
-        _globals.Clear();
+        _globals.InitializeVariables();
         Data.MoveFirst();
     }
 
-    public dynamic Get(bool isString, string name)
+    public dynamic Get(string name)
     {
-        return _globals.Get(isString, name);
+        return _globals.Get(name);
     }
 
     public dynamic Get(string name, int index)

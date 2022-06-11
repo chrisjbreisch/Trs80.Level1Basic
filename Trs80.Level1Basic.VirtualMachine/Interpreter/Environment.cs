@@ -7,21 +7,33 @@ public class Environment
 {
     private readonly Dictionary<string, dynamic> _variables = new();
     private readonly Dictionary<string, Dictionary<int, dynamic>> _arrays = new();
+    private const string names = "abcdefghijklmnopqrstuvwxyz";
 
-    internal dynamic Define(string name, dynamic value)
+    public Environment()
     {
-        _variables.Add(name, value);
-        return value;
+        foreach (char name in names)
+        {
+            Define(name.ToString(), 0);
+            Define($"{name}$", "");
+            DefineArray(name.ToString());
+        }
     }
 
-    internal dynamic Assign(bool isString, string name, dynamic value)
+    private bool IsString(string name)
     {
-        value = ValidateValue(value, isString);
+        return name.EndsWith('$');
+    }
 
-        if (!_variables.ContainsKey(name))
-            Define(name, value);
-        else
-            _variables[name] = value;
+    private void Define(string name, dynamic value)
+    {
+        _variables.Add(name, value);
+    }
+
+    internal dynamic Set(string name, dynamic value)
+    {
+        value = ValidateValue(value, IsString(name));
+
+        _variables[name] = value;
 
         return value;
     }
@@ -52,8 +64,6 @@ public class Environment
 
     private Dictionary<int, dynamic> GetArray(string name)
     {
-        if (!_arrays.ContainsKey(name))
-            DefineArray(name);
         Dictionary<int, dynamic> array = _arrays[name];
         return array;
     }
@@ -68,17 +78,19 @@ public class Environment
         return _variables.ContainsKey(name);
     }
 
-    internal dynamic Get(bool isString, string name)
+    internal dynamic Get(string name)
     {
-        if (_variables.ContainsKey(name)) return _variables[name];
-
-        return isString ? Define(name, "") : Define(name, 0);
+        return _variables[name];
     }
 
-    public void Clear()
+    public void InitializeVariables()
     {
-        _variables.Clear();
-        _arrays.Clear();
+        foreach (string name in _arrays.Keys)
+        {
+            _arrays[name] = new Dictionary<int, dynamic>();
+            Set(name.ToString(), 0);
+            Set($"{name}$", "");
+        }
     }
 
     public dynamic GetArrayValue(string name, int index)

@@ -58,12 +58,12 @@ public class Interpreter : IInterpreter
         switch (expression)
         {
             case Identifier identifier:
-                _machine.Assign(identifier.IsString, identifier.LowerName, value);
+                _machine.Set(identifier.LowerName, value);
                 break;
             case Array array:
                 {
                     dynamic index = Evaluate(array.Index);
-                    _machine.Assign(array.LowerName, index, value);
+                    _machine.Set(array.LowerName, index, value);
                     break;
                 }
             default:
@@ -112,7 +112,7 @@ public class Interpreter : IInterpreter
 
     public dynamic VisitIdentifierExpression(Identifier expression)
     {
-        return _machine.Get(expression.IsString, expression.LowerName);
+        return _machine.Get(expression.LowerName);
     }
 
     public dynamic VisitLiteralExpression(Literal expression)
@@ -427,7 +427,7 @@ public class Interpreter : IInterpreter
             Assign(variable, floatValue);
         else if (_machine.Exists(value.ToLowerInvariant()))
         {
-            dynamic lookup = _machine.Get(value.EndsWith('$'), value.ToLowerInvariant());
+            dynamic lookup = _machine.Get(value.ToLowerInvariant());
             Assign(variable, lookup);
         }
         else
