@@ -7,14 +7,14 @@ public interface IListStatementDecorator : IStatement
     public Type BaseType();
     public IStatement UnDecorate();
 
-    IStatement Parent { get; set; }
+    IStatement Enclosing { get; set; }
 }
 
 public class ListStatementDecorator : IListStatementDecorator
 {
     private readonly IStatement _statement;
 
-    public IStatement Parent { get; set; }
+    public IStatement Enclosing { get; set; }
 
 
     public ListStatementDecorator(IStatement statement)

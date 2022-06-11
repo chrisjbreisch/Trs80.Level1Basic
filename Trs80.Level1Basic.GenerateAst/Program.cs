@@ -20,12 +20,12 @@ internal static class Program
         string outputDir = args[0];
         DefineAst(outputDir, "Expression", new List<string>
         {
-            "Array      : Token name, Expression index",
-            "Assign     : Token name, Expression value",
+            "Array      : Token name, Expression index, string lowerName",
+            "Assign     : Token name, Expression value, bool isString, string lowerName",
             "Binary     : Expression left, Token binaryOperator, Expression right",
             "Call       : Token callee, List<Expression> arguments",
             "Grouping   : Expression expression",
-            "Identifier : Token name",
+            "Identifier : Token name, bool isString, string lowerName",
             "Literal    : dynamic value",
             "Unary      : Token unaryOperator, Expression right",
         });
@@ -33,7 +33,7 @@ internal static class Program
         DefineAst(outputDir, "Statement", new List<string>
         {
             "Cls",
-            "Compound               : StatementList statements",
+            "Compound               : CompoundStatementList statements",
             "Cont",
             "Data                   : List<Expression> dataElements",
             "Delete                 : int lineToDelete",
@@ -41,7 +41,7 @@ internal static class Program
             "For                    : Expression identifier, Expression startValue, Expression endValue, Expression stepValue",
             "Gosub                  : Expression location",
             "Goto                   : Expression location",
-            "If                     : Expression condition, StatementList thenBranch",
+            "If                     : Expression condition, CompoundStatementList thenBranch",
             "Input                  : List<Expression> expressions, bool writeNewline",
             "Let                    : Expression variable, Expression initializer",
             "List                   : Expression startAtLineNumber",
@@ -121,7 +121,7 @@ internal static class Program
             writer.WriteLine("    public string SourceLine { get; set; }");
             writer.WriteLine("    public IStatement Next { get; set; }");
             writer.WriteLine("    public IStatement Previous { get; set; }");
-            writer.WriteLine("    public IStatement Parent { get; set; }");
+            writer.WriteLine("    public IStatement Enclosing { get; set; }");
             writer.WriteLine();
         }
 

@@ -13,9 +13,9 @@ public interface IMachine
     int CursorY { get; set; }
     public bool ExecutionHalted { get; set; }
 
-    dynamic Assign(string name, dynamic value);
+    dynamic Assign(bool isString, string name, dynamic value);
     dynamic Assign(string name, int index, dynamic value);
-    dynamic Get(string name);
+    dynamic Get(bool isString, string name);
     dynamic Get(string name, int index);
     List<Callable> Function(string name);
     bool Exists(string name);

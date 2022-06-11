@@ -8,7 +8,7 @@ public class CompoundStatementList : Statement, ICollection<IStatement>
 {
     private readonly List<IListStatementDecorator> _statements = new();
     
-    public IStatement Parent { get; set; }
+    //public IStatement Enclosing { get; set; }
 
     private IListStatementDecorator Decorate(IStatement statement)
     {
@@ -27,7 +27,7 @@ public class CompoundStatementList : Statement, ICollection<IStatement>
         }
         _statements.Add(decorated);
 
-        decorated.Parent = Parent;
+        decorated.Enclosing = Enclosing;
     }
 
     public void Clear()

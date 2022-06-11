@@ -39,19 +39,17 @@ public class Machine : IMachine
         Program.Initialize();
         GetCursorPosition();
     }
-
-
+    
     private void GetCursorPosition()
     {
         (int left, int top) = _trs80.GetCursorPosition();
         CursorX = left;
         CursorY = top;
     }
-
-
-    public dynamic Assign(string name, dynamic value)
+    
+    public dynamic Assign(bool isString, string name, dynamic value)
     {
-        return _globals.Assign(name, value);
+        return _globals.Assign(isString, name, value);
     }
 
     public dynamic Assign(string name, int index, dynamic value)
@@ -184,7 +182,7 @@ public class Machine : IMachine
     {
         if (statement == null) return null;
         if (statement.Next != null) return statement.Next;
-        return statement is not IListStatementDecorator statementDecorator ? null : statementDecorator.Parent?.Next;
+        return statement is not IListStatementDecorator statementDecorator ? null : statementDecorator.Enclosing?.Next;
     }
 
     public IStatement GetNextStatement()
@@ -198,9 +196,9 @@ public class Machine : IMachine
         Data.MoveFirst();
     }
 
-    public dynamic Get(string name)
+    public dynamic Get(bool isString, string name)
     {
-        return _globals.Get(name);
+        return _globals.Get(isString, name);
     }
 
     public dynamic Get(string name, int index)

@@ -10,37 +10,25 @@ public class Environment
 
     internal dynamic Define(string name, dynamic value)
     {
-        _variables.Add(GetVariableName(name), value);
+        _variables.Add(name, value);
         return value;
     }
 
-    private bool IsStringName(string name)
+    internal dynamic Assign(bool isString, string name, dynamic value)
     {
-        return name.EndsWith("$");
-    }
-    private string GetVariableName(string name)
-    {
-        if (IsStringName(name))
-            return name[..1].ToLower() + "$";
+        value = ValidateValue(value, isString);
 
-        return name.ToLower()[..1];
-    }
-    internal dynamic Assign(string name, dynamic value)
-    {
-        value = ValidateValue(name, value);
-
-        string lowerName = GetVariableName(name);
-        if (!_variables.ContainsKey(lowerName))
-            Define(lowerName, value);
+        if (!_variables.ContainsKey(name))
+            Define(name, value);
         else
-            _variables[lowerName] = value;
+            _variables[name] = value;
 
         return value;
     }
 
-    private dynamic ValidateValue(string name, dynamic value)
+    private dynamic ValidateValue(dynamic value, bool isString)
     {
-        if (IsStringName(name)) return value;
+        if (isString) return value;
             
         if (value is not string) return value;
 
@@ -64,30 +52,27 @@ public class Environment
 
     private Dictionary<int, dynamic> GetArray(string name)
     {
-        string lowerName = GetVariableName(name);
-        if (!_arrays.ContainsKey(lowerName))
-            DefineArray(lowerName);
-        Dictionary<int, dynamic> array = _arrays[lowerName];
+        if (!_arrays.ContainsKey(name))
+            DefineArray(name);
+        Dictionary<int, dynamic> array = _arrays[name];
         return array;
     }
 
-    private void DefineArray(string lowerName)
+    private void DefineArray(string name)
     {
-        _arrays.Add(lowerName, new Dictionary<int, dynamic>());
+        _arrays.Add(name, new Dictionary<int, dynamic>());
     }
 
     internal bool Exists(string name)
     {
-        string lowerName = GetVariableName(name);
-        return _variables.ContainsKey(lowerName);
+        return _variables.ContainsKey(name);
     }
 
-    internal dynamic Get(string name)
+    internal dynamic Get(bool isString, string name)
     {
-        string lowerName = GetVariableName(name);
-        if (_variables.ContainsKey(lowerName)) return _variables[lowerName];
+        if (_variables.ContainsKey(name)) return _variables[name];
 
-        return IsStringName(lowerName) ? Define(lowerName, "") : Define(lowerName, 0);
+        return isString ? Define(name, "") : Define(name, 0);
     }
 
     public void Clear()

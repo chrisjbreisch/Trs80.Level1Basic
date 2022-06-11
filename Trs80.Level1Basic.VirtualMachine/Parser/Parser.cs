@@ -72,7 +72,7 @@ public class Parser : IParser
     private IStatement Compound()
     {
         var compound = new Compound(new CompoundStatementList());
-        compound.Statements.Parent = compound;
+        compound.Statements.Enclosing = compound;
         do
         {
             IStatement current = Statement();
@@ -419,11 +419,12 @@ public class Parser : IParser
 
         Advance();
 
-        if (!Match(TokenType.LeftParen)) return new Identifier(peek);
+        if (!Match(TokenType.LeftParen)) 
+            return new Identifier(peek, peek.Lexeme.EndsWith('$'), peek.Lexeme.ToLowerInvariant());
 
         Expression index = Expression();
         Consume(TokenType.RightParen, "Expected ')' after array index");
-        return new Array(peek, index);
+        return new Array(peek, index, peek.Lexeme.ToLowerInvariant());
     }
 
     private bool IsAtStatementEnd()
@@ -586,7 +587,7 @@ public class Parser : IParser
         Consume(TokenType.RightParen,
             "Expected ')' after arguments");
 
-        return new Array(name, index);
+        return new Array(name, index, name.Lexeme.ToLowerInvariant());
     }
 
     private void CheckArgs(Token name, List<Expression> arguments)
@@ -612,7 +613,10 @@ public class Parser : IParser
         }
 
         if (Match(TokenType.Identifier))
-            return new Identifier(Previous());
+        {
+            Token previous = Previous();
+            return new Identifier(previous, previous.Lexeme.EndsWith('$'), previous.Lexeme.ToLowerInvariant());
+        }
 
         if (!IsIdentifierShortHand())
             throw new ParseException(_lineNumber, _source,
@@ -620,7 +624,8 @@ public class Parser : IParser
 
         Token current = Peek();
         Advance();
-        return new Identifier(new Token(TokenType.Identifier, current.Lexeme, current.Lexeme, _source));
+        var identifier = new Token(TokenType.Identifier, current.Lexeme, current.Lexeme, _source);
+        return new Identifier(identifier, current.Lexeme.EndsWith('$'), current.Lexeme.ToLowerInvariant());
     }
 
     private bool IsIdentifierShortHand()
