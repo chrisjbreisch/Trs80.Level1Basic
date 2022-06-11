@@ -99,10 +99,8 @@ public class Interpreter : IInterpreter
     public dynamic VisitCallExpression(Call expression)
     {
         var arguments = expression.Arguments.Select(argument => Evaluate(argument)).ToList();
-
-        ICallable function = _machine.Function(expression.Callee.Lexeme).First(f => f.Arity == arguments.Count);
-
-        return function.Call(_trs80, arguments);
+        
+        return expression.Callee.Call(_trs80, arguments);
     }
 
     public dynamic VisitGroupingExpression(Grouping expression)

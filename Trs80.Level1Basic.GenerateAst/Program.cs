@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
+using System.Runtime;
 using Trs80.Level1Basic.Common.Extensions;
 
 namespace Trs80.Level1Basic.GenerateAst;
@@ -23,7 +23,7 @@ internal static class Program
             "Array      : Token name, Expression index, string lowerName",
             "Assign     : Token name, Expression value, bool isString, string lowerName",
             "Binary     : Expression left, Token binaryOperator, Expression right",
-            "Call       : Token callee, List<Expression> arguments",
+            "Call       : Token name, Callable callee, List<Expression> arguments",
             "Grouping   : Expression expression",
             "Identifier : Token name, bool isString, string lowerName",
             "Literal    : dynamic value",
@@ -143,9 +143,13 @@ internal static class Program
         writer.WriteLine();
         writer.WriteLine("using System.Collections.Generic;");
 
-        writer.WriteLine(baseName.Contains("Statement")
-            ? "using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;"
-            : "using Trs80.Level1Basic.VirtualMachine.Scanner;");
+        if (baseName.Contains("Statement"))
+            writer.WriteLine("using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;");
+        else
+        {
+            writer.WriteLine("using Trs80.Level1Basic.VirtualMachine.Scanner;");
+            writer.WriteLine("using Trs80.Level1Basic.VirtualMachine.Machine;");
+        }
 
         writer.WriteLine();
         writer.WriteLine($"namespace Trs80.Level1Basic.VirtualMachine.Parser.{baseName}s;");

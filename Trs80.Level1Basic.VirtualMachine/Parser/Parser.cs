@@ -21,13 +21,15 @@ public class Parser : IParser
 {
     private List<Token> _tokens;
     private int _current;
-     private int _lineNumber;
+    private int _lineNumber;
     private string _source;
     private readonly INativeFunctions _natives;
+    private readonly Callable _padQuadrant;
 
     public Parser(INativeFunctions natives)
     {
         _natives = natives ?? throw new ArgumentNullException(nameof(natives));
+        _padQuadrant = _natives.Get("_padquadrant").First();
     }
 
     public IStatement Parse(List<Token> tokens)
@@ -299,6 +301,7 @@ public class Parser : IParser
                             "_padquadrant",
                             null
                         ),
+                        _padQuadrant,
                         new List<Expression>()));
 
             if (IsAtStatementEnd() && values[^1] is Identifier)
@@ -342,7 +345,7 @@ public class Parser : IParser
             })
         };
 
-        while (Match(TokenType.Colon)) 
+        while (Match(TokenType.Colon))
             thenBranch.Add(Statement());
 
         return StatementWrapper(new If(condition, thenBranch));
@@ -419,7 +422,7 @@ public class Parser : IParser
 
         Advance();
 
-        if (!Match(TokenType.LeftParen)) 
+        if (!Match(TokenType.LeftParen))
             return new Identifier(peek, peek.Lexeme.EndsWith('$'), peek.Lexeme.ToLowerInvariant());
 
         Expression index = Expression();
@@ -466,6 +469,7 @@ public class Parser : IParser
                             "_padquadrant",
                             null
                         ),
+                        _padQuadrant,
                         new List<Expression>()));
 
         }
@@ -547,24 +551,27 @@ public class Parser : IParser
         Token name = Peek();
 
         Expression expression = Primary();
+        List<Callable> callees = _natives.Get(name.Lexeme);
 
         if (Match(TokenType.LeftParen) && expression is Identifier)
-            return _natives.Get(name.Lexeme) != null ? FinishCall(name) : FinishArray(name);
+            return callees != null ? FinishCall(name, callees) : FinishArray(name);
 
         Token previous = Previous();
         if (previous.Type != TokenType.Identifier) return expression;
 
-        List<Callable> functions = _natives.Get(previous.Lexeme);
-        if (functions == null) return expression;
+        callees = _natives.Get(previous.Lexeme);
+        if (callees == null) return expression;
 
-        if (functions.Any(f => f.Arity == 0))
-            return new Call(name, new List<Expression>());
+        Callable callee = callees.FirstOrDefault(f => f.Arity == 0);
+
+        if (callee != null)
+            return new Call(name, callee, new List<Expression>());
 
         throw new ParseException(_lineNumber, _source,
             $"Invalid number of arguments passed to function '{previous.Lexeme}'");
     }
 
-    private Expression FinishCall(Token name)
+    private Expression FinishCall(Token name, List<Callable> callees)
     {
         var arguments = new List<Expression>();
 
@@ -575,9 +582,14 @@ public class Parser : IParser
 
         Consume(TokenType.RightParen, "Expected ')' after arguments");
 
-        CheckArgs(name, arguments);
+        Callable callee = callees.FirstOrDefault(f => f.Arity == arguments.Count);
 
-        return new Call(name, arguments);
+        if (callee == null)
+            throw new ParseException(_lineNumber, _source,
+                $"Unknown function '{name.Lexeme}' with argument count {arguments.Count}");
+
+
+        return new Call(name, callee, arguments);
     }
 
     private Expression FinishArray(Token name)
@@ -588,16 +600,6 @@ public class Parser : IParser
             "Expected ')' after arguments");
 
         return new Array(name, index, name.Lexeme.ToLowerInvariant());
-    }
-
-    private void CheckArgs(Token name, List<Expression> arguments)
-    {
-        Callable function =
-            _natives.Get(name.Lexeme).FirstOrDefault(f => f.Arity == arguments.Count);
-
-        if (function == null)
-            throw new ParseException(_lineNumber, _source,
-                $"Unknown function '{name.Lexeme}' with argument count {arguments.Count}");
     }
 
     private Expression Primary()
