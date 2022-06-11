@@ -76,7 +76,7 @@ years, and I didn't particularly enjoy it then. I wanted to work with more moder
 This means that the language isn't represented completely 100%. People did some crazy things with 
 their code back then, mostly in Level II, but even some in Level I, where they found clever ways 
 to access the system hardware through a language that was never designed to do that. If you dig up
-one of those old programs and try it run it on my interpreter, it will fail. It may run, but it 
+one of those old programs and try to run it on my interpreter, it will fail. It may run, but it 
 won't do what you expect.
 
 Level I BASIC was designed to fit in 4K of ROM, so they cut a few corners. One of them was that 
@@ -192,7 +192,7 @@ issues (like `PRINT`, for example). And I had to rewrite `PRINT` once more just 
 
 # TL;DR
 If you don't want to read the book, and just want to play, I'm mimicking the final pages of the book here,
-which should be just enough to get you started
+which should be just enough to get you started.
 
 ## Summary of LEVEL 1 BASIC
 
