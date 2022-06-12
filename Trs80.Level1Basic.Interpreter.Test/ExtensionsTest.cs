@@ -8,43 +8,32 @@ using Trs80.Level1Basic.TestUtilities;
 namespace Trs80.Level1Basic.Interpreter.Test;
 
 [TestClass]
-public class InterpreterTest
+public class ExtensionsTest 
 {
     [TestMethod]
-    public void Interpreter_Can_Run_HelloWorld()
+    public void Interpreter_Handles_Extra_String_Variables()
     {
         using var controller = new TestController();
         var program = new List<string> {
-            "10 print \"Hello, World!\""
+            "10 C$=\"Chris\"",
+            "20 print C$"
+
         };
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("Hello, World!");
+        controller.ReadOutputLine().Should().Be("Chris");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
     [TestMethod]
-    public void Interpreter_Can_Execute_Multi_Statement_Lines()
+    public void Interpreter_Handles_Extra_Array_Variables()
     {
         using var controller = new TestController();
         var program = new List<string> {
-            "10 i=3 : print i"
-        };
+            "10 F(10) = 3.14159",
+            "20 print F(10)"
 
-        controller.RunProgram(program);
-
-        controller.ReadOutputLine().Should().Be(" 3 ");
-        controller.IsEndOfRun().Should().BeTrue();
-    }
-    
-    [TestMethod]
-    public void Interpreter_Handles_Line_Number_Zero()
-    {
-        using var controller = new TestController();
-        var program = new List<string> {
-            "0 let a = 3.14159",
-            "1 print a",
         };
 
         controller.RunProgram(program);

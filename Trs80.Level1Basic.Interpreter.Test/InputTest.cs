@@ -1,0 +1,97 @@
+using System.Collections.Generic;
+using System.IO;
+using FluentAssertions;
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using Trs80.Level1Basic.TestUtilities;
+
+namespace Trs80.Level1Basic.Interpreter.Test;
+
+[TestClass]
+public class InputTest
+{
+    [TestMethod]
+    public void Interpreter_Can_Read_From_Mocked_Console()
+    {
+        using var controller = new TestController();
+        controller.Input = new StringReader("Chris");
+
+        var program = new List<string> {
+            "10 input \"Enter your name\";A$",
+            "20 print \"Hello, \";A$"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("Enter your name?Hello, Chris");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Handles_Indirect_References_On_Input1()
+    {
+        using var controller = new TestController();
+        controller.Input = new StringReader("Y");
+
+        var program = new List<string> {
+            "10 y=1: n=0",
+            "20 input \"Enter (Y/N)\";a",
+            "30 if a = 1 then 100",
+            "40 print \"You entered 'NO'\"",
+            "50 end",
+            "100 print \"You entered 'YES'\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("Enter (Y/N)?You entered 'YES'");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Handles_Indirect_References_On_Input2()
+    {
+        using var controller = new TestController();
+        controller.Input = new StringReader("N");
+
+        var program = new List<string> {
+            "10 y=1: n=0",
+            "20 input \"Enter (Y/N)\";a",
+            "30 if a = 1 then 100",
+            "40 print \"You entered 'NO'\"",
+            "50 end",
+            "100 print \"You entered 'YES'\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("Enter (Y/N)?You entered 'NO'");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Handles_Indirect_References_On_Input3()
+    {
+        using var controller = new TestController();
+        controller.Input = new StringReader("Z");
+
+        var program = new List<string> {
+            "10 y=2: n=1",
+            "20 input \"Enter (Y/N)\";a",
+            "30 if a = 2 then 100",
+            "40 if a = 1 then 200",
+            "50 print \"You didn't enter 'Y' or 'N'\"",
+            "60 end",
+            "100 print \"You entered 'YES'\"",
+            "110 end",
+            "200 print \"You entered 'NO'\"",
+            "210 end"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("Enter (Y/N)?You didn't enter 'Y' or 'N'");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+}

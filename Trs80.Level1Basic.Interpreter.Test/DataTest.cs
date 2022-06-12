@@ -114,4 +114,24 @@ public class DataTest
         controller.IsEndOfRun().Should().BeTrue();
     }
 
+
+    [TestMethod]
+    public void Interpreter_Executes_Read_Into_Array()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 data 1,2,3,4,5",
+            "20 for i = 1 to 5",
+            "30 read a(i)",
+            "40 next i",
+            "50 for i = 1 to 5",
+            "60 print a(i);",
+            "70 next i",
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1  2  3  4  5 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
