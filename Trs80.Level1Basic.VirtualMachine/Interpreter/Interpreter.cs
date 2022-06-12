@@ -3,12 +3,14 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
+using Trs80.Level1Basic.Common.Extensions;
 using Trs80.Level1Basic.HostMachine;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
 using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
+
 
 using Array = Trs80.Level1Basic.VirtualMachine.Parser.Expressions.Array;
 using Expression = Trs80.Level1Basic.VirtualMachine.Parser.Expressions.Expression;
@@ -99,7 +101,7 @@ public class Interpreter : IInterpreter
     public dynamic VisitCallExpression(Call expression)
     {
         var arguments = expression.Arguments.Select(argument => Evaluate(argument)).ToList();
-        
+
         return expression.Callee.Call(_trs80, arguments);
     }
 
@@ -207,54 +209,20 @@ public class Interpreter : IInterpreter
         if (value < .1 && value > -.1)
             return value.ToString("0.#####E+00");
         if (value < 1 && value > -1)
-            return value.ToString("0.######");
+            return value.ToString(".######");
         if (value > 999999 || value < -999999)
             return value.ToString("0.#####E+00");
-        if (value > -10 && value < 10)
-            return value.ToString("#.#####");
-        if (value > -100 && value < 100)
-            return value.ToString("##.####");
-        if (value > -1000 && value < 1000)
-            return value.ToString("###.###");
-        if (value > -10000 && value < 10000)
-            return value.ToString("####.##");
-        if (value > -100000 && value < 100000)
-            return value.ToString("#####.#");
+        if (value <= -100000 || value >= 100000)
+            return value.ToString("######");
 
-        return value.ToString("######");
+        string result = value.ToString("######.#####");
+        return result.Left(value < 0 ? 8 : 7);
     }
 
     public void Execute(IStatement statement)
     {
         _program.CurrentStatement = statement;
-        try
-        {
-            statement.Accept(this);
-        }
-        catch (LoopAfterNext)
-        {
-            throw;
-        }
-        catch (ReturnFromGosub)
-        {
-            throw;
-        }
-        catch (ScanException)
-        {
-            throw;
-        }
-        catch (ParseException)
-        {
-            throw;
-        }
-        catch (RuntimeStatementException)
-        {
-            throw;
-        }
-        catch (Exception ex)
-        {
-            throw new RuntimeStatementException(statement.LineNumber, statement.SourceLine, ex.Message, ex);
-        }
+        statement.Accept(this);
     }
 
     public Void VisitClsStatement(Cls statement)

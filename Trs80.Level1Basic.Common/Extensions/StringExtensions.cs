@@ -111,4 +111,10 @@ public static class StringExtensions
         sb.Append(words[^1].ConvertCase(isUpper));
         return sb.ToString();
     }
+
+    public static string Left(this string text, int length)
+    {
+        if (string.IsNullOrEmpty(text)) return text;
+        return text.Length < length ? text : text[..length];
+    }
 }

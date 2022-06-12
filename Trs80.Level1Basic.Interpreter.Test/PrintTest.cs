@@ -86,6 +86,292 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Print_Zero()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 i = 0",
+            "20 print i"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+
+    [TestMethod]
+    public void Interpreter_Can_Print_Tiny_Positive_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 i = 0.0314159265",
+            "20 print i"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3.14159E-02 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Print_Tiny_Negative_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 i = -0.0314159265",
+            "20 print i"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("-3.14159E-02 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Print_Small_Positive_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 i = 0.314159265",
+            "20 print i"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" .314159 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Print_Small_Negative_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 i = -0.314159265",
+            "20 print i"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("-.314159 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Print_First_Order_Positive_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 i = 3.14159265",
+            "20 print i"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3.14159 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Print_First_Order_Negative_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 i = -3.14159265",
+            "20 print i"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("-3.14159 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Print_Second_Order_Positive_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 i = 31.4159265",
+            "20 print i"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 31.4159 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Print_Second_Order_Negative_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 i = -31.4159265",
+            "20 print i"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("-31.4159 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Print_Third_Order_Positive_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 i = 314.159265",
+            "20 print i"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 314.159 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Print_Third_Order_Negative_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 i = -314.159265",
+            "20 print i"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("-314.159 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Print_Fourth_Order_Positive_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 i = 3141.59265",
+            "20 print i"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3141.59 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Print_Fourth_Order_Negative_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 i = -3141.59265",
+            "20 print i"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("-3141.59 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Print_Fifth_Order_Positive_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 i = 31415.9265",
+            "20 print i"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 31415.9 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Print_Fifth_Order_Negative_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 i = -31415.9265",
+            "20 print i"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("-31415.9 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Print_Sixth_Order_Positive_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 i = 314159.265",
+            "20 print i"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 314159 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Print_Sixth_Order_Negative_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 i = -314159.265",
+            "20 print i"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("-314159 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Print_Seventh_Order_Positive_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 i = 3141592.65",
+            "20 print i"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3.14159E+06 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Print_Seventh_Order_Negative_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 i = -3141592.65",
+            "20 print i"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("-3.14159E+06 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_Two_Strings_Together()
     {
         using var controller = new TestController();
