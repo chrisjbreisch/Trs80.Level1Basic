@@ -409,6 +409,13 @@ public class Parser : IParser
         Consume(TokenType.Equal, "Expected assignment.");
 
         Expression value = Expression();
+        if (value is not Identifier unquoted) return StatementWrapper(new Let(identifier, value));
+
+        string lexeme = unquoted.Name.Lexeme;
+        if (lexeme.Length > 1 &&
+            (!lexeme.EndsWith('$') || lexeme.Length > 2))
+            value = new Literal(lexeme);
+
         return StatementWrapper(new Let(identifier, value));
     }
 

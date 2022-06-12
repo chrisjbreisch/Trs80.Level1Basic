@@ -112,6 +112,10 @@ public class Interpreter : IInterpreter
 
     public dynamic VisitIdentifierExpression(Identifier expression)
     {
+        if (expression.LowerName.Length > 1 &&
+            (!expression.LowerName.EndsWith('$') || expression.LowerName.Length > 2))
+            throw new ParseException(_program.CurrentStatement.LineNumber, _program.CurrentStatement.SourceLine, "Invalid Identifier.");
+
         return _machine.Get(expression.LowerName);
     }
 

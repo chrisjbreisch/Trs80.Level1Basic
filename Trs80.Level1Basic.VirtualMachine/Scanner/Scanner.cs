@@ -343,9 +343,6 @@ public class Scanner : IScanner
         if (TokenLength == 1 || _natives.Get(identifier) != null)
             AddToken(TokenType.Identifier, identifier);
         else 
-        //if (!KeywordsByLetter
-        //             .Select(d => d.Value)
-        //             .Any(kw => kw.ContainsKey(identifier)))
         {
             if (!IsAtEnd())
             {
@@ -358,7 +355,7 @@ public class Scanner : IScanner
 
                 identifier = _source.Substring(TokenStart, TokenLength);
             }
-            AddToken(TokenType.String, identifier);
+            AddToken(TokenType.Identifier, identifier);
         }
     }
 

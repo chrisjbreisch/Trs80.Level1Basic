@@ -44,10 +44,11 @@ public class Environment
             
         if (value is not string) return value;
 
-        if (value.Length == 1)
-            return 0;
+        //if (value.Length == 1)
+        //    return 0;
 
-        throw new ValueOutOfRangeException(0, "", null);
+        //throw new ValueOutOfRangeException(0, "", null);
+        return 0;
     }
 
     public dynamic AssignArray(string name, int index, dynamic value)
