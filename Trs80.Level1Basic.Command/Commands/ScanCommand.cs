@@ -87,8 +87,14 @@ public class ScanCommand : ICommand<ScanModel>
 
     private void ParseError(ParseException pe)
     {
+        string statement = pe.Statement;
+        int linePosition = pe.LinePosition + 1;
+        if (linePosition > statement.Length || linePosition <= 0)
+            statement = $"{statement}?";
+        else
+            statement = statement.Insert(pe.LinePosition + 1, "?");
         _trs80.Error.WriteLine(pe.LineNumber >= 0
-            ? $" {pe.LineNumber}  {pe.Statement}?\r\n[{pe.Message}]"
+            ? $" {pe.LineNumber}  {statement}\r\n[{pe.Message}]"
             : $" {pe.Statement}?\r\n[{pe.Message}]");
     }
 

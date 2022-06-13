@@ -25,7 +25,7 @@ internal static class Program
             "Binary     : Expression left, Token binaryOperator, Expression right",
             "Call       : Token name, Callable callee, List<Expression> arguments",
             "Grouping   : Expression expression",
-            "Identifier : Token name, bool isString, string lowerName",
+            "Identifier : Token name, bool isString, string lowerName, int linePosition",
             "Literal    : dynamic value",
             "Unary      : Token unaryOperator, Expression right",
         });

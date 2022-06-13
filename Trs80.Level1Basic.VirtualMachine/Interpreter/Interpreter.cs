@@ -114,7 +114,7 @@ public class Interpreter : IInterpreter
     {
         if (expression.LowerName.Length > 1 &&
             (!expression.LowerName.EndsWith('$') || expression.LowerName.Length > 2))
-            throw new ParseException(_program.CurrentStatement.LineNumber, _program.CurrentStatement.SourceLine, "Invalid Identifier.");
+            throw new ParseException(_program.CurrentStatement.LineNumber, _program.CurrentStatement.SourceLine, "Invalid Identifier.", expression.LinePosition);
 
         return _machine.Get(expression.LowerName);
     }
@@ -408,7 +408,7 @@ public class Interpreter : IInterpreter
             }
             catch (ValueOutOfRangeException)
             {
-                _trs80.WriteLine("WHAT?");
+                _trs80.WriteLine(" 0 WHAT?");
                 GetInputValue(variable, writeNewline);
             }
         }

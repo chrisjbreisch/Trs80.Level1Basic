@@ -50,11 +50,11 @@ public class InterpretCommand : ICommand<InterpretModel>
         switch (ex)
         {
             case ScanException se:
-                _trs80.WriteLine("WHAT?");
+                _trs80.WriteLine(" 0 WHAT?");
                 ScanError(se);
                 break;
             case ParseException pe:
-                _trs80.WriteLine("WHAT?");
+                _trs80.WriteLine(" 0 WHAT?");
                 ParseError(pe);
                 break;
             case RuntimeExpressionException ree:
@@ -94,8 +94,14 @@ public class InterpretCommand : ICommand<InterpretModel>
 
     private void ParseError(ParseException pe)
     {
+        string statement = pe.Statement;
+        int linePosition = pe.LinePosition + 1;
+        if (linePosition > statement.Length || linePosition <= 0)
+            statement = $"{statement}?";
+        else
+            statement = statement.Insert(pe.LinePosition + 1, "?");
         _trs80.Error.WriteLine(pe.LineNumber >= 0
-            ? $" {pe.LineNumber}  {pe.Statement}?\r\n[{pe.Message}]"
+            ? $" {pe.LineNumber}  {statement}\r\n[{pe.Message}]"
             : $" {pe.Statement}?\r\n[{pe.Message}]");
     }
 
