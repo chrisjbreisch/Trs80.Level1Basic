@@ -51,18 +51,18 @@ You can do that with a scanner also, but sometimes it gets messy. On the other h
 objects or scope to worry about. Robert spends quite a bit of time on that, which I was able to mostly ignore.
 
 Note that Robert compiles his language down to the bytecode level. And shows you how to create a virtual 
-machine and do garbage collection, optimization, etc. I did not do that for my BASIC interpreter. 
-Even my nice simple tree-walking interpeter is about 4,000 times faster than my TRS-80 was. And that's with
-some artificial slowness that I added. This is primarily logging, but also the addition of 
-[Workflow Core](https://www.nuget.org/packages/WorkflowCore/), which is complete overkill for this 
-application, but I wanted to play with it. I don't really feel the need to optimize further.
+machine and do garbage collection, optimization, etc. I did not do that for my BASIC interpreter. I stuck
+with a simple recursive descent parser and an AST tree walker for the interpreter. AST tree walkers are 
+about the slowest interpreters one could reasonably create. But they're also simple to write, easy to debug,
+and easy for someone perusing the code to understand. Even my nice simple tree-walking interpeter is 
+about 4,000 times faster than my TRS-80 was. And that's with some artificial slowness that I added. 
+This is primarily logging, but also the addition of [Workflow Core](https://www.nuget.org/packages/WorkflowCore/),
+which is complete overkill for this application, but I wanted to play with it. I don't really feel the 
+need to optimize further.
 
 With the few exceptions noted below, it's a complete implementation of Level I BASIC right down to the 
 three error messages. I've run every program and example in the book (and supplied the code for you), 
-and they all produce exactly the output expected. There is one case where I supply the correct error 
-message, but the formatting isn't perfect. It would be a little bit of a pain to fix. If it was an 
-actual formatting problem with output from the program, I would fix it. But I can live with an error 
-message that just has a question mark in the wrong place. Also, my error messages supply a tiny bit 
+and they all produce exactly the output expected. My error messages do supply a tiny bit 
 more detail than the originals. I produce the original one, then underneath it there's usually 
 some more helpful text in square brackets ([]). Hopefully this will help a little.
 
@@ -123,9 +123,10 @@ To run the program, just type `RUN`. Which will produce the following:
 - The `CHR$(n)` function. It takes an ASCII value and returns the corresponding character. When I was 
 playing around, I needed to print a double quote ("). There's no way to do that in Level I BASIC. 
 `CHR$(n)` is part of Level II BASIC, so I'm just getting a head start on the Level II interpreter. :)
-- You'll notice all the samples are in UPPER case. I do allow mixed-case code, but everything is 
-case-insentive. Forcing UPPER case wouldn't have been too hard, but would have little benefit, and might 
-have screwed up the `LOAD`, `SAVE`, and `MERGE` commands if you're working on a case-sensitive file system.
+- When you type, your text is converted to UPPER case automatically, except if it's between quotes (").
+In this instance, both the UPPER case and the original are stored, but only the original is displayed.
+The primary purpose of this is so that `LOAD`, `MERGE`, and `SAVE` will work on case-sensitive file systems.
+It's not a perfect solution, and adding this feature has doubtlessly introduced some new bugs.
 - Level I BASIC had exactly 29 variables. Variables could only be 1 letter long (A-Z). There were two 
 string variables (A$, B$), and one array(A()). I've expanded on that __slightly__. I still only allow 
 1 letter variables, but all of them can also be strings or arrays. So `10 C$="Chris"` is legal. So is 
@@ -140,8 +141,7 @@ number for the emulator though, so that `PRINT MEM` works. It has no meaning. Fe
 programs as large as you like. The numbers displayed by `PRINT MEM` will drop accordingly, and 
 eventually go negative, but you can keep on typing.
 - I'm probobaly not as strict on expressions as Level I BASIC was. I allow full expressions anywhere. 
-Thus, `10 A=100: GOSUB A` is probably legal (I havn't tested it), but I suspect that would not be 
-legal in the original.
+Thus, `10 A=100: GOSUB A` is legal, but I suspect that would not be legal in the original.
 - The random number generator is much more random than the original. This is something I may correct in time.
 - String variables could only hold 16 characters. Mine have no such limits.
 - Slightly more detailed error messages.
