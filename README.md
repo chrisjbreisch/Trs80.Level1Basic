@@ -90,17 +90,17 @@ the book for now. I did fix a couple of minor errors.
 
 There are two commands that I didn't implement: `CLOAD` and `CSAVE`. These load and save programs 
 to and from the TRS-80's cassette drive. Yes, you read that right. We had a standard little 
-cassette player and plugged into the computer. It loaded programs at about 500 bits per second, 
-and the cassette tapes were usually useless after about 5 or 6 uses, so you were constantly 
-making backups. It was painful. It would take a half hour just to load up a decently sized program.
+cassette player and plugged into the computer. It loaded programs at about 60 characters per second, 
+which probably converts to about 2 or 3 lines of code per second. The cassette tapes were usually
+useless after about 5 or 6 uses, so you were constantly making backups. It was painful. It would 
+take a half hour just to load up a decently sized program.
 
-In the place of `CLOAD` and `CSAVE`, I've given you `LOAD`, `SAVE`, and `MERGE`. `LOAD` and `SAVE` 
-are analagous to `CLOAD` and `CSAVE`, but they use your disk drives. `MERGE` is a creation of my own.
-`MERGE` lets you load these subroutines mentioned above and add them to the code you already have.
+In the place of `CLOAD` and `CSAVE`, I've implemented `LOAD`, `SAVE`, and `MERGE`. `LOAD` and `SAVE` 
+are analagous to `CLOAD` and `CSAVE`, but they use the disk drives. `MERGE` is a creation of my own.
+`MERGE` loads these subroutines mentioned above and add them to the code already created in the interpreter.
 It differs from `LOAD` in that `LOAD` destroys whatever is currently in memory.
 
-It may not be an emulator, but it looks like one. You get the standard READY prompt, and you 
-just start typing code.
+When the applications starts, it displays the standard READY prompt, and you just start typing code.
 
 It looks like this:
 
@@ -141,7 +141,7 @@ number for the emulator though, so that `PRINT MEM` works. It has no meaning. Fe
 programs as large as you like. The numbers displayed by `PRINT MEM` will drop accordingly, and 
 eventually go negative, but you can keep on typing.
 - I'm probobaly not as strict on expressions as Level I BASIC was. I allow full expressions anywhere. 
-Thus, `10 A=100: GOSUB A` is legal, but I suspect that would not be legal in the original.
+Thus, `10 A=100 : GOSUB A` is legal, but is not in Tandy's original BASIC.
 - The random number generator is much more random than the original. This is something I may correct in time.
 - String variables could only hold 16 characters. Mine have no such limits.
 - Slightly more detailed error messages.
@@ -189,6 +189,10 @@ I do have in the neighborhood of 200 unit tests. But the code base could easily 
 even 10,000. The unit tests for the scanner and parser are essentially
 smoke tests. And the unit tests for the interpreter are light except on areas that have caused me 
 issues (like `PRINT`, for example). And I had to rewrite `PRINT` once more just to make it properly testable.
+
+In particular, some of the 2.0 changes need more testing. I re-wrote input to convert everything to upper case,
+and I'm still not 100% happy with how that code looks. It feels fragile to me. The error handling code 
+definitely has a [bad odor](https://en.wikipedia.org/wiki/Code_smell) about it, and I will rework that in time.
 
 # TL;DR
 If you don't want to read the book, and just want to play, I'm mimicking the final pages of the book here,
