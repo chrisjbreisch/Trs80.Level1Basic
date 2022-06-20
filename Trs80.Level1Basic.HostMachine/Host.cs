@@ -106,8 +106,49 @@ public class Host : IHost, IDisposable
 
     public void Write(string text) => Out.Write(text);
 
-    public string ReadLine() => In.ReadLine();
+    public string ReadLine()
+    {
+        char[] line = new char[1024];
+        int charCount = 0;
 
+        while (true)
+        {
+            ConsoleKeyInfo key = Console.ReadKey();
+
+            if (key.Key == ConsoleKey.Enter)
+            {
+                Console.WriteLine();
+                break;
+
+            }
+            if (key.Key == ConsoleKey.Backspace)
+            {
+                if (charCount > 0)
+                {
+                    Console.Write(" \b");
+                    line[charCount--] = '\0';
+                }
+            }
+            else
+            {
+                char upper = Upper(key.KeyChar);
+                line[charCount++] = upper;
+                Console.Write($"\b{upper}");
+
+            }
+        }
+
+        return charCount <= 0
+            ? string.Empty
+            : new string(line, 0, charCount);
+    }
+    
+    private char Upper(char key)
+    {
+        if (!char.IsLetter(key)) return key;
+        if (key <= 'Z') return key;
+        return (char)((byte)key - 'a' + 'A');
+    }
 
     private void SetPixelSizes()
     {

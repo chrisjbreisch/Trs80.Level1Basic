@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime;
+
 using Trs80.Level1Basic.Common.Extensions;
 
 namespace Trs80.Level1Basic.GenerateAst;
@@ -20,13 +20,13 @@ internal static class Program
         string outputDir = args[0];
         DefineAst(outputDir, "Expression", new List<string>
         {
-            "Array      : Token name, Expression index, string lowerName",
-            "Assign     : Token name, Expression value, bool isString, string lowerName",
+            "Array      : Token name, Expression index",
+            "Assign     : Token name, Expression value, bool isString",
             "Binary     : Expression left, Token binaryOperator, Expression right",
             "Call       : Token name, Callable callee, List<Expression> arguments",
             "Grouping   : Expression expression",
-            "Identifier : Token name, bool isString, string lowerName",
-            "Literal    : dynamic value",
+            "Identifier : Token name, bool isString, int linePosition",
+            "Literal    : dynamic value, string upperValue",
             "Unary      : Token unaryOperator, Expression right",
         });
 

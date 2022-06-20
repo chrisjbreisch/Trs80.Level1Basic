@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
@@ -21,7 +21,8 @@ public class StatementListTest
         IScanner scanner = new Scanner(natives);
         IParser parser = new Parser(natives);
 
-        List<Token> tokens = scanner.ScanTokens(input);
+        var sourceLine = new SourceLine(input);
+        List<Token> tokens = scanner.ScanTokens(sourceLine);
         IStatement statement = parser.Parse(tokens);
         return statement;
     }

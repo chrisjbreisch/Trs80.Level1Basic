@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using FluentAssertions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
@@ -25,11 +25,12 @@ public class ParserTest
         IScanner scanner = new Scanner(natives);
         IParser parser = new Parser(natives);
 
-        List<Token> tokens = scanner.ScanTokens(input);
+        var sourceLine = new SourceLine(input);
+        List<Token> tokens = scanner.ScanTokens(sourceLine);
         IStatement statement = parser.Parse(tokens);
 
         statement.LineNumber.Should().Be(10);
-        statement.SourceLine.Should().Be("print \"Hello, World!\"");
+        statement.SourceLine.Should().Be("PRINT \"HELLO, WORLD!\"");
         
         var printStatement = statement as Print;
         printStatement.Should().NotBeNull();
@@ -37,7 +38,9 @@ public class ParserTest
 
         var literal = printStatement.Expressions[0] as Literal;
         literal.Should().NotBeNull();
-
-        Assert.AreEqual(literal!.Value, "Hello, World!");
+        string value = literal!.Value;
+        value.Should().Be("Hello, World!");
+        value = literal!.UpperValue;
+        value.Should().Be("HELLO, WORLD!");
     }
 }

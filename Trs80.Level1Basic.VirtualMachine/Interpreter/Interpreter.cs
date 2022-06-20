@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -35,8 +36,98 @@ public class Interpreter : IInterpreter
 
     public void Interpret(IStatement statement)
     {
-        Execute(statement.LineNumber >= 0 ? new Replace(statement) : statement);
+        try
+        {
+            Execute(statement.LineNumber >= 0 ? new Replace(statement) : statement);
+        }
+        catch (Exception ex)
+        {
+            HandleError(ex);
+            WritePrompt();
+        }
+
     }
+
+    private void WritePrompt()
+    {
+        _trs80.WriteLine();
+        _trs80.WriteLine("READY");
+    }
+
+    private void HandleError(Exception ex)
+    {
+        switch (ex)
+        {
+            case ScanException se:
+                _trs80.WriteLine(" 0 WHAT?");
+                ScanError(se);
+                break;
+            case ParseException pe:
+                _trs80.WriteLine(" 0 WHAT?");
+                ParseError(pe);
+                break;
+            case RuntimeExpressionException ree:
+                _trs80.WriteLine("HOW?");
+                RuntimeExpressionError(ree);
+                break;
+            case RuntimeStatementException rse:
+                _trs80.WriteLine("HOW?");
+                RuntimeStatementError(rse);
+                break;
+            case ValueOutOfRangeException voore:
+                _trs80.WriteLine("HOW?");
+                ValueOutOfRangeError(voore);
+                break;
+            default:
+                _trs80.WriteLine("SORRY");
+                if (Debugger.IsAttached)
+                {
+                    _trs80.WriteLine(ex.Message);
+                    _trs80.WriteLine(ex.StackTrace);
+                }
+                break;
+        }
+    }
+
+
+    private void ValueOutOfRangeError(ValueOutOfRangeException voore)
+    {
+        _trs80.Error.WriteLine(voore.LineNumber >= 0
+            ? $" {voore.LineNumber}  {voore.Statement}?\r\n[{voore.Message}]"
+            : $" {voore.Statement}?\r\n[{voore.Message}]");
+    }
+
+    private void ScanError(ScanException se)
+    {
+        _trs80.Error.WriteLine($"{se.Message}");
+    }
+
+    private void ParseError(ParseException pe)
+    {
+        string statement = pe.Statement;
+        int linePosition = pe.LinePosition + 1;
+        if (linePosition > statement.Length || linePosition <= 0)
+            statement = $"{statement}?";
+        else
+            statement = statement.Insert(pe.LinePosition + 1, "?");
+        _trs80.Error.WriteLine(pe.LineNumber >= 0
+            ? $" {pe.LineNumber}  {statement}\r\n[{pe.Message}]"
+            : $" {pe.Statement}?\r\n[{pe.Message}]");
+    }
+
+    private void RuntimeExpressionError(RuntimeExpressionException ree)
+    {
+        _trs80.Error.WriteLine($"{ree.Message}\n[token {ree.Token}]");
+    }
+
+    public void RuntimeStatementError(RuntimeStatementException re)
+    {
+        _trs80.Error.WriteLine(re.LineNumber >= 0
+            ? $" {re.LineNumber}  {re.Statement}?\r\n[{re.Message}]"
+            : $" {re.Statement}?\r\n[{re.Message}]");
+    }
+
+
 
     private dynamic Evaluate(Expression expression)
     {
@@ -46,7 +137,7 @@ public class Interpreter : IInterpreter
     public dynamic VisitArrayExpression(Array expression)
     {
         dynamic index = Evaluate(expression.Index);
-        return _machine.Get(expression.LowerName, index);
+        return _machine.Get(expression.Name.Lexeme, index);
     }
 
     public dynamic VisitAssignExpression(Assign expression)
@@ -60,12 +151,12 @@ public class Interpreter : IInterpreter
         switch (expression)
         {
             case Identifier identifier:
-                _machine.Set(identifier.LowerName, value);
+                _machine.Set(identifier.Name.Lexeme, value);
                 break;
             case Array array:
                 {
                     dynamic index = Evaluate(array.Index);
-                    _machine.Set(array.LowerName, index, value);
+                    _machine.Set(array.Name.Lexeme, index, value);
                     break;
                 }
             default:
@@ -86,7 +177,7 @@ public class Interpreter : IInterpreter
         {
             TokenType.Plus => (left is bool && right is bool) ? left || right : left + right,
             TokenType.Minus => left - right,
-            TokenType.Slash => right == 0 ? throw new ValueOutOfRangeException(0, "", "Divide by zero") : (float)left / right,
+            TokenType.Slash => right == 0 ? throw new ValueOutOfRangeException(_program.CurrentStatement.LineNumber, _program.CurrentStatement.SourceLine, "Divide by zero") : (float)left / right,
             TokenType.Star => (left is bool && right is bool) ? left && right : left * right,
             TokenType.GreaterThan => left > right,
             TokenType.GreaterThanOrEqual => left >= right,
@@ -112,16 +203,23 @@ public class Interpreter : IInterpreter
 
     public dynamic VisitIdentifierExpression(Identifier expression)
     {
-        if (expression.LowerName.Length > 1 &&
-            (!expression.LowerName.EndsWith('$') || expression.LowerName.Length > 2))
-            throw new ParseException(_program.CurrentStatement.LineNumber, _program.CurrentStatement.SourceLine, "Invalid Identifier.");
+        string name = expression.Name.Lexeme;
+        if (name.Length > 1 &&
+            (!name.EndsWith('$') || name.Length > 2))
+            throw new ParseException(_program.CurrentStatement.LineNumber, _program.CurrentStatement.SourceLine, "Invalid Identifier.", expression.LinePosition);
 
-        return _machine.Get(expression.LowerName);
+        return _machine.Get(name);
     }
 
     public dynamic VisitLiteralExpression(Literal expression)
     {
-        if (expression.Value is not int) return expression.Value;
+        switch (expression.Value)
+        {
+            case float:
+                return expression.Value;
+            case string:
+                return expression.UpperValue;
+        }
 
         if (expression.Value > short.MaxValue || expression.Value < short.MinValue)
             // ReSharper disable once PossibleInvalidCastException
@@ -194,6 +292,9 @@ public class Interpreter : IInterpreter
             case float:
                 sb.Append(StringifyFloat(value));
                 break;
+            case int:
+                sb.Append(StringifyInt(value));
+                break;
             default:
                 sb.Append(value.ToString());
                 break;
@@ -206,7 +307,12 @@ public class Interpreter : IInterpreter
         return sb.ToString();
     }
 
-    private string StringifyFloat(dynamic value)
+    private string StringifyInt(int value)
+    {
+        return value is <= 1000000 and >= -1000000 ? value.ToString() : value.ToString("0.#####E+00");
+    }
+
+    private string StringifyFloat(float value)
     {
         if (value == 0)
             return "0";
@@ -395,9 +501,9 @@ public class Interpreter : IInterpreter
             Assign(variable, intValue);
         else if (float.TryParse(value, out float floatValue))
             Assign(variable, floatValue);
-        else if (_machine.Exists(value.ToLowerInvariant()))
+        else if (_machine.Exists(value))
         {
-            dynamic lookup = _machine.Get(value.ToLowerInvariant());
+            dynamic lookup = _machine.Get(value);
             Assign(variable, lookup);
         }
         else
@@ -408,7 +514,7 @@ public class Interpreter : IInterpreter
             }
             catch (ValueOutOfRangeException)
             {
-                _trs80.WriteLine("WHAT?");
+                _trs80.WriteLine(" 0 WHAT?");
                 GetInputValue(variable, writeNewline);
             }
         }
@@ -445,7 +551,8 @@ public class Interpreter : IInterpreter
     public Void VisitLoadStatement(Load statement)
     {
         _machine.NewProgram();
-        string path = Evaluate(statement.Path);
+        string path = EvaluatePath(statement.Path);
+
         if (string.IsNullOrEmpty(path))
             path = _host.GetFileNameForLoad();
 
@@ -457,9 +564,19 @@ public class Interpreter : IInterpreter
         return null!;
     }
 
+    private string EvaluatePath(Expression pathExpression)
+    {
+        string path;
+        if (pathExpression is Literal literalPath)
+            path = literalPath.Value;
+        else
+            path = Evaluate(pathExpression);
+        return path;
+    }
+
     public Void VisitMergeStatement(Merge statement)
     {
-        string path = Evaluate(statement.Path);
+        string path = EvaluatePath(statement.Path);
         if (string.IsNullOrEmpty(path))
             path = _host.GetFileNameForLoad();
 
@@ -501,7 +618,7 @@ public class Interpreter : IInterpreter
         if (statement.IsGosub)
         {
             IStatement resumeStatement = _machine.GetNextStatement(statement);
-            Expression location = new Literal(locations[selector]);
+            Expression location = new Literal(locations[selector], null);
             IStatement jumpToStatement = GetJumpToStatement(statement, location, "GOSUB");
             ExecuteGosub(jumpToStatement, resumeStatement);
 
@@ -628,7 +745,7 @@ public class Interpreter : IInterpreter
 
     public Void VisitSaveStatement(Save statement)
     {
-        string path = Evaluate(statement.Path);
+        string path = EvaluatePath(statement.Path);
         if (string.IsNullOrEmpty(path))
             path = _host.GetFileNameForSave();
 

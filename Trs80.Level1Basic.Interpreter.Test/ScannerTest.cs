@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using FluentAssertions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
 
@@ -19,16 +20,19 @@ public class ScannerTest
         INativeFunctions natives = new NativeFunctions();
         IScanner scanner = new Scanner(natives);
 
-        List<Token> tokens = scanner.ScanTokens(input);
+        var sourceLine = new SourceLine(input);
+        List<Token> tokens = scanner.ScanTokens(sourceLine);
         tokens.Should().HaveCount(4);
         tokens[0].Type.Should().Be(TokenType.Number);
 
-        Assert.AreEqual(tokens[0].Literal, 10);
+        int lineNumber = tokens[0].Literal;
+        lineNumber.Should().Be(10);
 
         tokens[1].Type.Should().Be(TokenType.Print);
         tokens[2].Type.Should().Be(TokenType.String);
 
-        Assert.AreEqual(tokens[2].Literal, "Hello, World!");
+        string value = tokens[2].Literal;
+        value.Should().Be("Hello, World!");
 
         tokens[3].Type.Should().Be(TokenType.EndOfLine);
     }

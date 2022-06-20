@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 
 using Trs80.Level1Basic.CommandModels;
+using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
@@ -65,7 +66,7 @@ public class ScanCommand : ICommand<ScanModel>
             : $" {voore.Statement}?\r\n[{voore.Message}]");
     }
 
-    private List<Token>? ScanLine(string sourceLine)
+    private List<Token>? ScanLine(SourceLine sourceLine)
     {
         List<Token>? tokens = null;
         try
@@ -87,8 +88,14 @@ public class ScanCommand : ICommand<ScanModel>
 
     private void ParseError(ParseException pe)
     {
+        string statement = pe.Statement;
+        int linePosition = pe.LinePosition + 1;
+        if (linePosition > statement.Length || linePosition <= 0)
+            statement = $"{statement}?";
+        else
+            statement = statement.Insert(pe.LinePosition + 1, "?");
         _trs80.Error.WriteLine(pe.LineNumber >= 0
-            ? $" {pe.LineNumber}  {pe.Statement}?\r\n[{pe.Message}]"
+            ? $" {pe.LineNumber}  {statement}\r\n[{pe.Message}]"
             : $" {pe.Statement}?\r\n[{pe.Message}]");
     }
 

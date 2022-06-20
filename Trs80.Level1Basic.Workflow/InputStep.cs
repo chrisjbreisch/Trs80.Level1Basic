@@ -1,6 +1,6 @@
 ﻿using Trs80.Level1Basic.Command;
 using Trs80.Level1Basic.CommandModels;
-
+using Trs80.Level1Basic.Common;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
@@ -10,7 +10,7 @@ public interface IInputStep : IStepBody
 {
     bool WritePrompt { get; set; }
     bool Done { get; set; }
-    string SourceLine { get; set; }
+    SourceLine SourceLine { get; set; }
 }
 
 public class InputStep : StepBody, IInputStep
@@ -18,7 +18,7 @@ public class InputStep : StepBody, IInputStep
     private readonly ICommand<InputModel> _command;
     public bool WritePrompt { get; set; }
     public bool Done { get; set; }
-    public string SourceLine { get; set; } = string.Empty;
+    public SourceLine SourceLine { get; set; } = new();
 
     public InputStep(ICommand<InputModel> inboundCommand)
     {

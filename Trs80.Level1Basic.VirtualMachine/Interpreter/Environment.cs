@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Trs80.Level1Basic.VirtualMachine.Exceptions;
 
 namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
 
@@ -7,7 +6,7 @@ public class Environment
 {
     private readonly Dictionary<string, dynamic> _variables = new();
     private readonly Dictionary<string, Dictionary<int, dynamic>> _arrays = new();
-    private const string names = "abcdefghijklmnopqrstuvwxyz";
+    private const string names = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     public Environment()
     {
@@ -41,14 +40,8 @@ public class Environment
     private dynamic ValidateValue(dynamic value, bool isString)
     {
         if (isString) return value;
-            
-        if (value is not string) return value;
 
-        //if (value.Length == 1)
-        //    return 0;
-
-        //throw new ValueOutOfRangeException(0, "", null);
-        return 0;
+        return value is not string ? value : 0;
     }
 
     public dynamic AssignArray(string name, int index, dynamic value)
@@ -89,7 +82,7 @@ public class Environment
         foreach (string name in _arrays.Keys)
         {
             _arrays[name] = new Dictionary<int, dynamic>();
-            Set(name.ToString(), 0);
+            Set(name, 0);
             Set($"{name}$", "");
         }
     }

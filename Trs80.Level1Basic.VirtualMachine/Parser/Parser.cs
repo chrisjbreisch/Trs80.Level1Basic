@@ -163,7 +163,7 @@ public class Parser : IParser
         do
         {
             if (Peek().Type != TokenType.Identifier)
-                throw new ParseException(_lineNumber, _source, "Expected variable after 'READ'.");
+                throw new ParseException(_lineNumber, _source, "Expected variable after 'READ'.", Peek().LinePosition);
 
             variables.Add(Expression());
         } while (Match(TokenType.Comma));
@@ -219,7 +219,7 @@ public class Parser : IParser
         }
         else
             throw new ParseException(_lineNumber, _source,
-                "Expected 'GOTO' or 'GOSUB' after 'ON'");
+                "Expected 'GOTO' or 'GOSUB' after 'ON'", Peek().LinePosition);
 
         return StatementWrapper(new On(selector, locations, isGosub));
     }
@@ -252,7 +252,7 @@ public class Parser : IParser
     {
         if (Peek().Type != TokenType.Identifier)
             throw new ParseException(_lineNumber, _source,
-                "Expected variable name after 'NEXT'.");
+                "Expected variable name after 'NEXT'.", Peek().LinePosition);
 
         Expression identifier = Identifier();
 
@@ -276,7 +276,7 @@ public class Parser : IParser
             stepValue = Expression();
         }
         else
-            stepValue = new Literal(1);
+            stepValue = new Literal(1, null);
 
         return StatementWrapper(new For(identifier, startValue, endValue, stepValue));
     }
@@ -299,7 +299,8 @@ public class Parser : IParser
                             TokenType.Identifier,
                             "_padquadrant",
                             "_padquadrant",
-                            null
+                            null,
+                            0
                         ),
                         _padQuadrant,
                         new List<Expression>()));
@@ -333,7 +334,7 @@ public class Parser : IParser
         Token current = Peek();
         if (!Match(TokenType.Then, TokenType.Goto, TokenType.T, TokenType.Gosub) && Peek().Type == TokenType.Number)
             throw new ParseException(_lineNumber, _source,
-                "Expected 'THEN' or 'GOTO' before line number in 'IF' statement.");
+                "Expected 'THEN' or 'GOTO' before line number in 'IF' statement.", current.LinePosition);
 
         var thenBranch = new CompoundStatementList {
             StatementWrapper(
@@ -353,37 +354,38 @@ public class Parser : IParser
 
     private IStatement SaveStatement()
     {
-        Expression path = !IsAtEnd() ? Expression() : new Literal(string.Empty);
+        Expression path = !IsAtEnd() ? Expression() : new Literal(string.Empty, string.Empty);
 
         return new Save(path);
     }
 
     private IStatement LoadStatement()
     {
-        Expression path = !IsAtEnd() ? Expression() : new Literal(string.Empty);
+        Expression path = !IsAtEnd() ? Expression() : new Literal(string.Empty, string.Empty);
         return new Load(path);
     }
 
     private IStatement MergeStatement()
     {
-        Expression path = !IsAtEnd() ? Expression() : new Literal(string.Empty);
+        Expression path = !IsAtEnd() ? Expression() : new Literal(string.Empty, string.Empty);
         return new Merge(path);
     }
     private IStatement RemarkStatement()
     {
-        var value = new Literal(Previous().Literal);
+        string literal = Previous().Literal;
+        var value = new Literal(literal, literal.ToUpperInvariant());
         return StatementWrapper(new Rem(value));
     }
 
     private IStatement ListStatement()
     {
-        Expression value = !IsAtEnd() ? Expression() : new Literal(0);
+        Expression value = !IsAtEnd() ? Expression() : new Literal(0, null);
         return new List(value);
     }
 
     private IStatement RunStatement()
     {
-        Expression value = !IsAtEnd() ? Expression() : new Literal(-1);
+        Expression value = !IsAtEnd() ? Expression() : new Literal(-1, null);
         return new Run(value);
     }
 
@@ -400,7 +402,7 @@ public class Parser : IParser
 
         if (peek.Type != TokenType.Identifier)
             throw new ParseException(_lineNumber, _source,
-                "Expected variable name or function call.");
+                "Expected variable name or function call.", peek.LinePosition);
 
         if (peekNext.Type != TokenType.Equal && _natives.Get(peek.Lexeme) != null) return StatementWrapper(new StatementExpression(Call()));
 
@@ -414,7 +416,7 @@ public class Parser : IParser
         string lexeme = unquoted.Name.Lexeme;
         if (lexeme.Length > 1 &&
             (!lexeme.EndsWith('$') || lexeme.Length > 2))
-            value = new Literal(lexeme);
+            value = new Literal(lexeme, lexeme.ToUpperInvariant());
 
         return StatementWrapper(new Let(identifier, value));
     }
@@ -425,16 +427,16 @@ public class Parser : IParser
 
         if (peek.Type != TokenType.Identifier)
             throw new ParseException(_lineNumber, _source,
-                "Expected variable name or function call.");
+                "Expected variable name or function call.", peek.LinePosition);
 
         Advance();
 
         if (!Match(TokenType.LeftParen))
-            return new Identifier(peek, peek.Lexeme.EndsWith('$'), peek.Lexeme.ToLowerInvariant());
+            return new Identifier(peek, peek.Lexeme.EndsWith('$'), peek.LinePosition);
 
         Expression index = Expression();
         Consume(TokenType.RightParen, "Expected ')' after array index");
-        return new Array(peek, index, peek.Lexeme.ToLowerInvariant());
+        return new Array(peek, index);
     }
 
     private bool IsAtStatementEnd()
@@ -457,7 +459,7 @@ public class Parser : IParser
                 Advance();
                 atPosition = Expression();
                 if (!Match(TokenType.Comma, TokenType.Semicolon))
-                    throw new ParseException(_lineNumber, _source, "Expected ',' or ';' after AT clause.");
+                    throw new ParseException(_lineNumber, _source, "Expected ',' or ';' after AT clause.", Peek().LinePosition);
             }
 #pragma warning restore S1066 // Collapsible "if" statements should be merged
 
@@ -474,7 +476,8 @@ public class Parser : IParser
                             TokenType.Identifier,
                             "_padquadrant",
                             "_padquadrant",
-                            null
+                            null,
+                            0
                         ),
                         _padQuadrant,
                         new List<Expression>()));
@@ -488,12 +491,10 @@ public class Parser : IParser
     {
         dynamic line = lineNumber.Literal;
 
-        if (line == null) return -1;
+        if (line == null || line is not int) return -1;
 
-        if (line is not int)
-            throw new ParseException(-1, lineNumber.SourceLine, $"Invalid text at {line}");
         if (line > short.MaxValue)
-            throw new ParseException(_lineNumber, _source, $"Line number cannot exceed {short.MaxValue}.");
+            throw new ParseException(_lineNumber, _source, $"Line number cannot exceed {short.MaxValue}.", lineNumber.LinePosition);
 
         return line;
     }
@@ -575,7 +576,7 @@ public class Parser : IParser
             return new Call(name, callee, new List<Expression>());
 
         throw new ParseException(_lineNumber, _source,
-            $"Invalid number of arguments passed to function '{previous.Lexeme}'");
+            $"Invalid number of arguments passed to function '{previous.Lexeme}'", Peek().LinePosition);
     }
 
     private Expression FinishCall(Token name, List<Callable> callees)
@@ -593,7 +594,7 @@ public class Parser : IParser
 
         if (callee == null)
             throw new ParseException(_lineNumber, _source,
-                $"Unknown function '{name.Lexeme}' with argument count {arguments.Count}");
+                $"Unknown function '{name.Lexeme}' with argument count {arguments.Count}", Peek().LinePosition);
 
 
         return new Call(name, callee, arguments);
@@ -606,13 +607,19 @@ public class Parser : IParser
         Consume(TokenType.RightParen,
             "Expected ')' after arguments");
 
-        return new Array(name, index, name.Lexeme.ToLowerInvariant());
+        return new Array(name, index);
     }
 
     private Expression Primary()
     {
-        if (Match(TokenType.Number, TokenType.String))
-            return new Literal(Previous().Literal);
+        if (Match(TokenType.Number))
+            return new Literal(Previous().Literal, null);
+
+        if (Match(TokenType.String))
+        {
+            string literal = Previous().Literal;
+            return new Literal(literal, literal.ToUpperInvariant());
+        }
 
         if (Match(TokenType.LeftParen))
         {
@@ -624,17 +631,17 @@ public class Parser : IParser
         if (Match(TokenType.Identifier))
         {
             Token previous = Previous();
-            return new Identifier(previous, previous.Lexeme.EndsWith('$'), previous.Lexeme.ToLowerInvariant());
+            return new Identifier(previous, previous.Lexeme.EndsWith('$'), previous.LinePosition);
         }
 
         if (!IsIdentifierShortHand())
             throw new ParseException(_lineNumber, _source,
-                "Expected expression.");
+                "Expected expression.", Peek().LinePosition);
 
         Token current = Peek();
         Advance();
-        var identifier = new Token(TokenType.Identifier, current.Lexeme, current.Lexeme, _source);
-        return new Identifier(identifier, current.Lexeme.EndsWith('$'), current.Lexeme.ToLowerInvariant());
+        var identifier = new Token(TokenType.Identifier, current.Lexeme, current.Lexeme, _source, current.LinePosition);
+        return new Identifier(identifier, current.Lexeme.EndsWith('$'), current.LinePosition);
     }
 
     private bool IsIdentifierShortHand()
@@ -651,7 +658,7 @@ public class Parser : IParser
 
     private void Consume(TokenType type, string message)
     {
-        if (!Check(type)) throw new ParseException(_lineNumber, _source, message);
+        if (!Check(type)) throw new ParseException(_lineNumber, _source, message, Peek().LinePosition);
 
         Advance();
     }

@@ -22,7 +22,7 @@ public class LonghandSmokeTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("hello");
+        controller.ReadOutputLine().Should().Be("HELLO");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -51,7 +51,7 @@ public class LonghandSmokeTest
         controller.ExecuteStatements(program);
         controller.ExecuteLine("run");
 
-        controller.ReadOutputLine().Should().Be("hello");
+        controller.ReadOutputLine().Should().Be("HELLO");
     }
 
     [TestMethod]
@@ -65,7 +65,7 @@ public class LonghandSmokeTest
         controller.ExecuteStatements(program);
         controller.ExecuteLine("list");
 
-        controller.ReadOutputLine().Should().Be(" 10  print \"hello\"");
+        controller.ReadOutputLine().Should().Be(" 10  PRINT \"HELLO\"");
     }
 
     [TestMethod]
@@ -129,7 +129,7 @@ public class LonghandSmokeTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("Enter your name?Hello, Chris");
+        controller.ReadOutputLine().Should().Be("ENTER YOUR NAME?HELLO, CHRIS");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -325,7 +325,7 @@ public class LonghandSmokeTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("hello");
+        controller.ReadOutputLine().Should().Be("HELLO");
         controller.Trs80.CursorY.Should().Be(200 / 64 + 3);
         controller.Trs80.CursorX.Should().Be(0);
         controller.IsEndOfRun().Should().BeTrue();
