@@ -24,7 +24,7 @@ public class InputTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("Enter your name?Hello, Chris");
+        controller.ReadOutputLine().Should().Be("ENTER YOUR NAME?HELLO, CHRIS");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -45,7 +45,7 @@ public class InputTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("Enter (Y/N)?You entered 'YES'");
+        controller.ReadOutputLine().Should().Be("ENTER (Y/N)?YOU ENTERED 'YES'");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -66,7 +66,7 @@ public class InputTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("Enter (Y/N)?You entered 'NO'");
+        controller.ReadOutputLine().Should().Be("ENTER (Y/N)?YOU ENTERED 'NO'");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -91,7 +91,7 @@ public class InputTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("Enter (Y/N)?You didn't enter 'Y' or 'N'");
+        controller.ReadOutputLine().Should().Be("ENTER (Y/N)?YOU DIDN'T ENTER 'Y' OR 'N'");
         controller.IsEndOfRun().Should().BeTrue();
     }
 }

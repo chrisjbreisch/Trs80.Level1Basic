@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
+using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
@@ -57,7 +57,9 @@ public class Program : IProgram
         using var reader = new StreamReader(path);
         while (!reader.EndOfStream)
         {
-            List<Token> tokens = _scanner.ScanTokens(reader.ReadLine());
+            string original = reader.ReadLine();
+            string line = original?.ToUpper();
+            List<Token> tokens = _scanner.ScanTokens(new SourceLine { Line = line, Original = original});
             IStatement statement = _parser.Parse(tokens);
             AddStatement(statement);
         }

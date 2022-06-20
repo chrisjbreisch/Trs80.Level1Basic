@@ -18,12 +18,19 @@ public class SetupTrs80Command : ICommand<SetupTrs80Model>
     public void Execute(SetupTrs80Model model)
     {
         InitializeWindow();
+        WriteBanner();
         WritePrompt();
     }
 
     private void InitializeWindow()
     {
         _trs80.InitializeWindow();
+    }
+
+    private void WriteBanner()
+    {
+        _trs80.WriteLine("TRS-80 Model I Level I BASIC Interpreter by Chris J. Breisch");
+        _trs80.WriteLine("Copyright 2022 - Apache 2.0 license");
     }
 
     private void WritePrompt()

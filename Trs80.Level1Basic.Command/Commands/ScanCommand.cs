@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 
 using Trs80.Level1Basic.CommandModels;
+using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
@@ -65,7 +66,7 @@ public class ScanCommand : ICommand<ScanModel>
             : $" {voore.Statement}?\r\n[{voore.Message}]");
     }
 
-    private List<Token>? ScanLine(string sourceLine)
+    private List<Token>? ScanLine(SourceLine sourceLine)
     {
         List<Token>? tokens = null;
         try

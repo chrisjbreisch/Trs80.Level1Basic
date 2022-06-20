@@ -101,7 +101,7 @@ public class ExpressionTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("Hello, Chris");
+        controller.ReadOutputLine().Should().Be("HELLO, CHRIS");
         controller.IsEndOfRun().Should().BeTrue();
     }
 }

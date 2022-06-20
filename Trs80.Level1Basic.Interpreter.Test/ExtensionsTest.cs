@@ -22,7 +22,7 @@ public class ExtensionsTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("Chris");
+        controller.ReadOutputLine().Should().Be("CHRIS");
         controller.IsEndOfRun().Should().BeTrue();
     }
 

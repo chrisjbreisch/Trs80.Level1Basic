@@ -9,9 +9,9 @@ using Trs80.Level1Basic.TestUtilities;
 namespace Trs80.Level1Basic.Interpreter.Test;
 
 [TestClass]
-public class RecursoinTest
+public class RecursionTest
 {
-    private List<string> _program = new List<string>() {
+    private readonly List<string> _program = new() {
         "10 input \"Enter fibonacci sequence number\"; n",
         "20 gosub 1000",
         "30 print \"The fibonacci number at position\"; n;\"is\"; a(n)",

@@ -73,8 +73,8 @@ namespace Trs80.Level1Basic.Environment.Test
             controller.ReadOutputLine().Should().Be(" 3 ");
             controller.ReadOutputLine().Should().Be("");
             controller.ReadOutputLine().Should().Be("READY");
-            controller.ReadOutputLine().Should().Be(" 10  i = 3");
-            controller.ReadOutputLine().Should().Be(" 30  print i");
+            controller.ReadOutputLine().Should().Be(" 10  I = 3");
+            controller.ReadOutputLine().Should().Be(" 30  PRINT I");
             controller.ReadOutputLine().Should().BeNull();
         }
     }

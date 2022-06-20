@@ -16,12 +16,12 @@ public class RunTest
     {
         using var controller = new TestController();
         var program = new List<string> {
-            "10 print \"Hello, world!\"",
+            "10 print \"Hello, World!\"",
         };
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("Hello, world!");
+        controller.ReadOutputLine().Should().Be("HELLO, WORLD!");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -41,7 +41,7 @@ public class RunTest
 
         controller.ExecuteLine("run 30");
 
-        controller.ReadOutputLine().Should().Be("Goodbye!");
+        controller.ReadOutputLine().Should().Be("GOODBYE!");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -62,7 +62,7 @@ public class RunTest
 
         controller.ExecuteLine("run 30");
 
-        controller.ReadOutputLine().Should().Be("Hello, world!");
+        controller.ReadOutputLine().Should().Be("HELLO, WORLD!");
         controller.IsEndOfRun().Should().BeTrue();
     }
 }

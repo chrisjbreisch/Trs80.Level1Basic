@@ -51,7 +51,8 @@ public class TestController : IDisposable
 
     public void ExecuteLine(string input)
     {
-        List<Token> tokens = _scanner.ScanTokens(input);
+        var sourceLine = new SourceLine(input);
+        List<Token> tokens = _scanner.ScanTokens(sourceLine);
         IStatement statement = _parser.Parse(tokens);
         _interpreter.Interpret(statement);
     }

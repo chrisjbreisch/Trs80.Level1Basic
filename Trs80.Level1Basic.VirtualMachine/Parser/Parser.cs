@@ -276,7 +276,7 @@ public class Parser : IParser
             stepValue = Expression();
         }
         else
-            stepValue = new Literal(1);
+            stepValue = new Literal(1, null);
 
         return StatementWrapper(new For(identifier, startValue, endValue, stepValue));
     }
@@ -353,37 +353,38 @@ public class Parser : IParser
 
     private IStatement SaveStatement()
     {
-        Expression path = !IsAtEnd() ? Expression() : new Literal(string.Empty);
+        Expression path = !IsAtEnd() ? Expression() : new Literal(string.Empty, string.Empty);
 
         return new Save(path);
     }
 
     private IStatement LoadStatement()
     {
-        Expression path = !IsAtEnd() ? Expression() : new Literal(string.Empty);
+        Expression path = !IsAtEnd() ? Expression() : new Literal(string.Empty, string.Empty);
         return new Load(path);
     }
 
     private IStatement MergeStatement()
     {
-        Expression path = !IsAtEnd() ? Expression() : new Literal(string.Empty);
+        Expression path = !IsAtEnd() ? Expression() : new Literal(string.Empty, string.Empty);
         return new Merge(path);
     }
     private IStatement RemarkStatement()
     {
-        var value = new Literal(Previous().Literal);
+        string literal = Previous().Literal;
+        var value = new Literal(literal, literal.ToUpperInvariant());
         return StatementWrapper(new Rem(value));
     }
 
     private IStatement ListStatement()
     {
-        Expression value = !IsAtEnd() ? Expression() : new Literal(0);
+        Expression value = !IsAtEnd() ? Expression() : new Literal(0, null);
         return new List(value);
     }
 
     private IStatement RunStatement()
     {
-        Expression value = !IsAtEnd() ? Expression() : new Literal(-1);
+        Expression value = !IsAtEnd() ? Expression() : new Literal(-1, null);
         return new Run(value);
     }
 
@@ -414,7 +415,7 @@ public class Parser : IParser
         string lexeme = unquoted.Name.Lexeme;
         if (lexeme.Length > 1 &&
             (!lexeme.EndsWith('$') || lexeme.Length > 2))
-            value = new Literal(lexeme);
+            value = new Literal(lexeme, lexeme.ToUpperInvariant());
 
         return StatementWrapper(new Let(identifier, value));
     }
@@ -430,11 +431,11 @@ public class Parser : IParser
         Advance();
 
         if (!Match(TokenType.LeftParen))
-            return new Identifier(peek, peek.Lexeme.EndsWith('$'), peek.Lexeme.ToLowerInvariant(), _current);
+            return new Identifier(peek, peek.Lexeme.EndsWith('$'), _current);
 
         Expression index = Expression();
         Consume(TokenType.RightParen, "Expected ')' after array index");
-        return new Array(peek, index, peek.Lexeme.ToLowerInvariant());
+        return new Array(peek, index);
     }
 
     private bool IsAtStatementEnd()
@@ -606,13 +607,19 @@ public class Parser : IParser
         Consume(TokenType.RightParen,
             "Expected ')' after arguments");
 
-        return new Array(name, index, name.Lexeme.ToLowerInvariant());
+        return new Array(name, index);
     }
 
     private Expression Primary()
     {
-        if (Match(TokenType.Number, TokenType.String))
-            return new Literal(Previous().Literal);
+        if (Match(TokenType.Number))
+            return new Literal(Previous().Literal, null);
+
+        if (Match(TokenType.String))
+        {
+            string literal = Previous().Literal;
+            return new Literal(literal, literal.ToUpperInvariant());
+        }
 
         if (Match(TokenType.LeftParen))
         {
@@ -624,7 +631,7 @@ public class Parser : IParser
         if (Match(TokenType.Identifier))
         {
             Token previous = Previous();
-            return new Identifier(previous, previous.Lexeme.EndsWith('$'), previous.Lexeme.ToLowerInvariant(), _current);
+            return new Identifier(previous, previous.Lexeme.EndsWith('$'), _current);
         }
 
         if (!IsIdentifierShortHand())
@@ -634,7 +641,7 @@ public class Parser : IParser
         Token current = Peek();
         Advance();
         var identifier = new Token(TokenType.Identifier, current.Lexeme, current.Lexeme, _source);
-        return new Identifier(identifier, current.Lexeme.EndsWith('$'), current.Lexeme.ToLowerInvariant(), _current);
+        return new Identifier(identifier, current.Lexeme.EndsWith('$'), _current);
     }
 
     private bool IsIdentifierShortHand()

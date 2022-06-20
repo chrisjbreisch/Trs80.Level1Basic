@@ -108,7 +108,7 @@ namespace Trs80.Level1Basic.TestUtilities
 
         public string ReadLine()
         {
-            return In.ReadLine()!;
+            return In.ReadLine()!.ToUpperInvariant();
         }
 
         public string GetFileNameForSave()

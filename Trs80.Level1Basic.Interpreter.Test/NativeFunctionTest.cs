@@ -36,7 +36,7 @@ public class NativeFunctionTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("\"hello\"");
+        controller.ReadOutputLine().Should().Be("\"HELLO\"");
         controller.IsEndOfRun().Should().BeTrue();
     }
 

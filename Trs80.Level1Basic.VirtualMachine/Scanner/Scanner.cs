@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
 
@@ -8,12 +8,13 @@ namespace Trs80.Level1Basic.VirtualMachine.Scanner;
 
 public interface IScanner
 {
-    List<Token> ScanTokens(string source);
+    List<Token> ScanTokens(SourceLine source);
 }
 
 public class Scanner : IScanner
 {
     private string _source;
+    private string _original;
     private List<Token> _tokens;
     private int TokenStart { get; set; }
     private int TokenLength => _currentIndex - TokenStart;
@@ -52,87 +53,88 @@ public class Scanner : IScanner
             {
                 2, new Dictionary<string, TokenType>
                 {
-                    {"at", TokenType.At},
-                    {"a.", TokenType.A},
-                    {"c.", TokenType.Cont},
-                    {"d.", TokenType.Data},
-                    {"e.", TokenType.End},
-                    {"f.", TokenType.For},
-                    {"g.", TokenType.Goto},
-                    {"if", TokenType.If},
-                    {"l.", TokenType.List},
-                    {"n.", TokenType.N},
-                    {"on", TokenType.On},
-                    {"p.", TokenType.Print},
-                    {"r.", TokenType.R},
-                    {"s.", TokenType.Step},
-                    {"t.", TokenType.T},
-                    {"to", TokenType.To},
+                    {"AT", TokenType.At},
+                    {"A.", TokenType.A},
+                    {"C.", TokenType.Cont},
+                    {"D.", TokenType.Data},
+                    {"E.", TokenType.End},
+                    {"F.", TokenType.For},
+                    {"G.", TokenType.Goto},
+                    {"IF", TokenType.If},
+                    {"L.", TokenType.List},
+                    {"N.", TokenType.N},
+                    {"ON", TokenType.On},
+                    {"P.", TokenType.Print},
+                    {"R.", TokenType.R},
+                    {"S.", TokenType.Step},
+                    {"T.", TokenType.T},
+                    {"TO", TokenType.To},
                 }
             },
             {
                 3, new Dictionary<string, TokenType>
                 {
-                    {"cls", TokenType.Cls},
-                    {"end", TokenType.End},
-                    {"for", TokenType.For},
-                    {"in.", TokenType.Input},
-                    {"let", TokenType.Let},
-                    {"new", TokenType.New},
-                    {"rem", TokenType.Rem},
-                    {"run", TokenType.Run},
-                    {"st.", TokenType.Stop},
+                    {"CLS", TokenType.Cls},
+                    {"END", TokenType.End},
+                    {"FOR", TokenType.For},
+                    {"IN.", TokenType.Input},
+                    {"LET", TokenType.Let},
+                    {"NEW", TokenType.New},
+                    {"REM", TokenType.Rem},
+                    {"RUN", TokenType.Run},
+                    {"ST.", TokenType.Stop},
                 }
             },
             {
                 4, new Dictionary<string, TokenType>
                 {
-                    {"cont", TokenType.Cont},
-                    {"data", TokenType.Data},
-                    {"gos.", TokenType.Gosub},
-                    {"goto", TokenType.Goto},
-                    {"list", TokenType.List},
-                    {"load", TokenType.Load},
-                    {"next", TokenType.Next},
-                    {"read", TokenType.Read},
-                    {"rea.", TokenType.Read},
-                    {"ret.", TokenType.Return},
-                    {"save", TokenType.Save},
-                    {"step", TokenType.Step},
-                    {"stop", TokenType.Stop},
-                    {"then", TokenType.Then},
+                    {"CONT", TokenType.Cont},
+                    {"DATA", TokenType.Data},
+                    {"GOS.", TokenType.Gosub},
+                    {"GOTO", TokenType.Goto},
+                    {"LIST", TokenType.List},
+                    {"LOAD", TokenType.Load},
+                    {"NEXT", TokenType.Next},
+                    {"READ", TokenType.Read},
+                    {"REA.", TokenType.Read},
+                    {"RET.", TokenType.Return},
+                    {"SAVE", TokenType.Save},
+                    {"STEP", TokenType.Step},
+                    {"STOP", TokenType.Stop},
+                    {"THEN", TokenType.Then},
                 }
             },
             {
                 5, new Dictionary<string, TokenType>
                 {
-                    {"gosub", TokenType.Gosub},
-                    {"input", TokenType.Input},
-                    {"merge", TokenType.Merge},
-                    {"print", TokenType.Print},
-                    {"rest.", TokenType.Restore},
+                    {"GOSUB", TokenType.Gosub},
+                    {"INPUT", TokenType.Input},
+                    {"MERGE", TokenType.Merge},
+                    {"PRINT", TokenType.Print},
+                    {"REST.", TokenType.Restore},
                 }
             },
             {
                 6, new Dictionary<string, TokenType>
                 {
-                    {"return", TokenType.Return},
+                    {"RETURN", TokenType.Return},
                 }
             },
             {
                 7, new Dictionary<string, TokenType>
                 {
-                    {"restore", TokenType.Restore},
+                    {"RESTORE", TokenType.Restore},
                 }
             }
         };
     }
 
-    public List<Token> ScanTokens(string source)
+    public List<Token> ScanTokens(SourceLine source)
     {
         Initialize();
 
-        _source = source;
+        _source = source.Line;
+        _original = source.Original;
 
         while (!IsAtEnd())
         {
@@ -254,7 +256,7 @@ public class Scanner : IScanner
 
     private void AddIdentifierToken()
     {
-        string id = _source.Substring(TokenStart, 1).ToLower();
+        string id = _source.Substring(TokenStart, 1);
         AddToken(TokenType.Identifier, id);
     }
 
@@ -450,7 +452,7 @@ public class Scanner : IScanner
 
     private TokenType GetKeywordAtPosition()
     {
-        string key = _source.Substring(TokenStart, TokenLength).ToLower();
+        string key = _source.Substring(TokenStart, TokenLength);
         try
         {
             TokenType keyword = KeywordsByLetter[TokenLength][key];
@@ -461,7 +463,7 @@ public class Scanner : IScanner
             if (IsAlpha(Peek())) throw;
 
             // try backing up
-            key = _source.Substring(TokenStart + 1, TokenLength - 1).ToLower();
+            key = _source.Substring(TokenStart + 1, TokenLength - 1);
             if (!KeywordsByLetter[TokenLength - 1].ContainsKey(key)) throw;
 
             AddToken(TokenType.Identifier, _source.Substring(TokenStart, 1));
@@ -473,7 +475,7 @@ public class Scanner : IScanner
     private void AddStringIdentifierToken()
     {
         Advance();
-        string id = _source.Substring(TokenStart, 2).ToLower();
+        string id = _source.Substring(TokenStart, 2);
         AddToken(TokenType.Identifier, id);
     }
 
@@ -491,7 +493,7 @@ public class Scanner : IScanner
             else if (float.TryParse(element, out float floatValue))
                 AddToken(TokenType.Number, floatValue);
             else
-                AddToken(TokenType.String, element);
+                AddToken(TokenType.String, _original.Substring(TokenStart, TokenLength));
             if (!IsAtEnd())
             {
                 AddToken(TokenType.Comma);
@@ -570,7 +572,7 @@ public class Scanner : IScanner
 
         Advance();
 
-        string value = _source.Substring(TokenStart + 1, TokenLength - 2);
+        string value = _original.Substring(TokenStart + 1, TokenLength - 2);
         AddToken(TokenType.String, value);
     }
 

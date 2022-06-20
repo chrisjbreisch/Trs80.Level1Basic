@@ -36,7 +36,7 @@ public class PrintTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("Hello, World!");
+        controller.ReadOutputLine().Should().Be("HELLO, WORLD!");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -383,7 +383,7 @@ public class PrintTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("startup");
+        controller.ReadOutputLine().Should().Be("STARTUP");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -399,7 +399,7 @@ public class PrintTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("start           up");
+        controller.ReadOutputLine().Should().Be("START           UP");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -416,7 +416,7 @@ public class PrintTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("start           up              shutdown");
+        controller.ReadOutputLine().Should().Be("START           UP              SHUTDOWN");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -434,7 +434,7 @@ public class PrintTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("start           up              shut            down");
+        controller.ReadOutputLine().Should().Be("START           UP              SHUT            DOWN");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -497,7 +497,7 @@ public class PrintTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("hello");
+        controller.ReadOutputLine().Should().Be("HELLO");
         controller.Trs80.CursorY.Should().Be(200 / 64 + 3);
         controller.Trs80.CursorX.Should().Be(0);
         controller.IsEndOfRun().Should().BeTrue();
@@ -513,7 +513,7 @@ public class PrintTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("     hello");
+        controller.ReadOutputLine().Should().Be("     HELLO");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -527,7 +527,7 @@ public class PrintTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("     hellogoodbye");
+        controller.ReadOutputLine().Should().Be("     HELLOGOODBYE");
         controller.IsEndOfRun().Should().BeTrue();
     }
 

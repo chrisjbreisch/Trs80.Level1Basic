@@ -49,6 +49,6 @@ public class Trs80Test
         trs80.WriteLine(hello);
 
         string output = sw.ToString();
-        output.Should().Be(input);
+        output.Should().Be(input.ToUpperInvariant());
     }
 }

@@ -20,7 +20,7 @@ public class InterpreterTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("Hello, World!");
+        controller.ReadOutputLine().Should().Be("HELLO, WORLD!");
         controller.IsEndOfRun().Should().BeTrue();
     }
 

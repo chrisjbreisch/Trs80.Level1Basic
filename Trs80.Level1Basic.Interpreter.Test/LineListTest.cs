@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
@@ -16,7 +16,7 @@ namespace Trs80.Level1Basic.Interpreter.Test;
 public class LineListTest
 {
     private int _currentLineNumber;
-    private const string _line = "i = i + ";
+    private const string _line = "I = I + ";
 
     private string GetNextLine()
     {
@@ -30,7 +30,8 @@ public class LineListTest
         IScanner scanner = new Scanner(natives);
         IParser parser = new Parser(natives);
 
-        List<Token> tokens = scanner.ScanTokens(input);
+        var sourceLine = new SourceLine(input);
+        List<Token> tokens = scanner.ScanTokens(sourceLine);
         IStatement statement = parser.Parse(tokens);
         return statement;
     }
@@ -149,7 +150,7 @@ public class LineListTest
             list.Add(forStatement);
         }
 
-        string newStatement = "i = i * 2";
+        string newStatement = "I = I * 2";
         string input = $"20 {newStatement}";
         IStatement statement = ParseInput(input);
         list.Replace(statement.LineNumber, statement);
@@ -182,7 +183,7 @@ public class LineListTest
             list.Add(forStatement);
         }
 
-        string newStatement = "i = i * 2";
+        string newStatement = "I = I * 2";
         string input = $"30 {newStatement}";
         IStatement statement = ParseInput(input);
         list.Replace(statement.LineNumber, statement);
@@ -217,7 +218,7 @@ public class LineListTest
             list.Add(forStatement);
         }
 
-        string newStatement = "i = i * 2";
+        string newStatement = "I = I * 2";
         string input = $"10 {newStatement}";
         IStatement statement = ParseInput(input);
         list.Replace(statement.LineNumber, statement);

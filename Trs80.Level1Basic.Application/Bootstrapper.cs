@@ -107,6 +107,9 @@ public sealed class Bootstrapper : IDisposable
         };
 
         _logger.LogCritical(exception, baseErrorMessage, logContext);
+        Console.WriteLine(baseErrorMessage);
+        Console.WriteLine(exception.Message);
+        if (workflow != null) workflow.Status = WorkflowStatus.Terminated;
     }
 
     private void ConfigureServicesExtensions()

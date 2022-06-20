@@ -46,7 +46,7 @@ public class Interpreter : IInterpreter
     public dynamic VisitArrayExpression(Array expression)
     {
         dynamic index = Evaluate(expression.Index);
-        return _machine.Get(expression.LowerName, index);
+        return _machine.Get(expression.Name.Lexeme, index);
     }
 
     public dynamic VisitAssignExpression(Assign expression)
@@ -60,12 +60,12 @@ public class Interpreter : IInterpreter
         switch (expression)
         {
             case Identifier identifier:
-                _machine.Set(identifier.LowerName, value);
+                _machine.Set(identifier.Name.Lexeme, value);
                 break;
             case Array array:
                 {
                     dynamic index = Evaluate(array.Index);
-                    _machine.Set(array.LowerName, index, value);
+                    _machine.Set(array.Name.Lexeme, index, value);
                     break;
                 }
             default:
@@ -112,16 +112,23 @@ public class Interpreter : IInterpreter
 
     public dynamic VisitIdentifierExpression(Identifier expression)
     {
-        if (expression.LowerName.Length > 1 &&
-            (!expression.LowerName.EndsWith('$') || expression.LowerName.Length > 2))
+        string name = expression.Name.Lexeme;
+        if (name.Length > 1 &&
+            (!name.EndsWith('$') || name.Length > 2))
             throw new ParseException(_program.CurrentStatement.LineNumber, _program.CurrentStatement.SourceLine, "Invalid Identifier.", expression.LinePosition);
 
-        return _machine.Get(expression.LowerName);
+        return _machine.Get(name);
     }
 
     public dynamic VisitLiteralExpression(Literal expression)
     {
-        if (expression.Value is not int) return expression.Value;
+        switch (expression.Value)
+        {
+            case float:
+                return expression.Value;
+            case string:
+                return expression.UpperValue;
+        }
 
         if (expression.Value > short.MaxValue || expression.Value < short.MinValue)
             // ReSharper disable once PossibleInvalidCastException
@@ -395,9 +402,9 @@ public class Interpreter : IInterpreter
             Assign(variable, intValue);
         else if (float.TryParse(value, out float floatValue))
             Assign(variable, floatValue);
-        else if (_machine.Exists(value.ToLowerInvariant()))
+        else if (_machine.Exists(value))
         {
-            dynamic lookup = _machine.Get(value.ToLowerInvariant());
+            dynamic lookup = _machine.Get(value);
             Assign(variable, lookup);
         }
         else
@@ -445,7 +452,8 @@ public class Interpreter : IInterpreter
     public Void VisitLoadStatement(Load statement)
     {
         _machine.NewProgram();
-        string path = Evaluate(statement.Path);
+        string path = EvaluatePath(statement.Path);
+
         if (string.IsNullOrEmpty(path))
             path = _host.GetFileNameForLoad();
 
@@ -457,9 +465,19 @@ public class Interpreter : IInterpreter
         return null!;
     }
 
+    private string EvaluatePath(Expression pathExpression)
+    {
+        string path;
+        if (pathExpression is Literal literalPath)
+            path = literalPath.Value;
+        else
+            path = Evaluate(pathExpression);
+        return path;
+    }
+
     public Void VisitMergeStatement(Merge statement)
     {
-        string path = Evaluate(statement.Path);
+        string path = EvaluatePath(statement.Path);
         if (string.IsNullOrEmpty(path))
             path = _host.GetFileNameForLoad();
 
@@ -501,7 +519,7 @@ public class Interpreter : IInterpreter
         if (statement.IsGosub)
         {
             IStatement resumeStatement = _machine.GetNextStatement(statement);
-            Expression location = new Literal(locations[selector]);
+            Expression location = new Literal(locations[selector], null);
             IStatement jumpToStatement = GetJumpToStatement(statement, location, "GOSUB");
             ExecuteGosub(jumpToStatement, resumeStatement);
 
@@ -628,7 +646,7 @@ public class Interpreter : IInterpreter
 
     public Void VisitSaveStatement(Save statement)
     {
-        string path = Evaluate(statement.Path);
+        string path = EvaluatePath(statement.Path);
         if (string.IsNullOrEmpty(path))
             path = _host.GetFileNameForSave();
 
