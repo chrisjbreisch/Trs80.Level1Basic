@@ -6,11 +6,6 @@ using Trs80.Level1Basic.VirtualMachine.Exceptions;
 
 namespace Trs80.Level1Basic.VirtualMachine.Scanner;
 
-public interface IScanner
-{
-    List<Token> ScanTokens(SourceLine source);
-}
-
 public class Scanner : IScanner
 {
     private string _source;

@@ -12,11 +12,6 @@ using Array = Trs80.Level1Basic.VirtualMachine.Parser.Expressions.Array;
 
 namespace Trs80.Level1Basic.VirtualMachine.Parser;
 
-public interface IParser
-{
-    IStatement Parse(List<Token> tokens);
-}
-
 public class Parser : IParser
 {
     private List<Token> _tokens;

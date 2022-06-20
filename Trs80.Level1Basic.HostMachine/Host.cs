@@ -10,30 +10,6 @@ using System.Windows.Forms;
 
 namespace Trs80.Level1Basic.HostMachine;
 
-[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-public struct FontInfo
-{
-    public int cbSize;
-    public int FontIndex;
-    public short FontWidth;
-    public short FontSize;
-    public int FontFamily;
-    public int FontWeight;
-    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-    public string FontName;
-}
-
-[StructLayout(LayoutKind.Sequential)]
-public struct Rect
-{
-    public int Left;        // x position of upper-left corner
-    public int Top;         // y position of upper-left corner
-    public int Right;       // x position of lower-right corner
-    public int Bottom;      // y position of lower-right corner
-}
-
-
-
 public class Host : IHost, IDisposable 
 {
     // https://www.pinvoke.net/default.aspx/user32/FindWindow.html

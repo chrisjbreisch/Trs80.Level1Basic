@@ -6,10 +6,6 @@ using WorkflowCore.Models;
 
 namespace Trs80.Level1Basic.Workflow;
 
-public interface ISetupConsoleStep : IStepBody
-{
-}
-
 public class SetupConsoleStep : StepBody, ISetupConsoleStep
 {
     private readonly ICommand<SetupTrs80Model> _command;
