@@ -17,10 +17,12 @@ public class TestController : IDisposable
 {
     private bool _disposed;
     private StringReader? _outputReader;
+    private StringReader? _errorReader;
     private readonly IScanner _scanner;
     private readonly IParser _parser;
     private readonly IInterpreter _interpreter;
     private readonly StringWriter _output = new();
+    private readonly StringWriter _error = new();
 
     public ITrs80 Trs80 { get; set; }
 
@@ -43,7 +45,8 @@ public class TestController : IDisposable
         IHost host = new FakeHost();
         Trs80 = new VirtualMachine.Machine.Trs80(program, appSettings, loggerFactory, host)
         {
-            Out = _output
+            Out = _output,
+            Error = _error,
         };
         IMachine environment = new Environment(Trs80, program, natives);
         _interpreter = new Interpreter(host, Trs80, environment, program);
@@ -82,6 +85,18 @@ public class TestController : IDisposable
         if (_outputReader is null) InitializeOutputReader();
 
         return _outputReader!.ReadLine();
+    }
+
+    private void InitializeErrorReader()
+    {
+        _errorReader = new StringReader(_error.ToString());
+    }
+
+    public string? ReadErrorLine()
+    {
+        if (_errorReader is null) InitializeErrorReader();
+
+        return _errorReader!.ReadLine();
     }
 
     public bool IsEndOfRun()

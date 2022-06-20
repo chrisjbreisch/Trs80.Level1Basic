@@ -142,7 +142,7 @@ public class Scanner : IScanner
             ScanToken();
         }
 
-        _tokens.Add(new Token(TokenType.EndOfLine, "", null, CurrentLine));
+        _tokens.Add(new Token(TokenType.EndOfLine, "", null, CurrentLine, _currentIndex));
         return _tokens;
     }
 
@@ -598,6 +598,6 @@ public class Scanner : IScanner
     private void AddToken(TokenType type, dynamic literal = null)
     {
         string text = _source.Substring(TokenStart, TokenLength);
-        _tokens.Add(new Token(type, text, literal, CurrentLine));
+        _tokens.Add(new Token(type, text, literal, CurrentLine, TokenStart));
     }
 }

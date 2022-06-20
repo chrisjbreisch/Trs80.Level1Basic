@@ -11,6 +11,6 @@ public class ParseException : Exception
     {
         LineNumber = lineNumber;
         Statement = statement;
-        LinePosition = linePosition;
+        LinePosition = linePosition - lineNumber.ToString().Length - 1;
     }
 }

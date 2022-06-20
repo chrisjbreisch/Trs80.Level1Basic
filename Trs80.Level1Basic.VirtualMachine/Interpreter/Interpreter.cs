@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -35,8 +36,98 @@ public class Interpreter : IInterpreter
 
     public void Interpret(IStatement statement)
     {
-        Execute(statement.LineNumber >= 0 ? new Replace(statement) : statement);
+        try
+        {
+            Execute(statement.LineNumber >= 0 ? new Replace(statement) : statement);
+        }
+        catch (Exception ex)
+        {
+            HandleError(ex);
+            WritePrompt();
+        }
+
     }
+
+    private void WritePrompt()
+    {
+        _trs80.WriteLine();
+        _trs80.WriteLine("READY");
+    }
+
+    private void HandleError(Exception ex)
+    {
+        switch (ex)
+        {
+            case ScanException se:
+                _trs80.WriteLine(" 0 WHAT?");
+                ScanError(se);
+                break;
+            case ParseException pe:
+                _trs80.WriteLine(" 0 WHAT?");
+                ParseError(pe);
+                break;
+            case RuntimeExpressionException ree:
+                _trs80.WriteLine("HOW?");
+                RuntimeExpressionError(ree);
+                break;
+            case RuntimeStatementException rse:
+                _trs80.WriteLine("HOW?");
+                RuntimeStatementError(rse);
+                break;
+            case ValueOutOfRangeException voore:
+                _trs80.WriteLine("HOW?");
+                ValueOutOfRangeError(voore);
+                break;
+            default:
+                _trs80.WriteLine("SORRY");
+                if (Debugger.IsAttached)
+                {
+                    _trs80.WriteLine(ex.Message);
+                    _trs80.WriteLine(ex.StackTrace);
+                }
+                break;
+        }
+    }
+
+
+    private void ValueOutOfRangeError(ValueOutOfRangeException voore)
+    {
+        _trs80.Error.WriteLine(voore.LineNumber >= 0
+            ? $" {voore.LineNumber}  {voore.Statement}?\r\n[{voore.Message}]"
+            : $" {voore.Statement}?\r\n[{voore.Message}]");
+    }
+
+    private void ScanError(ScanException se)
+    {
+        _trs80.Error.WriteLine($"{se.Message}");
+    }
+
+    private void ParseError(ParseException pe)
+    {
+        string statement = pe.Statement;
+        int linePosition = pe.LinePosition + 1;
+        if (linePosition > statement.Length || linePosition <= 0)
+            statement = $"{statement}?";
+        else
+            statement = statement.Insert(pe.LinePosition + 1, "?");
+        _trs80.Error.WriteLine(pe.LineNumber >= 0
+            ? $" {pe.LineNumber}  {statement}\r\n[{pe.Message}]"
+            : $" {pe.Statement}?\r\n[{pe.Message}]");
+    }
+
+    private void RuntimeExpressionError(RuntimeExpressionException ree)
+    {
+        _trs80.Error.WriteLine($"{ree.Message}\n[token {ree.Token}]");
+    }
+
+    public void RuntimeStatementError(RuntimeStatementException re)
+    {
+        _trs80.Error.WriteLine(re.LineNumber >= 0
+            ? $" {re.LineNumber}  {re.Statement}?\r\n[{re.Message}]"
+            : $" {re.Statement}?\r\n[{re.Message}]");
+    }
+
+
 
     private dynamic Evaluate(Expression expression)
     {

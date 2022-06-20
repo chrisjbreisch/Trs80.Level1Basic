@@ -27,6 +27,7 @@ public class InputCommand : ICommand<InputModel>
         char[] original = new char[1024];
         char[] line = new char[1024];
         int charCount = 0;
+        bool inQuote = false;
 
         while (true)
         {
@@ -35,7 +36,13 @@ public class InputCommand : ICommand<InputModel>
             if (key.Key == ConsoleKey.Enter)
             {
                 _trs80.WriteLine();
+                inQuote = false;
                 break;
+            }
+
+            if (key.KeyChar == '"')
+            {
+                inQuote = !inQuote;
             }
             if (key.Key == ConsoleKey.Backspace)
             {
@@ -43,6 +50,8 @@ public class InputCommand : ICommand<InputModel>
                 {
                     _trs80.Write(" \b");
                     original[charCount--] = '\0';
+                    if (original[charCount] == '"')
+                        inQuote = !inQuote;
                 }
                 else
                     _trs80.Write(">");
@@ -52,7 +61,8 @@ public class InputCommand : ICommand<InputModel>
                 original[charCount] = key.KeyChar;
                 char upper = Upper(key.KeyChar);
                 line[charCount++] = upper;
-                _trs80.Write($"\b{upper}");
+                if (!inQuote)
+                    _trs80.Write($"\b{upper}");
             }
         }
 
