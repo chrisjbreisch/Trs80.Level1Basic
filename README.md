@@ -136,7 +136,7 @@ It's all 32-bit single-precision in Level I, and that's what I've implemented al
 implementation predates [IEEE 754](https://en.wikipedia.org/wiki/IEEE_754) and suffers from rounding error
 in some cases that don't apply to modern computers. Some examples in the book display the issues with 
 these rounding errors. My emulator will display the numbers with more accuracy.
-- I've given you 16 K or RAM. The original Level I's had 4K, but 16K models were available. It's just a 
+- I've given you 16 K of RAM. The original Level I's had 4K, but 16K models were available. It's just a 
 number for the emulator though, so that `PRINT MEM` works. It has no meaning. Feel free to write 
 programs as large as you like. The numbers displayed by `PRINT MEM` will drop accordingly, and 
 eventually go negative, but you can keep on typing.
