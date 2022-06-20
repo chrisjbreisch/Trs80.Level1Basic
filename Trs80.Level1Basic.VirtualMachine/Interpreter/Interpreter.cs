@@ -177,7 +177,7 @@ public class Interpreter : IInterpreter
         {
             TokenType.Plus => (left is bool && right is bool) ? left || right : left + right,
             TokenType.Minus => left - right,
-            TokenType.Slash => right == 0 ? throw new ValueOutOfRangeException(0, "", "Divide by zero") : (float)left / right,
+            TokenType.Slash => right == 0 ? throw new ValueOutOfRangeException(_program.CurrentStatement.LineNumber, _program.CurrentStatement.SourceLine, "Divide by zero") : (float)left / right,
             TokenType.Star => (left is bool && right is bool) ? left && right : left * right,
             TokenType.GreaterThan => left > right,
             TokenType.GreaterThanOrEqual => left >= right,
@@ -292,6 +292,9 @@ public class Interpreter : IInterpreter
             case float:
                 sb.Append(StringifyFloat(value));
                 break;
+            case int:
+                sb.Append(StringifyInt(value));
+                break;
             default:
                 sb.Append(value.ToString());
                 break;
@@ -304,7 +307,11 @@ public class Interpreter : IInterpreter
         return sb.ToString();
     }
 
-    private string StringifyFloat(dynamic value)
+    private string StringifyInt(int value)
+    {
+        return value is <= 1000000 and >= -1000000 ? value.ToString() : value.ToString("0.#####E+00");
+    }
+    private string StringifyFloat(float value)
     {
         if (value == 0)
             return "0";

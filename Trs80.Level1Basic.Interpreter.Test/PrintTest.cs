@@ -86,6 +86,66 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Print_Rounded_Large_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 i = 9999999",
+            "20 print i"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1E+07 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Print_Actual_Int()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 i = INT(999999)",
+            "20 print i"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 999999 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Print_Actual_Large_Int()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 i = INT(9999999)",
+            "20 print i"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1E+07 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Print_Actual_Large_Rounded_Int()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 i = INT(98765432.1)",
+            "20 print i"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 9.87654E+07 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_Zero()
     {
         using var controller = new TestController();

@@ -28,6 +28,20 @@ public class CommandTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Execute_Assignment_Command()
+    {
+        using var controller = new TestController();
+        var statements = new List<string> {
+            "a=3",
+            "print a"
+        };
+
+        controller.ExecuteStatements(statements);
+
+        controller.ReadOutputLine().Should().Be(" 3 ");
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Execute_Commands1()
     {
         using var controller = new TestController();

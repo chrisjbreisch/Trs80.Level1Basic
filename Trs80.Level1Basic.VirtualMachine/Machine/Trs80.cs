@@ -32,9 +32,6 @@ public class Trs80 : ITrs80
 
     public int Int(dynamic value)
     {
-        if (Math.Abs(value) > short.MaxValue)
-            throw new ValueOutOfRangeException(_program.CurrentStatement.LineNumber, _program.CurrentStatement.SourceLine,
-                $"{value} is out of range for int().");
         return (int)Math.Floor((float)value);
     }
 

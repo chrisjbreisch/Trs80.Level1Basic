@@ -491,10 +491,8 @@ public class Parser : IParser
     {
         dynamic line = lineNumber.Literal;
 
-        if (line == null) return -1;
+        if (line == null || line is not int) return -1;
 
-        if (line is not int)
-            throw new ParseException(-1, lineNumber.SourceLine, $"Invalid text at {line}", 0);
         if (line > short.MaxValue)
             throw new ParseException(_lineNumber, _source, $"Line number cannot exceed {short.MaxValue}.", lineNumber.LinePosition);
 
