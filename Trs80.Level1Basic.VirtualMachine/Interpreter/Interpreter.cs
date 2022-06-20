@@ -311,6 +311,7 @@ public class Interpreter : IInterpreter
     {
         return value is <= 1000000 and >= -1000000 ? value.ToString() : value.ToString("0.#####E+00");
     }
+
     private string StringifyFloat(float value)
     {
         if (value == 0)
