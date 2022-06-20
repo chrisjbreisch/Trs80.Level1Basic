@@ -3,11 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Trs80.Level1Basic.VirtualMachine.Machine;
 
-public interface INativeFunctions
-{
-    List<Callable> Get(string name);
-}
-
 [SuppressMessage("ReSharper", "UnusedParameter.Local")]
 public class NativeFunctions : INativeFunctions
 {

@@ -650,7 +650,8 @@ public class Interpreter : IInterpreter
 
     public Void VisitPrintStatement(Print statement)
     {
-        if (statement.AtPosition != null) PrintAt(statement.AtPosition);
+        if (statement.AtPosition != null) 
+            PrintAt(statement.AtPosition);
 
         if (statement.Expressions is { Count: > 0 })
             foreach (Expression expression in statement.Expressions)
@@ -661,6 +662,7 @@ public class Interpreter : IInterpreter
         _trs80.WriteLine();
         _machine.CursorX = 0;
         _machine.CursorY++;
+
         return null!;
     }
 

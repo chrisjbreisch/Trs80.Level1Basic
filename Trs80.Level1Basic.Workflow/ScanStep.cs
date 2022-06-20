@@ -7,12 +7,6 @@ using WorkflowCore.Models;
 
 namespace Trs80.Level1Basic.Workflow;
 
-public interface IScanStep : IStepBody
-{
-    SourceLine SourceLine { get; set; }
-    List<Token> Tokens { get; set; }
-}
-
 public class ScanStep : StepBody, IScanStep
 {
     private readonly ICommand<ScanModel> _command;

@@ -8,12 +8,6 @@ using WorkflowCore.Models;
 
 namespace Trs80.Level1Basic.Workflow;
 
-public interface IParseStep : IStepBody
-{
-    List<Token> Tokens { get; set; }
-    IStatement Statement { get; set; }
-}
-
 public class ParseStep : StepBody, IParseStep
 {
     private readonly ICommand<ParseModel> _command;

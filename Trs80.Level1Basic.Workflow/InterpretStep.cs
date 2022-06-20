@@ -6,11 +6,6 @@ using WorkflowCore.Models;
 
 namespace Trs80.Level1Basic.Workflow;
 
-public interface IInterpretStep : IStepBody
-{
-    Statement Statement { get; set; }
-}
-
 public class InterpretStep : StepBody, IInterpretStep
 {
     private readonly ICommand<InterpretModel> _command;
