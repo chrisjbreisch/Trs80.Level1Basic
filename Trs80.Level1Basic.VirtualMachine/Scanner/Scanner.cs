@@ -16,16 +16,16 @@ public class Scanner : IScanner
     private int TokenStart { get; set; }
     private int TokenLength => _currentIndex - TokenStart;
     private int _currentIndex;
-    private readonly IHost _host;
+    private readonly ITrs80 _trs80;
     private readonly INativeFunctions _natives;
 
     private static readonly Dictionary<int, Dictionary<string, TokenType>> KeywordsByLetter =
         CreateKeywordsByLetterDictionary();
     private string _currentLine;
 
-    public Scanner(IHost host, INativeFunctions natives)
+    public Scanner(ITrs80 trs80, INativeFunctions natives)
     {
-        _host = host ?? throw new ArgumentNullException(nameof(host));
+        _trs80 = trs80 ?? throw new ArgumentNullException(nameof(trs80));
         _natives = natives ?? throw new ArgumentNullException(nameof(natives));
     }
 
@@ -51,7 +51,7 @@ public class Scanner : IScanner
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleError(_host, ex);
+            ExceptionHandler.HandleError(_trs80, ex);
             return null;
         }
     }

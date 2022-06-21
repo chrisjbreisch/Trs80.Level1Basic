@@ -7,62 +7,62 @@ namespace Trs80.Level1Basic.VirtualMachine.Exceptions;
 
 public static class ExceptionHandler
 {
-    public static void HandleError(IHost host, Exception ex)
+    public static void HandleError(ITrs80 trs80, Exception ex)
     {
         switch (ex)
         {
             case ScanException se:
-                host.WriteLine(" 0 WHAT?");
-                ScanError(host, se);
+                trs80.WriteLine(" 0 WHAT?");
+                ScanError(trs80, se);
                 break;
             case ParseException pe:
-                host.WriteLine(" 0 WHAT?");
-                ParseError(host, pe);
+                trs80.WriteLine(" 0 WHAT?");
+                ParseError(trs80, pe);
                 break;
             case RuntimeExpressionException ree:
-                host.WriteLine("HOW?");
-                RuntimeExpressionError(host, ree);
+                trs80.WriteLine("HOW?");
+                RuntimeExpressionError(trs80, ree);
                 break;
             case RuntimeStatementException rse:
-                host.WriteLine("HOW?");
-                RuntimeStatementError(host, rse);
+                trs80.WriteLine("HOW?");
+                RuntimeStatementError(trs80, rse);
                 break;
             case ValueOutOfRangeException voore:
-                host.WriteLine("HOW?");
-                ValueOutOfRangeError(host, voore);
+                trs80.WriteLine("HOW?");
+                ValueOutOfRangeError(trs80, voore);
                 break;
             default:
-                host.WriteLine("SORRY");
+                trs80.WriteLine("SORRY");
                 if (Debugger.IsAttached)
                 {
-                    host.WriteLine(ex.Message);
-                    host.WriteLine(ex.StackTrace);
+                    trs80.WriteLine(ex.Message);
+                    trs80.WriteLine(ex.StackTrace);
                 }
                 break;
         }
 
-        WritePrompt(host);
+        WritePrompt(trs80);
     }
 
-    private static void WritePrompt(IHost host)
+    private static void WritePrompt(ITrs80 trs80)
     {
-        host.WriteLine();
-        host.WriteLine("READY");
+        trs80.WriteLine();
+        trs80.WriteLine("READY");
     }
 
-    private static void ValueOutOfRangeError(IHost host, ValueOutOfRangeException voore)
+    private static void ValueOutOfRangeError(ITrs80 trs80, ValueOutOfRangeException voore)
     {
-        host.Error.WriteLine(voore.LineNumber >= 0
+        trs80.Error.WriteLine(voore.LineNumber >= 0
             ? $" {voore.LineNumber}  {voore.Statement}?\r\n[{voore.Message}]"
             : $" {voore.Statement}?\r\n[{voore.Message}]");
     }
 
-    private static void ScanError(IHost host, ScanException se)
+    private static void ScanError(ITrs80 trs80, ScanException se)
     {
-        host.Error.WriteLine($"{se.Message}");
+        trs80.Error.WriteLine($"{se.Message}");
     }
 
-    private static void ParseError(IHost host, ParseException pe)
+    private static void ParseError(ITrs80 trs80, ParseException pe)
     {
         string statement = pe.Statement;
         int linePosition = pe.LinePosition + 1;
@@ -70,19 +70,19 @@ public static class ExceptionHandler
             statement = $"{statement}?";
         else
             statement = statement.Insert(pe.LinePosition + 1, "?");
-        host.Error.WriteLine(pe.LineNumber >= 0
+        trs80.Error.WriteLine(pe.LineNumber >= 0
             ? $" {pe.LineNumber}  {statement}\r\n[{pe.Message}]"
             : $" {pe.Statement}?\r\n[{pe.Message}]");
     }
 
-    private static void RuntimeExpressionError(IHost host, RuntimeExpressionException ree)
+    private static void RuntimeExpressionError(ITrs80 trs80, RuntimeExpressionException ree)
     {
-        host.Error.WriteLine($"{ree.Message}\n[token {ree.Token}]");
+        trs80.Error.WriteLine($"{ree.Message}\n[token {ree.Token}]");
     }
 
-    private static void RuntimeStatementError(IHost host, RuntimeStatementException re)
+    private static void RuntimeStatementError(ITrs80 trs80, RuntimeStatementException re)
     {
-        host.Error.WriteLine(re.LineNumber >= 0
+        trs80.Error.WriteLine(re.LineNumber >= 0
             ? $" {re.LineNumber}  {re.Statement}?\r\n[{re.Message}]"
             : $" {re.Statement}?\r\n[{re.Message}]");
     }

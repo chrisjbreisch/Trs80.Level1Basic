@@ -11,7 +11,6 @@ namespace Trs80.Level1Basic.VirtualMachine.Machine;
 
 public class Trs80 : ITrs80
 {
-    private readonly IProgram _program;
     private const int ScreenWidth = 64;
     private const int ScreenHeight = 16;
     private const int ScreenPixelWidth = 2 * ScreenWidth;
@@ -20,49 +19,11 @@ public class Trs80 : ITrs80
     private readonly IAppSettings _appSettings;
     private readonly IHost _host;
 
-    public Trs80(IProgram program, IAppSettings appSettings, ILoggerFactory logFactory, IHost host)
+    public Trs80(IAppSettings appSettings, ILoggerFactory logFactory, IHost host)
     {
-        _program = program ?? throw new ArgumentNullException(nameof(program));
         _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
         _host = host ?? throw new ArgumentNullException(nameof(host));
         if (logFactory == null) throw new ArgumentNullException(nameof(logFactory));
-    }
-
-    public int Int(dynamic value)
-    {
-        return (int)Math.Floor((float)value);
-    }
-
-    private const int TotalMemory = 3583 + 12 * 1024;
-    public dynamic Mem()
-    {
-        return TotalMemory - _program.Size();
-    }
-
-    public dynamic Abs(dynamic value)
-    {
-        if (value is float fValue)
-            return Math.Abs(fValue);
-        return Math.Abs((int)value);
-    }
-
-    public dynamic Chr(dynamic value)
-    {
-        return (char)value;
-    }
-
-    private static readonly Random Rand = new();
-    public dynamic Rnd(int control)
-    {
-        if (control == 0)
-            return (float)Rand.NextDouble();
-
-        return (int)Math.Floor(control * Rand.NextDouble() + 1);
-    }
-
-    public string Tab(dynamic value)
-    {
-        return PadToPosition(value);
     }
 
     public int CursorX

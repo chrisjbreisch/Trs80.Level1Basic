@@ -33,13 +33,9 @@ public class Trs80Test
     [TestMethod]
     public void Can_Replace_In_And_Out()
     {
-        INativeFunctions natives = new NativeFunctions();
         IHost host = new FakeHost();
-        var scanner = new Scanner(host, natives);
-        var parser = new Parser(host, natives);
-        IProgram program = new Program(scanner, parser);
-        var trs80 = new VirtualMachine.Machine.Trs80(program, _appSettings, _loggerFactory, new FakeHost());
-
+        var trs80 = new VirtualMachine.Machine.Trs80(_appSettings, _loggerFactory, host);
+        
         const string input = "Hello, World!\r\n";
         var sw = new StringWriter();
         var sr = new StringReader(input);

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 
 using FluentAssertions;
-
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using Trs80.Level1Basic.Application;
 using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.HostMachine;
 using Trs80.Level1Basic.TestUtilities;
@@ -24,10 +24,15 @@ public class ParserTest
     {
         string input = "10 print \"Hello, World!\"";
 
-        INativeFunctions natives = new NativeFunctions();
+        var bootstrapper = new Bootstrapper();
+        IAppSettings? appSettings = bootstrapper.AppSettings;
+        ILoggerFactory? loggerFactory = bootstrapper.LogFactory;
+
         IHost host = new FakeHost();
-        IScanner scanner = new Scanner(host, natives);
-        IParser parser = new Parser(host, natives);
+        var trs80 = new VirtualMachine.Machine.Trs80(appSettings, loggerFactory, host);
+        INativeFunctions natives = new NativeFunctions();
+        var scanner = new Scanner(trs80, natives);
+        var parser = new Parser(trs80, natives);
 
         var sourceLine = new SourceLine(input);
         List<Token> tokens = scanner.ScanTokens(sourceLine);

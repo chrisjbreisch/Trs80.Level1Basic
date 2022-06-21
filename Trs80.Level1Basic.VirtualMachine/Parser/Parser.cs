@@ -16,13 +16,13 @@ public class Parser : IParser
     private int _current;
     private int _lineNumber;
     private string _source;
-    private readonly IHost _host;
+    private readonly ITrs80 _trs80;
     private readonly INativeFunctions _natives;
     private readonly Callable _padQuadrant;
 
-    public Parser(IHost host, INativeFunctions natives)
+    public Parser(ITrs80 trs80, INativeFunctions natives)
     {
-        _host = host ?? throw new ArgumentNullException(nameof(host));
+        _trs80 = trs80 ?? throw new ArgumentNullException(nameof(trs80));
         _natives = natives ?? throw new ArgumentNullException(nameof(natives));
         _padQuadrant = _natives.Get("_padquadrant").First();
     }
@@ -38,7 +38,7 @@ public class Parser : IParser
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleError(_host, ex);
+            ExceptionHandler.HandleError(_trs80, ex);
             return null;
         }
     }

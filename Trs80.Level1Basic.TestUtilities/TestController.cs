@@ -38,16 +38,17 @@ public class TestController : IDisposable
 
         INativeFunctions natives = new NativeFunctions();
         IHost host = new FakeHost();
-        _scanner = new Scanner(host, natives);
-        _parser = new Parser(host, natives);
-        IProgram program = new Program(_scanner, _parser);
-        Trs80 = new VirtualMachine.Machine.Trs80(program, appSettings, loggerFactory, host)
+        Trs80 = new VirtualMachine.Machine.Trs80(appSettings, loggerFactory, host)
         {
             Out = _output,
             Error = _error,
         };
+        _scanner = new Scanner(Trs80, natives);
+        _parser = new Parser(Trs80, natives);
+        IProgram program = new Program(_scanner, _parser);
         IMachine environment = new Machine(Trs80, program, natives);
-        _interpreter = new Interpreter(host, Trs80, environment, program);
+        ITrs80Api trs80Api = new Trs80Api(program, Trs80);
+        _interpreter = new Interpreter(host, Trs80, trs80Api, environment, program);
     }
 
     public void ExecuteLine(string input)

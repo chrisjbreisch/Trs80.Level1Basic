@@ -17,13 +17,15 @@ public class Interpreter : IInterpreter
 {
     private readonly IMachine _machine;
     private readonly ITrs80 _trs80;
+    private readonly ITrs80Api _trs80Api;
     private readonly IProgram _program;
     private readonly IHost _host;
 
-    public Interpreter(IHost host, ITrs80 trs80, IMachine machine, IProgram program)
+    public Interpreter(IHost host, ITrs80 trs80, ITrs80Api trs80Api, IMachine machine, IProgram program)
     {
         _host = host ?? throw new ArgumentNullException(nameof(host));
         _trs80 = trs80 ?? throw new ArgumentNullException(nameof(trs80));
+        _trs80Api = trs80Api ?? throw new ArgumentNullException(nameof(trs80Api));
         _machine = machine ?? throw new ArgumentNullException(nameof(machine));
         _program = program ?? throw new ArgumentNullException(nameof(program));
     }
@@ -36,7 +38,7 @@ public class Interpreter : IInterpreter
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleError(_host, ex);
+            ExceptionHandler.HandleError(_trs80, ex);
         }
 
     }
@@ -105,7 +107,7 @@ public class Interpreter : IInterpreter
     {
         var arguments = expression.Arguments.Select(argument => Evaluate(argument)).ToList();
 
-        return expression.Callee.Call(_trs80, arguments);
+        return expression.Callee.Call(_trs80Api, arguments);
     }
 
     public dynamic VisitGroupingExpression(Grouping expression)

@@ -12,26 +12,26 @@ public class NativeFunctions : INativeFunctions
     {
         _functions = new Dictionary<string, List<Callable>>
         {
-            {"_padquadrant", new List<Callable> { new() {Arity = 0, Call = (m, a) => m.PadQuadrant()}}},
-            {"abs", new List<Callable> { new()  {Arity = 1, Call = (m, a) => m.Abs(a[0])}}},
-            {"a.", new List<Callable> { new()  {Arity = 1, Call = (m, a) => m.Abs(a[0])}}},
-            {"chr$", new List<Callable> { new()  {Arity = 1, Call = (m, a) => m.Chr(a[0])}}},
-            {"int", new List<Callable> { new()  {Arity = 1, Call = (m, a) => m.Int(a[0])}}},
-            {"i.", new List<Callable> { new()  {Arity = 1, Call = (m, a) => m.Int(a[0])}}},
-            {"mem", new List<Callable> { new()  {Arity = 0, Call = (m, a) => m.Mem()}}},
-            {"m.", new List<Callable> { new()  {Arity = 0, Call = (m, a) => m.Mem()}}},
-            {"point", new List<Callable> { new()  {Arity = 2, Call = (m, a) => m.Point(a[0], a[1])}}},
-            {"p.", new List<Callable> { new()  {Arity = 2, Call = (m, a) => m.Point(a[0], a[1])}}},
+            {"_padquadrant", new List<Callable> { new() {Arity = 0, Call = (api, arg) => api.PadQuadrant()}}},
+            {"abs", new List<Callable> { new()  {Arity = 1, Call = (api, arg) => api.Abs(arg[0])}}},
+            {"a.", new List<Callable> { new()  {Arity = 1, Call = (api, arg) => api.Abs(arg[0])}}},
+            {"chr$", new List<Callable> { new()  {Arity = 1, Call = (api, arg) => api.Chr(arg[0])}}},
+            {"int", new List<Callable> { new()  {Arity = 1, Call = (api, arg) => api.Int(arg[0])}}},
+            {"i.", new List<Callable> { new()  {Arity = 1, Call = (api, arg) => api.Int(arg[0])}}},
+            {"mem", new List<Callable> { new()  {Arity = 0, Call = (api, arg) => api.Mem()}}},
+            {"m.", new List<Callable> { new()  {Arity = 0, Call = (api, arg) => api.Mem()}}},
+            {"point", new List<Callable> { new()  {Arity = 2, Call = (api, arg) => api.Point(arg[0], arg[1])}}},
+            {"p.", new List<Callable> { new()  {Arity = 2, Call = (api, arg) => api.Point(arg[0], arg[1])}}},
             {"r.", new List<Callable> {
-                new()  {Arity = 1, Call = (m, a) => m.Rnd(a[0])},
-                new()  {Arity = 2, Call = (m, a) => m.Reset(a[0], a[1])}
+                new()  {Arity = 1, Call = (api, arg) => api.Rnd(arg[0])},
+                new()  {Arity = 2, Call = (api, arg) => api.Reset(arg[0], arg[1])}
             }},
-            {"rnd", new List<Callable> { new()  {Arity = 1, Call = (m, a) => m.Rnd(a[0])}}},
-            {"reset", new List<Callable> { new()  {Arity = 2, Call = (m, a) => m.Reset(a[0], a[1])}}},
-            {"s.", new List<Callable> { new()  {Arity = 2, Call = (m, a) => m.Set(a[0], a[1])}}},
-            {"set", new List<Callable> { new()  {Arity = 2, Call = (m, a) => m.Set(a[0], a[1])}}},
-            {"tab", new List<Callable> { new()  {Arity = 1, Call = (m, a) => m.Tab(a[0])}}},
-            {"t.", new List<Callable> { new()  {Arity = 1, Call = (m, a) => m.Tab(a[0])}}},
+            {"rnd", new List<Callable> { new()  {Arity = 1, Call = (api, arg) => api.Rnd(arg[0])}}},
+            {"reset", new List<Callable> { new()  {Arity = 2, Call = (api, arg) => api.Reset(arg[0], arg[1])}}},
+            {"s.", new List<Callable> { new()  {Arity = 2, Call = (api, arg) => api.Set(arg[0], arg[1])}}},
+            {"set", new List<Callable> { new()  {Arity = 2, Call = (api, arg) => api.Set(arg[0], arg[1])}}},
+            {"tab", new List<Callable> { new()  {Arity = 1, Call = (api, arg) => api.Tab(arg[0])}}},
+            {"t.", new List<Callable> { new()  {Arity = 1, Call = (api, arg) => api.Tab(arg[0])}}},
         };
     }
 
