@@ -6,8 +6,8 @@
 //
 
 using System.Collections.Generic;
-using Trs80.Level1Basic.VirtualMachine.Scanner;
 using Trs80.Level1Basic.VirtualMachine.Machine;
+using Trs80.Level1Basic.VirtualMachine.Scanner;
 
 namespace Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
 

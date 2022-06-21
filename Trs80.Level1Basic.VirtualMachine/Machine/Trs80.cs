@@ -2,10 +2,8 @@
 using System.IO;
 
 using Microsoft.Extensions.Logging;
-
 using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.HostMachine;
-using Trs80.Level1Basic.VirtualMachine.Exceptions;
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
 
 namespace Trs80.Level1Basic.VirtualMachine.Machine;

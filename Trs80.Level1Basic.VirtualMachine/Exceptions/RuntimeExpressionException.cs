@@ -1,5 +1,4 @@
 ﻿using System;
-
 using Trs80.Level1Basic.VirtualMachine.Scanner;
 
 namespace Trs80.Level1Basic.VirtualMachine.Exceptions;

@@ -5,6 +5,8 @@ using FluentAssertions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Trs80.Level1Basic.Common;
+using Trs80.Level1Basic.HostMachine;
+using Trs80.Level1Basic.TestUtilities;
 using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
@@ -27,8 +29,9 @@ public class LineListTest
     private static IStatement ParseInput(string input)
     {
         INativeFunctions natives = new NativeFunctions();
-        IScanner scanner = new Scanner(natives);
-        IParser parser = new Parser(natives);
+        IHost host = new FakeHost();
+        IScanner scanner = new Scanner(host, natives);
+        IParser parser = new Parser(host, natives);
 
         var sourceLine = new SourceLine(input);
         List<Token> tokens = scanner.ScanTokens(sourceLine);

@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using FluentAssertions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using Trs80.Level1Basic.Common;
+using Trs80.Level1Basic.HostMachine;
+using Trs80.Level1Basic.TestUtilities;
 using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
 
@@ -18,7 +21,8 @@ public class ScannerTest
         string input = "10 print \"Hello, World!\"";
 
         INativeFunctions natives = new NativeFunctions();
-        IScanner scanner = new Scanner(natives);
+        IHost host = new FakeHost();
+        IScanner scanner = new Scanner(host, natives);
 
         var sourceLine = new SourceLine(input);
         List<Token> tokens = scanner.ScanTokens(sourceLine);

@@ -9,23 +9,19 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using NLog.Extensions.Logging;
-
 using Trs80.Level1Basic.Command;
 using Trs80.Level1Basic.Command.Commands;
 using Trs80.Level1Basic.CommandModels;
 using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.HostMachine;
-using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
+using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
 using Trs80.Level1Basic.Workflow;
-
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 using WorkflowCore.Services.DefinitionStorage;
-
-using Machine = Trs80.Level1Basic.VirtualMachine.Machine.Machine;
 
 namespace Trs80.Level1Basic.Application;
 
@@ -235,7 +231,7 @@ public sealed class Bootstrapper : IDisposable
             .AddSingleton<IParser, Parser>()
             .AddSingleton<ITrs80, VirtualMachine.Machine.Trs80>()
             .AddSingleton<IInterpreter, Interpreter>()
-            .AddSingleton<IMachine, Machine>()
+            .AddSingleton<IMachine, VirtualMachine.Machine.Machine>()
             .AddSingleton<ITrs80DataModel, Trs80DataModel>()
             .AddSingleton<IHost, Host>()
             .AddSingleton<INativeFunctions, NativeFunctions>()

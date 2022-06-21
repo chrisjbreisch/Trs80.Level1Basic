@@ -3,13 +3,11 @@
 using Trs80.Level1Basic.Application;
 using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.HostMachine;
-using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
+using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
-
-using Environment = Trs80.Level1Basic.VirtualMachine.Machine.Machine;
 
 namespace Trs80.Level1Basic.TestUtilities;
 
@@ -39,16 +37,16 @@ public class TestController : IDisposable
         ILoggerFactory? loggerFactory = bootstrapper.LogFactory;
 
         INativeFunctions natives = new NativeFunctions();
-        _scanner = new Scanner(natives);
-        _parser = new Parser(natives);
-        IProgram program = new Program(_scanner, _parser);
         IHost host = new FakeHost();
+        _scanner = new Scanner(host, natives);
+        _parser = new Parser(host, natives);
+        IProgram program = new Program(_scanner, _parser);
         Trs80 = new VirtualMachine.Machine.Trs80(program, appSettings, loggerFactory, host)
         {
             Out = _output,
             Error = _error,
         };
-        IMachine environment = new Environment(Trs80, program, natives);
+        IMachine environment = new Machine(Trs80, program, natives);
         _interpreter = new Interpreter(host, Trs80, environment, program);
     }
 

@@ -33,6 +33,7 @@ public static class StringExtensions
     public static string ToPascalCase(this string text)
     {
         string result = HandleBaseCases(text, true);
+        if (result == null) return string.Empty;
         if (!string.IsNullOrEmpty(result)) return result;
 
         string[] words = SplitWords(text);
@@ -52,6 +53,7 @@ public static class StringExtensions
     public static string ToCamelCase(this string text)
     {
         string result = HandleBaseCases(text, false);
+        if (result == null) return string.Empty;
         if (!string.IsNullOrEmpty(result)) return result;
 
         result = ToPascalCase(text);
@@ -62,6 +64,7 @@ public static class StringExtensions
     public static string ToSnakeCase(this string text)
     {
         string result = HandleBaseCases(text, false);
+        if (result == null) return string.Empty;
         if (!string.IsNullOrEmpty(result)) return result;
 
         string[] words = SplitWords(text);
@@ -72,6 +75,7 @@ public static class StringExtensions
     public static string ToCapsCase(this string text)
     {
         string result = HandleBaseCases(text, true);
+        if (result == null) return string.Empty;
         if (!string.IsNullOrEmpty(result)) return result;
 
         string[] words = SplitWords(text);
@@ -82,6 +86,7 @@ public static class StringExtensions
     public static string ToKebabCase(this string text)
     {
         string result = HandleBaseCases(text, false);
+        if (result == null) return string.Empty;
         if (!string.IsNullOrEmpty(result)) return result;
 
         string[] words = SplitWords(text);
@@ -91,7 +96,7 @@ public static class StringExtensions
 
     private static string HandleBaseCases(this string text, bool isUpper)
     {
-        if (string.IsNullOrEmpty(text)) return text;
+        if (string.IsNullOrEmpty(text)) return null;
         return text.Length == 1 ? text.ConvertCase(isUpper) : string.Empty;
     }
     private static string ConvertCase(this string word, bool isUpper)

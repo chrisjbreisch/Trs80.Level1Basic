@@ -14,6 +14,13 @@ namespace Trs80.Level1Basic.Common.Test
         private const string testCamelCaseString = "fourScoreAndSevenYearsAgo";
 
         [TestMethod]
+        public void Can_Convert_Empty_String_To_Pascal_Case()
+        {
+            string? result = string.Empty.ToPascalCase();
+            result.Should().BeEmpty();
+        }
+
+        [TestMethod]
         public void Can_Convert_String_To_Pascal_Case()
         {
             string? result = testString.ToPascalCase();
@@ -166,6 +173,27 @@ namespace Trs80.Level1Basic.Common.Test
             string? result = testCamelCaseString.SeparateWordsByCase('_').ToPascalCase();
             result.Should().Be("FourScoreAndSevenYearsAgo");
 
+        }
+
+        [TestMethod]
+        public void Can_Retrieve_Left_String()
+        {
+            string? result = testString.Left(4);
+            result.Should().Be("four");
+        }
+
+        [TestMethod]
+        public void Can_Retrieve_Left_String_Of_Zero_Chars()
+        {
+            string? result = testString.Left(0);
+            result.Should().BeEmpty();
+        }
+
+        [TestMethod]
+        public void Can_Retrieve_Left_String_Beyond_Length_Of_String()
+        {
+            string? result = testOneWordString.Left(20);
+            result.Should().Be(testOneWordString);
         }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using Trs80.Level1Basic.Common;
-using Trs80.Level1Basic.VirtualMachine.Machine;
+using Trs80.Level1Basic.HostMachine;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
+using Trs80.Level1Basic.VirtualMachine.Machine;
 
 namespace Trs80.Level1Basic.VirtualMachine.Scanner;
 
@@ -14,16 +16,46 @@ public class Scanner : IScanner
     private int TokenStart { get; set; }
     private int TokenLength => _currentIndex - TokenStart;
     private int _currentIndex;
+    private readonly IHost _host;
     private readonly INativeFunctions _natives;
 
     private static readonly Dictionary<int, Dictionary<string, TokenType>> KeywordsByLetter =
         CreateKeywordsByLetterDictionary();
     private string _currentLine;
 
-    public Scanner(INativeFunctions natives)
+    public Scanner(IHost host, INativeFunctions natives)
     {
+        _host = host ?? throw new ArgumentNullException(nameof(host));
         _natives = natives ?? throw new ArgumentNullException(nameof(natives));
     }
+
+
+    public List<Token> ScanTokens(SourceLine source)
+    {
+        Initialize();
+
+        _source = source.Line;
+        _original = source.Original;
+
+        try
+        {
+
+            while (!IsAtEnd())
+            {
+                TokenStart = _currentIndex;
+                ScanToken();
+            }
+
+            _tokens.Add(new Token(TokenType.EndOfLine, "", null, CurrentLine, _currentIndex));
+            return _tokens;
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleError(_host, ex);
+            return null;
+        }
+    }
+
     private string CurrentLine
     {
         get
@@ -122,23 +154,6 @@ public class Scanner : IScanner
                 }
             }
         };
-    }
-
-    public List<Token> ScanTokens(SourceLine source)
-    {
-        Initialize();
-
-        _source = source.Line;
-        _original = source.Original;
-
-        while (!IsAtEnd())
-        {
-            TokenStart = _currentIndex;
-            ScanToken();
-        }
-
-        _tokens.Add(new Token(TokenType.EndOfLine, "", null, CurrentLine, _currentIndex));
-        return _tokens;
     }
 
     private void Initialize()
@@ -339,7 +354,7 @@ public class Scanner : IScanner
 
         if (TokenLength == 1 || _natives.Get(identifier) != null)
             AddToken(TokenType.Identifier, identifier);
-        else 
+        else
         {
             if (!IsAtEnd())
             {

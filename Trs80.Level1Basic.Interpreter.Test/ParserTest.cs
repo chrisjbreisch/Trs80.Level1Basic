@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using FluentAssertions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using Trs80.Level1Basic.Common;
+using Trs80.Level1Basic.HostMachine;
+using Trs80.Level1Basic.TestUtilities;
 using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
@@ -22,8 +25,9 @@ public class ParserTest
         string input = "10 print \"Hello, World!\"";
 
         INativeFunctions natives = new NativeFunctions();
-        IScanner scanner = new Scanner(natives);
-        IParser parser = new Parser(natives);
+        IHost host = new FakeHost();
+        IScanner scanner = new Scanner(host, natives);
+        IParser parser = new Parser(host, natives);
 
         var sourceLine = new SourceLine(input);
         List<Token> tokens = scanner.ScanTokens(sourceLine);
@@ -31,7 +35,7 @@ public class ParserTest
 
         statement.LineNumber.Should().Be(10);
         statement.SourceLine.Should().Be("PRINT \"HELLO, WORLD!\"");
-        
+
         var printStatement = statement as Print;
         printStatement.Should().NotBeNull();
         printStatement!.Expressions.Count.Should().Be(1);

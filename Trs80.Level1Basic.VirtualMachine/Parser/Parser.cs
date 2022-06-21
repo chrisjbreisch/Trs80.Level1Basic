@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using Trs80.Level1Basic.HostMachine;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
 using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
-
-using Array = Trs80.Level1Basic.VirtualMachine.Parser.Expressions.Array;
 
 namespace Trs80.Level1Basic.VirtualMachine.Parser;
 
@@ -18,11 +16,13 @@ public class Parser : IParser
     private int _current;
     private int _lineNumber;
     private string _source;
+    private readonly IHost _host;
     private readonly INativeFunctions _natives;
     private readonly Callable _padQuadrant;
 
-    public Parser(INativeFunctions natives)
+    public Parser(IHost host, INativeFunctions natives)
     {
+        _host = host ?? throw new ArgumentNullException(nameof(host));
         _natives = natives ?? throw new ArgumentNullException(nameof(natives));
         _padQuadrant = _natives.Get("_padquadrant").First();
     }
@@ -30,11 +30,17 @@ public class Parser : IParser
     public IStatement Parse(List<Token> tokens)
     {
         if (tokens == null) return null;
-
         Initialize();
         _tokens = tokens;
-
-        return IsAtEnd() ? null : Line();
+        try
+        {
+            return IsAtEnd() ? null : Line();
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleError(_host, ex);
+            return null;
+        }
     }
 
     private IStatement Line()
@@ -431,7 +437,7 @@ public class Parser : IParser
 
         Expression index = Expression();
         Consume(TokenType.RightParen, "Expected ')' after array index");
-        return new Array(peek, index);
+        return new Expressions.Array(peek, index);
     }
 
     private bool IsAtStatementEnd()
@@ -602,7 +608,7 @@ public class Parser : IParser
         Consume(TokenType.RightParen,
             "Expected ')' after arguments");
 
-        return new Array(name, index);
+        return new Expressions.Array(name, index);
     }
 
     private Expression Primary()
