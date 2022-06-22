@@ -1,8 +1,11 @@
-﻿using Trs80.Level1Basic.CommandModels;
+﻿using System.Diagnostics.CodeAnalysis;
+
+using Trs80.Level1Basic.CommandModels;
 using Trs80.Level1Basic.VirtualMachine.Machine;
 
 namespace Trs80.Level1Basic.Command.Commands;
 
+[SuppressMessage("ReSharper", "UnusedMember.Global")]
 public class SetupTrs80Command : ICommand<SetupTrs80Model>
 {
     private readonly ITrs80 _trs80;

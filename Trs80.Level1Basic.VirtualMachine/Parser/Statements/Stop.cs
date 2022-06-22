@@ -5,18 +5,10 @@
 //
 //
 
-using System.Collections.Generic;
-using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
-
 namespace Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
 public class Stop : Statement
 {
-
-    public Stop()
-    {
-    }
-
     public override T Accept<T>(IVisitor<T> visitor)
     {
         return visitor.VisitStopStatement(this);

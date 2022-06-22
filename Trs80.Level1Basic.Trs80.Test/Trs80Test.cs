@@ -9,10 +9,6 @@ using Trs80.Level1Basic.Application;
 using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.HostMachine;
 using Trs80.Level1Basic.TestUtilities;
-using Trs80.Level1Basic.VirtualMachine.Interpreter;
-using Trs80.Level1Basic.VirtualMachine.Machine;
-using Trs80.Level1Basic.VirtualMachine.Parser;
-using Trs80.Level1Basic.VirtualMachine.Scanner;
 
 namespace Trs80.Level1Basic.Trs80.Test;
 
@@ -35,7 +31,7 @@ public class Trs80Test
     {
         IHost host = new FakeHost();
         var trs80 = new VirtualMachine.Machine.Trs80(_appSettings, _loggerFactory, host);
-        
+
         const string input = "Hello, World!\r\n";
         var sw = new StringWriter();
         var sr = new StringReader(input);

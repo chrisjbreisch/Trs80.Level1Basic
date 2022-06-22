@@ -1,10 +1,14 @@
-﻿using Trs80.Level1Basic.Command;
+﻿using System.Diagnostics.CodeAnalysis;
+
+using Trs80.Level1Basic.Command;
 using Trs80.Level1Basic.CommandModels;
+
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
 namespace Trs80.Level1Basic.Workflow;
 
+[SuppressMessage("ReSharper", "UnusedMember.Global")]
 public class SetupConsoleStep : StepBody, ISetupConsoleStep
 {
     private readonly ICommand<SetupTrs80Model> _command;

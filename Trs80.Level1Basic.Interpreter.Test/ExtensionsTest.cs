@@ -1,13 +1,15 @@
 using System.Collections.Generic;
+
 using FluentAssertions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using Trs80.Level1Basic.TestUtilities;
 
 namespace Trs80.Level1Basic.Interpreter.Test;
 
 [TestClass]
-public class ExtensionsTest 
+public class ExtensionsTest
 {
     [TestMethod]
     public void Interpreter_Handles_Extra_String_Variables()

@@ -8,11 +8,9 @@ public class CompoundStatementList : Statement, ICollection<IStatement>
 {
     private readonly List<IListStatementDecorator> _statements = new();
     
-    //public IStatement Enclosing { get; set; }
-
     private IListStatementDecorator Decorate(IStatement statement)
     {
-        return statement is IListStatementDecorator decorated ? decorated : new ListStatementDecorator(statement);
+        return statement as IListStatementDecorator ?? new ListStatementDecorator(statement);
     }
 
     public void Add(IStatement item)

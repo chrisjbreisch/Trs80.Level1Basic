@@ -4,6 +4,7 @@ using System.IO;
 using FluentAssertions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using Trs80.Level1Basic.TestUtilities;
 
 namespace Trs80.Level1Basic.Interpreter.Test;
@@ -20,7 +21,7 @@ public class ShorthandTest
         };
 
         controller.RunProgram(program);
-        
+
         controller.ReadOutputLine().Should().Be("HELLO");
         controller.IsEndOfRun().Should().BeTrue();
     }
@@ -36,7 +37,7 @@ public class ShorthandTest
         controller.ExecuteStatements(program);
         controller.ExecuteLine("n.");
         controller.ExecuteLine("print mem");
-        
+
         controller.ReadOutputLine().Should().Be(" 15871 ");
     }
 

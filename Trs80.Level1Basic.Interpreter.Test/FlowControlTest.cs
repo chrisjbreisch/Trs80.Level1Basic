@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+
 using FluentAssertions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using Trs80.Level1Basic.TestUtilities;
 
 namespace Trs80.Level1Basic.Interpreter.Test;
@@ -76,7 +78,7 @@ public class FlowControlTest
         controller.ReadOutputLine().Should().Be(" 6 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
-   
+
     [TestMethod]
     public void Interpreter_Can_Execute_If_Statement()
     {
@@ -341,7 +343,7 @@ public class FlowControlTest
     }
 
     [TestMethod]
-    public void Interpreter_Executes_Goto_After_Multiple_Thens()
+    public void Interpreter_Executes_Goto_After_Multiple_Then_Statements()
     {
         using var controller = new TestController();
         var program = new List<string> {

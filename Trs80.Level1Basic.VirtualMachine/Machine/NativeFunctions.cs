@@ -12,7 +12,7 @@ public class NativeFunctions : INativeFunctions
     {
         _functions = new Dictionary<string, List<Callable>>
         {
-            {"_padquadrant", new List<Callable> { new() {Arity = 0, Call = (api, arg) => api.PadQuadrant()}}},
+            {"_pad_quadrant", new List<Callable> { new() {Arity = 0, Call = (api, arg) => api.PadQuadrant()}}},
             {"abs", new List<Callable> { new()  {Arity = 1, Call = (api, arg) => api.Abs(arg[0])}}},
             {"a.", new List<Callable> { new()  {Arity = 1, Call = (api, arg) => api.Abs(arg[0])}}},
             {"chr$", new List<Callable> { new()  {Arity = 1, Call = (api, arg) => api.Chr(arg[0])}}},

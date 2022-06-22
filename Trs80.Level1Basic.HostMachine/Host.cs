@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Trs80.Level1Basic.HostMachine;
 
-public class Host : IHost, IDisposable 
+public class Host : IHost, IDisposable
 {
     // https://www.pinvoke.net/default.aspx/user32/FindWindow.html
     [DllImport("user32.dll", EntryPoint = "FindWindow", SetLastError = true, CharSet = CharSet.Unicode)]
@@ -118,7 +118,8 @@ public class Host : IHost, IDisposable
             ? string.Empty
             : new string(line, 0, charCount);
     }
-    
+
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Don't agree with this optimization.")]
     private char Upper(char key)
     {
         if (!char.IsLetter(key)) return key;

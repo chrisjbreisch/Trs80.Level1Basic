@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 using Trs80.Level1Basic.Common;
-using Trs80.Level1Basic.HostMachine;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
 using Trs80.Level1Basic.VirtualMachine.Machine;
 

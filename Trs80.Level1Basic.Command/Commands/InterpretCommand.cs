@@ -1,19 +1,17 @@
 ﻿using Trs80.Level1Basic.CommandModels;
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
-using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
 namespace Trs80.Level1Basic.Command.Commands;
 
+// ReSharper disable once UnusedMember.Global
 public class InterpretCommand : ICommand<InterpretModel>
 {
     private readonly IInterpreter _interpreter;
-    private readonly ITrs80 _trs80;
 
-    public InterpretCommand(IInterpreter interpreter, ITrs80 trs80)
+    public InterpretCommand(IInterpreter interpreter)
     {
         _interpreter = interpreter ?? throw new ArgumentNullException(nameof(interpreter));
-        _trs80 = trs80 ?? throw new ArgumentNullException(nameof(trs80));
     }
 
     public void Execute(InterpretModel parameterObject)

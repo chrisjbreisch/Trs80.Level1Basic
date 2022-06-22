@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Trs80.Level1Basic.VirtualMachine.Interpreter;
+﻿using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
 namespace Trs80.Level1Basic.VirtualMachine.Machine;
@@ -10,14 +9,12 @@ public interface IMachine
     IProgram Program { get; }
     int CursorX { get; set; }
     int CursorY { get; set; }
-    public bool ExecutionHalted { get; set; }
 
     dynamic Set(string name, dynamic value);
     dynamic Set(string name, int index, dynamic value);
     dynamic Get(string name);
     dynamic Get(string name, int index);
     bool Exists(string name);
-    List<Callable> Function(string name);
     void InitializeProgram();
     void ListProgram(int lineNumber);
     void SaveProgram(string path);

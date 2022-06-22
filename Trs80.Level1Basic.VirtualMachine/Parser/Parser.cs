@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Trs80.Level1Basic.HostMachine;
+
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
 using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
@@ -24,7 +24,7 @@ public class Parser : IParser
     {
         _trs80 = trs80 ?? throw new ArgumentNullException(nameof(trs80));
         _natives = natives ?? throw new ArgumentNullException(nameof(natives));
-        _padQuadrant = _natives.Get("_padquadrant").First();
+        _padQuadrant = _natives.Get("_pad_quadrant").First();
     }
 
     public IStatement Parse(List<Token> tokens)
@@ -298,8 +298,8 @@ public class Parser : IParser
                     new Call(
                         new Token(
                             TokenType.Identifier,
-                            "_padquadrant",
-                            "_padquadrant",
+                            "_pad_quadrant",
+                            "_pad_quadrant",
                             null,
                             0
                         ),
@@ -475,8 +475,8 @@ public class Parser : IParser
                     new Call(
                         new Token(
                             TokenType.Identifier,
-                            "_padquadrant",
-                            "_padquadrant",
+                            "_pad_quadrant",
+                            "_pad_quadrant",
                             null,
                             0
                         ),

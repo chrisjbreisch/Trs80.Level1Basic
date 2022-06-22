@@ -2,8 +2,10 @@
 using System.Diagnostics.CodeAnalysis;
 
 using FluentAssertions;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using Trs80.Level1Basic.Application;
 using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.HostMachine;
@@ -143,11 +145,11 @@ public class LineListTest
 
         secondStatement.Should().NotBeNull();
         secondStatement.LineNumber.Should().Be(15);
-        
+
         thirdStatement.Should().NotBeNull();
         thirdStatement.LineNumber.Should().Be(20);
     }
-    
+
     [TestMethod]
     public void Can_Replace_A_Statement_In_The_Middle_Of_LineList()
     {
@@ -176,7 +178,7 @@ public class LineListTest
         secondStatement.Should().NotBeNull();
         secondStatement.LineNumber.Should().Be(20);
         secondStatement.SourceLine.Should().Be(newStatement);
-        
+
         thirdStatement.Should().NotBeNull();
         thirdStatement.LineNumber.Should().Be(30);
     }

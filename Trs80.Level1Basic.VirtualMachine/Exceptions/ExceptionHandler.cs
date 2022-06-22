@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using Trs80.Level1Basic.HostMachine;
+
 using Trs80.Level1Basic.VirtualMachine.Machine;
 
 namespace Trs80.Level1Basic.VirtualMachine.Exceptions;

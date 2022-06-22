@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
@@ -11,7 +11,6 @@ public class Machine : IMachine
 {
     private readonly Interpreter.Environment _globals = new();
     private readonly ITrs80 _trs80;
-    private readonly INativeFunctions _natives;
     private IStatement _nextStatement;
 
     public int CursorX { get; set; }
@@ -20,11 +19,10 @@ public class Machine : IMachine
     public IProgram Program { get; }
     public bool ExecutionHalted { get; set; }
 
-    public Machine(ITrs80 trs80, IProgram program, INativeFunctions natives)
+    public Machine(ITrs80 trs80, IProgram program)
     {
         _trs80 = trs80 ?? throw new ArgumentNullException(nameof(trs80));
         Program = program ?? throw new ArgumentNullException(nameof(program));
-        _natives = natives ?? throw new ArgumentNullException(nameof(natives));
 
         Console.CancelKeyPress += delegate (object _, ConsoleCancelEventArgs e)
         {
@@ -38,14 +36,14 @@ public class Machine : IMachine
         Program.Initialize();
         GetCursorPosition();
     }
-    
+
     private void GetCursorPosition()
     {
         (int left, int top) = _trs80.GetCursorPosition();
         CursorX = left;
         CursorY = top;
     }
-    
+
     public dynamic Set(string name, dynamic value)
     {
         return _globals.Set(name, value);
@@ -54,11 +52,6 @@ public class Machine : IMachine
     public dynamic Set(string name, int index, dynamic value)
     {
         return _globals.AssignArray(name, index, value);
-    }
-
-    public List<Callable> Function(string name)
-    {
-        return _natives.Get(name);
     }
 
     public bool Exists(string name)

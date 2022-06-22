@@ -1,12 +1,16 @@
-﻿using Trs80.Level1Basic.Command;
+﻿using System.Diagnostics.CodeAnalysis;
+
+using Trs80.Level1Basic.Command;
 using Trs80.Level1Basic.CommandModels;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
+
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
 namespace Trs80.Level1Basic.Workflow;
 
+[SuppressMessage("ReSharper", "UnusedMember.Global")]
 public class ParseStep : StepBody, IParseStep
 {
     private readonly ICommand<ParseModel> _command;

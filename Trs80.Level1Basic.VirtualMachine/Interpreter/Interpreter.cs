@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using Trs80.Level1Basic.VirtualMachine.Exceptions;
+
 using Trs80.Level1Basic.Common.Extensions;
 using Trs80.Level1Basic.HostMachine;
+using Trs80.Level1Basic.VirtualMachine.Exceptions;
 using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
@@ -43,7 +43,7 @@ public class Interpreter : IInterpreter
 
     }
 
-    private dynamic Evaluate(Parser.Expressions.Expression expression)
+    private dynamic Evaluate(Expression expression)
     {
         return expression.Accept(this);
     }
@@ -60,7 +60,7 @@ public class Interpreter : IInterpreter
         return Assign(expression, value);
     }
 
-    private dynamic Assign(Parser.Expressions.Expression expression, dynamic value)
+    private dynamic Assign(Expression expression, dynamic value)
     {
         switch (expression)
         {
@@ -232,7 +232,7 @@ public class Interpreter : IInterpreter
             return "0";
         if (value < .1 && value > -.1)
             return value.ToString("0.#####E+00");
-        if (value < 1 && value > -1)
+        if (value is < 1 and > -1)
             return value.ToString(".######");
         if (value > 999999 || value < -999999)
             return value.ToString("0.#####E+00");
@@ -283,7 +283,7 @@ public class Interpreter : IInterpreter
 
     public Common.Void VisitDataStatement(Data statement)
     {
-        foreach (Parser.Expressions.Expression element in statement.DataElements)
+        foreach (Expression element in statement.DataElements)
             _machine.Data.Add(Evaluate(element));
 
         return null!;
@@ -343,7 +343,7 @@ public class Interpreter : IInterpreter
         return null!;
     }
 
-    private IStatement GetJumpToStatement(Statement statement, Parser.Expressions.Expression location, string jumpType)
+    private IStatement GetJumpToStatement(Statement statement, Expression location, string jumpType)
     {
         dynamic jumpToLineNumber = Evaluate(location);
 
@@ -379,13 +379,13 @@ public class Interpreter : IInterpreter
 
     public Common.Void VisitInputStatement(Input statement)
     {
-        foreach (Parser.Expressions.Expression expression in statement.Expressions)
+        foreach (Expression expression in statement.Expressions)
             ProcessInputExpression(expression, statement.WriteNewline);
 
         return null!;
     }
 
-    private void ProcessInputExpression(Parser.Expressions.Expression expression, bool writeNewline)
+    private void ProcessInputExpression(Expression expression, bool writeNewline)
     {
         switch (expression)
         {
@@ -401,7 +401,7 @@ public class Interpreter : IInterpreter
         }
     }
 
-    private void GetInputValue(Parser.Expressions.Expression variable, bool writeNewline)
+    private void GetInputValue(Expression variable, bool writeNewline)
     {
         _trs80.Write("?");
 
@@ -421,7 +421,6 @@ public class Interpreter : IInterpreter
             Assign(variable, lookup);
         }
         else
-        {
             try
             {
                 Assign(variable, value);
@@ -431,7 +430,6 @@ public class Interpreter : IInterpreter
                 _trs80.WriteLine(" 0 WHAT?");
                 GetInputValue(variable, writeNewline);
             }
-        }
     }
 
     public Common.Void VisitLetStatement(Let statement)
@@ -453,7 +451,7 @@ public class Interpreter : IInterpreter
         return null!;
     }
 
-    private int GetStartingLineNumber(Parser.Expressions.Expression startAtLineNumber)
+    private int GetStartingLineNumber(Expression startAtLineNumber)
     {
         int lineNumber = -1;
         dynamic value = Evaluate(startAtLineNumber);
@@ -478,7 +476,7 @@ public class Interpreter : IInterpreter
         return null!;
     }
 
-    private string EvaluatePath(Parser.Expressions.Expression pathExpression)
+    private string EvaluatePath(Expression pathExpression)
     {
         string path;
         if (pathExpression is Literal literalPath)
@@ -514,7 +512,7 @@ public class Interpreter : IInterpreter
         throw new LoopAfterNext();
     }
 
-    private dynamic IncrementIndexer(Parser.Expressions.Expression identifier, int step)
+    private dynamic IncrementIndexer(Expression identifier, int step)
     {
         dynamic currentValue = Evaluate(identifier);
         dynamic newValue = currentValue + step;
@@ -532,7 +530,7 @@ public class Interpreter : IInterpreter
         if (statement.IsGosub)
         {
             IStatement resumeStatement = _machine.GetNextStatement(statement);
-            Parser.Expressions.Expression location = new Literal(locations[selector], null);
+            Expression location = new Literal(locations[selector], null);
             IStatement jumpToStatement = GetJumpToStatement(statement, location, "GOSUB");
             ExecuteGosub(jumpToStatement, resumeStatement);
 
@@ -564,11 +562,11 @@ public class Interpreter : IInterpreter
 
     public Common.Void VisitPrintStatement(Print statement)
     {
-        if (statement.AtPosition != null) 
+        if (statement.AtPosition != null)
             PrintAt(statement.AtPosition);
 
         if (statement.Expressions is { Count: > 0 })
-            foreach (Parser.Expressions.Expression expression in statement.Expressions)
+            foreach (Expression expression in statement.Expressions)
                 _trs80.Write(Stringify(Evaluate(expression)));
 
         if (!statement.WriteNewline) return null!;
@@ -580,7 +578,7 @@ public class Interpreter : IInterpreter
         return null!;
     }
 
-    private void PrintAt(Parser.Expressions.Expression position)
+    private void PrintAt(Expression position)
     {
         dynamic value = Evaluate(position);
         dynamic row = value / 64;
@@ -594,7 +592,7 @@ public class Interpreter : IInterpreter
 
     public Common.Void VisitReadStatement(Read statement)
     {
-        foreach (Parser.Expressions.Expression variable in statement.Variables)
+        foreach (Expression variable in statement.Variables)
             Assign(variable, _machine.Data.GetNext());
 
         return null!;

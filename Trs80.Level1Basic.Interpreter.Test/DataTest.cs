@@ -3,6 +3,7 @@
 using FluentAssertions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using Trs80.Level1Basic.TestUtilities;
 
 namespace Trs80.Level1Basic.Interpreter.Test;
@@ -98,7 +99,7 @@ public class DataTest
     }
 
     [TestMethod]
-    public void Interpreter_Doesnt_Fail_When_Reading_Strings_Into_Number_Variables()
+    public void Interpreter_Does_Not_Fail_When_Reading_Strings_Into_Number_Variables()
     {
         using var controller = new TestController();
         var program = new List<string> {

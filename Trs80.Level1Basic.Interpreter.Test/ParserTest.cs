@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 
 using FluentAssertions;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using Trs80.Level1Basic.Application;
 using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.HostMachine;
@@ -49,7 +51,7 @@ public class ParserTest
         literal.Should().NotBeNull();
         string value = literal!.Value;
         value.Should().Be("Hello, World!");
-        value = literal!.UpperValue;
+        value = literal.UpperValue;
         value.Should().Be("HELLO, WORLD!");
     }
 }

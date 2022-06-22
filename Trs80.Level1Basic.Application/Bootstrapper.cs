@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using NLog.Extensions.Logging;
+
 using Trs80.Level1Basic.Command;
 using Trs80.Level1Basic.Command.Commands;
 using Trs80.Level1Basic.CommandModels;
@@ -19,6 +20,7 @@ using Trs80.Level1Basic.VirtualMachine.Machine;
 using Trs80.Level1Basic.VirtualMachine.Parser;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
 using Trs80.Level1Basic.Workflow;
+
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 using WorkflowCore.Services.DefinitionStorage;
@@ -55,7 +57,7 @@ public sealed class Bootstrapper : IDisposable
         CreateServiceProvider();
 
         GetAppSettings();
-        
+
         GetApplicationName();
 
         LogConfiguredServices();

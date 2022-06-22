@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+
 using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
@@ -6,6 +7,7 @@ using Trs80.Level1Basic.VirtualMachine.Scanner;
 namespace Trs80.Level1Basic.CommandModels;
 
 [SuppressMessage("ReSharper", "EmptyConstructor")]
+[SuppressMessage("ReSharper", "UnusedMember.Global")]
 public sealed class WorkflowDataModel
 {
     public bool WritePrompt { get; set; } = false;
