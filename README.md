@@ -186,13 +186,17 @@ Trs80.Level1Basic/Samples/Radio Shack BASIC Computer Language folder. They are o
 I'm sure that there are some. I have over 300 unit tests, but the appropriate amount is probably
 closer to 1,000. For what it's worth, [dotCover](https://www.jetbrains.com/dotcover/) says that my unit
 tests cover about 85% of the code. I'm not sure how useful a metric that is for something like an 
-interpreter, but at least it's significantly greater than 0. There are no unit tests at all for 
-the AST generator, and very few for the Workflow. Those are pulling the score down a bit. Even still,
-it's not just exercising the code that's important for an interpreter, it's also the sequence. Does it 
-behave properly with nested FOR loops, or nested GOSUBs? Do successive GOTOs work? Can you use variables
-as indexes to arrays? Also, as far as I know, there's no published formal spec, complete with error
-message formatting for Level I BASIC. So, in the end, the results are what I think is accurate. I may be wrong.
-It's possible that both the code and the unit tests are wrong. Time will tell.
+interpreter, but at least it's significantly greater than 0. 
+
+There are no unit tests at all for the AST generator, and very few for the Workflow. Those are pulling 
+the score down a bit. Even still, it's not just exercising the code that's important for an interpreter, 
+it's also the sequence. Does it behave properly with nested FOR loops, or nested GOSUBs? Do successive 
+GOTOs work? Can you use variables as indexes to arrays? These are the kinds of questions unit tests must
+anser.
+
+Also, as far as I know, there's no published formal spec, complete with error message formatting for 
+Level I BASIC. So, in the end, the results are what I think is accurate. I may be wrong. It's possible 
+that both the code and the unit tests are wrong. Time will tell.
 
 
 # TL;DR
