@@ -12,6 +12,30 @@ namespace Trs80.Level1Basic.Interpreter.Test;
 public class RunTest
 {
     [TestMethod]
+    public void Interpreter_Can_Run_Empty_Program()
+    {
+        using var controller = new TestController();
+
+        controller.ExecuteLine("NEW");
+        controller.ExecuteLine("RUN");
+
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Run_Program_With_Only_Data()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DATA 10, 20",
+        };
+
+        controller.RunProgram(program);
+
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Run_Program_From_Beginning()
     {
         using var controller = new TestController();
@@ -63,6 +87,24 @@ public class RunTest
         controller.ExecuteLine("run 30");
 
         controller.ReadOutputLine().Should().Be("HELLO, WORLD!");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Run_Program_After_End()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT \"HELLO, WORLD!\"",
+            "20 END",
+        };
+
+        controller.ExecuteLine("NEW");
+
+        controller.ExecuteStatements(program);
+
+        controller.ExecuteLine("RUN 30");
+
         controller.IsEndOfRun().Should().BeTrue();
     }
 }

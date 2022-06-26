@@ -5,6 +5,7 @@ namespace Trs80.Level1Basic.VirtualMachine.Machine;
 
 public interface IMachine
 {
+    bool ExecutionHalted { get;  }
     DataElements Data { get; }
     IProgram Program { get; }
     int CursorX { get; set; }

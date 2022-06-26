@@ -22,9 +22,9 @@ internal static class Program
         {
             "Array      : Token name, Expression index, int linePosition",
             "Binary     : Expression left, Token binaryOperator, Expression right, int linePosition",
-            "Call       : Token name, Callable callee, List<Expression> arguments, int linePosition",
+            "Call       : Callable callee, List<Expression> arguments, int linePosition",
             "Grouping   : Expression expression, int linePosition",
-            "Identifier : Token name, bool isString, int linePosition",
+            "Identifier : Token name, int linePosition",
             "Literal    : dynamic value, string upperValue, int linePosition",
             "Selector   : Expression expression, int linePosition",
             "Unary      : Token unaryOperator, Expression right, int linePosition",
@@ -38,19 +38,19 @@ internal static class Program
             "Data                   : List<Expression> dataElements",
             "Delete                 : int lineToDelete",
             "End",
-            "For                    : Expression identifier, Expression startValue, Expression endValue, Expression stepValue",
+            "For                    : Token identifierName, Expression identifier, Expression startValue, Expression endValue, Expression stepValue",
             "Gosub                  : Expression location, int linePosition",
             "Goto                   : Expression location, int linePosition",
-            "If                     : Expression condition, CompoundStatementList thenBranch, ParseException thenException",
-            "Input                  : List<Expression> expressions, bool writeNewline",
+            "If                     : Expression condition, int thenPosition, CompoundStatementList thenBranch, ParseException thenException",
+            "Input                  : List<Expression> expressions",
             "Let                    : Expression variable, Expression initializer",
             "List                   : Expression startAtLineNumber",
             "Load                   : Expression path",
             "Merge                  : Expression path",
             "New",
-            "Next                   : Expression variable",
-            "On                     : Selector selector, bool hasRedirector, List<Expression> locations, List<int> linePositions, bool isGosub",
-            "Print                  : Expression atPosition, bool atSeparator, List<Expression> expressions, bool writeNewline",
+            "Next                   : Token identifierName, Expression identifier",
+            "On                     : Selector selector, List<Expression> locations, List<int> linePositions, bool isGosub",
+            "Print                  : Expression atPosition, List<Expression> expressions, bool writeNewline",
             "Replace                : IStatement statement",
             "Read                   : List<Expression> variables",
             "Rem                    : Literal remark",
@@ -162,15 +162,11 @@ internal static class Program
         writer.WriteLine();
 
         writer.WriteLine("using Trs80.Level1Basic.VirtualMachine.Exceptions;");
-        if (baseName.Contains("Statement"))
-        {
-            writer.WriteLine("using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;");
-        }
-        else
-        {
-            writer.WriteLine("using Trs80.Level1Basic.VirtualMachine.Scanner;");
-            writer.WriteLine("using Trs80.Level1Basic.VirtualMachine.Machine;");
-        }
+        writer.WriteLine("using Trs80.Level1Basic.VirtualMachine.Scanner;");
+
+        writer.WriteLine(baseName.Contains("Statement")
+            ? "using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;"
+            : "using Trs80.Level1Basic.VirtualMachine.Machine;");
 
         writer.WriteLine();
         writer.WriteLine($"namespace Trs80.Level1Basic.VirtualMachine.Parser.{baseName}s;");

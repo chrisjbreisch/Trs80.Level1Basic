@@ -71,6 +71,9 @@ public class Interpreter : IInterpreter
         switch (expression)
         {
             case Identifier identifier:
+                if (!identifier.Name.Lexeme.EndsWith('$') && value is string)
+                    throw new ValueOutOfRangeException(-1, string.Empty, string.Empty);
+
                 _machine.Set(identifier.Name.Lexeme, value);
                 break;
             case Array array:
@@ -213,13 +216,14 @@ public class Interpreter : IInterpreter
 
         switch (value)
         {
-            case null:
-                return "";
             case float:
                 sb.Append(StringifyFloat(value));
                 break;
             case int:
                 sb.Append(StringifyInt(value));
+                break;
+            case bool:
+                sb.Append(value ? " 1 " : " 0 ");
                 break;
             default:
                 sb.Append(value.ToString());
@@ -296,8 +300,8 @@ public class Interpreter : IInterpreter
             _machine.Initialize();
 
         _machine.RunStatementList(statement, this);
-        _trs80.WriteLine();
-        _trs80.WriteLine("READY");
+
+        WritePrompt();
     }
 
     public Void VisitDataStatement(Data statement)
@@ -335,6 +339,10 @@ public class Interpreter : IInterpreter
             throw new ParseException(statement.LineNumber, statement.SourceLine,
                 statement.Identifier.LinePosition, "Expected variable after 'FOR'.");
 
+        if (!_machine.Exists(statement.IdentifierName.Lexeme))
+            throw new ParseException(statement.LineNumber, statement.SourceLine,
+                statement.Identifier.LinePosition, "Invalid identifier after 'FOR'.");
+
         dynamic current = Evaluate(statement.StartValue);
         Assign(statement.Identifier, current);
 
@@ -347,11 +355,15 @@ public class Interpreter : IInterpreter
             {
                 _machine.RunStatementList(next, this);
             }
-            catch (LoopAfterNext)
+            catch (LoopAfterNext lan)
             {
+                if (lan.Next.IdentifierName.Lexeme != statement.IdentifierName.Lexeme)
+                    throw;
+
                 current = IncrementIndexer(statement.Identifier, step);
             }
-        while (step > 0 && current <= end || step < 0 && current >= end);
+        while ((!_machine.ExecutionHalted) &&
+            step > 0 && current <= end || step < 0 && current >= end);
 
         return null!;
     }
@@ -393,8 +405,13 @@ public class Interpreter : IInterpreter
 
     public Void VisitIfStatement(If statement)
     {
-        if (!IsTruthy(Evaluate(statement.Condition))) return null!;
-        
+        dynamic logicalExpression = Evaluate(statement.Condition);
+        if (logicalExpression is string)
+            throw new ParseException(statement.LineNumber, statement.SourceLine,
+                statement.ThenPosition, "Cannot convert string to logical expression.");
+
+        if (!IsTruthy(logicalExpression)) return null!;
+
         if (statement.ThenException != null)
             throw statement.ThenException;
 
@@ -406,12 +423,12 @@ public class Interpreter : IInterpreter
     public Void VisitInputStatement(Input statement)
     {
         foreach (Expression expression in statement.Expressions)
-            ProcessInputExpression(expression, statement.WriteNewline);
+            ProcessInputExpression(expression);
 
         return null!;
     }
 
-    private void ProcessInputExpression(Expression expression, bool writeNewline)
+    private void ProcessInputExpression(Expression expression)
     {
         switch (expression)
         {
@@ -419,42 +436,39 @@ public class Interpreter : IInterpreter
                 _trs80.Write(Stringify(Evaluate(expression)));
                 break;
             case Identifier variable:
-                GetInputValue(variable, writeNewline);
+                GetInputValue(variable);
                 break;
             case Array array:
-                GetInputValue(array, writeNewline);
+                GetInputValue(array);
                 break;
         }
     }
 
-    private void GetInputValue(Expression variable, bool writeNewline)
+    private void GetInputValue(Expression identifier)
     {
         _trs80.Write("?");
 
-        if (writeNewline)
-            _trs80.WriteLine();
-
         string value = _trs80.ReadLine();
         if (value is null)
-            Assign(variable, null);
+            Assign(identifier, null);
         else if (int.TryParse(value, out int intValue))
-            Assign(variable, intValue);
+            Assign(identifier, intValue);
         else if (float.TryParse(value, out float floatValue))
-            Assign(variable, floatValue);
+            Assign(identifier, floatValue);
         else if (_machine.Exists(value))
         {
             dynamic lookup = _machine.Get(value);
-            Assign(variable, lookup);
+            Assign(identifier, lookup);
         }
         else
             try
             {
-                Assign(variable, value);
+                Assign(identifier, value);
             }
             catch (ValueOutOfRangeException)
             {
                 _trs80.WriteLine("WHAT?");
-                GetInputValue(variable, writeNewline);
+                GetInputValue(identifier);
             }
     }
 
@@ -494,7 +508,10 @@ public class Interpreter : IInterpreter
     public Void VisitLoadStatement(Load statement)
     {
         _machine.NewProgram();
-        string path = EvaluatePath(statement.Path);
+        if (statement.Path is not Literal literalPath)
+            throw new ParseException(statement.LineNumber, statement.SourceLine,
+                statement.Path.LinePosition, "Path must be a quoted string.");
+        string path = literalPath.Value;
 
         if (string.IsNullOrEmpty(path))
             path = _host.GetFileNameForLoad();
@@ -506,20 +523,14 @@ public class Interpreter : IInterpreter
 
         return null!;
     }
-
-    private string EvaluatePath(Expression pathExpression)
-    {
-        string path;
-        if (pathExpression is Literal literalPath)
-            path = literalPath.Value;
-        else
-            path = Evaluate(pathExpression);
-        return path;
-    }
-
+    
     public Void VisitMergeStatement(Merge statement)
     {
-        string path = EvaluatePath(statement.Path);
+        if (statement.Path is not Literal literalPath)
+            throw new ParseException(statement.LineNumber, statement.SourceLine,
+                statement.Path.LinePosition, "Path must be a quoted string.");
+        string path = literalPath.Value;
+
         if (string.IsNullOrEmpty(path))
             path = _host.GetFileNameForLoad();
 
@@ -540,13 +551,7 @@ public class Interpreter : IInterpreter
 
     public Void VisitNextStatement(Next statement)
     {
-        if (statement.Variable == null)
-            throw new ParseException(statement.LineNumber, statement.SourceLine,
-                statement.SourceLine.Length, "Expected variable after 'NEXT'.");
-        if (statement.Variable is not Identifier)
-            throw new ParseException(statement.LineNumber, statement.SourceLine,
-                statement.Variable.LinePosition, "Expected variable after 'NEXT'.");
-        throw new LoopAfterNext();
+        throw new LoopAfterNext(statement);
     }
 
     private dynamic IncrementIndexer(Expression identifier, int step)
@@ -559,10 +564,6 @@ public class Interpreter : IInterpreter
 
     public Void VisitOnStatement(On statement)
     {
-        if (!statement.HasRedirector)
-            throw new ParseException(statement.LineNumber, statement.SourceLine,
-                statement.Selector.LinePosition, "Expected 'GOTO' or 'GOSUB' after variable in 'ON'");
-
         int selector = (int)Math.Floor((float)Evaluate(statement.Selector)) - 1;
         var locations = statement.Locations.Select(location => Evaluate(location)).ToList();
         System.Collections.Generic.List<int> linePositions = statement.LinePositions;
@@ -605,18 +606,7 @@ public class Interpreter : IInterpreter
     public Void VisitPrintStatement(Print statement)
     {
         if (statement.AtPosition != null)
-        {
-            if (!statement.AtSeparator)
-            {
-                int linePosition = statement.AtPosition.LinePosition;
-                if (statement.Expressions is {Count: > 0})
-                    linePosition = statement.Expressions[0].LinePosition;
-
-                throw new ParseException(statement.LineNumber, statement.SourceLine,
-                    linePosition, "Expected ',' or ';' after AT clause.");
-            }
             PrintAt(statement.AtPosition);
-        }
 
         if (statement.Expressions is { Count: > 0 })
             foreach (Expression expression in statement.Expressions)
@@ -646,7 +636,13 @@ public class Interpreter : IInterpreter
     public Void VisitReadStatement(Read statement)
     {
         foreach (Expression variable in statement.Variables)
-            Assign(variable, _machine.Data.GetNext());
+        {
+            dynamic value = _machine.Data.GetNext();
+            if (variable is Identifier identifier && !identifier.Name.Lexeme.EndsWith('$') && value is string)
+                Assign(variable, 0);
+            else
+                Assign(variable, value);
+        }
 
         return null!;
     }
@@ -659,10 +655,7 @@ public class Interpreter : IInterpreter
 
     public Void VisitReplaceStatement(Replace statement)
     {
-        if (string.IsNullOrEmpty(statement.Statement.SourceLine))
-            DeleteStatement(statement.Statement.LineNumber);
-        else
-            _machine.Program.ReplaceStatement(statement.Statement);
+        _machine.Program.ReplaceStatement(statement.Statement);
 
         return null!;
     }
@@ -688,16 +681,25 @@ public class Interpreter : IInterpreter
         int lineNumber = GetStartingLineNumber(statement.StartAtLineNumber);
         if (lineNumber < 0)
             lineNumber = GetFirstLineNumber();
-        if (lineNumber < 0) return null!;
-
-        _machine.LoadData(this);
-        IStatement firstStatement = GetStatementByLineNumber(lineNumber);
-        if (firstStatement is null)
-            throw new RuntimeStatementException(-1, statement.SourceLine, 0, $"Can't start execution at {lineNumber}");
-
-        RunProgram(firstStatement, true);
+        if (lineNumber >= 0)
+        {
+            _machine.LoadData(this);
+            IStatement firstStatement = GetStatementByLineNumber(lineNumber);
+            if (firstStatement is null)
+                WritePrompt();
+            else
+                RunProgram(firstStatement, true);
+        }
+        else
+            WritePrompt();
 
         return null!;
+    }
+
+    private void WritePrompt()
+    {
+        _trs80.WriteLine();
+        _trs80.WriteLine("READY");
     }
 
     private int GetFirstLineNumber()
@@ -712,7 +714,11 @@ public class Interpreter : IInterpreter
 
     public Void VisitSaveStatement(Save statement)
     {
-        string path = EvaluatePath(statement.Path);
+        if (statement.Path is not Literal literalPath)
+            throw new ParseException(statement.LineNumber, statement.SourceLine,
+                statement.Path.LinePosition, "Path must be a quoted string.");
+        string path = literalPath.Value;
+        
         if (string.IsNullOrEmpty(path))
             path = _host.GetFileNameForSave();
 
@@ -729,7 +735,7 @@ public class Interpreter : IInterpreter
         if (statement.Expression is Call)
             Evaluate(statement.Expression);
         else
-            throw new ParseException(statement.LineNumber, statement.SourceLine, 
+            throw new ParseException(statement.LineNumber, statement.SourceLine,
                 statement.Expression.LinePosition, "Expected statement.");
 
         return null!;

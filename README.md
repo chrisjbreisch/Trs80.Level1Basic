@@ -183,20 +183,17 @@ be slow. There are no delays built in. These samples are in the
 Trs80.Level1Basic/Samples/Radio Shack BASIC Computer Language folder. They are organized by chapter and appendix.
 
 ## Bugs?
-There are probably many. I've lost count of how many times that I've rewritten `PRINT`. I discovered 
-four issues while typing in the summary below, one of which caused me to rewrite `PRINT` __again__.
-I do have in the neighborhood of 200 unit tests. But the code base could easily support 2,000. Or
-even 10,000. For what it's worth, [dotCover](https://www.jetbrains.com/dotcover/) says that my unit
-tests cover about 77% of the code. I'm not sure how useful a metric that is for something like an 
-interpreter, but at least it's significantly greater than 0. The unit tests for the scanner and parser
-are essentially smoke tests. There are no unit tests at all for the AST generator, and very few for 
-the Workflow. Those are pulling the score down a bit. The unit tests for the interpreter are good, but
-could be better. They're best on areas that have caused me the most issues (like `PRINT`, for example). 
-And, of course I had to rewrite `PRINT` once more just to make it properly testable.
+I'm sure that there are some. I have over 300 unit tests, but the appropriate amount is probably
+closer to 1,000. For what it's worth, [dotCover](https://www.jetbrains.com/dotcover/) says that my unit
+tests cover about 85% of the code. I'm not sure how useful a metric that is for something like an 
+interpreter, but at least it's significantly greater than 0. There are no unit tests at all for 
+the AST generator, and very few for the Workflow. Those are pulling the score down a bit. Even still,
+it's not just exercising the code that's important for an interpreter, it's also the sequence. Does it 
+behave properly with nested FOR loops, or nested GOSUBs? Do successive GOTOs work? Can you use variables
+as indexes to arrays? Also, as far as I know, there's no published formal spec, complete with error
+message formatting for Level I BASIC. So, in the end, the results are what I think is accurate. I may be wrong.
+It's possible that both the code and the unit tests are wrong. Time will tell.
 
-In particular, some of the 2.0 changes need more testing. I re-wrote input to convert everything to upper case,
-and I'm still not 100% happy with how that code looks. It feels fragile to me. The error handling code 
-definitely has a [bad odor](https://en.wikipedia.org/wiki/Code_smell) about it, and I will rework that in time.
 
 # TL;DR
 If you don't want to read the book, and just want to play, I'm mimicking the final pages of the book here,

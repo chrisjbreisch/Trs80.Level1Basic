@@ -40,6 +40,58 @@ public class InputTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Input_Into_Array()
+    {
+        using var controller = new TestController();
+        controller.Input = new StringReader("3.14159");
+
+        var program = new List<string> {
+            "10 input \"Enter PI\";A(3)",
+            "20 print A(3)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().EndWith(" 3.14159 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Handles_Invalid_Input_Type()
+    {
+        using var controller = new TestController();
+        controller.Input = new StringReader("CHRIS\r\n3.14159");
+
+        var program = new List<string> {
+            "10 INPUT A",
+            "20 PRINT A"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine();
+        controller.ReadOutputLine().Should().EndWith(" 3.14159 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Handle_Input_With_Comma()
+    {
+        using var controller = new TestController();
+        controller.Input = new StringReader("Chris");
+
+        var program = new List<string> {
+            "10 input \"Enter your name\",A$",
+            "20 print \"Hello, \";A$"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("ENTER YOUR NAME?HELLO, CHRIS");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Handles_Indirect_References_On_Input1()
     {
         using var controller = new TestController();

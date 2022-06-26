@@ -84,4 +84,21 @@ public class InterpreterTest
         controller.ReadOutputLine().Should().Be(" 3.14159 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Interpreter_Handles_Remarks()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A = 3",
+            "REM A = A * 3",
+            "20 A = A * 3",
+            "30 PRINT A"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 9 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }

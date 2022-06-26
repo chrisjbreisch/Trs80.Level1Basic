@@ -10,7 +10,6 @@ public static class ExceptionHandler
 {
     public static void HandleError(ITrs80 trs80, IAppSettings settings, Exception ex)
     {
-
         switch (ex)
         {
             case ScanException se:
@@ -36,6 +35,20 @@ public static class ExceptionHandler
             case ProgramTooLargeException ptle:
                 trs80.WriteLine("SORRY");
                 BaseError(trs80, ptle, settings.DetailedErrors);
+                break;
+            case LoopAfterNext lan:
+                trs80.WriteLine("WHAT?");
+                string statement = lan.Next.SourceLine;
+                int linePosition = lan.Next.Identifier.LinePosition;
+                if (linePosition > statement.Length || linePosition < 0)
+                    statement = $"{statement}?";
+                else
+                    statement = statement.Insert(linePosition, "?");
+
+                if (lan.Next.LineNumber >= 0)
+                    trs80.Error.WriteLine($" {lan.Next.LineNumber}  {statement}");
+                if (settings.DetailedErrors)
+                    trs80.Error.WriteLine("'NEXT' variable mismatch with 'FOR'.");
                 break;
             default:
                 trs80.WriteLine("SORRY");
@@ -73,11 +86,11 @@ public static class ExceptionHandler
     private static void BaseError(ITrs80 trs80, BaseException be, bool detailedErrors)
     {
         string statement = be.Statement;
-        int linePosition = be.LinePosition + 1;
+        int linePosition = be.LinePosition;
         if (linePosition > statement.Length || linePosition < 0)
             statement = $"{statement}?";
         else
-            statement = statement.Insert(be.LinePosition, "?");
+            statement = statement.Insert(linePosition, "?");
 
         if (be.LineNumber >= 0)
             trs80.Error.WriteLine($" {be.LineNumber}  {statement}");

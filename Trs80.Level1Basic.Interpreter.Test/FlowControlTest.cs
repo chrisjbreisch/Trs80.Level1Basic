@@ -60,6 +60,26 @@ public class FlowControlTest
         controller.ReadOutputLine().Should().Be(" 7 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+    
+    [TestMethod]
+    public void Interpreter_Can_Handle_Gosub_Without_Return()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 I=3",
+            "20 GOSUB 100",
+            "30 PRINT I",
+            "40 END",
+            "100 I = 7",
+            "110 PRINT I",
+            "120 END"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 7 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 
     [TestMethod]
     public void Interpreter_Can_Execute_Correct_Statement_After_Gosub()
@@ -131,6 +151,54 @@ public class FlowControlTest
     }
 
     [TestMethod]
+    public void Interpreter_Handles_Integer_If()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A = 0",
+            "20 IF A = 0 THEN PRINT \"TRUE\" : END",
+            "30 PRINT \"FALSE\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("TRUE");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Handles_Falsey_Implied_Integer_If()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A = 0",
+            "20 IF A THEN PRINT \"TRUE\" : END",
+            "30 PRINT \"FALSE\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("FALSE");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Handles_Truthy_Implied_Integer_If()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A = 1",
+            "20 IF A THEN PRINT \"TRUE\" : END",
+            "30 PRINT \"FALSE\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("TRUE");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Execute_If_Statement_With_Variable_Assignment()
     {
         using var controller = new TestController();
@@ -197,6 +265,22 @@ public class FlowControlTest
         controller.RunProgram(program);
 
         controller.ReadOutputLine().Should().Be(" 11 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Executes_For_Without_Next()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 FOR I = 1 TO 10",
+            "20 PRINT I",
+            "30 END"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 

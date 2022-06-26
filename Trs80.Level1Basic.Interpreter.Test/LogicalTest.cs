@@ -154,4 +154,200 @@ public class LogicalTest
         controller.ReadOutputLine().Should().Be("FALSE");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Interpreter_Evaluates_Truthy_Equality()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT 3=3",
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Evaluates_Truthy_Inequality()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT 3<>4",
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Evaluates_Truthy_LessThan()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT 3<4",
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Evaluates_Truthy_LessThanOrEqual1()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT 3<=4",
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Evaluates_Truthy_LessThanOrEqual2()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT 4<=4",
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Evaluates_Truthy_GreaterThan()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT 4>3",
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Evaluates_Truthy_GreaterThanOrEqual1()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT 4>=3",
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Evaluates_Truthy_GreaterThanOrEqual2()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT 4>=4",
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Evaluates_Falsey_Equality()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT 3=4",
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Evaluates_Falsey_Inequality()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT 3<>3",
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Evaluates_Falsey_LessThan()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT 3<2",
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Evaluates_Falsey_LessThanOrEqual()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT 3<=2",
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Evaluates_Falsey_GreaterThan()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT 4>5",
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Evaluates_Falsey_GreaterThanOrEqual()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT 4>=5",
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }

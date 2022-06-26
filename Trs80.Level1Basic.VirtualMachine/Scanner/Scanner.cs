@@ -375,20 +375,7 @@ public class Scanner : IScanner
         if (TokenLength == 1 || _natives.Get(identifier) != null)
             AddToken(TokenType.Identifier, identifier);
         else
-        {
-            if (!IsAtEnd())
-            {
-                char letter = Peek();
-                while (letter != ':' && !IsAtEnd())
-                {
-                    Advance();
-                    letter = Peek();
-                }
-
-                identifier = _source.Substring(TokenStart, TokenLength);
-            }
             AddToken(TokenType.Identifier, identifier);
-        }
     }
 
     private void Add6PlusCharsToken()

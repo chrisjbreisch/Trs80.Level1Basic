@@ -30,6 +30,58 @@ public class ErrorTest
     }
 
     [TestMethod]
+    public void Interpreter_Handles_Invalid_Identifier_In_For()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 FOR CHRIS = 1 TO 10",
+            "20 NEXT CHRIS"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadErrorLine().Should().Be(" 10  FOR C?HRIS = 1 TO 10");
+        controller.ReadOutputLine();
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Handles_String_Variable_In_Logical_Expression()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A$=\"\"",
+            "20 IF A$ THEN PRINT \"TRUE\" : END",
+            "30 PRINT \"FALSE\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadErrorLine().Should().Be(" 20  IF A$ ?THEN PRINT \"TRUE\" : END");
+        controller.ReadOutputLine();
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Handles_Invalid_Identifier_In_Next()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 FOR I = 1 TO 10",
+            "20 NEXT CHRIS"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadErrorLine().Should().Be(" 20  NEXT C?HRIS");
+        controller.ReadOutputLine();
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Handles_Invalid_Unary_Operand()
     {
         using var controller = new TestController();

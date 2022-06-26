@@ -29,6 +29,39 @@ public class CommandTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Replace_Line()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 I=3",
+            "20 PRINT I",
+            "20 PRINT I*2"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 6 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Delete_Line()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 I=3",
+            "20 I = I * 2",
+            "30 PRINT I",
+            "20"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Execute_Assignment_Command()
     {
         using var controller = new TestController();

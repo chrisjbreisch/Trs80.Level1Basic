@@ -41,6 +41,36 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Print_Zero()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 I = 0",
+            "20 PRINT I"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Print_Float_Zero()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 I = 0.0",
+            "20 PRINT I"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_Positive_Integer()
     {
         using var controller = new TestController();
@@ -144,22 +174,6 @@ public class PrintTest
         controller.ReadOutputLine().Should().Be(" 9.87654E+07 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
-
-    [TestMethod]
-    public void Interpreter_Can_Print_Zero()
-    {
-        using var controller = new TestController();
-        var program = new List<string> {
-            "10 i = 0",
-            "20 print i"
-        };
-
-        controller.RunProgram(program);
-
-        controller.ReadOutputLine().Should().Be(" 0 ");
-        controller.IsEndOfRun().Should().BeTrue();
-    }
-
 
     [TestMethod]
     public void Interpreter_Can_Print_Tiny_Positive_Value()
