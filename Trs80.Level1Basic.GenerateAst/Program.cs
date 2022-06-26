@@ -20,14 +20,14 @@ internal static class Program
         string outputDir = args[0];
         DefineAst(outputDir, "Expression", new List<string>
         {
-            "Array      : Token name, Expression index",
-            "Assign     : Token name, Expression value, bool isString",
-            "Binary     : Expression left, Token binaryOperator, Expression right",
-            "Call       : Token name, Callable callee, List<Expression> arguments",
-            "Grouping   : Expression expression",
+            "Array      : Token name, Expression index, int linePosition",
+            "Binary     : Expression left, Token binaryOperator, Expression right, int linePosition",
+            "Call       : Token name, Callable callee, List<Expression> arguments, int linePosition",
+            "Grouping   : Expression expression, int linePosition",
             "Identifier : Token name, bool isString, int linePosition",
-            "Literal    : dynamic value, string upperValue",
-            "Unary      : Token unaryOperator, Expression right",
+            "Literal    : dynamic value, string upperValue, int linePosition",
+            "Selector   : Expression expression, int linePosition",
+            "Unary      : Token unaryOperator, Expression right, int linePosition",
         });
 
         DefineAst(outputDir, "Statement", new List<string>
@@ -39,9 +39,9 @@ internal static class Program
             "Delete                 : int lineToDelete",
             "End",
             "For                    : Expression identifier, Expression startValue, Expression endValue, Expression stepValue",
-            "Gosub                  : Expression location",
-            "Goto                   : Expression location",
-            "If                     : Expression condition, CompoundStatementList thenBranch",
+            "Gosub                  : Expression location, int linePosition",
+            "Goto                   : Expression location, int linePosition",
+            "If                     : Expression condition, CompoundStatementList thenBranch, ParseException thenException",
             "Input                  : List<Expression> expressions, bool writeNewline",
             "Let                    : Expression variable, Expression initializer",
             "List                   : Expression startAtLineNumber",
@@ -49,8 +49,8 @@ internal static class Program
             "Merge                  : Expression path",
             "New",
             "Next                   : Expression variable",
-            "On                     : Expression selector, List<Expression> locations, bool isGosub",
-            "Print                  : Expression atPosition, List<Expression> expressions, bool writeNewline",
+            "On                     : Selector selector, bool hasRedirector, List<Expression> locations, List<int> linePositions, bool isGosub",
+            "Print                  : Expression atPosition, bool atSeparator, List<Expression> expressions, bool writeNewline",
             "Replace                : IStatement statement",
             "Read                   : List<Expression> variables",
             "Rem                    : Literal remark",
@@ -96,6 +96,7 @@ internal static class Program
         writer.WriteLine("    string SourceLine { get; set; }");
         writer.WriteLine("    IStatement Next { get; set; }");
         writer.WriteLine("    IStatement Previous { get; set; }");
+        writer.WriteLine("    ParseException ParseException { get; set; }");
         writer.WriteLine();
 
         writer.WriteLine("    T Accept<T>(IVisitor<T> visitor);");
@@ -115,6 +116,7 @@ internal static class Program
         WriteHeaders(baseName, writer);
         writer.WriteLine($"public abstract class {baseName}{implements}");
         writer.WriteLine("{");
+        writer.WriteLine("    public ParseException ParseException { get; set; }");
         if (baseName.Contains("Statement"))
         {
             writer.WriteLine("    public int LineNumber { get; set; } = -1;");
@@ -124,7 +126,22 @@ internal static class Program
             writer.WriteLine("    public IStatement Enclosing { get; set; }");
             writer.WriteLine();
         }
+        else
+        {
+            writer.WriteLine("    public int LinePosition { get; set; } = 0;");
+            writer.WriteLine();
+            writer.WriteLine("    protected Expression(int linePosition)");
+            writer.WriteLine("    {");
+            writer.WriteLine("        LinePosition = linePosition;");
+            writer.WriteLine("    }");
+            writer.WriteLine();
+        }
 
+        writer.WriteLine("    protected void CheckExceptions()");
+        writer.WriteLine("    {");
+        writer.WriteLine("        if (ParseException != null) throw ParseException;");
+        writer.WriteLine("    }");
+        writer.WriteLine();
         writer.WriteLine("    public abstract T Accept<T>(IVisitor<T> visitor);");
         writer.WriteLine("}");
         WriteEnd(writer);
@@ -142,9 +159,13 @@ internal static class Program
 
         writer.WriteLine();
         writer.WriteLine("using System.Collections.Generic;");
+        writer.WriteLine();
 
+        writer.WriteLine("using Trs80.Level1Basic.VirtualMachine.Exceptions;");
         if (baseName.Contains("Statement"))
+        {
             writer.WriteLine("using Trs80.Level1Basic.VirtualMachine.Parser.Expressions;");
+        }
         else
         {
             writer.WriteLine("using Trs80.Level1Basic.VirtualMachine.Scanner;");
@@ -199,16 +220,22 @@ internal static class Program
 
         foreach (string field in fields.Where(s => !string.IsNullOrEmpty(s)))
         {
+            if (baseName == "Expression" && field == "int linePosition") continue;
             string[] fieldPieces = field.Split(" ");
             writer.WriteLine($"    public {fieldPieces[0]} {fieldPieces[1].SeparateWordsByCase('_').ToPascalCase()} {{ get; init; }}");
         }
 
         writer.WriteLine();
-        writer.WriteLine($"    public {className}({fieldList})");
+        
+        writer.WriteLine(baseName == "Expression"
+            ? $"    public {className}({fieldList}) : base(linePosition)"
+            : $"    public {className}({fieldList})");
+
         writer.WriteLine("    {");
 
         foreach (string field in fields.Where(s => !string.IsNullOrEmpty(s)))
         {
+            if (baseName == "Expression" && field == "int linePosition") continue;
             string name = field.Split(" ")[1];
             writer.WriteLine($"        {name.SeparateWordsByCase('_').ToPascalCase()} = {name};");
         }
@@ -218,6 +245,7 @@ internal static class Program
         writer.WriteLine();
         writer.WriteLine("    public override T Accept<T>(IVisitor<T> visitor)");
         writer.WriteLine("    {");
+        writer.WriteLine("        CheckExceptions();");
         writer.WriteLine($"        return visitor.Visit{className}{baseName}(this);");
         writer.WriteLine("    }");
         writer.WriteLine("}");

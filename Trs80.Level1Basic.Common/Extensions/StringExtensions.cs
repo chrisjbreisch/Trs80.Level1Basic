@@ -119,7 +119,8 @@ public static class StringExtensions
 
     public static string Left(this string text, int length)
     {
-        if (string.IsNullOrEmpty(text)) return text;
+        if (length <= 0) return null;
+        if (string.IsNullOrEmpty(text)) return string.Empty;
         return text.Length < length ? text : text[..length];
     }
 }

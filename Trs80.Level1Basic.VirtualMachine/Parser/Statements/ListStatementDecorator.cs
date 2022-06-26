@@ -1,4 +1,5 @@
 using System;
+using Trs80.Level1Basic.VirtualMachine.Exceptions;
 
 namespace Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
@@ -37,7 +38,9 @@ public class ListStatementDecorator : IListStatementDecorator
         get => _statement.Previous;
         set => _statement.Previous = value;
     }
-    
+
+    public ParseException ParseException { get; set; }
+
     public T Accept<T>(IVisitor<T> visitor)
     {
         return _statement.Accept(visitor);

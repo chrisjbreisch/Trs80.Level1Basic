@@ -23,6 +23,34 @@ public class StringExtensionsTest
     }
 
     [TestMethod]
+    public void Can_Convert_Empty_String_To_Camel_Case()
+    {
+        string? result = string.Empty.ToCamelCase();
+        result.Should().BeEmpty();
+    }
+
+    [TestMethod]
+    public void Can_Convert_Empty_String_To_Kebab_Case()
+    {
+        string? result = string.Empty.ToKebabCase();
+        result.Should().BeEmpty();
+    }
+
+    [TestMethod]
+    public void Can_Convert_Empty_String_To_Snake_Case()
+    {
+        string? result = string.Empty.ToSnakeCase();
+        result.Should().BeEmpty();
+    }
+
+    [TestMethod]
+    public void Can_Convert_Empty_String_To_Caps_Case()
+    {
+        string? result = string.Empty.ToCapsCase();
+        result.Should().BeEmpty();
+    }
+
+    [TestMethod]
     public void Can_Convert_String_To_Pascal_Case()
     {
         string? result = testString.ToPascalCase();
@@ -188,7 +216,21 @@ public class StringExtensionsTest
     public void Can_Retrieve_Left_String_Of_Zero_Chars()
     {
         string? result = testString.Left(0);
+        result.Should().BeNull();
+    }
+
+    [TestMethod]
+    public void Can_Retrieve_Left_String_Of_Empty_String()
+    {
+        string? result = string.Empty.Left(1);
         result.Should().BeEmpty();
+    }
+
+    [TestMethod]
+    public void Can_Retrieve_Left_String_Of_Negative_Chars()
+    {
+        string? result = testString.Left(-1);
+        result.Should().BeNull();
     }
 
     [TestMethod]

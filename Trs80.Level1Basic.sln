@@ -54,6 +54,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.Trs80.Tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trs80.Level1Basic.Common.Test", "Trs80.Level1Basic.Common.Test\Trs80.Level1Basic.Common.Test.csproj", "{F20EEBCE-8690-40AE-8DA2-60B7E8B0DE3B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trs80.Level1Basic.TestUtilities.Test", "Trs80.Level1Basic.TestUtilities.Test\Trs80.Level1Basic.TestUtilities.Test.csproj", "{68089054-32F2-4C80-8A49-1B1FBC2F2475}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -116,6 +118,10 @@ Global
 		{F20EEBCE-8690-40AE-8DA2-60B7E8B0DE3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F20EEBCE-8690-40AE-8DA2-60B7E8B0DE3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F20EEBCE-8690-40AE-8DA2-60B7E8B0DE3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68089054-32F2-4C80-8A49-1B1FBC2F2475}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68089054-32F2-4C80-8A49-1B1FBC2F2475}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68089054-32F2-4C80-8A49-1B1FBC2F2475}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68089054-32F2-4C80-8A49-1B1FBC2F2475}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -136,6 +142,7 @@ Global
 		{63A5CA9E-EFDD-4C7A-B47A-AFD3302D0192} = {A1C4B46F-E273-42DD-B23A-CCB3B0185550}
 		{98F9B784-EA48-48CC-AA55-55B4D0C8235C} = {CD571827-E0DE-4EEA-BCCE-3475124C8BB2}
 		{F20EEBCE-8690-40AE-8DA2-60B7E8B0DE3B} = {CD571827-E0DE-4EEA-BCCE-3475124C8BB2}
+		{68089054-32F2-4C80-8A49-1B1FBC2F2475} = {CD571827-E0DE-4EEA-BCCE-3475124C8BB2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5EB0E852-7B78-46A4-934D-25D7E53322B7}

@@ -4,12 +4,10 @@ using Trs80.Level1Basic.VirtualMachine.Scanner;
 
 namespace Trs80.Level1Basic.VirtualMachine.Exceptions;
 
-public class RuntimeExpressionException : Exception
+public class RuntimeExpressionException : BaseException
 {
-    public Token Token { get; }
-
-    public RuntimeExpressionException(Token token, string message) : base(message)
+    public RuntimeExpressionException(int lineNumber, string statement, int linePosition, string message) : 
+        base(lineNumber, statement, linePosition, message) 
     {
-        Token = token;
     }
 }

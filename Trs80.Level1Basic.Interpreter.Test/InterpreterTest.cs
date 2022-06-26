@@ -53,4 +53,35 @@ public class InterpreterTest
         controller.ReadOutputLine().Should().Be(" 3.14159 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Interpreter_Handles_Array_Indexes()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A(3) = 3.14159",
+            "20 PRINT A(3)",
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3.14159 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Handles_Array_Indexes_With_Reassign()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A(3) = 3",
+            "15 A(3) = 3.14159",
+            "20 PRINT A(3)",
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3.14159 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }

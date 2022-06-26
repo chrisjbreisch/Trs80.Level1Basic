@@ -14,14 +14,7 @@ public class FakeHost : IHost
 
     public FakeHost()
     {
-        ClearScreen();
-    }
-
-    private void ClearScreen()
-    {
-        Erase(0, 0, ScreenPixelWidth, ScreenPixelHeight);
-        _cursorX = 0;
-        _cursorY = 0;
+        Clear();
     }
 
     public void EnableVirtualTerminal()
@@ -52,7 +45,9 @@ public class FakeHost : IHost
 
     public void Clear()
     {
-        ClearScreen();
+        Erase(0, 0, ScreenPixelWidth, ScreenPixelHeight);
+        _cursorX = 0;
+        _cursorY = 0;
     }
 
     public ConsoleKeyInfo ReadKey()

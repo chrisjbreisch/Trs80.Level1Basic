@@ -1,16 +1,9 @@
-﻿using System;
+﻿namespace Trs80.Level1Basic.VirtualMachine.Exceptions;
 
-namespace Trs80.Level1Basic.VirtualMachine.Exceptions;
-
-public class ParseException : Exception
+public class ParseException : BaseException
 {
-    public int LineNumber { get; }
-    public string Statement { get; }
-    public int LinePosition { get; }
-    public ParseException(int lineNumber, string statement, string message, int linePosition) : base(message)
+    public ParseException(int lineNumber, string statement, int linePosition, string message) :
+        base(lineNumber, statement, linePosition, message)
     {
-        LineNumber = lineNumber;
-        Statement = statement;
-        LinePosition = linePosition - lineNumber.ToString().Length - 1;
     }
 }

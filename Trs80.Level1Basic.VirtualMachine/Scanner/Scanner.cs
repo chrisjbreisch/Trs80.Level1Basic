@@ -17,20 +17,25 @@ public class Scanner : IScanner
     private int _currentIndex;
     private readonly ITrs80 _trs80;
     private readonly INativeFunctions _natives;
+    private readonly IAppSettings _appSettings;
+    private int _startOfLine;
 
     private static readonly Dictionary<int, Dictionary<string, TokenType>> KeywordsByLetter =
         CreateKeywordsByLetterDictionary();
     private string _currentLine;
 
-    public Scanner(ITrs80 trs80, INativeFunctions natives)
+    public Scanner(ITrs80 trs80, INativeFunctions natives, IAppSettings appSettings)
     {
         _trs80 = trs80 ?? throw new ArgumentNullException(nameof(trs80));
         _natives = natives ?? throw new ArgumentNullException(nameof(natives));
+        _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
     }
 
 
     public List<Token> ScanTokens(SourceLine source)
     {
+        if (source.Line == null) return null;
+        
         Initialize();
 
         _source = source.Line;
@@ -45,13 +50,29 @@ public class Scanner : IScanner
                 ScanToken();
             }
 
-            _tokens.Add(new Token(TokenType.EndOfLine, "", null, CurrentLine, _currentIndex));
+
+            _tokens.Add(new Token(TokenType.EndOfLine, "", null, CurrentLine, 
+                GetLinePosition() - TokenStart + _currentIndex ));
             return _tokens;
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleError(_trs80, ex);
+            ExceptionHandler.HandleError(_trs80, _appSettings, ex);
             return null;
+        }
+    }
+
+    private int GetLinePosition()
+    {
+        switch (_tokens.Count)
+        {
+            case 0:
+                return 0;
+            case 1:
+                _startOfLine = TokenStart;
+                return 0;
+            default:
+                return TokenStart - _startOfLine;
         }
     }
 
@@ -573,15 +594,18 @@ public class Scanner : IScanner
 
     private void GetString()
     {
+        bool endQuote = false;
+
         while (Peek() != '"' && !IsAtEnd())
             Advance();
 
-        if (IsAtEnd())
-            throw new ScanException("Unterminated string.");
+        if (!IsAtEnd())
+        {
+            endQuote = true;
+            Advance();
+        }
 
-        Advance();
-
-        string value = _original.Substring(TokenStart + 1, TokenLength - 2);
+        string value = _original.Substring(TokenStart + 1, TokenLength - (endQuote ? 2 : 1));
         AddToken(TokenType.String, value);
     }
 
@@ -607,6 +631,6 @@ public class Scanner : IScanner
     private void AddToken(TokenType type, dynamic literal = null)
     {
         string text = _source.Substring(TokenStart, TokenLength);
-        _tokens.Add(new Token(type, text, literal, CurrentLine, TokenStart));
+        _tokens.Add(new Token(type, text, literal, CurrentLine, GetLinePosition()));
     }
 }

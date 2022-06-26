@@ -29,8 +29,8 @@ public class StatementListTest
         IHost host = new FakeHost();
         var trs80 = new VirtualMachine.Machine.Trs80(appSettings, loggerFactory, host);
         INativeFunctions natives = new NativeFunctions();
-        var scanner = new Scanner(trs80, natives);
-        var parser = new Parser(trs80, natives);
+        var scanner = new Scanner(trs80, natives, appSettings);
+        var parser = new Parser(trs80, natives, appSettings);
 
         var sourceLine = new SourceLine(input);
         List<Token> tokens = scanner.ScanTokens(sourceLine);
@@ -42,7 +42,7 @@ public class StatementListTest
     [SuppressMessage("ReSharper", "CollectionNeverUpdated.Local")]
     public void Can_Create_StatementList()
     {
-        var list = new CompoundStatementList();
+        var list = new CompoundStatementList(0);
 
         list.Should().NotBeNull();
     }

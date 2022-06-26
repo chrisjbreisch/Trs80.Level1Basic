@@ -2,14 +2,10 @@
 
 namespace Trs80.Level1Basic.VirtualMachine.Exceptions;
 
-public class RuntimeStatementException : Exception
+public class RuntimeStatementException : BaseException
 {
-    public int LineNumber { get; }
-    public string Statement { get; }
-
-    public RuntimeStatementException(int lineNumber, string statement, string message) : base(message)
+    public RuntimeStatementException(int lineNumber, string statement, int linePosition, string message) : 
+        base(lineNumber, statement, linePosition, message)
     {
-        LineNumber = lineNumber;
-        Statement = statement;
     }
 }

@@ -27,7 +27,7 @@ using WorkflowCore.Services.DefinitionStorage;
 
 namespace Trs80.Level1Basic.Application;
 
-public sealed class Bootstrapper : IDisposable
+public sealed class Bootstrapper : DisposableBase
 {
     private bool _isDisposed;
     private IServiceCollection _services;
@@ -238,12 +238,12 @@ public sealed class Bootstrapper : IDisposable
             .AddSingleton<ITrs80DataModel, Trs80DataModel>()
             .AddSingleton<IHost, Host>()
             .AddSingleton<INativeFunctions, NativeFunctions>()
-            .AddSingleton<IProgram, Program>()
+            .AddSingleton<IProgram, BasicProgram>()
             .AddSingleton<IAppSettings, AppSettings>()
             .BuildServiceProvider();
     }
 
-    private void Dispose(bool disposing)
+    protected override void Dispose(bool disposing)
     {
         if (_isDisposed) return;
 
@@ -267,15 +267,8 @@ public sealed class Bootstrapper : IDisposable
         _isDisposed = true;
     }
 
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
     ~Bootstrapper()
     {
         Dispose(false);
     }
-
 }

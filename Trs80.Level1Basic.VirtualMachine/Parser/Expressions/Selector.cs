@@ -13,20 +13,18 @@ using Trs80.Level1Basic.VirtualMachine.Machine;
 
 namespace Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
 
-public class Array : Expression
+public class Selector : Expression
 {
-    public Token Name { get; init; }
-    public Expression Index { get; init; }
+    public Expression Expression { get; init; }
 
-    public Array(Token name, Expression index, int linePosition) : base(linePosition)
+    public Selector(Expression expression, int linePosition) : base(linePosition)
     {
-        Name = name;
-        Index = index;
+        Expression = expression;
     }
 
     public override T Accept<T>(IVisitor<T> visitor)
     {
         CheckExceptions();
-        return visitor.VisitArrayExpression(this);
+        return visitor.VisitSelectorExpression(this);
     }
 }

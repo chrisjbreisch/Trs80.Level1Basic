@@ -33,8 +33,8 @@ public class ParserTest
         IHost host = new FakeHost();
         var trs80 = new VirtualMachine.Machine.Trs80(appSettings, loggerFactory, host);
         INativeFunctions natives = new NativeFunctions();
-        var scanner = new Scanner(trs80, natives);
-        var parser = new Parser(trs80, natives);
+        var scanner = new Scanner(trs80, natives, appSettings);
+        var parser = new Parser(trs80, natives, appSettings);
 
         var sourceLine = new SourceLine(input);
         List<Token> tokens = scanner.ScanTokens(sourceLine);

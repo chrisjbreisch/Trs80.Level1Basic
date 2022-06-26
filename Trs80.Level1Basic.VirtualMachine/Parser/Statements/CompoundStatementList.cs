@@ -7,7 +7,13 @@ namespace Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 public class CompoundStatementList : Statement, ICollection<IStatement>
 {
     private readonly List<IListStatementDecorator> _statements = new();
-    
+    public int LinePosition { get;  }
+
+    public CompoundStatementList(int linePosition)
+    {
+        LinePosition = linePosition;
+    }
+
     private IListStatementDecorator Decorate(IStatement statement)
     {
         return statement as IListStatementDecorator ?? new ListStatementDecorator(statement);

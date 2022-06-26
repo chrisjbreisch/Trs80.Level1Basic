@@ -1,5 +1,6 @@
+using System;
 using System.Collections.Generic;
-
+using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -16,6 +17,62 @@ public class EnvironmentTest
         "20 i = i * 2",
         "30 print i"
     };
+
+    [TestMethod]
+    public void TestController_Can_Be_Disposed()
+    {
+        bool @explicit = false;
+        bool @implicit = false;
+
+        var controller = new TestController(onExplicitDispose: () => @explicit = true, onImplicitDispose: () => @implicit = true);
+
+        controller.Dispose();
+
+        @explicit.Should().BeTrue();
+        @implicit.Should().BeTrue();
+    }
+
+
+    [TestMethod]
+    public void TestController_Can_Be_Disposed_Twice()
+    {
+        bool @explicit = false;
+        bool @implicit = false;
+
+        var controller = new TestController(onExplicitDispose: () => @explicit = true, onImplicitDispose: () => @implicit = true);
+
+        controller.Dispose();
+        controller.Dispose();
+
+        @explicit.Should().BeTrue();
+        @implicit.Should().BeTrue();
+    }
+
+    [TestMethod]
+    [SuppressMessage("ReSharper", "NotAccessedVariable")]
+    [SuppressMessage("ReSharper", "ConvertToLocalFunction")]
+    public void TestController_Finalizer_Executed_Implicitly()
+    {
+        bool @explicit = false;
+        bool @implicit = false;
+        WeakReference<TestController> weak;
+
+        Action dispose = () => {
+            Action onExplicitDispose = () => @explicit = true;
+            onExplicitDispose();
+            @explicit = false;
+            var controller = new TestController(onExplicitDispose: onExplicitDispose,
+                onImplicitDispose: () => @implicit = true);
+            weak = new WeakReference<TestController>(controller, true);
+        };
+
+        dispose();
+        GC.Collect(0, GCCollectionMode.Forced);
+        GC.WaitForPendingFinalizers();
+
+        @explicit.Should().BeFalse();
+        @implicit.Should().BeTrue();
+    }
 
     [TestMethod]
     public void Environment_Can_Execute_Baseline_Program()

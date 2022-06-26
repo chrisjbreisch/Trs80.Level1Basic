@@ -11,16 +11,19 @@ using Trs80.Level1Basic.VirtualMachine.Scanner;
 
 namespace Trs80.Level1Basic.TestUtilities;
 
-public class TestController : IDisposable
+public class TestController : DisposableBase
 {
     private bool _disposed;
     private StringReader? _outputReader;
     private StringReader? _errorReader;
-    private readonly IScanner _scanner;
-    private readonly IParser _parser;
+    public IScanner Scanner { get; }
+    public IParser Parser { get; }
     private readonly IInterpreter _interpreter;
     private readonly StringWriter _output = new();
     private readonly StringWriter _error = new();
+
+    private readonly Action? _onExplicitDispose;
+    private readonly Action? _onImplicitDispose;
 
     public ITrs80 Trs80 { get; set; }
 
@@ -30,6 +33,11 @@ public class TestController : IDisposable
         set { Trs80.In = value; }
     }
 
+    public TestController(Action onExplicitDispose, Action onImplicitDispose) : this()    {
+        _onExplicitDispose = onExplicitDispose;
+        _onImplicitDispose = onImplicitDispose;
+    }
+    
     public TestController()
     {
         var bootstrapper = new Bootstrapper();
@@ -43,19 +51,22 @@ public class TestController : IDisposable
             Out = _output,
             Error = _error,
         };
-        _scanner = new Scanner(Trs80, natives);
-        _parser = new Parser(Trs80, natives);
-        IProgram program = new Program(_scanner, _parser);
+        Scanner = new Scanner(Trs80, natives, appSettings);
+        Parser = new Parser(Trs80, natives, appSettings);
+        IProgram program = new BasicProgram(Scanner, Parser);
         IMachine environment = new Machine(Trs80, program);
         ITrs80Api trs80Api = new Trs80Api(program, Trs80);
-        _interpreter = new Interpreter(host, Trs80, trs80Api, environment, program);
+        _interpreter = new Interpreter(host, Trs80, trs80Api, environment, program, appSettings);
     }
+
+    protected override void DisposeExplicit() => _onExplicitDispose?.DynamicInvoke();
+    protected override void DisposeImplicit() => _onImplicitDispose?.DynamicInvoke();
 
     public void ExecuteLine(string input)
     {
         var sourceLine = new SourceLine(input);
-        List<Token> tokens = _scanner.ScanTokens(sourceLine);
-        IStatement statement = _parser.Parse(tokens);
+        List<Token> tokens = Scanner.ScanTokens(sourceLine);
+        IStatement statement = Parser.Parse(tokens);
         _interpreter.Interpret(statement);
     }
 
@@ -107,13 +118,13 @@ public class TestController : IDisposable
         return firstLine == "READY" || (firstLine == "" && _outputReader.ReadLine() == "READY");
     }
 
-    public void Dispose()
+    public override void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);
     }
 
-    protected virtual void Dispose(bool disposing)
+    protected override void Dispose(bool disposing)
     {
         if (_disposed) return;
 
@@ -122,6 +133,7 @@ public class TestController : IDisposable
             _outputReader?.Dispose();
             _output.Dispose();
         }
+        base.Dispose(disposing);
         _disposed = true;
     }
 

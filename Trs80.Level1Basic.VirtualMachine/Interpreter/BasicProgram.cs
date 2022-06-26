@@ -10,7 +10,7 @@ using Trs80.Level1Basic.VirtualMachine.Scanner;
 
 namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
 
-public class Program : IProgram
+public class BasicProgram : IProgram
 {
     private readonly LineList _statements = new();
     private readonly IScanner _scanner;
@@ -18,7 +18,7 @@ public class Program : IProgram
 
     public IStatement CurrentStatement { get; set; }
 
-    public Program(IScanner scanner, IParser parser)
+    public BasicProgram(IScanner scanner, IParser parser)
     {
         _parser = parser ?? throw new ArgumentNullException(nameof(parser));
         _scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));

@@ -13,6 +13,16 @@ namespace Trs80.Level1Basic.Interpreter.Test;
 public class InputTest
 {
     [TestMethod]
+    public void Interpreter_Can_Get_And_Set_Input()
+    {
+        using var controller = new TestController();
+        var input = new StringReader("Chris");
+        controller.Input = input;
+
+        controller.Input.Should().BeSameAs(input);
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Read_From_Mocked_Console()
     {
         using var controller = new TestController();

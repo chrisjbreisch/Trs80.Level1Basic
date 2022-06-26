@@ -27,6 +27,21 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Call_Abs_With_Int_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 a=-3.14:b=abs(int(a)):c=a.(b)",
+            "20 print a;b;c"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("-3.14  4  4 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Chr()
     {
         using var controller = new TestController();
@@ -231,6 +246,34 @@ public class NativeFunctionTest
         float value = float.Parse(output!);
         value.Should().BeInRange(1, 100);
 
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Call_Tab()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print tab(5); \"hello\"",
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("     HELLO");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Call_T()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print t.(5); \"hello\"",
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("     HELLO");
         controller.IsEndOfRun().Should().BeTrue();
     }
 }
