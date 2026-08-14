@@ -162,6 +162,20 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Call_Mid_With_Non_Integer_Arguments()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT MID$(\"HELLO\", 2.9, 2.9)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("EL");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Len_And_Asc()
     {
         using var controller = new TestController();
