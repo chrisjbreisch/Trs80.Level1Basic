@@ -471,15 +471,30 @@ public class Parser : IParser
         Token name = Peek();
         Advance();
         var arguments = new List<Expression>();
-        var argumentPositions = new List<int> { name.LinePosition };
+        var argumentPositions = new List<int> { name.LinePosition + name.Lexeme.Length };
 
-        if (!Check(TokenType.EndOfLine))
+        bool hasParentheses = Match(TokenType.LeftParen);
+        if (hasParentheses)
+        {
+            if (!Check(TokenType.RightParen))
+                do
+                {
+                    arguments.Add(Expression());
+                    argumentPositions.Add(Previous().LinePosition + Previous().Lexeme.Length);
+                }
+                while (Match(TokenType.Comma));
+
+            Consume(TokenType.RightParen, "Expected ')' after arguments");
+        }
+        else if (!IsAtStatementEnd())
+        {
             do
             {
                 arguments.Add(Expression());
                 argumentPositions.Add(Peek().LinePosition);
             }
-            while (Match(TokenType.Comma));
+            while (Match(TokenType.Comma) && !IsAtStatementEnd());
+        }
 
         List<Callable> callees = _natives.Get(name.Lexeme);
         Callable callee = callees.FirstOrDefault(f => f.Arity == arguments.Count);
