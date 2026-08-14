@@ -192,39 +192,39 @@ public class Trs80Api : ITrs80Api
         return DateTime.Now.ToString("HH:mm:ss");
     }
 
-    public float Sqr(dynamic value)
+    public double Sqr(dynamic value)
     {
-        return (float)Math.Sqrt(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
+        return Math.Sqrt(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
     }
 
-    public float Sin(dynamic value)
+    public double Sin(dynamic value)
     {
-        return (float)Math.Sin(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
+        return Math.Sin(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
     }
 
-    public float Cos(dynamic value)
+    public double Cos(dynamic value)
     {
-        return (float)Math.Cos(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
+        return Math.Cos(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
     }
 
-    public float Tan(dynamic value)
+    public double Tan(dynamic value)
     {
-        return (float)Math.Tan(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
+        return Math.Tan(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
     }
 
-    public float Atn(dynamic value)
+    public double Atn(dynamic value)
     {
-        return (float)Math.Atan(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
+        return Math.Atan(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
     }
 
-    public float Log(dynamic value)
+    public double Log(dynamic value)
     {
-        return (float)Math.Log(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
+        return Math.Log(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
     }
 
-    public float Exp(dynamic value)
+    public double Exp(dynamic value)
     {
-        return (float)Math.Exp(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
+        return Math.Exp(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
     }
 
     public int Sgn(dynamic value)

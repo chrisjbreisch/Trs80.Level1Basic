@@ -81,4 +81,17 @@ public class ScannerTest
         tokens[1].Type.Should().Be(TokenType.Return);
         tokens[2].Type.Should().Be(TokenType.EndOfLine);
     }
+
+    [TestMethod]
+    public void Scanner_Recognizes_Atn_Native_Function()
+    {
+        using var controller = new TestController();
+        IScanner scanner = controller.Scanner;
+
+        var tokens = scanner.ScanTokens(new SourceLine("10 print atn(1)"));
+
+        tokens[2].Type.Should().Be(TokenType.Identifier);
+        tokens[2].Lexeme.Should().Be("ATN");
+        tokens[3].Type.Should().Be(TokenType.LeftParen);
+    }
 }

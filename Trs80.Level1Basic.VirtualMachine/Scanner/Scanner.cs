@@ -125,6 +125,7 @@ public class Scanner : IScanner
                 3, new Dictionary<string, TokenType>
                 {
                     {"AND", TokenType.And},
+                    {"ATN", TokenType.Identifier},
                     {"CLS", TokenType.Cls},
                     {"DIM", TokenType.Dim},
                     {"END", TokenType.End},
@@ -310,6 +311,13 @@ public class Scanner : IScanner
     private void Add2PlusCharsToken()
     {
         Advance();
+        if (_source.Length - TokenStart >= 3 && _source.Substring(TokenStart, 3) == "ATN")
+        {
+            Advance();
+            Add3CharToken();
+            return;
+        }
+
         try
         {
             AddKeywordToken();

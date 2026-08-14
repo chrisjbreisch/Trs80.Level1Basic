@@ -272,8 +272,20 @@ public class Interpreter : IInterpreter
 
     private string StringifyDouble(double value)
     {
-        string result = StringifyFloat((float)value);
-        return result;
+        switch (value)
+        {
+            case 0:
+                return "0";
+            case < .1 and > -.1:
+                return value.ToString("0.######E+00");
+            case < 1 and > -1:
+                return value.ToString("0.#######");
+            case > 999999:
+            case < -999999:
+                return value.ToString("0.######E+00");
+            default:
+                return value.ToString("######.######");
+        }
     }
 
     private string StringifyInt(int value)
