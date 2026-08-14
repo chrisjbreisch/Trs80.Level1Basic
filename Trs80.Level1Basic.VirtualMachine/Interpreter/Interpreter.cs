@@ -376,11 +376,23 @@ public class Interpreter : IInterpreter
     public void RunProgram(IStatement statement, bool initialize)
     {
         if (initialize)
+        {
             _machine.Initialize();
+            RegisterUserFunctions();
+        }
 
         _machine.RunStatementList(statement, this);
 
         WritePrompt();
+    }
+
+    private void RegisterUserFunctions()
+    {
+        foreach (IStatement statement in _machine.Program.List())
+        {
+            if (statement is DefFunction function)
+                _userFunctions[function.Name] = function;
+        }
     }
 
     public Void VisitDataStatement(Data statement)

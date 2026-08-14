@@ -59,6 +59,21 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Call_User_Function_Defined_Later()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT FNDOUBLE(3)",
+            "20 DEF FNDOUBLE(X) = X + X"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 6 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Abs_With_Double_Value()
     {
         using var controller = new TestController();

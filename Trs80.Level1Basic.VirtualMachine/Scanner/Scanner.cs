@@ -532,10 +532,10 @@ public class Scanner : IScanner
             }
             catch
             {
-                // try backing up
-                AddToken(TokenType.Identifier, _source.Substring(TokenStart, 1));
-                _currentIndex = TokenStart + 1;
-                GetKeywordOrIdentifier();
+                while (!IsAtEnd() && (IsAlpha(Peek()) || Peek() == '.'))
+                    Advance();
+
+                AddUnknownIdentifierToken();
             }
         }
     }
