@@ -317,7 +317,8 @@ public class Trs80Api : ITrs80Api
 
     public string Tab(dynamic value)
     {
-        return _trs80.PadToPosition(value);
+        int position = (int)Convert.ToSingle(value, System.Globalization.CultureInfo.InvariantCulture);
+        return _trs80.PadToPosition(position);
     }
 
     public string PadQuadrant()
