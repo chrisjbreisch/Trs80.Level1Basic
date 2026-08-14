@@ -56,10 +56,12 @@ public class Environment
         };
 
         _declaredTypes[normalizedName] = variableType;
+        EnsureArrayExists(normalizedName);
 
         if (normalizedName.Length == 1 && variableType == VariableType.String)
         {
             _declaredTypes[$"{normalizedName}$"] = VariableType.String;
+            EnsureArrayExists($"{normalizedName}$");
             _variables[$"{normalizedName}$"] = _variables.TryGetValue(normalizedName, out dynamic current) ? current : "";
             _variables[normalizedName] = _variables[$"{normalizedName}$"];
             return;
@@ -167,7 +169,11 @@ public class Environment
 
     public dynamic AssignArray(string name, int index, dynamic value)
     {
-        Dictionary<int, dynamic> array = GetArray(name);
+        string normalizedName = NormalizeName(name);
+        EnsureArrayExists(normalizedName);
+
+        Dictionary<int, dynamic> array = GetArray(normalizedName);
+        value = CastValue(value, GetDeclaredType(normalizedName));
 
         if (!array.ContainsKey(index))
             array.Add(index, value);
@@ -179,13 +185,25 @@ public class Environment
 
     private Dictionary<int, dynamic> GetArray(string name)
     {
-        Dictionary<int, dynamic> array = _arrays[name];
-        return array;
+        string normalizedName = NormalizeName(name);
+        return _arrays[normalizedName];
     }
 
     private void DefineArray(string name)
     {
-        _arrays.Add(name, new Dictionary<int, dynamic>());
+        string normalizedName = NormalizeName(name);
+        if (!_arrays.ContainsKey(normalizedName))
+            _arrays.Add(normalizedName, new Dictionary<int, dynamic>());
+    }
+
+    private void EnsureArrayExists(string name)
+    {
+        string normalizedName = NormalizeName(name);
+        if (string.IsNullOrEmpty(normalizedName)) return;
+
+        DefineArray(normalizedName);
+        if (normalizedName.Length == 1)
+            DefineArray($"{normalizedName}$");
     }
 
     internal bool Exists(string name)
@@ -227,10 +245,13 @@ public class Environment
 
     public dynamic GetArrayValue(string name, int index)
     {
-        Dictionary<int, dynamic> array = GetArray(name);
+        string normalizedName = NormalizeName(name);
+        EnsureArrayExists(normalizedName);
+
+        Dictionary<int, dynamic> array = GetArray(normalizedName);
 
         if (!array.ContainsKey(index))
-            array.Add(index, 0);
+            array.Add(index, CastValue(0, GetDeclaredType(normalizedName)));
 
         return array[index];
     }

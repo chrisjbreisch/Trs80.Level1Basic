@@ -243,4 +243,40 @@ public class ExpressionTest
         controller.ReadOutputLine().Should().Be(" 7 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Interpreter_Can_Use_Defint_Declaration_For_Array_Elements()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DEFINT A",
+            "20 DIM A(10)",
+            "30 A(3) = 3.9",
+            "40 PRINT A(3)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Use_Defstr_Declaration_For_String_Array_Elements()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DEFSTR A",
+            "20 DIM A$(10)",
+            "30 A$(3) = \"Chris\"",
+            "40 PRINT A$(3)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("CHRIS");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
