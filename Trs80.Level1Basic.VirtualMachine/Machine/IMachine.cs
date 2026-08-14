@@ -1,5 +1,6 @@
 ﻿using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
+using Trs80.Level1Basic.VirtualMachine.Scanner;
 
 namespace Trs80.Level1Basic.VirtualMachine.Machine;
 
@@ -13,6 +14,8 @@ public interface IMachine
 
     dynamic Set(string name, dynamic value);
     dynamic Set(string name, int index, dynamic value);
+    void SetVariableType(string name, TokenType type);
+    bool IsStringVariable(string name);
     dynamic Get(string name);
     dynamic Get(string name, int index);
     bool Exists(string name);

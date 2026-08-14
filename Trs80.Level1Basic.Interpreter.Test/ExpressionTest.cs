@@ -105,4 +105,125 @@ public class ExpressionTest
         controller.ReadOutputLine().Should().Be("HELLO, CHRIS");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Interpreter_Can_Use_Defint_Declaration()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DEFINT A",
+            "20 A = 3.9",
+            "30 PRINT A"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Use_Defsng_Declaration()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DEFSNG A",
+            "20 A = 3.9",
+            "30 PRINT A"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3.9 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Use_Defdbl_Declaration()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DEFDBL A",
+            "20 A = 3.9",
+            "30 PRINT A"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3.9 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Use_Defstr_Alias_After_Declaration()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DEFSTR A",
+            "20 A = \"Chris\"",
+            "30 PRINT A$"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("CHRIS");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Use_Defstr_Declaration()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DEFSTR A",
+            "20 A = \"Chris\"",
+            "30 PRINT A"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("CHRIS");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Use_Defint_Range_Declaration()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DEFINT A-Z",
+            "20 A = 3.9",
+            "30 B = 4.2",
+            "40 PRINT A; B"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3  4 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Use_Defstr_Range_Declaration()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DEFSTR A-C",
+            "20 A = \"Chris\"",
+            "30 B = \"Terry\"",
+            "40 PRINT A; B"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("CHRISTERRY");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }

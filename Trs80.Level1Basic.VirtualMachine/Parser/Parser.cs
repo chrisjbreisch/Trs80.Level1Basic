@@ -103,6 +103,8 @@ public class Parser : IParser
             return ContStatement();
         if (Match(TokenType.Data))
             return DataStatement();
+        if (Match(TokenType.DefDbl, TokenType.DefInt, TokenType.DefSng, TokenType.DefStr))
+            return DefTypeStatement();
         if (Match(TokenType.End))
             return EndStatement();
         if (Match(TokenType.For))
@@ -152,6 +154,57 @@ public class Parser : IParser
 
         Advance();
         return RunStatement();
+    }
+
+    private IStatement DefTypeStatement()
+    {
+        TokenType type = Previous().Type;
+        var names = new List<string>();
+
+        do
+        {
+            if (Peek().Type != TokenType.Identifier)
+                _parseException = new ParseException(_lineNumber, _source,
+                    Peek().LinePosition, "Expected variable name after type declaration.");
+
+            string startName = Peek().Lexeme.ToUpperInvariant();
+            Advance();
+
+            if (Match(TokenType.Minus))
+            {
+                if (Peek().Type != TokenType.Identifier)
+                    _parseException = new ParseException(_lineNumber, _source,
+                        Peek().LinePosition, "Expected variable name after range operator.");
+
+                string endName = Peek().Lexeme.ToUpperInvariant();
+                Advance();
+                names.AddRange(GetRangeNames(startName, endName));
+            }
+            else
+            {
+                names.Add(startName);
+            }
+        } while (Match(TokenType.Comma));
+
+        return StatementWrapper(new DefType(type, names));
+    }
+
+    private static List<string> GetRangeNames(string startName, string endName)
+    {
+        if (string.IsNullOrEmpty(startName) || string.IsNullOrEmpty(endName) || startName.Length != 1 || endName.Length != 1)
+            return new List<string> { startName };
+
+        char start = char.ToUpperInvariant(startName[0]);
+        char end = char.ToUpperInvariant(endName[0]);
+
+        if (start > end)
+            return new List<string> { startName };
+
+        var names = new List<string>();
+        for (char current = start; current <= end; current++)
+            names.Add(current.ToString());
+
+        return names;
     }
 
     private IStatement StopStatement()

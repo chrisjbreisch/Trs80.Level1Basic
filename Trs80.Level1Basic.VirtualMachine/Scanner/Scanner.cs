@@ -137,6 +137,9 @@ public class Scanner : IScanner
                 {
                     {"CONT", TokenType.Cont},
                     {"DATA", TokenType.Data},
+                    {"DEFD", TokenType.DefDbl},
+                    {"DEFI", TokenType.DefInt},
+                    {"DEFS", TokenType.DefSng},
                     {"GOS.", TokenType.Gosub},
                     {"GOTO", TokenType.Goto},
                     {"LIST", TokenType.List},
@@ -164,6 +167,10 @@ public class Scanner : IScanner
             {
                 6, new Dictionary<string, TokenType>
                 {
+                    {"DEFDBL", TokenType.DefDbl},
+                    {"DEFINT", TokenType.DefInt},
+                    {"DEFSNG", TokenType.DefSng},
+                    {"DEFSTR", TokenType.DefStr},
                     {"RETURN", TokenType.Return},
                 }
             },
@@ -425,6 +432,13 @@ public class Scanner : IScanner
         TokenType keyword = GetKeywordAtPosition();
         if (keyword == TokenType.Backup) return;
 
+        if (HasLongerKeywordMatch())
+        {
+            Advance();
+            Add5PlusCharsToken();
+            return;
+        }
+
         switch (keyword)
         {
             case TokenType.Data:
@@ -438,11 +452,25 @@ public class Scanner : IScanner
 
     private void Add5CharToken()
     {
+        if (HasLongerKeywordMatch())
+        {
+            Advance();
+            Add6PlusCharsToken();
+            return;
+        }
+
         AddKeywordToken();
     }
 
     private void Add6CharToken()
     {
+        if (HasLongerKeywordMatch())
+        {
+            Advance();
+            Add7CharToken();
+            return;
+        }
+
         AddKeywordToken();
     }
 
@@ -465,6 +493,24 @@ public class Scanner : IScanner
                 GetKeywordOrIdentifier();
             }
         }
+    }
+
+    private bool HasLongerKeywordMatch()
+    {
+        int remaining = _source.Length - TokenStart;
+        if (remaining <= TokenLength) return false;
+
+        for (int candidateLength = TokenLength + 1; candidateLength <= remaining; candidateLength++)
+        {
+            if (!KeywordsByLetter.TryGetValue(candidateLength, out Dictionary<string, TokenType> candidates))
+                continue;
+
+            string candidate = _source.Substring(TokenStart, candidateLength);
+            if (candidates.ContainsKey(candidate))
+                return true;
+        }
+
+        return false;
     }
 
     private TokenType GetKeywordAtPosition()

@@ -4,6 +4,7 @@ using System.Linq;
 
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
+using Trs80.Level1Basic.VirtualMachine.Scanner;
 
 namespace Trs80.Level1Basic.VirtualMachine.Machine;
 
@@ -47,6 +48,16 @@ public class Machine : IMachine
     public dynamic Set(string name, dynamic value)
     {
         return _globals.Set(name, value);
+    }
+
+    public void SetVariableType(string name, TokenType type)
+    {
+        _globals.SetVariableType(name, type);
+    }
+
+    public bool IsStringVariable(string name)
+    {
+        return _globals.IsStringVariable(name);
     }
 
     public dynamic Set(string name, int index, dynamic value)

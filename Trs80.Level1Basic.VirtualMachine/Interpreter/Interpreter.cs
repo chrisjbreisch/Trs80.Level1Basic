@@ -71,7 +71,7 @@ public class Interpreter : IInterpreter
         switch (expression)
         {
             case Identifier identifier:
-                if (!identifier.Name.Lexeme.EndsWith('$') && value is string)
+                if (!identifier.Name.Lexeme.EndsWith('$') && value is string && !_machine.IsStringVariable(identifier.Name.Lexeme))
                     throw new ValueOutOfRangeException(-1, string.Empty, string.Empty);
 
                 _machine.Set(identifier.Name.Lexeme, value);
@@ -182,8 +182,13 @@ public class Interpreter : IInterpreter
             case bool when right is bool:
             case float when right is float:
             case float when right is int:
+            case float when right is double:
             case int when right is float:
             case int when right is int:
+            case int when right is double:
+            case double when right is double:
+            case double when right is float:
+            case double when right is int:
                 return;
             default:
                 throw new RuntimeExpressionException(_program.CurrentStatement.LineNumber,
@@ -211,13 +216,16 @@ public class Interpreter : IInterpreter
     private string Stringify(dynamic value)
     {
         StringBuilder sb = new();
-        if (value is >= 0 or float and >= 0)
+        if (value is >= 0 or float and >= 0 or double and >= 0)
             sb.Append(' ');
 
         switch (value)
         {
             case float:
                 sb.Append(StringifyFloat(value));
+                break;
+            case double:
+                sb.Append(StringifyDouble(value));
                 break;
             case int:
                 sb.Append(StringifyInt(value));
@@ -230,11 +238,17 @@ public class Interpreter : IInterpreter
                 break;
         }
 
-        if (value is (int or float))
+        if (value is (int or float or double))
             sb.Append(' ');
 
         _machine.CursorX += sb.Length;
         return sb.ToString();
+    }
+
+    private string StringifyDouble(double value)
+    {
+        string result = StringifyFloat((float)value);
+        return result;
     }
 
     private string StringifyInt(int value)
@@ -308,6 +322,14 @@ public class Interpreter : IInterpreter
     {
         foreach (Expression element in statement.DataElements)
             _machine.Data.Add(Evaluate(element));
+
+        return null!;
+    }
+
+    public Void VisitDefTypeStatement(DefType statement)
+    {
+        foreach (string name in statement.Names)
+            _machine.SetVariableType(name, statement.Type);
 
         return null!;
     }
