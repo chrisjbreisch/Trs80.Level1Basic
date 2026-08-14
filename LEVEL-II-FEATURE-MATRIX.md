@@ -8,8 +8,8 @@ This is the working implementation checklist for the `level2/type-declarations` 
 | --- | --- | --- |
 | `DEFINT`, `DEFSNG`, `DEFDBL`, `DEFSTR` | Implemented | Type declarations, ranges, and assignment casting are in `Environment` and `Parser`. Add boundary and conversion cases as the next type slice. |
 | Typed scalar assignment | Partial | Core conversions exist; numeric promotion, invalid conversions, and exact rounding rules need an explicit compatibility contract. |
-| `DIM` arrays | Implemented | One- and two-dimensional arrays are supported. Higher dimensions and exact bounds/error behavior remain to be verified. |
-| Typed arrays | Partial | Numeric and string element casting exists; default values, redeclaration, and bounds behavior need compatibility tests. |
+| `DIM` arrays | Implemented | One- and two-dimensional arrays are supported with declared upper bounds and negative-subscript checks. Higher dimensions remain to be verified. |
+| Typed arrays | Partial | Numeric and string element casting exists, including empty string defaults; redeclaration and complete compatibility behavior remain to be verified. |
 | Arithmetic operators | Implemented | Existing Level I operators plus `MOD`. Numeric promotion and division edge cases need a dedicated matrix of tests. |
 | Logical operators | Implemented | `AND`, `OR`, `NOT`, `XOR`, `EQV`, and `IMP` are present. Verify precedence and operand coercion against Level II behavior. |
 | Control flow | Implemented | Existing Level I control flow is present. Validate Level II-specific forms and error behavior. |
@@ -19,18 +19,18 @@ This is the working implementation checklist for the `level2/type-declarations` 
 | Area | Status | Current evidence / next step |
 | --- | --- | --- |
 | String functions | Partial | `CHR$`, `ASC`, `LEN`, `LEFT$`, `RIGHT$`, `MID$`, `INSTR`, `STR$`, `VAL`, and case/trim helpers exist. Audit argument forms and boundary behavior against Level II. |
-| Numeric conversion | Implemented | `CINT`, `CSNG`, `CDBL`, `FIX`, and `INT` exist. Confirm rounding and overflow behavior. |
+| Numeric conversion | Implemented | `CINT`, `CSNG`, `CDBL`, `FIX`, and `INT` exist with double-precision conversion coverage. Confirm overflow behavior. |
 | Math functions | Implemented | `SQR`, `SIN`, `COS`, `TAN`, `ATN`, `LOG`, and `EXP` exist. Confirm domain errors and precision behavior. |
 | Random numbers | Partial | One- and zero-argument `RND` exist. Negative, zero, and repeatability/seeding semantics need compatibility tests. |
 | Keyboard/input functions | Partial | `INPUT$` and `INKEY$` exist. Verify blocking, end-of-input, and character semantics. |
-| Memory/display functions | Partial | `PEEK`, `POKE`, `MEM`, `FRE`, `POS`, `CSRLIN`, `POINT`, and related functions exist. Their emulation policy needs to be documented and tested. |
+| Memory/display functions | Partial | `PEEK`, `POKE`, `MEM`, `FRE`, `POS`, `CSRLIN`, `POINT`, `SPC`, and related functions exist. Their emulation policy needs to be documented and tested. |
 | Remaining Level II functions | Not audited | Build the authoritative function list from the Level II manual and add one matrix row and test per missing function. |
 
 ## Statements and Commands
 
 | Area | Status | Next step |
 | --- | --- | --- |
-| Program editing commands | Partial | `LIST`, `LOAD`, `SAVE`, and `MERGE` exist. Decide the intended support policy for `CLOAD` and `CSAVE`. |
+| Program editing commands | Partial | `LIST`, `LOAD`, `SAVE`, `MERGE`, and `CLEAR` exist. Decide the intended support policy for `CLOAD` and `CSAVE`. |
 | Data statements | Implemented | `DATA`, `READ`, and `RESTORE` exist. Add Level II compatibility cases for mixed types and exhaustion errors. |
 | Console input/output | Implemented | `INPUT`, `PRINT`, `TAB`, and related cursor functions exist. Audit formatting and input error behavior. |
 | Hardware statements | Partial | `SET`, `RESET`, `POKE`, and related APIs exist as host-machine abstractions. Define behavior for unsupported ROM/hardware operations. |
