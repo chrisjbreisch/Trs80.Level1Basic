@@ -17,11 +17,18 @@ public class Array : Expression
 {
     public Token Name { get; init; }
     public Expression Index { get; init; }
+    public Expression Index2 { get; init; }
 
-    public Array(Token name, Expression index, int linePosition) : base(linePosition)
+    public Array(Token name, Expression index, int linePosition)
+        : this(name, index, null, linePosition)
+    {
+    }
+
+    public Array(Token name, Expression index, Expression index2, int linePosition) : base(linePosition)
     {
         Name = name;
         Index = index;
+        Index2 = index2;
     }
 
     public override T Accept<T>(IVisitor<T> visitor)

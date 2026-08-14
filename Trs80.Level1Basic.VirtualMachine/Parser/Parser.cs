@@ -526,13 +526,16 @@ public class Parser : IParser
             return new Identifier(current, current.LinePosition + 1);
 
         Expression index = Expression();
+        Expression index2 = null;
+        if (Match(TokenType.Comma))
+            index2 = Expression();
 
         Token previous = Previous();
         int linePosition = previous.LinePosition + previous.Lexeme.Length;
 
         Consume(TokenType.RightParen, "Expected ')' after array index");
 
-        return new Array(current, index, linePosition);
+        return index2 == null ? new Array(current, index, linePosition) : new Array(current, index, index2, linePosition);
     }
 
     private bool IsAtStatementEnd()
@@ -737,6 +740,9 @@ public class Parser : IParser
     private Expression FinishArray(Token name)
     {
         Expression index = Expression();
+        Expression index2 = null;
+        if (Match(TokenType.Comma))
+            index2 = Expression();
 
         Token previous = Previous();
         int linePosition = previous.LinePosition + previous.Lexeme.Length;
@@ -744,7 +750,7 @@ public class Parser : IParser
         Consume(TokenType.RightParen,
             "Expected ')' after arguments");
 
-        return new Array(name, index, linePosition);
+        return index2 == null ? new Array(name, index, linePosition) : new Array(name, index, index2, linePosition);
     }
 
     private Expression Primary()

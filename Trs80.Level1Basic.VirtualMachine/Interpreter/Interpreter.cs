@@ -63,7 +63,16 @@ public class Interpreter : IInterpreter
         if (index > _trs80Api.Mem() / 4 - 1)
             throw new ProgramTooLargeException(_program.CurrentStatement.LineNumber,
                 _program.CurrentStatement.SourceLine, expression.LinePosition, "Insufficient memory.");
-        return _machine.Get(expression.Name.Lexeme, index);
+
+        if (expression.Index2 == null)
+            return _machine.Get(expression.Name.Lexeme, index);
+
+        dynamic index2 = Evaluate(expression.Index2);
+        if (index2 > _trs80Api.Mem() / 4 - 1)
+            throw new ProgramTooLargeException(_program.CurrentStatement.LineNumber,
+                _program.CurrentStatement.SourceLine, expression.LinePosition, "Insufficient memory.");
+
+        return _machine.Get(expression.Name.Lexeme, index, index2);
     }
 
     private void Assign(Expression expression, dynamic value)
@@ -79,7 +88,14 @@ public class Interpreter : IInterpreter
             case Array array:
                 {
                     dynamic index = Evaluate(array.Index);
-                    _machine.Set(array.Name.Lexeme, index, value);
+                    if (array.Index2 == null)
+                    {
+                        _machine.Set(array.Name.Lexeme, index, value);
+                        break;
+                    }
+
+                    dynamic index2 = Evaluate(array.Index2);
+                    _machine.Set(array.Name.Lexeme, index, index2, value);
                     break;
                 }
         }
@@ -341,10 +357,20 @@ public class Interpreter : IInterpreter
             string name = array.Name.Lexeme;
             int index = (int)Evaluate(array.Index);
 
+            if (array.Index2 == null)
+            {
+                if (!_machine.Exists(name))
+                    _machine.Set(name, index, 0);
+                else
+                    _machine.Set(name, index, _machine.Get(name, index));
+                continue;
+            }
+
+            int index2 = (int)Evaluate(array.Index2);
             if (!_machine.Exists(name))
-                _machine.Set(name, index, 0);
+                _machine.Set(name, index, index2, 0);
             else
-                _machine.Set(name, index, _machine.Get(name, index));
+                _machine.Set(name, index, index2, _machine.Get(name, index, index2));
         }
 
         return null!;

@@ -14,10 +14,12 @@ public interface IMachine
 
     dynamic Set(string name, dynamic value);
     dynamic Set(string name, int index, dynamic value);
+    dynamic Set(string name, int index, int index2, dynamic value);
     void SetVariableType(string name, TokenType type);
     bool IsStringVariable(string name);
     dynamic Get(string name);
     dynamic Get(string name, int index);
+    dynamic Get(string name, int index, int index2);
     bool Exists(string name);
     void InitializeProgram();
     void ListProgram(int lineNumber);

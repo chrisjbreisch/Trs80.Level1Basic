@@ -16,6 +16,7 @@ public class Environment
 
     private readonly Dictionary<string, dynamic> _variables = new();
     private readonly Dictionary<string, Dictionary<int, dynamic>> _arrays = new();
+    private readonly Dictionary<string, Dictionary<string, dynamic>> _matrixArrays = new();
     private readonly Dictionary<string, VariableType> _declaredTypes = new();
     private const string names = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -183,10 +184,41 @@ public class Environment
         return value;
     }
 
+    public dynamic AssignArray(string name, int index, int index2, dynamic value)
+    {
+        string normalizedName = NormalizeName(name);
+        EnsureArrayExists(normalizedName);
+
+        string matrixKey = BuildMatrixKey(index, index2);
+        Dictionary<string, dynamic> matrix = GetMatrixArray(normalizedName);
+        value = CastValue(value, GetDeclaredType(normalizedName));
+
+        if (!matrix.ContainsKey(matrixKey))
+            matrix.Add(matrixKey, value);
+        else
+            matrix[matrixKey] = value;
+
+        return value;
+    }
+
     private Dictionary<int, dynamic> GetArray(string name)
     {
         string normalizedName = NormalizeName(name);
         return _arrays[normalizedName];
+    }
+
+    private Dictionary<string, dynamic> GetMatrixArray(string name)
+    {
+        string normalizedName = NormalizeName(name);
+        if (!_matrixArrays.ContainsKey(normalizedName))
+            _matrixArrays[normalizedName] = new Dictionary<string, dynamic>();
+
+        return _matrixArrays[normalizedName];
+    }
+
+    private string BuildMatrixKey(int index, int index2)
+    {
+        return $"{index},{index2}";
     }
 
     private void DefineArray(string name)
@@ -254,5 +286,19 @@ public class Environment
             array.Add(index, CastValue(0, GetDeclaredType(normalizedName)));
 
         return array[index];
+    }
+
+    public dynamic GetArrayValue(string name, int index, int index2)
+    {
+        string normalizedName = NormalizeName(name);
+        EnsureArrayExists(normalizedName);
+
+        string matrixKey = BuildMatrixKey(index, index2);
+        Dictionary<string, dynamic> matrix = GetMatrixArray(normalizedName);
+
+        if (!matrix.ContainsKey(matrixKey))
+            matrix.Add(matrixKey, CastValue(0, GetDeclaredType(normalizedName)));
+
+        return matrix[matrixKey];
     }
 }

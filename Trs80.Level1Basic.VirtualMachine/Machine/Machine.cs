@@ -65,6 +65,11 @@ public class Machine : IMachine
         return _globals.AssignArray(name, index, value);
     }
 
+    public dynamic Set(string name, int index, int index2, dynamic value)
+    {
+        return _globals.AssignArray(name, index, index2, value);
+    }
+
     public bool Exists(string name)
     {
         return _globals.Exists(name);
@@ -207,5 +212,10 @@ public class Machine : IMachine
     public dynamic Get(string name, int index)
     {
         return _globals.GetArrayValue(name, index);
+    }
+
+    public dynamic Get(string name, int index, int index2)
+    {
+        return _globals.GetArrayValue(name, index, index2);
     }
 }
