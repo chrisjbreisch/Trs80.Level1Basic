@@ -44,7 +44,7 @@ public interface ITrs80Api
     string Left(string value, int length);
     string Right(string value, int length);
     string Mid(string value, int start, int length);
-    dynamic Rnd(int control);
+    dynamic Rnd(dynamic control);
     string Tab(dynamic value);
     string PadQuadrant();
     object Set(float x, float y);

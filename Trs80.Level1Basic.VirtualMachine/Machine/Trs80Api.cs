@@ -303,12 +303,16 @@ public class Trs80Api : ITrs80Api
 
     public static readonly Random Rand = new();
 
-    public dynamic Rnd(int control)
+    public dynamic Rnd(dynamic control)
     {
-        if (control == 0)
+        int integerControl = control is null
+            ? 0
+            : (int)Convert.ToSingle(control, System.Globalization.CultureInfo.InvariantCulture);
+
+        if (integerControl == 0)
             return (float)Rand.NextDouble();
 
-        return (int)Math.Floor(control * Rand.NextDouble() + 1);
+        return (int)Math.Floor(integerControl * Rand.NextDouble() + 1);
     }
 
     public string Tab(dynamic value)
