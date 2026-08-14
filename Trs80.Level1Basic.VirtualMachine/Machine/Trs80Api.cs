@@ -22,7 +22,7 @@ public class Trs80Api : ITrs80Api
 
     public int Int(dynamic value)
     {
-        return (int)Math.Floor((float)value);
+        return (int)Math.Floor(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
     }
 
 
