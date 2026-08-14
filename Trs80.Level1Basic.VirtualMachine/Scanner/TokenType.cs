@@ -47,6 +47,7 @@ public enum TokenType
     List,
     Load,
     Merge,
+    Mod,
     N,
     New,
     Next,

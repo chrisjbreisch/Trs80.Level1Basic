@@ -330,6 +330,34 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Call_Math_Functions()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print sqr(9); sin(0); cos(0); tan(0); atn(1); log(10); exp(1)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3  0  1  0  0.7853982  2.302585  2.718282 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Call_Fre()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print fre(0); mem"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 15850  15850 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Input_String()
     {
         using var controller = new TestController
@@ -404,6 +432,20 @@ public class NativeFunctionTest
         controller.RunProgram(program);
 
         controller.ReadOutputLine().Should().Be("OFF");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Call_Mod_Operator()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print 7 mod 3",
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 

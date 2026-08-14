@@ -151,6 +151,8 @@ public class Parser : IParser
             return SaveStatement();
         if (Match(TokenType.Stop))
             return StopStatement();
+        if (Peek().Type == TokenType.Identifier && _natives.Get(Peek().Lexeme) != null && !Check(TokenType.LeftParen) && !Check(TokenType.Equal))
+            return StatementWrapper(new StatementExpression(NativeStatementCall()));
         if (Peek().Type != TokenType.R || PeekNext().Type == TokenType.LeftParen)
             return Peek().Type == TokenType.Identifier ? LetStatement() : ExpressionStatement();
 
@@ -464,6 +466,45 @@ public class Parser : IParser
         return new StatementExpression(expression);
     }
 
+    private Expression NativeStatementCall()
+    {
+        Token name = Peek();
+        Advance();
+        var arguments = new List<Expression>();
+        var argumentPositions = new List<int> { name.LinePosition };
+
+        if (!Check(TokenType.EndOfLine))
+            do
+            {
+                arguments.Add(Expression());
+                argumentPositions.Add(Peek().LinePosition);
+            }
+            while (Match(TokenType.Comma));
+
+        List<Callable> callees = _natives.Get(name.Lexeme);
+        Callable callee = callees.FirstOrDefault(f => f.Arity == arguments.Count);
+
+        ParseException pe = null;
+        if (callee == null)
+        {
+            int linePosition;
+            callee = callees.FirstOrDefault(f => f.Arity < arguments.Count);
+            if (callee != null)
+                linePosition = argumentPositions[callee.Arity];
+            else
+            {
+                callee = callees.FirstOrDefault(f => f.Arity > arguments.Count);
+                linePosition = argumentPositions[Math.Min(arguments.Count, argumentPositions.Count - 1)];
+            }
+
+            pe = new ParseException(_lineNumber, _source, linePosition, $"Unknown function '{name.Lexeme}' with argument count {arguments.Count}");
+        }
+
+        Expression call = new Call(callee, arguments, name.LinePosition + name.Lexeme.Length);
+        call.ParseException = pe;
+        return call;
+    }
+
     private IStatement LetStatement()
     {
         Token identifierToken = Peek();
@@ -628,7 +669,7 @@ public class Parser : IParser
     private Expression Factor()
     {
         Expression left = Unary();
-        while (Match(TokenType.Slash, TokenType.Star))
+        while (Match(TokenType.Slash, TokenType.Star, TokenType.Mod))
         {
             Token operatorType = Previous();
             Expression right = Unary();

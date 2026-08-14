@@ -128,6 +128,7 @@ public class Scanner : IScanner
                     {"FOR", TokenType.For},
                     {"IN.", TokenType.Input},
                     {"LET", TokenType.Let},
+                    {"MOD", TokenType.Mod},
                     {"NEW", TokenType.New},
                     {"REM", TokenType.Rem},
                     {"RUN", TokenType.Run},
