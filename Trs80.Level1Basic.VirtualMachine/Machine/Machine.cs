@@ -70,6 +70,16 @@ public class Machine : IMachine
         return _globals.AssignArray(name, index, index2, value);
     }
 
+    public void SetArrayDimensions(string name, int dimension1)
+    {
+        _globals.SetArrayDimensions(name, dimension1);
+    }
+
+    public void SetArrayDimensions(string name, int dimension1, int dimension2)
+    {
+        _globals.SetArrayDimensions(name, dimension1, dimension2);
+    }
+
     public bool Exists(string name)
     {
         return _globals.Exists(name);

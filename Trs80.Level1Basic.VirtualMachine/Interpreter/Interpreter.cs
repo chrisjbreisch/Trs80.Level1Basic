@@ -381,6 +381,7 @@ public class Interpreter : IInterpreter
 
             if (array.Index2 == null)
             {
+                _machine.SetArrayDimensions(name, index);
                 if (!_machine.Exists(name))
                     _machine.Set(name, index, 0);
                 else
@@ -389,6 +390,7 @@ public class Interpreter : IInterpreter
             }
 
             int index2 = (int)Evaluate(array.Index2);
+            _machine.SetArrayDimensions(name, index, index2);
             if (!_machine.Exists(name))
                 _machine.Set(name, index, index2, 0);
             else

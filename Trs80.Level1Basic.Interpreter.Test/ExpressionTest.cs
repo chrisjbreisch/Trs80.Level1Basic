@@ -280,6 +280,22 @@ public class ExpressionTest
     }
 
     [TestMethod]
+    public void Interpreter_Rejects_Array_Index_Outside_Dimension()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DIM A(2)",
+            "20 PRINT A(3)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HOW?");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Use_Defint_Declaration_For_Array_Elements()
     {
         using var controller = new TestController();

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 
+using Trs80.Level1Basic.VirtualMachine.Exceptions;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
 
 namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
@@ -17,6 +18,7 @@ public class Environment
     private readonly Dictionary<string, dynamic> _variables = new();
     private readonly Dictionary<string, Dictionary<int, dynamic>> _arrays = new();
     private readonly Dictionary<string, Dictionary<string, dynamic>> _matrixArrays = new();
+    private readonly Dictionary<string, int[]> _arrayDimensions = new();
     private readonly Dictionary<string, VariableType> _declaredTypes = new();
     private const string names = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -75,6 +77,23 @@ public class Environment
     public bool IsStringVariable(string name)
     {
         return GetDeclaredType(name) == VariableType.String;
+    }
+
+    public void SetArrayDimensions(string name, int dimension1)
+    {
+        SetArrayDimensions(name, dimension1, null);
+    }
+
+    public void SetArrayDimensions(string name, int dimension1, int? dimension2)
+    {
+        if (dimension1 < 0 || dimension2 < -1)
+            throw new ValueOutOfRangeException(-1, string.Empty, "Array dimension cannot be negative.");
+
+        string normalizedName = NormalizeName(name);
+        EnsureArrayExists(normalizedName);
+        _arrayDimensions[normalizedName] = dimension2.HasValue
+            ? new[] { dimension1, dimension2.Value }
+            : new[] { dimension1 };
     }
 
     internal dynamic Set(string name, dynamic value)
@@ -171,6 +190,7 @@ public class Environment
     public dynamic AssignArray(string name, int index, dynamic value)
     {
         string normalizedName = NormalizeName(name);
+        ValidateArrayIndex(normalizedName, index);
         EnsureArrayExists(normalizedName);
 
         Dictionary<int, dynamic> array = GetArray(normalizedName);
@@ -187,6 +207,7 @@ public class Environment
     public dynamic AssignArray(string name, int index, int index2, dynamic value)
     {
         string normalizedName = NormalizeName(name);
+        ValidateArrayIndex(normalizedName, index, index2);
         EnsureArrayExists(normalizedName);
 
         string matrixKey = BuildMatrixKey(index, index2);
@@ -278,6 +299,7 @@ public class Environment
     public dynamic GetArrayValue(string name, int index)
     {
         string normalizedName = NormalizeName(name);
+        ValidateArrayIndex(normalizedName, index);
         EnsureArrayExists(normalizedName);
 
         Dictionary<int, dynamic> array = GetArray(normalizedName);
@@ -291,6 +313,7 @@ public class Environment
     public dynamic GetArrayValue(string name, int index, int index2)
     {
         string normalizedName = NormalizeName(name);
+        ValidateArrayIndex(normalizedName, index, index2);
         EnsureArrayExists(normalizedName);
 
         string matrixKey = BuildMatrixKey(index, index2);
@@ -300,5 +323,17 @@ public class Environment
             matrix.Add(matrixKey, CastValue(0, GetDeclaredType(normalizedName)));
 
         return matrix[matrixKey];
+    }
+
+    private void ValidateArrayIndex(string name, int index, int? index2 = null)
+    {
+        if (!_arrayDimensions.TryGetValue(name, out int[] dimensions))
+            return;
+
+        if (index < 0 || index > dimensions[0] || index2.HasValue != (dimensions.Length == 2))
+            throw new ValueOutOfRangeException(-1, string.Empty, "Array subscript out of range.");
+
+        if (index2.HasValue && (index2.Value < 0 || index2.Value > dimensions[1]))
+            throw new ValueOutOfRangeException(-1, string.Empty, "Array subscript out of range.");
     }
 }
