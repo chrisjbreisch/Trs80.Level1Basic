@@ -15,12 +15,19 @@ namespace Trs80.Level1Basic.VirtualMachine.Parser.Expressions;
 
 public class Call : Expression
 {
+    public string Name { get; init; }
     public Callable Callee { get; init; }
     public List<Expression> Arguments { get; init; }
 
     public Call(Callable callee, List<Expression> arguments, int linePosition) : base(linePosition)
     {
         Callee = callee;
+        Arguments = arguments;
+    }
+
+    public Call(string name, List<Expression> arguments, int linePosition) : base(linePosition)
+    {
+        Name = name;
         Arguments = arguments;
     }
 

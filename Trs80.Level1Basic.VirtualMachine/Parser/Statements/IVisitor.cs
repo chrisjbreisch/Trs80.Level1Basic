@@ -14,6 +14,7 @@ public interface IVisitor<out T>
     T VisitContStatement(Cont statement);
     T VisitDataStatement(Data statement);
     T VisitDefTypeStatement(DefType statement);
+    T VisitDefFunctionStatement(DefFunction statement);
     T VisitDimStatement(Dim statement);
     T VisitDeleteStatement(Delete statement);
     T VisitEndStatement(End statement);

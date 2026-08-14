@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -19,6 +20,7 @@ namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
 
 public class Interpreter : IInterpreter
 {
+    private readonly Dictionary<string, DefFunction> _userFunctions = new(StringComparer.OrdinalIgnoreCase);
     private readonly IMachine _machine;
     private readonly ITrs80 _trs80;
     private readonly ITrs80Api _trs80Api;
@@ -133,6 +135,24 @@ public class Interpreter : IInterpreter
     public dynamic VisitCallExpression(Call expression)
     {
         var arguments = expression.Arguments.Select(argument => Evaluate(argument)).ToList();
+
+        if (expression.Callee == null)
+        {
+            if (!_userFunctions.TryGetValue(expression.Name, out DefFunction function) || arguments.Count != 1)
+                throw new RuntimeExpressionException(_program.CurrentStatement.LineNumber, _program.CurrentStatement.SourceLine,
+                    expression.LinePosition, "Unknown user-defined function.");
+
+            dynamic previous = _machine.Get(function.Parameter);
+            _machine.Set(function.Parameter, arguments[0]);
+            try
+            {
+                return Evaluate(function.Body);
+            }
+            finally
+            {
+                _machine.Set(function.Parameter, previous);
+            }
+        }
 
         return expression.Callee.Call(_trs80Api, arguments);
     }
@@ -383,6 +403,12 @@ public class Interpreter : IInterpreter
         foreach (string name in statement.Names)
             _machine.SetVariableType(name, statement.Type);
 
+        return null!;
+    }
+
+    public Void VisitDefFunctionStatement(DefFunction statement)
+    {
+        _userFunctions[statement.Name] = statement;
         return null!;
     }
 

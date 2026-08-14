@@ -28,6 +28,21 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Call_User_Defined_Function()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DEF FNSQR(X) = X * X",
+            "20 PRINT FNSQR(3)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 9 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Abs_With_Double_Value()
     {
         using var controller = new TestController();

@@ -97,6 +97,8 @@ public class Parser : IParser
 
     private IStatement Statement()
     {
+        if (IsDefFunction())
+            return DefFunctionStatement();
         if (Match(TokenType.Clear))
             return ClearStatement();
         if (IsMidAssignment())
@@ -195,6 +197,27 @@ public class Parser : IParser
         } while (Match(TokenType.Comma));
 
         return StatementWrapper(new DefType(type, names));
+    }
+
+    private bool IsDefFunction()
+    {
+        return Peek().Type == TokenType.Identifier
+            && string.Equals(Peek().Lexeme, "DEF", StringComparison.OrdinalIgnoreCase)
+            && PeekNext().Type == TokenType.Identifier
+            && PeekNext().Lexeme.StartsWith("FN", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private IStatement DefFunctionStatement()
+    {
+        Advance();
+        Token function = Peek();
+        Advance();
+        Consume(TokenType.LeftParen, "Expected '(' after function name.");
+        Token parameter = Peek();
+        Consume(TokenType.Identifier, "Expected function parameter.");
+        Consume(TokenType.RightParen, "Expected ')' after function parameter.");
+        Consume(TokenType.Equal, "Expected '=' after function parameter.");
+        return StatementWrapper(new DefFunction(function.Lexeme, parameter.Lexeme, Expression()));
     }
 
     private IStatement ClearStatement()
@@ -822,7 +845,13 @@ public class Parser : IParser
         List<Callable> callees = _natives.Get(name.Lexeme);
 
         if (Match(TokenType.LeftParen) && expression is Identifier)
-            return callees != null ? FinishCall(name, callees) : FinishArray(name);
+        {
+            if (callees != null)
+                return FinishCall(name, callees);
+            if (name.Lexeme.StartsWith("FN", StringComparison.OrdinalIgnoreCase))
+                return FinishUserCall(name);
+            return FinishArray(name);
+        }
 
         Token previous = Previous();
         if (previous.Type != TokenType.Identifier) return expression;
@@ -863,6 +892,16 @@ public class Parser : IParser
 
                 return call;
         */
+    }
+
+    private Expression FinishUserCall(Token name)
+    {
+        var arguments = new List<Expression>();
+        if (!Check(TokenType.RightParen))
+            arguments.Add(Expression());
+
+        Consume(TokenType.RightParen, "Expected ')' after function arguments.");
+        return new Call(name.Lexeme, arguments, name.LinePosition);
     }
 
     private Expression FinishCall(Token name, List<Callable> callees)
