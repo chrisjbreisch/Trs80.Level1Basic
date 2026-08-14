@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 
 using FluentAssertions;
 
@@ -82,6 +83,280 @@ public class NativeFunctionTest
         controller.RunProgram(program);
 
         controller.ReadOutputLine().Should().Be("HELLO WORLD WORLD");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Call_Len_And_Asc()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print len(\"HELLO\"); asc(\"H\")"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 5  72 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Call_Val_And_Str()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print val(\"123\") + 1",
+            "20 print str$(123)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 124 ");
+        controller.ReadOutputLine().Should().Be("123");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Call_Instr_And_Space()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print instr(\"HELLO WORLD\", \"WORLD\"); len(space$(3))"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 7  3 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Call_String_Function()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print string$(3, \"X\"); len(string$(3, \"AB\"))"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("XXX 3 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Call_Hex_And_Oct()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print hex$(255)",
+            "20 print oct$(255)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("FF");
+        controller.ReadOutputLine().Should().Be("377");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Call_Sgn()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print sgn(-3);sgn(0);sgn(5)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("-1  0  1 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Call_Cint()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print cint(-3.9); cint(3.4); cint(5.6)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("-4  3  6 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Call_Fix()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print fix(-3.9); fix(3.4); fix(5.6)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("-3  3  5 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Call_Csng()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print csng(3.5)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3.5 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Call_Cdbl()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print cdbl(3.5)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3.5 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Call_Lcase()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print lcase$(\"HELLO\")"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("hello");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Call_Ucase()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print ucase$(\"hello\")"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HELLO");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Call_Trim()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print trim$(\"  hello  \")"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HELLO");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Call_Ltrim_And_Rtrim()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print ltrim$(\"  hello\"); rtrim$(\"hello  \")"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HELLOHELLO");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Call_Peek_And_Poke()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 poke 100,65",
+            "20 print peek(100)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 65 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Call_Pos_And_Csrlin()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print pos(0); csrlin"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0  0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Call_Inkey()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print len(inkey$)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Call_Input_String()
+    {
+        using var controller = new TestController
+        {
+            Input = new StringReader("abc")
+        };
+        var program = new List<string> {
+            "10 print input$(3)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("ABC");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Call_Date_And_Time()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print len(date$); len(time$)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().MatchRegex(@"^\s*8\s+8\s*$");
         controller.IsEndOfRun().Should().BeTrue();
     }
 

@@ -409,6 +409,11 @@ public class Scanner : IScanner
     {
         TokenType keyword = GetKeywordAtPosition();
         if (keyword == TokenType.Backup) return;
+        if (Peek() == '$')
+        {
+            AddUnknownIdentifierToken();
+            return;
+        }
 
         switch (keyword)
         {
@@ -428,6 +433,11 @@ public class Scanner : IScanner
     {
         TokenType keyword = GetKeywordAtPosition();
         if (keyword == TokenType.Backup) return;
+        if (Peek() == '$')
+        {
+            AddUnknownIdentifierToken();
+            return;
+        }
 
         switch (keyword)
         {
@@ -444,6 +454,11 @@ public class Scanner : IScanner
     {
         TokenType keyword = GetKeywordAtPosition();
         if (keyword == TokenType.Backup) return;
+        if (Peek() == '$')
+        {
+            AddUnknownIdentifierToken();
+            return;
+        }
 
         if (HasLongerKeywordMatch())
         {
