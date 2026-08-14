@@ -635,7 +635,33 @@ public class Parser : IParser
 
     private Expression Expression()
     {
-        return Comparison();
+        return Or();
+    }
+
+    private Expression Or()
+    {
+        Expression left = And();
+        while (Match(TokenType.Or))
+        {
+            Token operatorType = Previous();
+            Expression right = And();
+            left = new Binary(left, operatorType, right, operatorType.LinePosition);
+        }
+
+        return left;
+    }
+
+    private Expression And()
+    {
+        Expression left = Comparison();
+        while (Match(TokenType.And))
+        {
+            Token operatorType = Previous();
+            Expression right = Comparison();
+            left = new Binary(left, operatorType, right, operatorType.LinePosition);
+        }
+
+        return left;
     }
 
     private Expression Comparison()
@@ -681,11 +707,18 @@ public class Parser : IParser
 
     private Expression Unary()
     {
+        if (Match(TokenType.Not))
+        {
+            Token operatorType = Previous();
+            Expression right = Unary();
+            return new Unary(operatorType, right, operatorType.LinePosition);
+        }
+
         if (!Match(TokenType.Minus)) return Call();
 
-        Token operatorType = Previous();
-        Expression right = Unary();
-        return new Unary(operatorType, right, operatorType.LinePosition);
+        Token operatorType2 = Previous();
+        Expression right2 = Unary();
+        return new Unary(operatorType2, right2, operatorType2.LinePosition);
     }
 
     private Expression Call()

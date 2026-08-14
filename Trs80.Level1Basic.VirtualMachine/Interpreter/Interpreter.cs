@@ -115,6 +115,8 @@ public class Interpreter : IInterpreter
             TokenType.Slash => right == 0 ? throw new ValueOutOfRangeException(_program.CurrentStatement.LineNumber, _program.CurrentStatement.SourceLine, "Divide by zero") : (float)left / right,
             TokenType.Mod => right == 0 ? throw new ValueOutOfRangeException(_program.CurrentStatement.LineNumber, _program.CurrentStatement.SourceLine, "Divide by zero") : left % right,
             TokenType.Star => (left is bool && right is bool) ? left && right : left * right,
+            TokenType.And => IsTruthy(left) && IsTruthy(right),
+            TokenType.Or => IsTruthy(left) || IsTruthy(right),
             TokenType.GreaterThan => left > right,
             TokenType.GreaterThanOrEqual => left >= right,
             TokenType.LessThan => left < right,
@@ -173,6 +175,9 @@ public class Interpreter : IInterpreter
     public dynamic VisitUnaryExpression(Unary expression)
     {
         dynamic right = Evaluate(expression.Right);
+
+        if (expression.UnaryOperator.Type == TokenType.Not)
+            return IsTruthy(right) ? 0 : 1;
 
         CheckNumericOperand(expression.UnaryOperator, right);
         return -1 * right;

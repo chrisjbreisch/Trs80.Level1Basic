@@ -450,6 +450,20 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Call_Logical_Operators()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print 1 AND 1; 1 OR 0; NOT 0",
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1  1  1 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Rnd_0()
     {
         using var controller = new TestController();

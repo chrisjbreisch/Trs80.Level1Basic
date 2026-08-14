@@ -112,6 +112,7 @@ public class Scanner : IScanner
                     {"L.", TokenType.List},
                     {"N.", TokenType.N},
                     {"ON", TokenType.On},
+                    {"OR", TokenType.Or},
                     {"P.", TokenType.Print},
                     {"R.", TokenType.R},
                     {"S.", TokenType.Step},
@@ -122,6 +123,7 @@ public class Scanner : IScanner
             {
                 3, new Dictionary<string, TokenType>
                 {
+                    {"AND", TokenType.And},
                     {"CLS", TokenType.Cls},
                     {"DIM", TokenType.Dim},
                     {"END", TokenType.End},
@@ -130,6 +132,7 @@ public class Scanner : IScanner
                     {"LET", TokenType.Let},
                     {"MOD", TokenType.Mod},
                     {"NEW", TokenType.New},
+                    {"NOT", TokenType.Not},
                     {"REM", TokenType.Rem},
                     {"RUN", TokenType.Run},
                     {"ST.", TokenType.Stop},

@@ -28,6 +28,7 @@ public enum TokenType
 
     // Keywords
     A,
+    And,
     At,
     Cls,
     Cont,
@@ -51,7 +52,9 @@ public enum TokenType
     N,
     New,
     Next,
+    Not,
     On,
+    Or,
     Print,
     R,
     Read,
