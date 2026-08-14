@@ -97,6 +97,21 @@ public class ErrorTest
         controller.IsEndOfRun().Should().BeTrue();
     }
 
+    [TestMethod]
+    public void Interpreter_Rejects_Mid_Assignment_To_Numeric_Variable()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A = 1",
+            "20 MID$(A, 1, 1) = \"X\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
 
     [TestMethod]
     public void Interpreter_Handles_Invalid_Binary_Operands()

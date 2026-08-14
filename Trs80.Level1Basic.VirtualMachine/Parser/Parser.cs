@@ -221,7 +221,7 @@ public class Parser : IParser
         Consume(TokenType.RightParen, "Expected ')' after MID$ arguments.");
         Consume(TokenType.Equal, "Expected '=' after MID$ arguments.");
 
-        if (target is not Identifier identifier)
+        if (target is not Identifier identifier || !identifier.Name.Lexeme.EndsWith('$'))
         {
             _parseException = new ParseException(_lineNumber, _source, target.LinePosition,
                 "MID$ target must be a string variable.");
