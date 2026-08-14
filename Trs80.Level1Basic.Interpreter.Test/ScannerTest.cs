@@ -65,4 +65,20 @@ public class ScannerTest
 
         tokens[3].Type.Should().Be(TokenType.EndOfLine);
     }
+
+    [TestMethod]
+    public void Scanner_Recognizes_Return_Keyword()
+    {
+        using var controller = new TestController();
+        IScanner scanner = controller.Scanner;
+
+        string input = "10 return";
+        var sourceLine = new SourceLine(input);
+        List<Token> tokens = scanner.ScanTokens(sourceLine);
+
+        tokens.Should().HaveCount(3);
+        tokens[0].Type.Should().Be(TokenType.Number);
+        tokens[1].Type.Should().Be(TokenType.Return);
+        tokens[2].Type.Should().Be(TokenType.EndOfLine);
+    }
 }

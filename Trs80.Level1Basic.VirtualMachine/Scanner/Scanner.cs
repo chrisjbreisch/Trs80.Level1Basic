@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
@@ -409,7 +410,18 @@ public class Scanner : IScanner
         TokenType keyword = GetKeywordAtPosition();
         if (keyword == TokenType.Backup) return;
 
-        AddToken(keyword);
+        switch (keyword)
+        {
+            case TokenType.Rem:
+                CreateRemarkToken(keyword);
+                break;
+            case TokenType.Data:
+                CreateDataTokens(keyword);
+                break;
+            default:
+                AddToken(keyword);
+                break;
+        }
     }
 
     private void Add3CharToken()
@@ -516,19 +528,32 @@ public class Scanner : IScanner
 
     private TokenType GetKeywordAtPosition()
     {
-        string key = _source.Substring(TokenStart, TokenLength);
+        int maxLength = Math.Min(_source.Length - TokenStart, KeywordsByLetter.Keys.Max());
+        for (int candidateLength = maxLength; candidateLength >= 2; candidateLength--)
+        {
+            if (!KeywordsByLetter.TryGetValue(candidateLength, out Dictionary<string, TokenType> candidates))
+                continue;
+
+            string key = _source.Substring(TokenStart, candidateLength);
+            if (!candidates.TryGetValue(key, out TokenType keyword))
+                continue;
+
+            _currentIndex = TokenStart + candidateLength;
+            return keyword;
+        }
+
+        string fallbackKey = _source.Substring(TokenStart, TokenLength);
         try
         {
-            TokenType keyword = KeywordsByLetter[TokenLength][key];
+            TokenType keyword = KeywordsByLetter[TokenLength][fallbackKey];
             return keyword;
         }
         catch
         {
             if (IsAlpha(Peek())) throw;
 
-            // try backing up
-            key = _source.Substring(TokenStart + 1, TokenLength - 1);
-            if (!KeywordsByLetter[TokenLength - 1].ContainsKey(key)) throw;
+            fallbackKey = _source.Substring(TokenStart + 1, TokenLength - 1);
+            if (!KeywordsByLetter[TokenLength - 1].ContainsKey(fallbackKey)) throw;
 
             AddToken(TokenType.Identifier, _source.Substring(TokenStart, 1));
             _currentIndex = TokenStart + 1;
