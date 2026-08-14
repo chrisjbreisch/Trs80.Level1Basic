@@ -250,6 +250,23 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Call_Fix_Without_Losing_Double_Precision()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DEFDBL A",
+            "20 A = 16777215",
+            "30 A = A + 0.9",
+            "40 PRINT FIX(A) - 16777215"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Csng()
     {
         using var controller = new TestController();
