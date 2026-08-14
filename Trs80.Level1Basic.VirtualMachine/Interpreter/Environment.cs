@@ -305,7 +305,7 @@ public class Environment
         Dictionary<int, dynamic> array = GetArray(normalizedName);
 
         if (!array.ContainsKey(index))
-            array.Add(index, CastValue(0, GetDeclaredType(normalizedName)));
+            array.Add(index, DefaultArrayValue(normalizedName));
 
         return array[index];
     }
@@ -320,9 +320,14 @@ public class Environment
         Dictionary<string, dynamic> matrix = GetMatrixArray(normalizedName);
 
         if (!matrix.ContainsKey(matrixKey))
-            matrix.Add(matrixKey, CastValue(0, GetDeclaredType(normalizedName)));
+            matrix.Add(matrixKey, DefaultArrayValue(normalizedName));
 
         return matrix[matrixKey];
+    }
+
+    private dynamic DefaultArrayValue(string name)
+    {
+        return GetDeclaredType(name) == VariableType.String ? string.Empty : 0;
     }
 
     private void ValidateArrayIndex(string name, int index, int? index2 = null)

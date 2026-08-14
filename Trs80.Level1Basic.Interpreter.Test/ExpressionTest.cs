@@ -332,6 +332,22 @@ public class ExpressionTest
     }
 
     [TestMethod]
+    public void Interpreter_Initializes_String_Array_Elements_To_Empty()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DIM A$(2)",
+            "20 PRINT A$(0); \"X\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("X");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Use_Multidimensional_Array_Statement()
     {
         using var controller = new TestController();
