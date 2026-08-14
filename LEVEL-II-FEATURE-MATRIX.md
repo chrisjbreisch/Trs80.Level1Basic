@@ -42,8 +42,8 @@ The project already has a mature Level I interpreter. Level II work is being add
 
 | Area | Status | Implemented now | Remaining work and evidence |
 | --- | --- | --- | --- |
-| String inspection and slicing | Partial | `CHR$`, `ASC`, `LEN`, `LEFT$`, `RIGHT$`, `MID$`, `INSTR`, `STR$`, `VAL`, and case/trim helpers exist. Fractional numeric arguments truncate consistently. | Audit empty strings, zero/negative lengths, omitted arguments, and exact error behavior. Existing anchor: `NativeFunctionTest`. |
-| `MID$` assignment | Implemented | Supports `MID$(A$, start, length) = value$` and optional length. Replacement is fixed-length, does not expand the target, ignores starts beyond the target, and requires a string target. | Add manual-derived cases for zero/negative start and length, then mark the broader string-function row complete only after the remaining functions are audited. |
+| String inspection and slicing | Partial | `CHR$`, `ASC`, `LEN`, `LEFT$`, `RIGHT$`, `MID$`, `INSTR`, `STR$`, `VAL`, and case/trim helpers exist. Fractional numeric arguments truncate consistently. | Audit remaining empty-string, conversion, and exact error behavior. Existing anchor: `NativeFunctionTest`. |
+| `MID$` assignment | Implemented | Supports `MID$(A$, start, length) = value$` and optional length. Replacement is fixed-length, does not expand the target, ignores out-of-range starts and nonpositive arguments, and requires a string target. | Keep as a regression anchor while the broader string-function row is completed. |
 | Numeric conversion | Implemented | `CINT`, `CSNG`, `CDBL`, `FIX`, and `INT` exist. `CINT`, `FIX`, and `INT` avoid unnecessary `float` narrowing for double inputs. | Verify overflow, exact midpoint rounding, and conversion from strings. Existing anchor: `NativeFunctionTest`. |
 | Math functions | Implemented | `SQR`, `SIN`, `COS`, `TAN`, `ATN`, `LOG`, and `EXP` are registered and callable. | Confirm domain errors, precision, and Level II output expectations. |
 | Random numbers | Partial | One- and zero-argument `RND` exist; numeric controls are truncated to integer controls. | Define negative-control seeding/repeat behavior, zero behavior, and repeatability. |
@@ -91,7 +91,7 @@ Recent Level II slices, in order:
 
 Work in this order unless manual research changes the dependency:
 
-1. Finish the `MID$` zero/negative start and length compatibility cases.
+1. Implement user-defined `DEF FN` functions and their call semantics.
 2. Audit remaining string functions and their optional argument forms.
 3. Build the complete Level II scanner/parser keyword inventory.
 4. Add missing pure built-in functions one at a time.
