@@ -52,6 +52,7 @@ public class NativeFunctions : INativeFunctions
             {"fre", new List<Callable> { new() {Arity = 1, Call = (api, arg) => api.Fre(arg[0])}}},
             {"oct$", new List<Callable> { new() {Arity = 1, Call = (api, arg) => api.Oct(arg[0])}}},
             {"sgn", new List<Callable> { new() {Arity = 1, Call = (api, arg) => api.Sgn(arg[0])}}},
+            {"spc", new List<Callable> { new() {Arity = 1, Call = (api, arg) => api.Space((int)arg[0])}}},
             {"space$", new List<Callable> { new() {Arity = 1, Call = (api, arg) => api.Space((int)arg[0])}}},
             {"str$", new List<Callable> { new() {Arity = 1, Call = (api, arg) => api.Str(arg[0])}}},
             {"string$", new List<Callable> { new() {Arity = 2, Call = (api, arg) => api.String((int)arg[0], (string)arg[1])}}},

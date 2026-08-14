@@ -653,4 +653,18 @@ public class NativeFunctionTest
         controller.ReadOutputLine().Should().Be("     HELLO");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Interpreter_Can_Call_Spc()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print \"A\"; spc(3); \"B\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("A   B");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
