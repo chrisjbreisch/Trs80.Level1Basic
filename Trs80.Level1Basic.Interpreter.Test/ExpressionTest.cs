@@ -332,6 +332,21 @@ public class ExpressionTest
     }
 
     [TestMethod]
+    public void Interpreter_Rejects_Negative_Array_Index()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 PRINT A(-1)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HOW?");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Use_Defint_Declaration_For_Array_Elements()
     {
         using var controller = new TestController();

@@ -332,13 +332,16 @@ public class Environment
 
     private void ValidateArrayIndex(string name, int index, int? index2 = null)
     {
+        if (index < 0 || index2 is < 0)
+            throw new ValueOutOfRangeException(-1, string.Empty, "Array subscript out of range.");
+
         if (!_arrayDimensions.TryGetValue(name, out int[] dimensions))
             return;
 
-        if (index < 0 || index > dimensions[0] || index2.HasValue != (dimensions.Length == 2))
+        if (index > dimensions[0] || index2.HasValue != (dimensions.Length == 2))
             throw new ValueOutOfRangeException(-1, string.Empty, "Array subscript out of range.");
 
-        if (index2.HasValue && (index2.Value < 0 || index2.Value > dimensions[1]))
+        if (index2.HasValue && index2.Value > dimensions[1])
             throw new ValueOutOfRangeException(-1, string.Empty, "Array subscript out of range.");
     }
 }
