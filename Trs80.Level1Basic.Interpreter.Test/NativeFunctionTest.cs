@@ -593,6 +593,23 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Mid_Assignment_Ignores_Nonpositive_Arguments()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A$ = \"HELLO\"",
+            "20 MID$(A$, 0, 2) = \"XY\"",
+            "30 MID$(A$, 2, 0) = \"XY\"",
+            "40 PRINT A$"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HELLO");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Mem()
     {
         using var controller = new TestController();
