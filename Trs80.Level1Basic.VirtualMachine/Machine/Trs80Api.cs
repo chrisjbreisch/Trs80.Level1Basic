@@ -100,7 +100,7 @@ public class Trs80Api : ITrs80Api
 
     public int CInt(dynamic value)
     {
-        float numericValue = Convert.ToSingle(value, System.Globalization.CultureInfo.InvariantCulture);
+        double numericValue = Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture);
         return (int)Math.Round(numericValue, MidpointRounding.AwayFromZero);
     }
 

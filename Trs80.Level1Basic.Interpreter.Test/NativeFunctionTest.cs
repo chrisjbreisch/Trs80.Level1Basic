@@ -281,6 +281,23 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Call_Cint_Without_Losing_Double_Precision()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DEFDBL A",
+            "20 A = 16777216",
+            "30 A = A + 0.6",
+            "40 PRINT CINT(A) - 16777217"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Cdbl()
     {
         using var controller = new TestController();
