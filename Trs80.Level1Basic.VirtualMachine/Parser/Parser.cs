@@ -105,6 +105,8 @@ public class Parser : IParser
             return DataStatement();
         if (Match(TokenType.DefDbl, TokenType.DefInt, TokenType.DefSng, TokenType.DefStr))
             return DefTypeStatement();
+        if (Match(TokenType.Dim))
+            return DimStatement();
         if (Match(TokenType.End))
             return EndStatement();
         if (Match(TokenType.For))
@@ -187,6 +189,27 @@ public class Parser : IParser
         } while (Match(TokenType.Comma));
 
         return StatementWrapper(new DefType(type, names));
+    }
+
+    private IStatement DimStatement()
+    {
+        var dimensions = new List<Expression>();
+
+        do
+        {
+            if (Peek().Type != TokenType.Identifier)
+                _parseException = new ParseException(_lineNumber, _source,
+                    Peek().LinePosition, "Expected array name after 'DIM'.");
+
+            Expression dimension = Expression();
+            if (dimension is not Array)
+                _parseException = new ParseException(_lineNumber, _source,
+                    Peek().LinePosition, "Expected array declaration after 'DIM'.");
+
+            dimensions.Add(dimension);
+        } while (Match(TokenType.Comma));
+
+        return StatementWrapper(new Dim(dimensions));
     }
 
     private static List<string> GetRangeNames(string startName, string endName)

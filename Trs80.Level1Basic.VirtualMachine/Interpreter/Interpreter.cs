@@ -334,6 +334,22 @@ public class Interpreter : IInterpreter
         return null!;
     }
 
+    public Void VisitDimStatement(Dim statement)
+    {
+        foreach (Array array in statement.Dimensions)
+        {
+            string name = array.Name.Lexeme;
+            int index = (int)Evaluate(array.Index);
+
+            if (!_machine.Exists(name))
+                _machine.Set(name, index, 0);
+            else
+                _machine.Set(name, index, _machine.Get(name, index));
+        }
+
+        return null!;
+    }
+
     public Void VisitDeleteStatement(Delete statement)
     {
         DeleteStatement(statement.LineToDelete);

@@ -226,4 +226,21 @@ public class ExpressionTest
         controller.ReadOutputLine().Should().Be("CHRISTERRY");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Interpreter_Can_Use_Dim_Statement()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DIM A(10)",
+            "20 A(3) = 7",
+            "30 PRINT A(3)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 7 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }

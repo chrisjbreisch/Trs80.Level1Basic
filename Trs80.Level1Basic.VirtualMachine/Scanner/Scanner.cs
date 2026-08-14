@@ -122,6 +122,7 @@ public class Scanner : IScanner
                 3, new Dictionary<string, TokenType>
                 {
                     {"CLS", TokenType.Cls},
+                    {"DIM", TokenType.Dim},
                     {"END", TokenType.End},
                     {"FOR", TokenType.For},
                     {"IN.", TokenType.Input},
