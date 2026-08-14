@@ -225,12 +225,15 @@ public class Interpreter : IInterpreter
 
     private static bool IsTruthy(dynamic value)
     {
-        if (value == null) return false;
-
-        if (value is int intVal)
-            return intVal == 1;
-
-        return value;
+        return value switch
+        {
+            null => false,
+            bool boolValue => boolValue,
+            int intValue => intValue != 0,
+            float floatValue => floatValue != 0,
+            double doubleValue => doubleValue != 0,
+            _ => false
+        };
     }
 
     private static bool IsEqual(dynamic left, dynamic right)

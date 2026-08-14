@@ -193,6 +193,24 @@ public class ExpressionTest
     }
 
     [TestMethod]
+    public void Interpreter_Uses_Double_Numeric_Truthiness()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DEFDBL A",
+            "20 A = 0.5",
+            "30 IF A THEN PRINT \"TRUE\" : END",
+            "40 PRINT \"FALSE\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("TRUE");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Use_Defstr_Alias_After_Declaration()
     {
         using var controller = new TestController();
