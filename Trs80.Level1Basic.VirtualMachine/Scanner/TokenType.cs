@@ -39,10 +39,12 @@ public enum TokenType
     DefSng,
     DefStr,
     End,
+    Eqv,
     If,
     For,
     Gosub,
     Goto,
+    Imp,
     Input,
     Let,
     List,
@@ -68,6 +70,7 @@ public enum TokenType
     T,
     Then,
     To,
+    Xor,
 
     // EOL
     EndOfLine,

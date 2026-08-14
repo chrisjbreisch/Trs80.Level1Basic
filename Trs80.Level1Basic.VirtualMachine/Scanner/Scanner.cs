@@ -116,6 +116,7 @@ public class Scanner : IScanner
                     {"P.", TokenType.Print},
                     {"R.", TokenType.R},
                     {"S.", TokenType.Step},
+                    {"XOR", TokenType.Xor},
                     {"T.", TokenType.T},
                     {"TO", TokenType.To},
                 }
@@ -127,7 +128,9 @@ public class Scanner : IScanner
                     {"CLS", TokenType.Cls},
                     {"DIM", TokenType.Dim},
                     {"END", TokenType.End},
+                    {"EQV", TokenType.Eqv},
                     {"FOR", TokenType.For},
+                    {"IMP", TokenType.Imp},
                     {"IN.", TokenType.Input},
                     {"LET", TokenType.Let},
                     {"MOD", TokenType.Mod},
@@ -136,6 +139,7 @@ public class Scanner : IScanner
                     {"REM", TokenType.Rem},
                     {"RUN", TokenType.Run},
                     {"ST.", TokenType.Stop},
+                    {"XOR", TokenType.Xor},
                 }
             },
             {

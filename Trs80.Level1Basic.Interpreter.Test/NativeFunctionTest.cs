@@ -464,6 +464,20 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Call_Xor_Eqv_Imp_Operators()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print 1 XOR 0; 1 EQV 1; 0 IMP 1",
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1  1  1 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Rnd_0()
     {
         using var controller = new TestController();

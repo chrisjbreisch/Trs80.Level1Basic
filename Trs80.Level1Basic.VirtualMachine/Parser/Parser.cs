@@ -635,7 +635,46 @@ public class Parser : IParser
 
     private Expression Expression()
     {
-        return Or();
+        return Imp();
+    }
+
+    private Expression Imp()
+    {
+        Expression left = Eqv();
+        while (Match(TokenType.Imp))
+        {
+            Token operatorType = Previous();
+            Expression right = Eqv();
+            left = new Binary(left, operatorType, right, operatorType.LinePosition);
+        }
+
+        return left;
+    }
+
+    private Expression Eqv()
+    {
+        Expression left = Xor();
+        while (Match(TokenType.Eqv))
+        {
+            Token operatorType = Previous();
+            Expression right = Xor();
+            left = new Binary(left, operatorType, right, operatorType.LinePosition);
+        }
+
+        return left;
+    }
+
+    private Expression Xor()
+    {
+        Expression left = Or();
+        while (Match(TokenType.Xor))
+        {
+            Token operatorType = Previous();
+            Expression right = Or();
+            left = new Binary(left, operatorType, right, operatorType.LinePosition);
+        }
+
+        return left;
     }
 
     private Expression Or()
