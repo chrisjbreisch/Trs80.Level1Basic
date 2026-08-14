@@ -28,6 +28,22 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Call_Abs_With_Double_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DEFDBL A",
+            "20 A = -3.9",
+            "30 PRINT ABS(A)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3.9 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Abs_With_Int_Value()
     {
         using var controller = new TestController();

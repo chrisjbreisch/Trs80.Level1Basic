@@ -40,6 +40,9 @@ public class Trs80Api : ITrs80Api
     {
         if (value is float fValue)
             return Math.Abs(fValue);
+        if (value is double dValue)
+            return Math.Abs(dValue);
+
         return Math.Abs((int)value);
     }
 
