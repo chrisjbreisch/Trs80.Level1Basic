@@ -502,6 +502,23 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Assign_With_Mid_From_String_Variable()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A$ = \"HELLO\"",
+            "20 B$ = \"IP\"",
+            "30 MID$(A$, 2, 2) = B$",
+            "40 PRINT A$"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HIPLO");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Mid_Assignment_Does_Not_Expand_Target()
     {
         using var controller = new TestController();
