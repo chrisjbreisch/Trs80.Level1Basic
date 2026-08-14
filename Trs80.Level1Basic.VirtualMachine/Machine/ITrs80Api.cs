@@ -6,6 +6,9 @@ public interface ITrs80Api
     dynamic Mem();
     dynamic Abs(dynamic value);
     dynamic Chr(dynamic value);
+    string Left(string value, int length);
+    string Right(string value, int length);
+    string Mid(string value, int start, int length);
     dynamic Rnd(int control);
     string Tab(dynamic value);
     string PadQuadrant();

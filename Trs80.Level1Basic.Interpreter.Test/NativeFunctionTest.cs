@@ -71,6 +71,21 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Call_String_Functions()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 a$ = \"HELLO WORLD\"",
+            "20 print left$(a$, 5); \" \"; right$(a$, 5); \" \"; mid$(a$, 7, 5)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HELLO WORLD WORLD");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Mem()
     {
         using var controller = new TestController();

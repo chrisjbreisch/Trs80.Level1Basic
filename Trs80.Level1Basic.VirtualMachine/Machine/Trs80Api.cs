@@ -41,6 +41,36 @@ public class Trs80Api : ITrs80Api
         return (char)value;
     }
 
+    public string Left(string value, int length)
+    {
+        if (string.IsNullOrEmpty(value) || length <= 0)
+            return string.Empty;
+
+        return value.Length <= length ? value : value[..length];
+    }
+
+    public string Right(string value, int length)
+    {
+        if (string.IsNullOrEmpty(value) || length <= 0)
+            return string.Empty;
+
+        int start = value.Length - length;
+        return start <= 0 ? value : value[start..];
+    }
+
+    public string Mid(string value, int start, int length)
+    {
+        if (string.IsNullOrEmpty(value) || start <= 0 || length <= 0)
+            return string.Empty;
+
+        int zeroBasedStart = start - 1;
+        if (zeroBasedStart >= value.Length)
+            return string.Empty;
+
+        int end = Math.Min(value.Length, zeroBasedStart + length);
+        return value[zeroBasedStart..end];
+    }
+
     public static readonly Random Rand = new();
 
     public dynamic Rnd(int control)

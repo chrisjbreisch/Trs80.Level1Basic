@@ -18,6 +18,8 @@ public class NativeFunctions : INativeFunctions
             {"chr$", new List<Callable> { new()  {Arity = 1, Call = (api, arg) => api.Chr(arg[0])}}},
             {"int", new List<Callable> { new()  {Arity = 1, Call = (api, arg) => api.Int(arg[0])}}},
             {"i.", new List<Callable> { new()  {Arity = 1, Call = (api, arg) => api.Int(arg[0])}}},
+            {"left$", new List<Callable> { new() {Arity = 2, Call = (api, arg) => api.Left((string)arg[0], (int)arg[1])}}},
+            {"mid$", new List<Callable> { new() {Arity = 3, Call = (api, arg) => api.Mid((string)arg[0], (int)arg[1], (int)arg[2])}}},
             {"mem", new List<Callable> { new()  {Arity = 0, Call = (api, arg) => api.Mem()}}},
             {"m.", new List<Callable> { new()  {Arity = 0, Call = (api, arg) => api.Mem()}}},
             {"point", new List<Callable> { new()  {Arity = 2, Call = (api, arg) => api.Point(arg[0], arg[1])}}},
@@ -26,6 +28,7 @@ public class NativeFunctions : INativeFunctions
                 new()  {Arity = 1, Call = (api, arg) => api.Rnd(arg[0])},
                 new()  {Arity = 2, Call = (api, arg) => api.Reset(arg[0], arg[1])}
             }},
+            {"right$", new List<Callable> { new() {Arity = 2, Call = (api, arg) => api.Right((string)arg[0], (int)arg[1])}}},
             {"rnd", new List<Callable> { new()  {Arity = 1, Call = (api, arg) => api.Rnd(arg[0])}}},
             {"reset", new List<Callable> { new()  {Arity = 2, Call = (api, arg) => api.Reset(arg[0], arg[1])}}},
             {"s.", new List<Callable> { new()  {Arity = 2, Call = (api, arg) => api.Set(arg[0], arg[1])}}},
