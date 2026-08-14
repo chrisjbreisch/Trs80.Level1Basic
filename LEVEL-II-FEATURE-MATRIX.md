@@ -18,7 +18,7 @@ This is the working implementation checklist for the `level2/type-declarations` 
 
 | Area | Status | Current evidence / next step |
 | --- | --- | --- |
-| String functions | Partial | `CHR$`, `ASC`, `LEN`, `LEFT$`, `RIGHT$`, `MID$`, `INSTR`, `STR$`, `VAL`, and case/trim helpers exist. Audit argument forms and boundary behavior against Level II. |
+| String functions | Partial | `CHR$`, `ASC`, `LEN`, `LEFT$`, `RIGHT$`, `MID$`, `INSTR`, `STR$`, `VAL`, and case/trim helpers exist. `MID$` assignment supports optional length and fixed-length replacement; remaining argument forms and boundaries need auditing. |
 | Numeric conversion | Implemented | `CINT`, `CSNG`, `CDBL`, `FIX`, and `INT` exist with double-precision conversion coverage. Confirm overflow behavior. |
 | Math functions | Implemented | `SQR`, `SIN`, `COS`, `TAN`, `ATN`, `LOG`, and `EXP` exist. Confirm domain errors and precision behavior. |
 | Random numbers | Partial | One- and zero-argument `RND` exist. Negative, zero, and repeatability/seeding semantics need compatibility tests. |
@@ -50,8 +50,9 @@ This is the working implementation checklist for the `level2/type-declarations` 
 
 1. Type conversion, promotion, array defaults, and bounds tests.
 2. Complete the scanner/parser inventory from the Level II manual.
-3. Add missing pure built-in functions one at a time.
-4. Complete statement and command families one at a time.
-5. Define and test hardware-dependent behavior.
-6. Add Level II compatibility programs and update this matrix as each feature closes.
-7. Implement line editing as a separate subsystem.
+3. Complete the `MID$` assignment and string-function compatibility audit.
+4. Add missing pure built-in functions one at a time.
+5. Complete statement and command families one at a time.
+6. Define and test hardware-dependent behavior.
+7. Add Level II compatibility programs and update this matrix as each feature closes.
+8. Implement line editing as a separate subsystem.
