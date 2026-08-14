@@ -192,6 +192,7 @@ public class Interpreter : IInterpreter
         {
             case float:
             case int:
+            case double:
                 return;
             default:
                 throw new RuntimeExpressionException(_program.CurrentStatement.LineNumber,

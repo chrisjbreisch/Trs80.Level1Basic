@@ -158,6 +158,23 @@ public class ExpressionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Apply_Unary_Negation_To_Double()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DEFDBL A",
+            "20 A = 3.9",
+            "30 PRINT -A"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("-3.9 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Use_Defstr_Alias_After_Declaration()
     {
         using var controller = new TestController();
