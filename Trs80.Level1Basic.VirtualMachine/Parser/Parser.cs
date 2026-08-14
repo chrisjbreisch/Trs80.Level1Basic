@@ -99,6 +99,8 @@ public class Parser : IParser
     {
         if (Match(TokenType.Clear))
             return ClearStatement();
+        if (IsMidAssignment())
+            return MidAssignmentStatement();
         if (Match(TokenType.Cls))
             return ClsStatement();
         if (Match(TokenType.Cont))
@@ -198,6 +200,35 @@ public class Parser : IParser
     private IStatement ClearStatement()
     {
         return StatementWrapper(new Clear());
+    }
+
+    private bool IsMidAssignment()
+    {
+        return Peek().Type == TokenType.Identifier
+            && string.Equals(Peek().Lexeme, "MID$", StringComparison.OrdinalIgnoreCase)
+            && PeekNext().Type == TokenType.LeftParen;
+    }
+
+    private IStatement MidAssignmentStatement()
+    {
+        Advance();
+        Consume(TokenType.LeftParen, "Expected '(' after 'MID$'.");
+        Expression target = Expression();
+        Consume(TokenType.Comma, "Expected ',' after MID$ target.");
+        Expression start = Expression();
+        Consume(TokenType.Comma, "Expected ',' after MID$ start.");
+        Expression length = Expression();
+        Consume(TokenType.RightParen, "Expected ')' after MID$ arguments.");
+        Consume(TokenType.Equal, "Expected '=' after MID$ arguments.");
+
+        if (target is not Identifier identifier)
+        {
+            _parseException = new ParseException(_lineNumber, _source, target.LinePosition,
+                "MID$ target must be a string variable.");
+            return StatementWrapper(new MidAssignment(new Identifier(Peek(), Peek().LinePosition), start, length, Expression()));
+        }
+
+        return StatementWrapper(new MidAssignment(identifier, start, length, Expression()));
     }
 
     private IStatement DimStatement()

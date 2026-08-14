@@ -304,6 +304,21 @@ public class Trs80Api : ITrs80Api
         return value[zeroBasedStart..end];
     }
 
+    public string MidAssign(string value, int start, int length, string replacement)
+    {
+        if (string.IsNullOrEmpty(value) || string.IsNullOrEmpty(replacement) || start <= 0 || length <= 0)
+            return value ?? string.Empty;
+
+        int zeroBasedStart = start - 1;
+        if (zeroBasedStart >= value.Length)
+            return value;
+
+        char[] result = value.ToCharArray();
+        int replacementLength = Math.Min(length, replacement.Length);
+        replacement.CopyTo(0, result, zeroBasedStart, Math.Min(replacementLength, result.Length - zeroBasedStart));
+        return new string(result);
+    }
+
     public static readonly Random Rand = new();
 
     public dynamic Rnd(dynamic control)

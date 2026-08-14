@@ -470,6 +470,22 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Assign_With_Mid()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A$ = \"HELLO\"",
+            "20 MID$(A$, 2, 2) = \"IP\"",
+            "30 PRINT A$"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HIPLO");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Mem()
     {
         using var controller = new TestController();

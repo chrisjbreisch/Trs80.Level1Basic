@@ -26,6 +26,7 @@ public interface IVisitor<out T>
     T VisitListStatement(List statement);
     T VisitLoadStatement(Load statement);
     T VisitMergeStatement(Merge statement);
+    T VisitMidAssignmentStatement(MidAssignment statement);
     T VisitNewStatement(New statement);
     T VisitNextStatement(Next statement);
     T VisitOnStatement(On statement);
