@@ -43,6 +43,22 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Restores_User_Function_Parameter_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 X = 10",
+            "20 DEF FNDOUBLE(X) = X + X",
+            "30 PRINT FNDOUBLE(3); X"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 6  10 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Abs_With_Double_Value()
     {
         using var controller = new TestController();
