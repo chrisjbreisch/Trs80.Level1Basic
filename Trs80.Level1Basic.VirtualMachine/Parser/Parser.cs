@@ -97,6 +97,8 @@ public class Parser : IParser
 
     private IStatement Statement()
     {
+        if (Match(TokenType.Clear))
+            return ClearStatement();
         if (Match(TokenType.Cls))
             return ClsStatement();
         if (Match(TokenType.Cont))
@@ -191,6 +193,11 @@ public class Parser : IParser
         } while (Match(TokenType.Comma));
 
         return StatementWrapper(new DefType(type, names));
+    }
+
+    private IStatement ClearStatement()
+    {
+        return StatementWrapper(new Clear());
     }
 
     private IStatement DimStatement()

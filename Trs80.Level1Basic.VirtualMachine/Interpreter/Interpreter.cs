@@ -371,6 +371,13 @@ public class Interpreter : IInterpreter
         return null!;
     }
 
+    public Void VisitClearStatement(Clear statement)
+    {
+        _machine.Initialize();
+
+        return null!;
+    }
+
     public Void VisitDefTypeStatement(DefType statement)
     {
         foreach (string name in statement.Names)

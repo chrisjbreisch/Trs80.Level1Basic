@@ -168,6 +168,7 @@ public class Scanner : IScanner
             {
                 5, new Dictionary<string, TokenType>
                 {
+                    {"CLEAR", TokenType.Clear},
                     {"GOSUB", TokenType.Gosub},
                     {"INPUT", TokenType.Input},
                     {"MERGE", TokenType.Merge},

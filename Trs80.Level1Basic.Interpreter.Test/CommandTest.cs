@@ -124,6 +124,22 @@ public class CommandTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Clear_Variables_Without_Clearing_The_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A = 3",
+            "20 CLEAR",
+            "30 PRINT A"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Returns_Full_Memory_After_New()
     {
         using var controller = new TestController();

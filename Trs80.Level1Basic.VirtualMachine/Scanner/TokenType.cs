@@ -30,6 +30,7 @@ public enum TokenType
     A,
     And,
     At,
+    Clear,
     Cls,
     Cont,
     Data,
