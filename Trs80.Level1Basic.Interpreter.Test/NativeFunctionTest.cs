@@ -148,6 +148,20 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Call_Right_With_Non_Integer_Length()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT RIGHT$(\"HELLO\", 2.9)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("LO");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Len_And_Asc()
     {
         using var controller = new TestController();
