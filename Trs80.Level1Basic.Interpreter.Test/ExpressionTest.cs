@@ -175,6 +175,24 @@ public class ExpressionTest
     }
 
     [TestMethod]
+    public void Interpreter_Preserves_Double_Precision_During_Division()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DEFDBL A-B",
+            "20 A = 1",
+            "30 B = 3",
+            "40 PRINT A / B"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0.3333333 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Use_Defstr_Alias_After_Declaration()
     {
         using var controller = new TestController();

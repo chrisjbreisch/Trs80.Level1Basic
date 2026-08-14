@@ -112,7 +112,7 @@ public class Interpreter : IInterpreter
         {
             TokenType.Plus => (left is bool && right is bool) ? left || right : left + right,
             TokenType.Minus => left - right,
-            TokenType.Slash => right == 0 ? throw new ValueOutOfRangeException(_program.CurrentStatement.LineNumber, _program.CurrentStatement.SourceLine, "Divide by zero") : (float)left / right,
+            TokenType.Slash => right == 0 ? throw new ValueOutOfRangeException(_program.CurrentStatement.LineNumber, _program.CurrentStatement.SourceLine, "Divide by zero") : left is double || right is double ? (double)left / right : (float)left / right,
             TokenType.Mod => right == 0 ? throw new ValueOutOfRangeException(_program.CurrentStatement.LineNumber, _program.CurrentStatement.SourceLine, "Divide by zero") : left % right,
             TokenType.Star => (left is bool && right is bool) ? left && right : left * right,
             TokenType.And => IsTruthy(left) && IsTruthy(right),
