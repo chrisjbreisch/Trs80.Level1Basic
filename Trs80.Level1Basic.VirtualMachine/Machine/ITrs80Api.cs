@@ -4,6 +4,7 @@ public interface ITrs80Api
 {
     int Int(dynamic value);
     dynamic Mem();
+    dynamic Fre(dynamic value);
     dynamic Abs(dynamic value);
     dynamic Chr(dynamic value);
     int Asc(dynamic value);
@@ -28,6 +29,13 @@ public interface ITrs80Api
     string InputString(int length);
     string Date();
     string Time();
+    float Sqr(dynamic value);
+    float Sin(dynamic value);
+    float Cos(dynamic value);
+    float Tan(dynamic value);
+    float Atn(dynamic value);
+    float Log(dynamic value);
+    float Exp(dynamic value);
     int Sgn(dynamic value);
     string Hex(dynamic value);
     string Oct(dynamic value);

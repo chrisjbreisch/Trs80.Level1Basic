@@ -31,6 +31,11 @@ public class Trs80Api : ITrs80Api
         return TotalMemory - _program.Size();
     }
 
+    public dynamic Fre(dynamic value)
+    {
+        return Mem();
+    }
+
     public dynamic Abs(dynamic value)
     {
         if (value is float fValue)
@@ -185,6 +190,41 @@ public class Trs80Api : ITrs80Api
     public string Time()
     {
         return DateTime.Now.ToString("HH:mm:ss");
+    }
+
+    public float Sqr(dynamic value)
+    {
+        return (float)Math.Sqrt(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    public float Sin(dynamic value)
+    {
+        return (float)Math.Sin(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    public float Cos(dynamic value)
+    {
+        return (float)Math.Cos(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    public float Tan(dynamic value)
+    {
+        return (float)Math.Tan(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    public float Atn(dynamic value)
+    {
+        return (float)Math.Atan(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    public float Log(dynamic value)
+    {
+        return (float)Math.Log(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    public float Exp(dynamic value)
+    {
+        return (float)Math.Exp(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
     }
 
     public int Sgn(dynamic value)
