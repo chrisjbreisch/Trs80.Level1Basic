@@ -211,6 +211,24 @@ public class ExpressionTest
     }
 
     [TestMethod]
+    public void Interpreter_Compares_Different_Numeric_Types_By_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DEFDBL A",
+            "20 A = 1",
+            "30 IF A = 1 THEN PRINT \"TRUE\" : END",
+            "40 PRINT \"FALSE\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("TRUE");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Use_Defstr_Alias_After_Declaration()
     {
         using var controller = new TestController();

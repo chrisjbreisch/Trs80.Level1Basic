@@ -239,6 +239,10 @@ public class Interpreter : IInterpreter
     private static bool IsEqual(dynamic left, dynamic right)
     {
         if (left == null && right == null) return true;
+        if (left is int or float or double && right is int or float or double)
+            return Convert.ToDouble(left, System.Globalization.CultureInfo.InvariantCulture)
+                == Convert.ToDouble(right, System.Globalization.CultureInfo.InvariantCulture);
+
         return left != null && (bool)left.Equals(right);
     }
 
