@@ -486,6 +486,22 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Mid_Assignment_Does_Not_Expand_Target()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A$ = \"HELLO\"",
+            "20 MID$(A$, 2, 2) = \"WORLD\"",
+            "30 PRINT A$"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HWOLO");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Mem()
     {
         using var controller = new TestController();
