@@ -478,6 +478,23 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Call_Rnd_Without_Arguments()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print rnd",
+        };
+
+        controller.RunProgram(program);
+
+        string? output = controller.ReadOutputLine();
+        float value = float.Parse(output!);
+        value.Should().BeInRange(0, 1);
+
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Rnd_0()
     {
         using var controller = new TestController();

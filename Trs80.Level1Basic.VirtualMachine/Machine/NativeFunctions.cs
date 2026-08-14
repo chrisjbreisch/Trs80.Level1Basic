@@ -59,11 +59,15 @@ public class NativeFunctions : INativeFunctions
             {"point", new List<Callable> { new()  {Arity = 2, Call = (api, arg) => api.Point(arg[0], arg[1])}}},
             {"p.", new List<Callable> { new()  {Arity = 2, Call = (api, arg) => api.Point(arg[0], arg[1])}}},
             {"r.", new List<Callable> {
+                new()  {Arity = 0, Call = (api, arg) => api.Rnd(0)},
                 new()  {Arity = 1, Call = (api, arg) => api.Rnd(arg[0])},
                 new()  {Arity = 2, Call = (api, arg) => api.Reset(arg[0], arg[1])}
             }},
             {"right$", new List<Callable> { new() {Arity = 2, Call = (api, arg) => api.Right((string)arg[0], (int)arg[1])}}},
-            {"rnd", new List<Callable> { new()  {Arity = 1, Call = (api, arg) => api.Rnd(arg[0])}}},
+            {"rnd", new List<Callable> {
+                new()  {Arity = 0, Call = (api, arg) => api.Rnd(0)},
+                new()  {Arity = 1, Call = (api, arg) => api.Rnd(arg[0])}
+            }},
             {"val", new List<Callable> { new() {Arity = 1, Call = (api, arg) => api.Val((string)arg[0])}}},
             {"reset", new List<Callable> { new()  {Arity = 2, Call = (api, arg) => api.Reset(arg[0], arg[1])}}},
             {"s.", new List<Callable> { new()  {Arity = 2, Call = (api, arg) => api.Set(arg[0], arg[1])}}},
