@@ -216,8 +216,9 @@ public class Parser : IParser
         Expression target = Expression();
         Consume(TokenType.Comma, "Expected ',' after MID$ target.");
         Expression start = Expression();
-        Consume(TokenType.Comma, "Expected ',' after MID$ start.");
-        Expression length = Expression();
+        Expression length = null;
+        if (Match(TokenType.Comma))
+            length = Expression();
         Consume(TokenType.RightParen, "Expected ')' after MID$ arguments.");
         Consume(TokenType.Equal, "Expected '=' after MID$ arguments.");
 

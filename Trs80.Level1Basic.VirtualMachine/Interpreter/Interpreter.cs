@@ -649,7 +649,7 @@ public class Interpreter : IInterpreter
         string value = (string)Evaluate(statement.Value);
         string current = (string)_machine.Get(statement.Target.Name.Lexeme);
         int start = (int)Evaluate(statement.Start);
-        int length = (int)Evaluate(statement.Length);
+        int length = statement.Length is null ? value.Length : (int)Evaluate(statement.Length);
 
         _machine.Set(statement.Target.Name.Lexeme, _trs80Api.MidAssign(current, start, length, value));
         return null!;
