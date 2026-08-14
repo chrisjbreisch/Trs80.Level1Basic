@@ -254,12 +254,16 @@ public class Trs80Api : ITrs80Api
         return Convert.ToString(number, 8);
     }
 
-    public string String(int count, string value)
+    public string String(int count, dynamic value)
     {
-        if (count <= 0 || string.IsNullOrEmpty(value))
+        if (count <= 0 || value is null)
             return string.Empty;
 
-        return new string(value[0], count);
+        char character = value is string text
+            ? string.IsNullOrEmpty(text) ? '\0' : text[0]
+            : (char)Convert.ToInt32(value, System.Globalization.CultureInfo.InvariantCulture);
+
+        return character == '\0' ? string.Empty : new string(character, count);
     }
 
     public string Space(int length)

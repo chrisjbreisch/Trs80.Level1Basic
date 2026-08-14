@@ -655,6 +655,20 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Call_String_With_Character_Code()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 print string$(3, 65)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("AAA");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Spc()
     {
         using var controller = new TestController();

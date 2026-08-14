@@ -39,7 +39,7 @@ public interface ITrs80Api
     int Sgn(dynamic value);
     string Hex(dynamic value);
     string Oct(dynamic value);
-    string String(int count, string value);
+    string String(int count, dynamic value);
     string Space(int length);
     string Left(string value, int length);
     string Right(string value, int length);
