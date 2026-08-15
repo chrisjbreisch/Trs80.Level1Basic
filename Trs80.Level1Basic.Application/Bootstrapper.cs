@@ -7,7 +7,10 @@ using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
+using NLog;
+using NLog.Config;
 using NLog.Extensions.Logging;
 
 using Trs80.Level1Basic.Command;
@@ -122,7 +125,8 @@ public sealed class Bootstrapper : DisposableBase
 
     private void ConfigureLogging()
     {
-        NLog.LogManager.LoadConfiguration(Path.Combine(AppContext.BaseDirectory, "nLog.config"));
+        NLog.LogManager.Setup()
+            .LoadConfigurationFromFile(Path.Combine(AppContext.BaseDirectory, "nLog.config"));
         LogFactory = LoggerFactory.Create(
             builder =>
                 builder
