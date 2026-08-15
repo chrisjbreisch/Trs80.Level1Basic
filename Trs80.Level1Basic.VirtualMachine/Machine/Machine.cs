@@ -87,10 +87,11 @@ public class Machine : IMachine
 
     public void ListProgram(int lineNumber, int? endLineNumber = null)
     {
+        int firstLine = endLineNumber.HasValue ? Math.Min(lineNumber, endLineNumber.Value) : lineNumber;
+        int lastLine = endLineNumber.HasValue ? Math.Max(lineNumber, endLineNumber.Value) : int.MaxValue;
         int index = 0;
         bool exitList = false;
-        foreach (IStatement statement in Program.List().Where(s => s.LineNumber >= lineNumber &&
-            (!endLineNumber.HasValue || s.LineNumber <= endLineNumber.Value)))
+        foreach (IStatement statement in Program.List().Where(s => s.LineNumber >= firstLine && s.LineNumber <= lastLine))
         {
             _trs80.WriteLine(statement.LineNumber >= 0 ? $" {statement.LineNumber}  {statement.SourceLine}" : $"{statement.SourceLine}");
             index++;
