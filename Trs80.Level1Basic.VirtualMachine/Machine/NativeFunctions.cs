@@ -50,7 +50,10 @@ public class NativeFunctions : INativeFunctions
             }},
             {"left$", new List<Callable> { new() {Arity = 2, Call = (api, arg) => api.Left((string)arg[0], (int)arg[1])}}},
             {"len", new List<Callable> { new() {Arity = 1, Call = (api, arg) => api.Len(arg[0])}}},
-            {"mid$", new List<Callable> { new() {Arity = 3, Call = (api, arg) => api.Mid((string)arg[0], (int)arg[1], (int)arg[2])}}},
+            {"mid$", new List<Callable> {
+                new() {Arity = 2, Call = (api, arg) => api.Mid((string)arg[0], (int)arg[1])},
+                new() {Arity = 3, Call = (api, arg) => api.Mid((string)arg[0], (int)arg[1], (int)arg[2])}
+            }},
             {"mem", new List<Callable> { new()  {Arity = 0, Call = (api, arg) => api.Mem()}}},
             {"fre", new List<Callable> { new() {Arity = 1, Call = (api, arg) => api.Fre(arg[0])}}},
             {"oct$", new List<Callable> { new() {Arity = 1, Call = (api, arg) => api.Oct(arg[0])}}},

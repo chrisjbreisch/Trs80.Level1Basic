@@ -300,6 +300,11 @@ public class Trs80Api : ITrs80Api
         return start <= 0 ? value : value[start..];
     }
 
+    public string Mid(string value, int start)
+    {
+        return Mid(value, start, value?.Length ?? 0);
+    }
+
     public string Mid(string value, int start, int length)
     {
         if (string.IsNullOrEmpty(value) || start <= 0 || length <= 0)

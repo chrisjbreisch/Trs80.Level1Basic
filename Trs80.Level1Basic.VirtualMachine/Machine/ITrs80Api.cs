@@ -44,6 +44,7 @@ public interface ITrs80Api
     string Space(int length);
     string Left(string value, int length);
     string Right(string value, int length);
+    string Mid(string value, int start);
     string Mid(string value, int start, int length);
     string MidAssign(string value, int start, int length, string replacement);
     dynamic Rnd(dynamic control);

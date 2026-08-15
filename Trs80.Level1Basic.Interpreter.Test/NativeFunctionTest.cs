@@ -269,6 +269,20 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Call_Mid_Without_Length()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT MID$(\"HELLO\", 2)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("ELLO");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Len_And_Asc()
     {
         using var controller = new TestController();
