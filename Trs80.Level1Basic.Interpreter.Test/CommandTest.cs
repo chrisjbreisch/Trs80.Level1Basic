@@ -73,6 +73,20 @@ public class CommandTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Delete_With_Abbreviated_Command()
+    {
+        using var controller = new TestController();
+        controller.ExecuteStatements(new List<string> {
+            "10 PRINT 10",
+            "20 PRINT 20"
+        });
+        controller.ExecuteLine("DEL. 10");
+        controller.ExecuteLine("RUN");
+
+        controller.ReadOutputLine().Should().Be(" 20 ");
+    }
+
+    [TestMethod]
     public void Interpreter_Can_List_A_Line_Range()
     {
         using var controller = new TestController();

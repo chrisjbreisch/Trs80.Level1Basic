@@ -151,6 +151,7 @@ public class Scanner : IScanner
                     {"DEFD", TokenType.DefDbl},
                     {"DEFI", TokenType.DefInt},
                     {"DEFS", TokenType.DefSng},
+                    {"DEL.", TokenType.Delete},
                     {"GOS.", TokenType.Gosub},
                     {"GOTO", TokenType.Goto},
                     {"LIST", TokenType.List},
