@@ -87,6 +87,15 @@ public class CommandTest
     }
 
     [TestMethod]
+    public void Parser_Can_Parse_Abbreviated_Load_Command()
+    {
+        using var controller = new TestController();
+        var tokens = controller.Scanner.ScanTokens(new SourceLine("LO. \"PROGRAM.BAS\""));
+
+        controller.Parser.Parse(tokens).Should().BeOfType<Load>();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_List_A_Line_Range()
     {
         using var controller = new TestController();
