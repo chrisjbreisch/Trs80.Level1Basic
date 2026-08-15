@@ -531,6 +531,20 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Call_Cvs()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT CVS(\"ABCD\")"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 781.035 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Lcase()
     {
         using var controller = new TestController();

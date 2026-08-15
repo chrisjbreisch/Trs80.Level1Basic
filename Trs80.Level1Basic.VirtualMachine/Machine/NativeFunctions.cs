@@ -19,6 +19,7 @@ public class NativeFunctions : INativeFunctions
             {"chr$", new List<Callable> { new()  {Arity = 1, Call = (api, arg) => api.Chr(arg[0])}}},
             {"cint", new List<Callable> { new() {Arity = 1, Call = (api, arg) => api.CInt(arg[0])}}},
             {"cvi", new List<Callable> { new() {Arity = 1, Call = (api, arg) => api.Cvi((string)arg[0])}}},
+            {"cvs", new List<Callable> { new() {Arity = 1, Call = (api, arg) => api.Cvs((string)arg[0])}}},
             {"cdbl", new List<Callable> { new() {Arity = 1, Call = (api, arg) => api.CDbl(arg[0])}}},
             {"csng", new List<Callable> { new() {Arity = 1, Call = (api, arg) => api.CSng(arg[0])}}},
             {"fix", new List<Callable> { new() {Arity = 1, Call = (api, arg) => api.Fix(arg[0])}}},
