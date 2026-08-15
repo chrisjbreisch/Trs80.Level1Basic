@@ -327,6 +327,20 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Handles_Empty_String_Function_Arguments()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT LEN(\"\"); ASC(\"\"); VAL(\"\"); LEN(LEFT$(\"\", 3)); LEN(RIGHT$(\"\", 3)); LEN(MID$(\"\", 1)); INSTR(\"\", \"X\")"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0  0  0  0  0  0  0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Instr_And_Space()
     {
         using var controller = new TestController();

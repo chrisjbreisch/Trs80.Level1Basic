@@ -43,7 +43,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 
 | Area | Status | Implemented now | Remaining work and evidence |
 | --- | --- | --- | --- |
-| String inspection and slicing | Partial | `CHR$`, `ASC`, `LEN`, `LEFT$`, `RIGHT$`, `MID$`, `INSTR`, `STR$`, `VAL`, and case/trim helpers exist. Fractional numeric arguments truncate consistently, including `STRING$` character codes; `INSTR` supports its optional start position; and `MID$` supports both `(source$, start)` and `(source$, start, length)`. | Audit remaining empty-string, conversion, and exact error behavior. Existing anchor: `NativeFunctionTest`. |
+| String inspection and slicing | Partial | `CHR$`, `ASC`, `LEN`, `LEFT$`, `RIGHT$`, `MID$`, `INSTR`, `STR$`, `VAL`, and case/trim helpers exist. Fractional numeric arguments truncate consistently, including `STRING$` character codes; `INSTR` supports its optional start position; `MID$` supports both `(source$, start)` and `(source$, start, length)`; and empty-string behavior is covered. | Audit remaining conversion and exact error behavior. Existing anchor: `NativeFunctionTest`. |
 | `MID$` assignment | Implemented | Supports `MID$(A$, start, length) = value$` and optional length. Replacement is fixed-length, does not expand the target, ignores out-of-range starts and nonpositive arguments, and requires a string target. | Keep as a regression anchor while the broader string-function row is completed. |
 | Numeric conversion | Implemented | `CINT`, `CSNG`, `CDBL`, `FIX`, and `INT` exist. `CINT`, `FIX`, and `INT` avoid unnecessary `float` narrowing for double inputs. | Verify overflow, exact midpoint rounding, and conversion from strings. Existing anchor: `NativeFunctionTest`. |
 | Math functions | Implemented | `SQR`, `SIN`, `COS`, `TAN`, `ATN`, `LOG`, and `EXP` are registered and callable. | Confirm domain errors, precision, and Level II output expectations. |
@@ -91,6 +91,7 @@ Recent Level II slices, in order:
 12. Optional start-position support for `INSTR`.
 13. Optional length support for `MID$` function calls.
 14. Fractional character-code truncation for `STRING$`.
+15. Empty-string behavior across string inspection and slicing functions.
 
 ## Next Slice Queue
 
