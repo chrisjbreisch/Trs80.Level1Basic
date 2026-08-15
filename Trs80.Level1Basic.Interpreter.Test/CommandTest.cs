@@ -64,6 +64,31 @@ public class CommandTest
         controller.ReadOutputLine().Should().Be(" 30  PRINT 30");
     }
 
+    [TestMethod]
+    public void Interpreter_Can_List_An_Open_Ended_Line_Range()
+    {
+        using var controller = new TestController();
+        controller.ExecuteStatements(new List<string> {
+            "10 PRINT 10",
+            "20 PRINT 20",
+            "30 PRINT 30"
+        });
+
+        controller.ExecuteLine("LIST -20");
+        controller.ReadOutputLine().Should().Be(" 10  PRINT 10");
+        controller.ReadOutputLine().Should().Be(" 20  PRINT 20");
+
+        using var secondController = new TestController();
+        secondController.ExecuteStatements(new List<string> {
+            "10 PRINT 10",
+            "20 PRINT 20",
+            "30 PRINT 30"
+        });
+        secondController.ExecuteLine("LIST 20-");
+        secondController.ReadOutputLine().Should().Be(" 20  PRINT 20");
+        secondController.ReadOutputLine().Should().Be(" 30  PRINT 30");
+    }
+
 
     [TestMethod]
     public void Interpreter_Can_Handle_Lines_Inserted_In_The_Middle()

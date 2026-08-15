@@ -525,6 +525,12 @@ public class Parser : IParser
 
     private IStatement ListStatement()
     {
+        if (Match(TokenType.Minus))
+        {
+            Consume(TokenType.Number, "Expected ending line number after LIST range.");
+            return new List(new Literal(-1, null, 0), new Literal(Previous().Literal, null, Previous().LinePosition));
+        }
+
         if (Check(TokenType.Number))
         {
             Token start = Peek();
@@ -532,6 +538,9 @@ public class Parser : IParser
             Expression startExpression = new Literal(start.Literal, null, start.LinePosition);
             if (Match(TokenType.Minus))
             {
+                if (IsAtEnd())
+                    return new List(startExpression);
+
                 Consume(TokenType.Number, "Expected ending line number after LIST range.");
                 Token end = Previous();
                 return new List(startExpression, new Literal(end.Literal, null, end.LinePosition));
