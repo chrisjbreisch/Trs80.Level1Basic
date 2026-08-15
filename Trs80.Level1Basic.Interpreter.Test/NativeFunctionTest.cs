@@ -517,6 +517,20 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Call_Cvi()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT CVI(\"AB\")"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 16961 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Lcase()
     {
         using var controller = new TestController();

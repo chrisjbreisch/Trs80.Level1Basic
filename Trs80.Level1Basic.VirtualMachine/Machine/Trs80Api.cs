@@ -119,6 +119,14 @@ public class Trs80Api : ITrs80Api
         return (int)Math.Round(numericValue, MidpointRounding.AwayFromZero);
     }
 
+    public int Cvi(string value)
+    {
+        if (string.IsNullOrEmpty(value) || value.Length < 2)
+            return 0;
+
+        return (short)((byte)value[0] | ((byte)value[1] << 8));
+    }
+
     public int Fix(dynamic value)
     {
         double numericValue = Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture);
