@@ -85,11 +85,12 @@ public class Machine : IMachine
         return _globals.Exists(name);
     }
 
-    public void ListProgram(int lineNumber)
+    public void ListProgram(int lineNumber, int? endLineNumber = null)
     {
         int index = 0;
         bool exitList = false;
-        foreach (IStatement statement in Program.List().Where(s => s.LineNumber >= lineNumber))
+        foreach (IStatement statement in Program.List().Where(s => s.LineNumber >= lineNumber &&
+            (!endLineNumber.HasValue || s.LineNumber <= endLineNumber.Value)))
         {
             _trs80.WriteLine(statement.LineNumber >= 0 ? $" {statement.LineNumber}  {statement.SourceLine}" : $"{statement.SourceLine}");
             index++;

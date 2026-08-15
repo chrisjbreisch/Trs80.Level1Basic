@@ -46,6 +46,24 @@ public class CommandTest
         controller.IsEndOfRun().Should().BeTrue();
     }
 
+    [TestMethod]
+    public void Interpreter_Can_List_A_Line_Range()
+    {
+        using var controller = new TestController();
+        controller.ExecuteStatements(new List<string> {
+            "10 PRINT 10",
+            "20 PRINT 20",
+            "30 PRINT 30"
+        });
+        var tokens = controller.Scanner.ScanTokens(new SourceLine("LIST 20-30"));
+        var parsed = controller.Parser.Parse(tokens).Should().BeOfType<Trs80.Level1Basic.VirtualMachine.Parser.Statements.List>().Subject;
+        parsed.EndAtLineNumber.Should().NotBeNull();
+        controller.ExecuteLine("LIST 20-30");
+
+        controller.ReadOutputLine().Should().Be(" 20  PRINT 20");
+        controller.ReadOutputLine().Should().Be(" 30  PRINT 30");
+    }
+
 
     [TestMethod]
     public void Interpreter_Can_Handle_Lines_Inserted_In_The_Middle()

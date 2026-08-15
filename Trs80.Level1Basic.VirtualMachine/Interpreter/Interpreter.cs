@@ -638,7 +638,10 @@ public class Interpreter : IInterpreter
     public Void VisitListStatement(List statement)
     {
         int lineNumber = GetStartingLineNumber(statement.StartAtLineNumber);
-        _machine.ListProgram(lineNumber);
+        int? endLineNumber = statement.EndAtLineNumber is null
+            ? null
+            : GetStartingLineNumber(statement.EndAtLineNumber);
+        _machine.ListProgram(lineNumber, endLineNumber);
 
         return null!;
     }

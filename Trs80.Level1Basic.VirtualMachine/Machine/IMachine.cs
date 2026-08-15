@@ -24,7 +24,7 @@ public interface IMachine
     dynamic Get(string name, int index, int index2);
     bool Exists(string name);
     void InitializeProgram();
-    void ListProgram(int lineNumber);
+    void ListProgram(int lineNumber, int? endLineNumber = null);
     void SaveProgram(string path);
     void LoadProgram(string path);
     void NewProgram();

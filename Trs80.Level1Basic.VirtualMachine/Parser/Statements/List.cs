@@ -16,10 +16,12 @@ namespace Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 public class List : Statement
 {
     public Expression StartAtLineNumber { get; init; }
+    public Expression EndAtLineNumber { get; init; }
 
-    public List(Expression startAtLineNumber)
+    public List(Expression startAtLineNumber, Expression endAtLineNumber = null)
     {
         StartAtLineNumber = startAtLineNumber;
+        EndAtLineNumber = endAtLineNumber;
     }
 
     public override T Accept<T>(IVisitor<T> visitor)
