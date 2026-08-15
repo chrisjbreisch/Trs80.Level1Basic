@@ -154,6 +154,16 @@ public class Trs80Api : ITrs80Api
         return BitConverter.ToDouble(bytes, 0);
     }
 
+    public string Mki(dynamic value)
+    {
+        short number = Convert.ToInt16(value, System.Globalization.CultureInfo.InvariantCulture);
+        return new string(new[]
+        {
+            (char)(byte)number,
+            (char)(byte)(number >> 8)
+        });
+    }
+
     public int Fix(dynamic value)
     {
         double numericValue = Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture);

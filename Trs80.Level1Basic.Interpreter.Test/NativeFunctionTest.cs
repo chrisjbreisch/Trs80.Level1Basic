@@ -559,6 +559,20 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Call_Mki()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT MKI$(16961)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("AB");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Lcase()
     {
         using var controller = new TestController();
