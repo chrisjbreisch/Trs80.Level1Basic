@@ -573,6 +573,20 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Call_Mks()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT MKS$(CVS(\"ABCD\"))"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("ABCD");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Lcase()
     {
         using var controller = new TestController();
