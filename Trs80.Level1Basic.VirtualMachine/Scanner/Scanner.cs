@@ -135,6 +135,7 @@ public class Scanner : IScanner
                     {"IN.", TokenType.Input},
                     {"LET", TokenType.Let},
                     {"LO.", TokenType.Load},
+                    {"ME.", TokenType.Merge},
                     {"MOD", TokenType.Mod},
                     {"NEW", TokenType.New},
                     {"NOT", TokenType.Not},
