@@ -24,7 +24,7 @@ This document tracks the migration of the solution from .NET 6 to .NET 10. It is
 | Test infrastructure | In progress | All five test projects use the aligned current package set; four projects pass, while the full interpreter suite still runs beyond the bounded window. |
 | Application smoke test | Complete | Root-directory launch reaches the interactive application under .NET 10 after deployment files were switched to `AppContext.BaseDirectory`; the bounded smoke process was stopped after startup. |
 | Full test suite under .NET 10 | Pending | Run after test infrastructure is upgraded; distinguish test-host failures from product failures. |
-| Documentation | In progress | This matrix records the migration; update it after every upgrade slice. |
+| Documentation | Complete for current baseline | README now documents .NET 10 prerequisites, SDK pinning, build/test commands, Windows scope, and the interpreter test-host limitation; continue updating both documents as future slices land. |
 
 ## Project Target Frameworks
 
@@ -89,7 +89,7 @@ These warnings must not be silently accepted as part of the final .NET 10 state.
 | 5 | Align MSTest, test SDK, adapter, framework, and coverlet | Blocked | Package alignment is complete; Common (35), Environment (7), TestUtilities (16), and TRS-80 host (1) suites pass. A single interpreter test passes in 225 ms, but interpreter class/project discovery or larger runs hang beyond 150 seconds and can leave orphaned `testhost`/`dotnet` processes. |
 | 6 | Resolve security warnings and review remaining packages | In progress | Explicit `OpenTelemetry.Api` `1.17.0` overrides WorkflowCore's vulnerable `1.12.0`; full solution vulnerability audit now reports no vulnerable packages. Remaining work is final package review and interpreter test-host resolution. |
 | 7 | Run runtime and compatibility validation | Pending | Application smoke test, focused interpreter tests, full test suite, and representative BASIC programs. |
-| 8 | Update README and close the migration | Pending | Document prerequisites, commands, final package versions, and residual limitations. |
+| 8 | Update README and close the migration | In progress | README prerequisites, commands, Windows scope, and the current interpreter test-host limitation are documented. Migration closure remains pending until the interpreter suite and final package review are complete. |
 
 ## Recommended Next Slice
 

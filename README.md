@@ -2,8 +2,28 @@
 
 ## What is this?
 
-It is an interpreter for Radio Shack's TRS-80 Level I BASIC written in C# 10 and .NET 6.0. 
+It is an interpreter for Radio Shack's TRS-80 Level I BASIC written in C# 10 and .NET 10. 
 It's an **interpreter**, not an emulator. More on that in a bit.
+
+## Building and Testing
+
+The solution targets .NET 10. The repository includes `global.json`, which pins the SDK to
+version 10.0.302. The application and Windows-targeted test projects require Windows.
+
+From the repository root:
+
+```powershell
+dotnet restore .\Trs80.Level1Basic.sln
+dotnet build .\Trs80.Level1Basic.sln --no-restore
+dotnet test .\Trs80.Level1Basic.Common.Test\Trs80.Level1Basic.Common.Test.csproj --no-restore
+dotnet test .\Trs80.Level1Basic.Environment.Test\Trs80.Level1Basic.Environment.Test.csproj --no-restore
+dotnet test .\Trs80.Level1Basic.TestUtilities.Test\Trs80.Level1Basic.TestUtilities.Test.csproj --no-restore
+dotnet test .\Trs80.Level1Basic.Trs80.Test\Trs80.Level1Basic.Trs80.Test.csproj --no-restore
+```
+
+The interpreter test project builds under .NET 10 and individual tests pass, but larger class or
+project runs can exceed the expected duration and leave an orphaned test host. Treat those runs
+as a test-infrastructure issue until the runner behavior is isolated.
 
 ## Why?
 
