@@ -2,7 +2,7 @@
 
 ## What is this?
 
-It is an interpreter for Radio Shack's TRS-80 Level I BASIC written in C# 10 and .NET 10. 
+It is an interpreter for Radio Shack's TRS-80 Level I BASIC written in C# 10 and .NET 10.
 It's an **interpreter**, not an emulator. More on that in a bit.
 
 ## Building and Testing
