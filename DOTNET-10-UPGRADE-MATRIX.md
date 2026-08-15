@@ -20,7 +20,7 @@ This document tracks the migration of the solution from .NET 6 to .NET 10. It is
 | Project target frameworks | Complete | All 15 projects target `net10.0` or `net10.0-windows`. |
 | Solution restore | Complete | Restore succeeded under .NET 10. |
 | Solution build | Complete | `dotnet build Trs80.Level1Basic.sln` succeeds. |
-| Runtime/package alignment | In progress | Framework-provided cleanup and vulnerability remediation are complete; remaining outdated packages are non-security transitive compatibility candidates. |
+| Runtime/package alignment | In progress | Framework-provided cleanup and vulnerability remediation are complete; WorkflowCore transitive overrides now include OpenTelemetry.Api 1.17.0, System.Linq.Dynamic.Core 1.7.3, and ConcurrentHashSet 1.3.0. Remaining outdated packages are non-security compatibility candidates. |
 | Test infrastructure | In progress | All five test projects use the aligned current package set; four projects pass, while the full interpreter suite still runs beyond the bounded window. |
 | Application smoke test | Complete | Root-directory launch reaches the interactive application under .NET 10 after deployment files were switched to `AppContext.BaseDirectory`; the bounded smoke process was stopped after startup. |
 | Full test suite under .NET 10 | Pending | Run after test infrastructure is upgraded; distinguish test-host failures from product failures. |
