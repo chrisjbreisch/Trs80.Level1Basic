@@ -66,7 +66,7 @@ public sealed class Bootstrapper : DisposableBase
     private void LoadConfiguration()
     {
         _configuration = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
+            .SetBasePath(AppContext.BaseDirectory)
             .AddJsonFile("appSettings.json")
             .AddEnvironmentVariables()
             .Build();
@@ -82,7 +82,10 @@ public sealed class Bootstrapper : DisposableBase
     {
         if (string.IsNullOrEmpty(workflowFileName)) return;
 
-        WorkflowLoader.LoadDefinition(File.ReadAllText(workflowFileName), Deserializers.Json);
+        string workflowPath = Path.IsPathRooted(workflowFileName)
+            ? workflowFileName
+            : Path.Combine(AppContext.BaseDirectory, workflowFileName);
+        WorkflowLoader.LoadDefinition(File.ReadAllText(workflowPath), Deserializers.Json);
 
         WorkflowHost.OnStepError += WorkflowHost_OnStepError;
         WorkflowDataModel dataModel = ScopedServiceProvider.GetService<WorkflowDataModel>();
@@ -119,7 +122,7 @@ public sealed class Bootstrapper : DisposableBase
 
     private void ConfigureLogging()
     {
-        NLog.LogManager.LoadConfiguration("nLog.Config");
+        NLog.LogManager.LoadConfiguration(Path.Combine(AppContext.BaseDirectory, "nLog.config"));
         LogFactory = LoggerFactory.Create(
             builder =>
                 builder

@@ -22,7 +22,7 @@ This document tracks the migration of the solution from .NET 6 to .NET 10. It is
 | Solution build | Complete | `dotnet build Trs80.Level1Basic.sln` succeeds. |
 | Runtime/package alignment | In progress | Framework-provided package cleanup is complete; older application/test packages and vulnerability warnings remain. |
 | Test infrastructure | Pending | MSTest projects use old SDK, adapter, framework, and coverlet versions. |
-| Application smoke test | Pending | Run the Windows application after dependency updates. |
+| Application smoke test | Complete | Root-directory launch reaches the interactive application under .NET 10 after deployment files were switched to `AppContext.BaseDirectory`; the bounded smoke process was stopped after startup. |
 | Full test suite under .NET 10 | Pending | Run after test infrastructure is upgraded; distinguish test-host failures from product failures. |
 | Documentation | In progress | This matrix records the migration; update it after every upgrade slice. |
 
@@ -50,7 +50,7 @@ This document tracks the migration of the solution from .NET 6 to .NET 10. It is
 | Windows Forms | `HostMachine` uses `net10.0-windows` and `UseWindowsForms=true`. | Complete | Keep Windows targeting; run host/application smoke tests after package changes. |
 | `System.Drawing.Common` | Removed from `HostMachine` and `VirtualMachine`; no source usage was found. | Complete | Both affected projects and the full solution build successfully without the package. |
 | `Microsoft.CSharp` | Removed from `VirtualMachine`. | Complete | VirtualMachine builds and all 24 `ExpressionTest` tests pass under .NET 10. |
-| `Microsoft.Extensions.*` | Explicit references in Application, Command, Common, Workflow, and the root app are aligned to `10.0.11`. | In progress | Restore/build succeeds; complete application startup/configuration/logging validation before marking this slice complete. |
+| `Microsoft.Extensions.*` | Explicit references in Application, Command, Common, Workflow, and the root app are aligned to `10.0.11`. | Complete | Restore/build succeeds and root-directory application startup reaches the interactive process. |
 | `WorkflowCore` | Version `3.6.3` in Application and Workflow. | Pending | Verify .NET 10 compatibility and upgrade or replace only if required; this is the highest application-integration risk. |
 | `NLog.Extensions.Logging` | Version `1.7.4`. | Pending | Review compatibility and update with the logging stack. |
 | `Scrutor` | Version `4.1.0`. | Pending | Review compatibility after Microsoft.Extensions alignment. |
@@ -84,8 +84,8 @@ These warnings must not be silently accepted as part of the final .NET 10 state.
 | --- | --- | --- | --- |
 | 1 | Pin SDK and retarget all projects to .NET 10 | Complete | `dotnet --version`; full solution restore/build. Commit `acad1e6`. |
 | 2 | Remove or align framework-provided package references | Complete | Removed `Microsoft.CSharp` and `System.Drawing.Common`; targeted builds, 24 expression tests, and full solution build pass. Commit `bd8daa7` contains the Microsoft.CSharp removal; this slice completes the remaining cleanup. |
-| 3 | Upgrade Microsoft.Extensions and application dependencies | In progress | Explicit Microsoft.Extensions references are `10.0.11` and the full solution builds. Application startup validation remains pending; root-directory launch currently cannot locate `appSettings.json`. |
-| 4 | Validate or upgrade WorkflowCore, NLog, and Scrutor | Pending | Application and workflow tests. |
+| 3 | Upgrade Microsoft.Extensions and application dependencies | Complete | Microsoft.Extensions references are `10.0.11`; deployment files resolve from `AppContext.BaseDirectory`; application project and executable builds pass, and root-directory startup reaches the interactive process. |
+| 4 | Validate or upgrade WorkflowCore, NLog, and Scrutor | Next | Validate the existing `WorkflowCore` 3.6.3, NLog 1.7.4 integration, and Scrutor 4.1.0 under .NET 10. |
 | 5 | Align MSTest, test SDK, adapter, framework, and coverlet | Pending | Each test project independently, then full solution test run. |
 | 6 | Resolve security warnings and review remaining packages | Pending | Restore with vulnerability audit showing no accepted critical/high issues. |
 | 7 | Run runtime and compatibility validation | Pending | Application smoke test, focused interpreter tests, full test suite, and representative BASIC programs. |
@@ -93,7 +93,7 @@ These warnings must not be silently accepted as part of the final .NET 10 state.
 
 ## Recommended Next Slice
 
-The package alignment portion is complete. Finish the current slice with application startup/configuration/logging validation, then proceed to WorkflowCore, NLog, and Scrutor compatibility.
+Microsoft.Extensions alignment and application startup validation are complete. The next slice is WorkflowCore, NLog, and Scrutor compatibility.
 
 ## Maintenance Rules
 
