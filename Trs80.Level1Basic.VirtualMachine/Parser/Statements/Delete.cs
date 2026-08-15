@@ -16,10 +16,12 @@ namespace Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 public class Delete : Statement
 {
     public int LineToDelete { get; init; }
+    public int? EndLineToDelete { get; init; }
 
-    public Delete(int lineToDelete)
+    public Delete(int lineToDelete, int? endLineToDelete = null)
     {
         LineToDelete = lineToDelete;
+        EndLineToDelete = endLineToDelete;
     }
 
     public override T Accept<T>(IVisitor<T> visitor)

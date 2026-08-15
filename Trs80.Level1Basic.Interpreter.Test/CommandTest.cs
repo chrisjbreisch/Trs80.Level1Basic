@@ -30,6 +30,22 @@ public class CommandTest
         controller.IsEndOfRun().Should().BeTrue();
     }
 
+    [TestMethod]
+    public void Interpreter_Can_Delete_A_Line_Range_With_Delete_Command()
+    {
+        using var controller = new TestController();
+        controller.ExecuteStatements(new List<string> {
+            "10 PRINT 10",
+            "20 PRINT 20",
+            "30 PRINT 30"
+        });
+        controller.ExecuteLine("DELETE 10-20");
+        controller.ExecuteLine("RUN");
+
+        controller.ReadOutputLine().Should().Be(" 30 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
 
     [TestMethod]
     public void Interpreter_Can_Handle_Lines_Inserted_In_The_Middle()

@@ -455,15 +455,21 @@ public class Interpreter : IInterpreter
 
     public Void VisitDeleteStatement(Delete statement)
     {
-        DeleteStatement(statement.LineToDelete);
+        DeleteStatement(statement.LineToDelete, statement.EndLineToDelete);
 
         return null!;
     }
 
-    private void DeleteStatement(int lineNumber)
+    private void DeleteStatement(int startLine, int? endLine)
     {
-        IStatement statement = _machine.Program.List().FirstOrDefault(l => l.LineNumber == lineNumber);
-        if (statement != null)
+        int lastLine = endLine ?? startLine;
+        int firstLine = Math.Min(startLine, lastLine);
+        lastLine = Math.Max(startLine, lastLine);
+        List<IStatement> statements = _machine.Program.List()
+            .Where(statement => statement.LineNumber >= firstLine && statement.LineNumber <= lastLine)
+            .ToList();
+
+        foreach (IStatement statement in statements)
             _machine.Program.RemoveStatement(statement);
     }
 

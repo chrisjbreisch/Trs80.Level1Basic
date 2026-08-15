@@ -460,7 +460,12 @@ public class Parser : IParser
     private IStatement ExplicitDeleteStatement()
     {
         Consume(TokenType.Number, "Expected line number after DELETE.");
-        return new Delete(GetLineNumberValue(Previous()));
+        int startLine = GetLineNumberValue(Previous());
+        if (!Match(TokenType.Minus))
+            return new Delete(startLine);
+
+        Consume(TokenType.Number, "Expected ending line number after DELETE range.");
+        return new Delete(startLine, GetLineNumberValue(Previous()));
     }
 
     private IStatement EndStatement()

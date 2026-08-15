@@ -56,7 +56,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 
 | Area | Status | Implemented now | Remaining work and evidence |
 | --- | --- | --- | --- |
-| Program editing commands | Partial | `LIST`, `LOAD`, `SAVE`, `MERGE`, `CLEAR`, and explicit single-line `DELETE` exist. `CLEAR` resets variables and arrays while preserving the program. | Decide and document the policy for `CLOAD` and `CSAVE`; verify remaining Level II command abbreviations and delete-range syntax. Existing anchor: `CommandTest`, `FileTest`. |
+| Program editing commands | Partial | `LIST`, `LOAD`, `SAVE`, `MERGE`, `CLEAR`, and explicit single-line or range `DELETE` exist. `CLEAR` resets variables and arrays while preserving the program. | Decide and document the policy for `CLOAD` and `CSAVE`; verify remaining Level II command abbreviations. Existing anchor: `CommandTest`, `FileTest`. |
 | Data statements | Implemented | `DATA`, `READ`, and `RESTORE` exist. | Add mixed-type, exhaustion, and `CLEAR` interaction cases. Existing anchor: `DataTest`. |
 | Console input/output | Implemented | `INPUT`, `PRINT`, `TAB`, `SPC`, and cursor-related behavior exist. | Audit formatting, commas/semicolons, input errors, and Level II line-width behavior. Existing anchors: `InputTest`, `PrintTest`, `NativeFunctionTest`. |
 | Hardware statements | Partial | `SET`, `RESET`, `POKE`, and related APIs exist as host-machine abstractions. | Specify whether each operation is emulated, approximated, rejected, or intentionally unavailable. |
@@ -94,6 +94,7 @@ Recent Level II slices, in order:
 15. Empty-string behavior across string inspection and slicing functions.
 16. Leading numeric-prefix parsing for `VAL`.
 17. Explicit `DELETE line` scanner/parser support.
+18. Inclusive `DELETE start-end` range support.
 
 ## Next Slice Queue
 
