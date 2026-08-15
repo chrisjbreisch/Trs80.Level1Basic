@@ -20,7 +20,7 @@ This document tracks the migration of the solution from .NET 6 to .NET 10. It is
 | Project target frameworks | Complete | All 15 projects target `net10.0` or `net10.0-windows`. |
 | Solution restore | Complete | Restore succeeded under .NET 10. |
 | Solution build | Complete | `dotnet build Trs80.Level1Basic.sln` succeeds. |
-| Runtime/package alignment | In progress | Framework-provided package cleanup is complete; older application/test packages and vulnerability warnings remain. |
+| Runtime/package alignment | In progress | Framework-provided cleanup and vulnerability remediation are complete; remaining outdated packages are non-security transitive compatibility candidates. |
 | Test infrastructure | In progress | All five test projects use the aligned current package set; four projects pass, while the full interpreter suite still runs beyond the bounded window. |
 | Application smoke test | Complete | Root-directory launch reaches the interactive application under .NET 10 after deployment files were switched to `AppContext.BaseDirectory`; the bounded smoke process was stopped after startup. |
 | Full test suite under .NET 10 | Pending | Run after test infrastructure is upgraded; distinguish test-host failures from product failures. |
@@ -87,7 +87,7 @@ These warnings must not be silently accepted as part of the final .NET 10 state.
 | 3 | Upgrade Microsoft.Extensions and application dependencies | Complete | Microsoft.Extensions references are `10.0.11`; deployment files resolve from `AppContext.BaseDirectory`; application project and executable builds pass, and root-directory startup reaches the interactive process. |
 | 4 | Validate or upgrade WorkflowCore, NLog, and Scrutor | Complete | WorkflowCore and WorkflowCore.DSL are `3.18.0`; NLog.Extensions.Logging is `6.1.4`; Scrutor is `7.0.0`; application build and root workflow/startup smoke validation pass. |
 | 5 | Align MSTest, test SDK, adapter, framework, and coverlet | Blocked | Package alignment is complete; Common (35), Environment (7), TestUtilities (16), and TRS-80 host (1) suites pass. A single interpreter test passes in 225 ms, but interpreter class/project discovery or larger runs hang beyond 150 seconds and can leave orphaned `testhost`/`dotnet` processes. |
-| 6 | Resolve security warnings and review remaining packages | In progress | Explicit `OpenTelemetry.Api` `1.17.0` resolves WorkflowCore's vulnerable `1.12.0`; `Newtonsoft.Json` is patched to `13.0.4`; full solution vulnerability audit reports no vulnerable packages. Remaining work is final package review and interpreter test-host resolution. |
+| 6 | Resolve security warnings and review remaining packages | In progress | Explicit `OpenTelemetry.Api` `1.17.0` and `System.Linq.Dynamic.Core` `1.7.3` overrides align WorkflowCore transitive dependencies; `Newtonsoft.Json` is patched to `13.0.4`; full solution vulnerability audit reports no vulnerable packages. Remaining work is non-security package review and interpreter test-host resolution. |
 | 7 | Run runtime and compatibility validation | Pending | Application smoke test, focused interpreter tests, full test suite, and representative BASIC programs. |
 | 8 | Update README and close the migration | In progress | README prerequisites, commands, Windows scope, and the current interpreter test-host limitation are documented. Migration closure remains pending until the interpreter suite and final package review are complete. |
 
