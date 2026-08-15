@@ -587,6 +587,20 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Call_Mkd()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT MKD$(CVD(\"ABCDEFGH\"))"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("ABCDEFGH");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Lcase()
     {
         using var controller = new TestController();

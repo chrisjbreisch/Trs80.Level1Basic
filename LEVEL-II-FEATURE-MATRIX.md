@@ -50,7 +50,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Random numbers | Partial | One- and zero-argument `RND` exist; numeric controls are truncated to integer controls. | Define negative-control seeding/repeat behavior, zero behavior, and repeatability. |
 | Keyboard/input functions | Partial | `INPUT$` and `INKEY$` exist. | Verify blocking behavior, end-of-input, character case, and interaction with `INPUT`. |
 | Memory/display functions | Partial | `PEEK`, `POKE`, `MEM`, `FRE`, `POS`, `CSRLIN`, `POINT`, `SPC`, and `TAB` exist. | Document host-machine emulation, address wrapping, cursor behavior, and unsupported hardware assumptions. |
-| Remaining Level II functions | Partial | The native-function registry is centralized in `NativeFunctions`; `CVI`, `CVS`, `CVD`, `MKI$`, and `MKS$` are now registered and covered for valid little-endian binary conversion. | Build an authoritative manual checklist and add one focused test for every remaining missing function. |
+| Remaining Level II functions | Partial | The native-function registry is centralized in `NativeFunctions`; `CVI`, `CVS`, `CVD`, `MKI$`, `MKS$`, and `MKD$` are now registered and covered for valid little-endian binary conversion. | Build an authoritative manual checklist and add one focused test for every remaining missing function. |
 
 ## Statements and Commands
 
@@ -109,6 +109,7 @@ Recent Level II slices, in order:
 30. Added the `CVD` pure built-in for eight-byte string-to-double conversion.
 31. Added the `MKI$` pure built-in for two-byte integer-to-string conversion.
 32. Added the `MKS$` pure built-in for four-byte single-to-string conversion.
+33. Added the `MKD$` pure built-in for eight-byte double-to-string conversion.
 
 ## Next Slice Queue
 

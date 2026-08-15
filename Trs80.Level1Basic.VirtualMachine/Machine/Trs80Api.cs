@@ -179,6 +179,25 @@ public class Trs80Api : ITrs80Api
         });
     }
 
+    public string Mkd(dynamic value)
+    {
+        byte[] bytes = BitConverter.GetBytes(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
+        if (!BitConverter.IsLittleEndian)
+            Array.Reverse(bytes);
+
+        return new string(new[]
+        {
+            (char)bytes[0],
+            (char)bytes[1],
+            (char)bytes[2],
+            (char)bytes[3],
+            (char)bytes[4],
+            (char)bytes[5],
+            (char)bytes[6],
+            (char)bytes[7]
+        });
+    }
+
     public int Fix(dynamic value)
     {
         double numericValue = Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture);
