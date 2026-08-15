@@ -20,7 +20,7 @@ This document tracks the migration of the solution from .NET 6 to .NET 10. It is
 | Project target frameworks | Complete | All 15 projects target `net10.0` or `net10.0-windows`. |
 | Solution restore | Complete | Restore succeeded under .NET 10. |
 | Solution build | Complete | `dotnet build Trs80.Level1Basic.sln` succeeds. |
-| Runtime/package alignment | Pending | Several package references remain on 6.x or older versions. |
+| Runtime/package alignment | In progress | `Microsoft.CSharp` has been removed; `System.Drawing.Common` and older application/test packages remain. |
 | Test infrastructure | Pending | MSTest projects use old SDK, adapter, framework, and coverlet versions. |
 | Application smoke test | Pending | Run the Windows application after dependency updates. |
 | Full test suite under .NET 10 | Pending | Run after test infrastructure is upgraded; distinguish test-host failures from product failures. |
@@ -49,7 +49,7 @@ This document tracks the migration of the solution from .NET 6 to .NET 10. It is
 | --- | --- | --- | --- |
 | Windows Forms | `HostMachine` uses `net10.0-windows` and `UseWindowsForms=true`. | Complete | Keep Windows targeting; run host/application smoke tests after package changes. |
 | `System.Drawing.Common` | Explicit version `6.0.0` in `HostMachine` and `VirtualMachine`. | Pending | Move to a .NET 10-compatible version or remove if the framework reference is sufficient; preserve Windows-only behavior. |
-| `Microsoft.CSharp` | Explicit version `4.7.0` in `VirtualMachine`. | Pending | Verify dynamic binding usage, then remove if the framework supplies it without a direct package reference. |
+| `Microsoft.CSharp` | Removed from `VirtualMachine`. | Complete | VirtualMachine builds and all 24 `ExpressionTest` tests pass under .NET 10. |
 | `Microsoft.Extensions.*` | 6.0.0/6.0.1 references in Application, Command, Common, and root application projects. | Pending | Align on a .NET 10-compatible 10.x family and validate dependency injection, configuration, and logging startup. |
 | `WorkflowCore` | Version `3.6.3` in Application and Workflow. | Pending | Verify .NET 10 compatibility and upgrade or replace only if required; this is the highest application-integration risk. |
 | `NLog.Extensions.Logging` | Version `1.7.4`. | Pending | Review compatibility and update with the logging stack. |
@@ -83,7 +83,7 @@ These warnings must not be silently accepted as part of the final .NET 10 state.
 | Slice | Scope | Status | Validation |
 | --- | --- | --- | --- |
 | 1 | Pin SDK and retarget all projects to .NET 10 | Complete | `dotnet --version`; full solution restore/build. Commit `acad1e6`. |
-| 2 | Remove or align framework-provided package references | Pending | Restore/build with no `NU1510` warnings. |
+| 2 | Remove or align framework-provided package references | In progress | `Microsoft.CSharp` is complete; `System.Drawing.Common` remains in HostMachine and VirtualMachine. |
 | 3 | Upgrade Microsoft.Extensions and application dependencies | Pending | Build plus application startup/configuration/logging smoke test. |
 | 4 | Validate or upgrade WorkflowCore, NLog, and Scrutor | Pending | Application and workflow tests. |
 | 5 | Align MSTest, test SDK, adapter, framework, and coverlet | Pending | Each test project independently, then full solution test run. |
@@ -93,13 +93,12 @@ These warnings must not be silently accepted as part of the final .NET 10 state.
 
 ## Recommended Next Slice
 
-Upgrade or remove the two framework-provided package references first:
+Complete the framework-provided package cleanup:
 
-1. Remove `Microsoft.CSharp` from `Trs80.Level1Basic.VirtualMachine` if the project still compiles and dynamic behavior remains intact.
-2. Evaluate `System.Drawing.Common` in `HostMachine` and `VirtualMachine`; either remove the redundant reference or update it to a compatible version while retaining Windows-only targeting.
-3. Restore and build the solution.
-4. Confirm that the `NU1510` warnings are gone and no new compile/runtime diagnostics appear.
-5. Update this matrix and commit the dependency slice separately.
+1. Evaluate `System.Drawing.Common` in `HostMachine` and `VirtualMachine`; either remove the redundant reference or update it to a compatible version while retaining Windows-only targeting.
+2. Restore and build the solution.
+3. Confirm that the remaining `NU1510` warning is gone and no new compile/runtime diagnostics appear.
+4. Update this matrix and commit the dependency slice separately.
 
 ## Maintenance Rules
 
