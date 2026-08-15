@@ -15,6 +15,7 @@
     <PackageReference Include="Scrutor" Version="7.0.0" />
     <PackageReference Include="WorkflowCore" Version="3.18.0" />
     <PackageReference Include="WorkflowCore.DSL" Version="3.18.0" />
+    <PackageReference Include="OpenTelemetry.Api" Version="1.17.0" />
   </ItemGroup>
 
   <ItemGroup>
