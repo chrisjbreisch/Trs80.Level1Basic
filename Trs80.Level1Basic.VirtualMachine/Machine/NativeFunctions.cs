@@ -44,7 +44,10 @@ public class NativeFunctions : INativeFunctions
             {"date$", new List<Callable> { new() {Arity = 0, Call = (api, arg) => api.Date()}}},
             {"time$", new List<Callable> { new() {Arity = 0, Call = (api, arg) => api.Time()}}},
             {"ucase$", new List<Callable> { new() {Arity = 1, Call = (api, arg) => api.UCase((string)arg[0])}}},
-            {"instr", new List<Callable> { new() {Arity = 2, Call = (api, arg) => api.InStr((string)arg[0], (string)arg[1])}}},
+            {"instr", new List<Callable> {
+                new() {Arity = 2, Call = (api, arg) => api.InStr((string)arg[0], (string)arg[1])},
+                new() {Arity = 3, Call = (api, arg) => api.InStr((int)arg[0], (string)arg[1], (string)arg[2])}
+            }},
             {"left$", new List<Callable> { new() {Arity = 2, Call = (api, arg) => api.Left((string)arg[0], (int)arg[1])}}},
             {"len", new List<Callable> { new() {Arity = 1, Call = (api, arg) => api.Len(arg[0])}}},
             {"mid$", new List<Callable> { new() {Arity = 3, Call = (api, arg) => api.Mid((string)arg[0], (int)arg[1], (int)arg[2])}}},

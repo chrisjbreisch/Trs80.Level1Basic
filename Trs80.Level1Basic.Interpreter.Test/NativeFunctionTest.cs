@@ -313,6 +313,20 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Call_Instr_With_Start_Position()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT INSTR(5, \"HELLO WORLD\", \"WORLD\"); INSTR(8, \"HELLO WORLD\", \"WORLD\")"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 7  0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_String_Function()
     {
         using var controller = new TestController();

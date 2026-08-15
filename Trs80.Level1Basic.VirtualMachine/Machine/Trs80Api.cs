@@ -72,10 +72,19 @@ public class Trs80Api : ITrs80Api
 
     public int InStr(string source, string match)
     {
+        return InStr(1, source, match);
+    }
+
+    public int InStr(int start, string source, string match)
+    {
         if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(match))
             return 0;
 
-        int index = source.IndexOf(match, StringComparison.OrdinalIgnoreCase);
+        int searchStart = Math.Max(start, 1) - 1;
+        if (searchStart >= source.Length)
+            return 0;
+
+        int index = source.IndexOf(match, searchStart, StringComparison.OrdinalIgnoreCase);
         return index < 0 ? 0 : index + 1;
     }
 

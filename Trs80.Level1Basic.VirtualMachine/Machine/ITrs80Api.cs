@@ -10,6 +10,7 @@ public interface ITrs80Api
     int Asc(dynamic value);
     int Len(dynamic value);
     int InStr(string source, string match);
+    int InStr(int start, string source, string match);
     float Val(string value);
     string Str(dynamic value);
     int CInt(dynamic value);
