@@ -180,6 +180,20 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Call_String_With_Fractional_Character_Code()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT STRING$(3, 65.9)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("AAA");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Int()
     {
         using var controller = new TestController();

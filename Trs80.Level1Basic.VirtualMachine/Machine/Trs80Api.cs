@@ -273,7 +273,7 @@ public class Trs80Api : ITrs80Api
 
         char character = value is string text
             ? string.IsNullOrEmpty(text) ? '\0' : text[0]
-            : (char)Convert.ToInt32(value, System.Globalization.CultureInfo.InvariantCulture);
+            : (char)(int)Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture);
 
         return character == '\0' ? string.Empty : new string(character, count);
     }
