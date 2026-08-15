@@ -459,10 +459,19 @@ public class Parser : IParser
 
     private IStatement ExplicitDeleteStatement()
     {
+        if (Match(TokenType.Minus))
+        {
+            Consume(TokenType.Number, "Expected ending line number after DELETE range.");
+            return new Delete(-1, GetLineNumberValue(Previous()));
+        }
+
         Consume(TokenType.Number, "Expected line number after DELETE.");
         int startLine = GetLineNumberValue(Previous());
         if (!Match(TokenType.Minus))
             return new Delete(startLine);
+
+        if (IsAtEnd())
+            return new Delete(startLine, int.MaxValue);
 
         Consume(TokenType.Number, "Expected ending line number after DELETE range.");
         return new Delete(startLine, GetLineNumberValue(Previous()));

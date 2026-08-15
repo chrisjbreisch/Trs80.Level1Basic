@@ -56,7 +56,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 
 | Area | Status | Implemented now | Remaining work and evidence |
 | --- | --- | --- | --- |
-| Program editing commands | Partial | `LIST` with closed or open-ended line ranges, `LOAD`, `SAVE`, `MERGE`, `CLEAR`, and explicit single-line or range `DELETE` exist. `CLEAR` resets variables and arrays while preserving the program. | Decide and document the policy for `CLOAD` and `CSAVE`; verify remaining Level II command abbreviations. Existing anchor: `CommandTest`, `FileTest`. |
+| Program editing commands | Partial | `LIST` with closed or open-ended line ranges, `LOAD`, `SAVE`, `MERGE`, `CLEAR`, and explicit single-line, closed-range, or open-ended `DELETE` exist. `CLEAR` resets variables and arrays while preserving the program. | Decide and document the policy for `CLOAD` and `CSAVE`; verify remaining Level II command abbreviations. Existing anchor: `CommandTest`, `FileTest`. |
 | Data statements | Implemented | `DATA`, `READ`, and `RESTORE` exist. | Add mixed-type, exhaustion, and `CLEAR` interaction cases. Existing anchor: `DataTest`. |
 | Console input/output | Implemented | `INPUT`, `PRINT`, `TAB`, `SPC`, and cursor-related behavior exist. | Audit formatting, commas/semicolons, input errors, and Level II line-width behavior. Existing anchors: `InputTest`, `PrintTest`, `NativeFunctionTest`. |
 | Hardware statements | Partial | `SET`, `RESET`, `POKE`, and related APIs exist as host-machine abstractions. | Specify whether each operation is emulated, approximated, rejected, or intentionally unavailable. |
@@ -97,6 +97,7 @@ Recent Level II slices, in order:
 18. Inclusive `DELETE start-end` range support.
 19. Inclusive `LIST start-end` range support.
 20. Open-ended `LIST -end` and `LIST start-` range support.
+21. Open-ended `DELETE -end` and `DELETE start-` range support.
 
 ## Next Slice Queue
 

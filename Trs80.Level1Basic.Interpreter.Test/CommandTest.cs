@@ -47,6 +47,32 @@ public class CommandTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Delete_An_Open_Ended_Line_Range()
+    {
+        using var controller = new TestController();
+        controller.ExecuteStatements(new List<string> {
+            "10 PRINT 10",
+            "20 PRINT 20",
+            "30 PRINT 30"
+        });
+        controller.ExecuteLine("DELETE -20");
+        controller.ExecuteLine("RUN");
+
+        controller.ReadOutputLine().Should().Be(" 30 ");
+
+        using var secondController = new TestController();
+        secondController.ExecuteStatements(new List<string> {
+            "10 PRINT 10",
+            "20 PRINT 20",
+            "30 PRINT 30"
+        });
+        secondController.ExecuteLine("DELETE 20-");
+        secondController.ExecuteLine("RUN");
+
+        secondController.ReadOutputLine().Should().Be(" 10 ");
+    }
+
+    [TestMethod]
     public void Interpreter_Can_List_A_Line_Range()
     {
         using var controller = new TestController();
