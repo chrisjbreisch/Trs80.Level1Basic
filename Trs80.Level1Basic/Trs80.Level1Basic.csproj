@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <RootNamespace>Trs80.Level1Basic</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
