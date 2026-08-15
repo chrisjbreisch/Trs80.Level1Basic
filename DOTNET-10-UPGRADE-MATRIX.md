@@ -21,7 +21,7 @@ This document tracks the migration of the solution from .NET 6 to .NET 10. It is
 | Solution restore | Complete | Restore succeeded under .NET 10. |
 | Solution build | Complete | `dotnet build Trs80.Level1Basic.sln` succeeds. |
 | Runtime/package alignment | In progress | Framework-provided package cleanup is complete; older application/test packages and vulnerability warnings remain. |
-| Test infrastructure | Pending | MSTest projects use old SDK, adapter, framework, and coverlet versions. |
+| Test infrastructure | In progress | All five test projects use the aligned current package set; four projects pass, while the full interpreter suite still runs beyond the bounded window. |
 | Application smoke test | Complete | Root-directory launch reaches the interactive application under .NET 10 after deployment files were switched to `AppContext.BaseDirectory`; the bounded smoke process was stopped after startup. |
 | Full test suite under .NET 10 | Pending | Run after test infrastructure is upgraded; distinguish test-host failures from product failures. |
 | Documentation | In progress | This matrix records the migration; update it after every upgrade slice. |
@@ -60,11 +60,11 @@ This document tracks the migration of the solution from .NET 6 to .NET 10. It is
 
 | Package family | Current versions | Status | Required action |
 | --- | --- | --- | --- |
-| `Microsoft.NET.Test.Sdk` | 16.11.0 in Environment tests; 17.2.0 elsewhere | Pending | Align on a current version compatible with .NET 10. |
-| `MSTest.TestAdapter` | 2.2.7 or 2.2.10 | Pending | Upgrade and align across all test projects. |
-| `MSTest.TestFramework` | 2.2.7 or 2.2.10 | Pending | Upgrade and align across all test projects. |
-| `FluentAssertions` | 6.6.0 | Pending | Review current supported version and licensing implications before upgrading. |
-| `coverlet.collector` | 3.1.0 or 3.1.2 | Pending | Upgrade with the test SDK, then verify coverage collection. |
+| `Microsoft.NET.Test.Sdk` | `18.9.0` across all test projects | Complete | Restore and test execution work under .NET 10. |
+| `MSTest.TestAdapter` | `4.3.3` across all test projects | Complete | Four project suites pass; interpreter suite builds but remains long-running. |
+| `MSTest.TestFramework` | `4.3.3` across all test projects | Complete | Restore/build succeeds across the test projects. |
+| `FluentAssertions` | `8.10.0` across all test projects | Complete | Existing assertions compile and pass in the completed suites. |
+| `coverlet.collector` | `10.0.1` across all test projects | Complete | Package alignment restores successfully; coverage collection remains to be exercised separately. |
 
 ## Restore Warnings Baseline
 
@@ -86,8 +86,8 @@ These warnings must not be silently accepted as part of the final .NET 10 state.
 | 2 | Remove or align framework-provided package references | Complete | Removed `Microsoft.CSharp` and `System.Drawing.Common`; targeted builds, 24 expression tests, and full solution build pass. Commit `bd8daa7` contains the Microsoft.CSharp removal; this slice completes the remaining cleanup. |
 | 3 | Upgrade Microsoft.Extensions and application dependencies | Complete | Microsoft.Extensions references are `10.0.11`; deployment files resolve from `AppContext.BaseDirectory`; application project and executable builds pass, and root-directory startup reaches the interactive process. |
 | 4 | Validate or upgrade WorkflowCore, NLog, and Scrutor | Complete | WorkflowCore and WorkflowCore.DSL are `3.18.0`; NLog.Extensions.Logging is `6.1.4`; Scrutor is `7.0.0`; application build and root workflow/startup smoke validation pass. |
-| 5 | Align MSTest, test SDK, adapter, framework, and coverlet | Next | Upgrade the mixed old test SDK, MSTest adapter/framework, FluentAssertions, and coverlet versions; run each test project independently. |
-| 6 | Resolve security warnings and review remaining packages | Pending | Restore with vulnerability audit showing no accepted critical/high issues. |
+| 5 | Align MSTest, test SDK, adapter, framework, and coverlet | In progress | Package alignment is complete; Common (35), Environment (7), TestUtilities (16), and TRS-80 host (1) suites pass. The interpreter suite builds but hangs beyond 150 seconds and needs separate test-host investigation. |
+| 6 | Resolve security warnings and review remaining packages | Next | Investigate the interpreter test hang, then address remaining package vulnerability warnings. |
 | 7 | Run runtime and compatibility validation | Pending | Application smoke test, focused interpreter tests, full test suite, and representative BASIC programs. |
 | 8 | Update README and close the migration | Pending | Document prerequisites, commands, final package versions, and residual limitations. |
 
