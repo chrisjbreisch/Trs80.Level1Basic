@@ -180,6 +180,7 @@ public class Scanner : IScanner
                 6, new Dictionary<string, TokenType>
                 {
                     {"DEFDBL", TokenType.DefDbl},
+                    {"DELETE", TokenType.Delete},
                     {"DEFINT", TokenType.DefInt},
                     {"DEFSNG", TokenType.DefSng},
                     {"DEFSTR", TokenType.DefStr},

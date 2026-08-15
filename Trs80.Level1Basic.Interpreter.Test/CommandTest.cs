@@ -4,13 +4,32 @@ using FluentAssertions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.TestUtilities;
+using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
 namespace Trs80.Level1Basic.Interpreter.Test;
 
 [TestClass]
 public class CommandTest
 {
+    [TestMethod]
+    public void Interpreter_Can_Delete_A_Line_With_Delete_Command()
+    {
+        using var controller = new TestController();
+        controller.ExecuteStatements(new List<string> {
+            "10 PRINT 10",
+            "20 PRINT 20"
+        });
+        var tokens = controller.Scanner.ScanTokens(new SourceLine("DELETE 10"));
+        controller.Parser.Parse(tokens).Should().BeOfType<Delete>();
+        controller.ExecuteLine("DELETE 10");
+        controller.ExecuteLine("RUN");
+
+        controller.ReadOutputLine().Should().Be(" 20 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
 
     [TestMethod]
     public void Interpreter_Can_Handle_Lines_Inserted_In_The_Middle()

@@ -34,6 +34,7 @@ public enum TokenType
     Cls,
     Cont,
     Data,
+    Delete,
     Dim,
     DefDbl,
     DefInt,

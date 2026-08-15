@@ -56,7 +56,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 
 | Area | Status | Implemented now | Remaining work and evidence |
 | --- | --- | --- | --- |
-| Program editing commands | Partial | `LIST`, `LOAD`, `SAVE`, `MERGE`, and `CLEAR` exist. `CLEAR` resets variables and arrays while preserving the program. | Decide and document the policy for `CLOAD` and `CSAVE`; verify Level II command abbreviations. Existing anchor: `CommandTest`, `FileTest`. |
+| Program editing commands | Partial | `LIST`, `LOAD`, `SAVE`, `MERGE`, `CLEAR`, and explicit single-line `DELETE` exist. `CLEAR` resets variables and arrays while preserving the program. | Decide and document the policy for `CLOAD` and `CSAVE`; verify remaining Level II command abbreviations and delete-range syntax. Existing anchor: `CommandTest`, `FileTest`. |
 | Data statements | Implemented | `DATA`, `READ`, and `RESTORE` exist. | Add mixed-type, exhaustion, and `CLEAR` interaction cases. Existing anchor: `DataTest`. |
 | Console input/output | Implemented | `INPUT`, `PRINT`, `TAB`, `SPC`, and cursor-related behavior exist. | Audit formatting, commas/semicolons, input errors, and Level II line-width behavior. Existing anchors: `InputTest`, `PrintTest`, `NativeFunctionTest`. |
 | Hardware statements | Partial | `SET`, `RESET`, `POKE`, and related APIs exist as host-machine abstractions. | Specify whether each operation is emulated, approximated, rejected, or intentionally unavailable. |
@@ -93,18 +93,18 @@ Recent Level II slices, in order:
 14. Fractional character-code truncation for `STRING$`.
 15. Empty-string behavior across string inspection and slicing functions.
 16. Leading numeric-prefix parsing for `VAL`.
+17. Explicit `DELETE line` scanner/parser support.
 
 ## Next Slice Queue
 
 Work in this order unless manual research changes the dependency:
 
-1. Audit remaining string functions and their optional argument forms.
-2. Build the complete Level II scanner/parser keyword inventory.
-3. Add missing pure built-in functions one at a time.
-4. Complete statement and command families one at a time.
-5. Define and test hardware-dependent behavior.
-6. Add short Level II compatibility programs.
-7. Implement the line editor as a separate subsystem.
+1. Build the complete Level II scanner/parser keyword inventory.
+2. Add missing pure built-in functions one at a time.
+3. Complete statement and command families one at a time.
+4. Define and test hardware-dependent behavior.
+5. Add short Level II compatibility programs.
+6. Implement the line editor as a separate subsystem.
 
 ## Slice Completion Checklist
 

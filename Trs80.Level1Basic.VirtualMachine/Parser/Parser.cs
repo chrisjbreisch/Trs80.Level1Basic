@@ -109,6 +109,8 @@ public class Parser : IParser
             return ContStatement();
         if (Match(TokenType.Data))
             return DataStatement();
+        if (Match(TokenType.Delete))
+            return ExplicitDeleteStatement();
         if (Match(TokenType.DefDbl, TokenType.DefInt, TokenType.DefSng, TokenType.DefStr))
             return DefTypeStatement();
         if (Match(TokenType.Dim))
@@ -453,6 +455,12 @@ public class Parser : IParser
     {
         Advance();
         return new Delete(_lineNumber);
+    }
+
+    private IStatement ExplicitDeleteStatement()
+    {
+        Consume(TokenType.Number, "Expected line number after DELETE.");
+        return new Delete(GetLineNumberValue(Previous()));
     }
 
     private IStatement EndStatement()
