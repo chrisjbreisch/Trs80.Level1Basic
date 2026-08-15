@@ -66,9 +66,9 @@ This document tracks the migration of the solution from .NET 6 to .NET 10. It is
 | `FluentAssertions` | `8.10.0` across all test projects | Complete | Existing assertions compile and pass in the completed suites. |
 | `coverlet.collector` | `10.0.1` across all test projects | Complete | Package alignment restores successfully; coverage collection remains to be exercised separately. |
 
-## Restore Warnings Baseline
+## Restore Warnings History
 
-The first .NET 10 restore/build succeeded but reported warnings that belong to the next dependency slices:
+The first .NET 10 restore/build reported the following warnings. They have since been addressed:
 
 - `NU1510`: explicit `System.Drawing.Common` package is not pruned in `HostMachine`.
 - `NU1510`: explicit `Microsoft.CSharp` package is not pruned in `VirtualMachine`.
@@ -76,7 +76,7 @@ The first .NET 10 restore/build succeeded but reported warnings that belong to t
 - `NU1903`: `System.Linq.Dynamic.Core` 1.2.13 has a known high-severity vulnerability.
 - `NU1904`: `System.Linq.Dynamic.Core` 1.2.13 has a known critical-severity vulnerability.
 
-These warnings must not be silently accepted as part of the final .NET 10 state. The package upgrade slice should remove or resolve them and record the resulting versions here.
+The current full-solution vulnerability audit reports no vulnerable packages and the current restore/build no longer reports the framework-package warnings. Remaining restore warnings should be reviewed as dependency versions change.
 
 ## Upgrade Slices
 
@@ -93,7 +93,7 @@ These warnings must not be silently accepted as part of the final .NET 10 state.
 
 ## Recommended Next Slice
 
-Microsoft.Extensions alignment and application startup validation are complete. The next slice is WorkflowCore, NLog, and Scrutor compatibility.
+Investigate the interpreter test-host hang, then review remaining non-security transitive package updates such as SharpYaml and old Microsoft.Extensions transitive dependencies.
 
 ## Maintenance Rules
 
