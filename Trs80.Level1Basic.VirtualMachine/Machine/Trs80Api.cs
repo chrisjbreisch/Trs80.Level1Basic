@@ -139,6 +139,21 @@ public class Trs80Api : ITrs80Api
         return BitConverter.ToSingle(bytes, 0);
     }
 
+    public double Cvd(string value)
+    {
+        if (string.IsNullOrEmpty(value) || value.Length < 8)
+            return 0;
+
+        byte[] bytes = {
+            (byte)value[0], (byte)value[1], (byte)value[2], (byte)value[3],
+            (byte)value[4], (byte)value[5], (byte)value[6], (byte)value[7]
+        };
+        if (!BitConverter.IsLittleEndian)
+            Array.Reverse(bytes);
+
+        return BitConverter.ToDouble(bytes, 0);
+    }
+
     public int Fix(dynamic value)
     {
         double numericValue = Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture);

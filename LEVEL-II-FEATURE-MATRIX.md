@@ -50,7 +50,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Random numbers | Partial | One- and zero-argument `RND` exist; numeric controls are truncated to integer controls. | Define negative-control seeding/repeat behavior, zero behavior, and repeatability. |
 | Keyboard/input functions | Partial | `INPUT$` and `INKEY$` exist. | Verify blocking behavior, end-of-input, character case, and interaction with `INPUT`. |
 | Memory/display functions | Partial | `PEEK`, `POKE`, `MEM`, `FRE`, `POS`, `CSRLIN`, `POINT`, `SPC`, and `TAB` exist. | Document host-machine emulation, address wrapping, cursor behavior, and unsupported hardware assumptions. |
-| Remaining Level II functions | Partial | The native-function registry is centralized in `NativeFunctions`; `CVI` and `CVS` are now registered and covered for valid two- and four-byte little-endian input. | Build an authoritative manual checklist and add one focused test for every remaining missing function. |
+| Remaining Level II functions | Partial | The native-function registry is centralized in `NativeFunctions`; `CVI`, `CVS`, and `CVD` are now registered and covered for valid two-, four-, and eight-byte little-endian input. | Build an authoritative manual checklist and add one focused test for every remaining missing function. |
 
 ## Statements and Commands
 
@@ -106,6 +106,7 @@ Recent Level II slices, in order:
 27. Documented intentional limitation for cassette `CLOAD` and `CSAVE` commands.
 28. Added the `CVI` pure built-in for two-byte string-to-integer conversion.
 29. Added the `CVS` pure built-in for four-byte string-to-single conversion.
+30. Added the `CVD` pure built-in for eight-byte string-to-double conversion.
 
 ## Next Slice Queue
 

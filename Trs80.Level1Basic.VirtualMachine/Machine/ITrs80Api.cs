@@ -16,6 +16,7 @@ public interface ITrs80Api
     int CInt(dynamic value);
     int Cvi(string value);
     float Cvs(string value);
+    double Cvd(string value);
     int Fix(dynamic value);
     double CDbl(dynamic value);
     float CSng(dynamic value);
