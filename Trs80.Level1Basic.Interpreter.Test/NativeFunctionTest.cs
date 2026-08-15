@@ -74,6 +74,53 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Rejects_User_Function_Without_Argument()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DEF FNDOUBLE(X) = X + X",
+            "20 PRINT FNDOUBLE()"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Rejects_User_Function_With_Extra_Argument()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DEF FNDOUBLE(X) = X + X",
+            "20 PRINT FNDOUBLE(3, 4)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Does_Not_Retain_User_Function_After_New()
+    {
+        using var controller = new TestController();
+
+        controller.RunProgram(new List<string> {
+            "10 DEF FNOLD(X) = X + 1"
+        });
+        controller.RunProgram(new List<string> {
+            "10 PRINT FNOLD(1)"
+        });
+
+        controller.ReadOutputLine().Should().Be("");
+        controller.ReadOutputLine().Should().Be("READY");
+        controller.ReadOutputLine().Should().Be("WHAT?");
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Abs_With_Double_Value()
     {
         using var controller = new TestController();

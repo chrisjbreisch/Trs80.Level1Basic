@@ -20,9 +20,9 @@ The project already has a mature Level I interpreter. Level II work is being add
 | --- | --- |
 | Branch | `level2/type-declarations` |
 | Baseline | Level I interpreter with existing command, expression, file, input, and control-flow suites |
-| Recent focus | Type declarations, arrays, numeric precision, Level II built-ins, `CLEAR`, and `MID$` assignment |
-| Latest implementation commit | `6fffb63 Add MID$ assignment support` |
-| Latest documentation checkpoint | `ff5175d Update matrix for MID$ assignments` |
+| Recent focus | Type declarations, arrays, numeric precision, Level II built-ins, `CLEAR`, `MID$` assignment, and user-defined functions |
+| Latest implementation commit | `99b741f Support forward DEF FN references` |
+| Latest documentation checkpoint | This update: complete the `DEF FN` lifecycle slice |
 | Validation habit | Run the narrowest affected test first, then the affected test class, then the full project for shared changes |
 
 ## Language Core
@@ -37,6 +37,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Logical operators | Implemented | `AND`, `OR`, `NOT`, `XOR`, `EQV`, and `IMP` are implemented with numeric truthiness for `int`, `float`, and `double`. | Verify precedence and whether Level II uses numeric bitwise or boolean semantics in every operand context. Existing anchor: `LogicalTest`. |
 | Equality and comparisons | Implemented | Numeric equality compares `int`, `float`, and `double` by value rather than runtime type. | Add mixed numeric ordering and string comparison compatibility cases. |
 | Control flow | Implemented | Existing `FOR/NEXT`, `GOSUB/RETURN`, `IF`, `ON`, and branch forms are available. | Audit Level II-specific syntax and error behavior. Existing anchors: `FlowControlTest`, `LogicalTest`. |
+| User-defined functions | Implemented | One-parameter `DEF FN` declarations support forward references, caller-value restoration, exact arity rejection, and registry reset after `NEW` or a fresh `RUN`. Existing anchor: `NativeFunctionTest`. | Verify additional manual syntax and type-conversion rules if required by the Level II manual. |
 
 ## Built-in Functions
 
@@ -86,19 +87,19 @@ Recent Level II slices, in order:
 8. `SPC` and `CLEAR`.
 9. `MID$` assignment with optional length and boundary validation.
 10. Fractional argument coverage for `LEFT$`, `RIGHT$`, and `MID$`.
+11. One-parameter `DEF FN` functions, forward references, and registration lifecycle.
 
 ## Next Slice Queue
 
 Work in this order unless manual research changes the dependency:
 
-1. Implement user-defined `DEF FN` functions and their call semantics.
-2. Audit remaining string functions and their optional argument forms.
-3. Build the complete Level II scanner/parser keyword inventory.
-4. Add missing pure built-in functions one at a time.
-5. Complete statement and command families one at a time.
-6. Define and test hardware-dependent behavior.
-7. Add short Level II compatibility programs.
-8. Implement the line editor as a separate subsystem.
+1. Audit remaining string functions and their optional argument forms.
+2. Build the complete Level II scanner/parser keyword inventory.
+3. Add missing pure built-in functions one at a time.
+4. Complete statement and command families one at a time.
+5. Define and test hardware-dependent behavior.
+6. Add short Level II compatibility programs.
+7. Implement the line editor as a separate subsystem.
 
 ## Slice Completion Checklist
 

@@ -388,6 +388,7 @@ public class Interpreter : IInterpreter
 
     private void RegisterUserFunctions()
     {
+        _userFunctions.Clear();
         foreach (IStatement statement in _machine.Program.List())
         {
             if (statement is DefFunction function)
@@ -696,6 +697,7 @@ public class Interpreter : IInterpreter
     public Void VisitNewStatement(New statement)
     {
         _machine.Program.Clear();
+        _userFunctions.Clear();
 
         return null!;
     }
