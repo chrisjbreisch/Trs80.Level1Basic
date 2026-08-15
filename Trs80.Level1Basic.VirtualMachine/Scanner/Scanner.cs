@@ -140,6 +140,7 @@ public class Scanner : IScanner
                     {"NOT", TokenType.Not},
                     {"REM", TokenType.Rem},
                     {"RUN", TokenType.Run},
+                    {"SA.", TokenType.Save},
                     {"ST.", TokenType.Stop},
                     {"XOR", TokenType.Xor},
                 }
