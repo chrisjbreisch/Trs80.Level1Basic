@@ -93,8 +93,14 @@ public class Trs80Api : ITrs80Api
         if (string.IsNullOrWhiteSpace(value))
             return 0;
 
-        if (float.TryParse(value.Trim(), out float numericValue))
-            return numericValue;
+        string text = value.Trim();
+        for (int length = text.Length; length > 0; length--)
+        {
+            string candidate = text[..length];
+            if (float.TryParse(candidate, System.Globalization.NumberStyles.Float,
+                    System.Globalization.CultureInfo.InvariantCulture, out float numericValue))
+                return numericValue;
+        }
 
         return 0;
     }

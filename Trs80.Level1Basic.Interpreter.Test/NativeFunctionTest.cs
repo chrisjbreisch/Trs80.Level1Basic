@@ -341,6 +341,20 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Call_Val_With_Trailing_Text()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT VAL(\"123ABC\"); VAL(\"-1.5E2 volts\")"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 123 -150 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Instr_And_Space()
     {
         using var controller = new TestController();
