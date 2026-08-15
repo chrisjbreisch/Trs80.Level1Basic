@@ -51,7 +51,7 @@ This document tracks the migration of the solution from .NET 6 to .NET 10. It is
 | `System.Drawing.Common` | Removed from `HostMachine` and `VirtualMachine`; no source usage was found. | Complete | Both affected projects and the full solution build successfully without the package. |
 | `Microsoft.CSharp` | Removed from `VirtualMachine`. | Complete | VirtualMachine builds and all 24 `ExpressionTest` tests pass under .NET 10. |
 | `Microsoft.Extensions.*` | Explicit references in Application, Command, Common, Workflow, and the root app are aligned to `10.0.11`. | Complete | Restore/build succeeds and root-directory application startup reaches the interactive process. |
-| `WorkflowCore` | Version `3.6.3` in Application and Workflow. | Pending | Verify .NET 10 compatibility and upgrade or replace only if required; this is the highest application-integration risk. |
+| `WorkflowCore` | Version `3.18.0` in Application and Workflow. | In progress | Restore/build and root application startup succeed; run workflow definition loading and execution tests before marking complete. |
 | `NLog.Extensions.Logging` | Version `1.7.4`. | Pending | Review compatibility and update with the logging stack. |
 | `Scrutor` | Version `4.1.0`. | Pending | Review compatibility after Microsoft.Extensions alignment. |
 | `Newtonsoft.Json` | Version `13.0.1` in Common. | Pending | Keep behavior stable; update only if restore/audit requires it. |
@@ -85,7 +85,7 @@ These warnings must not be silently accepted as part of the final .NET 10 state.
 | 1 | Pin SDK and retarget all projects to .NET 10 | Complete | `dotnet --version`; full solution restore/build. Commit `acad1e6`. |
 | 2 | Remove or align framework-provided package references | Complete | Removed `Microsoft.CSharp` and `System.Drawing.Common`; targeted builds, 24 expression tests, and full solution build pass. Commit `bd8daa7` contains the Microsoft.CSharp removal; this slice completes the remaining cleanup. |
 | 3 | Upgrade Microsoft.Extensions and application dependencies | Complete | Microsoft.Extensions references are `10.0.11`; deployment files resolve from `AppContext.BaseDirectory`; application project and executable builds pass, and root-directory startup reaches the interactive process. |
-| 4 | Validate or upgrade WorkflowCore, NLog, and Scrutor | Next | Validate the existing `WorkflowCore` 3.6.3, NLog 1.7.4 integration, and Scrutor 4.1.0 under .NET 10. |
+| 4 | Validate or upgrade WorkflowCore, NLog, and Scrutor | In progress | WorkflowCore and WorkflowCore.DSL are upgraded to `3.18.0`; solution build and root startup pass. Workflow execution, NLog, and Scrutor validation remain. |
 | 5 | Align MSTest, test SDK, adapter, framework, and coverlet | Pending | Each test project independently, then full solution test run. |
 | 6 | Resolve security warnings and review remaining packages | Pending | Restore with vulnerability audit showing no accepted critical/high issues. |
 | 7 | Run runtime and compatibility validation | Pending | Application smoke test, focused interpreter tests, full test suite, and representative BASIC programs. |
