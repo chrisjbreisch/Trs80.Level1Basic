@@ -1220,6 +1220,21 @@ public class Level2CompatibilityTest
     }
 
     [TestMethod]
+    public void Graphics_Coordinates_Wrap_At_Positive_Boundaries()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 SET 128,48",
+            "20 PRINT POINT(0,0)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Cls_Clears_All_Graphics_Pixels()
     {
         using var controller = new TestController();
