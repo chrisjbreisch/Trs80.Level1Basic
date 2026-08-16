@@ -78,4 +78,21 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be("ABCDEFGH");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void User_Function_And_Loop_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DEF FNSQUARE(X)=X*X",
+            "20 FOR I=1 TO 3",
+            "30 PRINT FNSQUARE(I);",
+            "40 NEXT I"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1  4  9 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
