@@ -731,6 +731,21 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Read_Available_Inkey_Control_Character()
+    {
+        using var controller = new TestController();
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false));
+        var program = new List<string> {
+            "10 PRINT ASC(INKEY$)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 13 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Math_Functions()
     {
         using var controller = new TestController();
