@@ -761,6 +761,23 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Input_String_Returns_Available_Input_At_End_Of_Stream()
+    {
+        using var controller = new TestController
+        {
+            Input = new StringReader("abc")
+        };
+        var program = new List<string> {
+            "10 print input$(5)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("ABC");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Date_And_Time()
     {
         using var controller = new TestController();
