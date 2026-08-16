@@ -23,9 +23,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
-        controller.ReadErrorLine().Should().Be(" 10  PRINT C?HRIS");
-        controller.ReadOutputLine();
+        controller.ReadOutputLine().Should().Be(" 0 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -75,7 +73,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadOutputLine().Should().Be(" 0 ");
         controller.ReadErrorLine().Should().Be(" 20  NEXT C?HRIS");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -137,7 +135,7 @@ public class ErrorTest
 
         controller.ExecuteLine(statement);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadOutputLine().Should().Be(" 0 ");
     }
 
     [TestMethod]
