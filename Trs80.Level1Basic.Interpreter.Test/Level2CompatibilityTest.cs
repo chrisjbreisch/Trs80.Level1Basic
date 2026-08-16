@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 
 using FluentAssertions;
 
@@ -224,6 +225,22 @@ public class Level2CompatibilityTest
         controller.RunProgram(program);
 
         controller.ReadOutputLine().Should().Be(" 3 EL");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Input_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        controller.Input = new StringReader("CHRIS");
+        var program = new List<string> {
+            "10 INPUT \"NAME\";A$",
+            "20 PRINT \"HELLO, \";A$"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("NAME?HELLO, CHRIS");
         controller.IsEndOfRun().Should().BeTrue();
     }
 }
