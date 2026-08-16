@@ -216,6 +216,22 @@ public class Level2CompatibilityTest
     }
 
     [TestMethod]
+    public void Divide_By_Zero_Error_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT 1/0"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HOW?");
+        controller.ReadErrorLine().Should().Be(" 10  PRINT 1/0?");
+        controller.ReadOutputLine();
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Numeric_Conversion_Compatibility_Program()
     {
         using var controller = new TestController();
