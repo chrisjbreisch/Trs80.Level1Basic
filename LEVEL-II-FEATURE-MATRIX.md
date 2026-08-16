@@ -211,6 +211,7 @@ Recent Level II slices, in order:
 132. Added explicit integer `%` suffix support, so `A%=3.9` stores the truncated integer value `3`.
 133. Added explicit single-precision `!` suffix support, so `A!=3.9` preserves the single value.
 134. Added explicit double-precision `#` suffix support, so `A#=1/3` stores a double value.
+135. Verified the first-two-character significance rule for integer-suffixed variables.
 
 ## Next Slice Queue
 

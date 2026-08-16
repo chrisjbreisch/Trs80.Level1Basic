@@ -378,6 +378,21 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Applies_Two_Character_Rule_To_Integer_Suffix_Variables()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 NUMBER1%=7",
+            "20 PRINT NU%"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 7 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_Large_Level_Two_Integer_Literal()
     {
         using var controller = new TestController();
