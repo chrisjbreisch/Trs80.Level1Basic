@@ -314,8 +314,8 @@ public class Interpreter : IInterpreter
                 return value.ToString("0.######E+00");
             case < 1 and > -1:
                 return value.ToString(".#######");
-            case > 999999:
-            case < -999999:
+            case > 99999999:
+            case < -99999999:
                 return value.ToString("0.######E+00");
             default:
                 return value.ToString("R", System.Globalization.CultureInfo.InvariantCulture);

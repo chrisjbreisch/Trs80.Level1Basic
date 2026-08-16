@@ -409,6 +409,21 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Preserves_Fixed_Format_For_Double_Product()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A#=14593*846",
+            "20 PRINT A#"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 12345678 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Applies_Two_Character_Rule_To_Integer_Suffix_Variables()
     {
         using var controller = new TestController();
