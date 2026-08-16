@@ -36,7 +36,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Arithmetic operators | Implemented | Existing Level I operators plus `MOD`; division preserves `double` values when either operand is double. | Confirm all promotion, overflow, and divide/modulo edge cases against Level II behavior. |
 | Logical operators | Implemented | `AND`, `OR`, `NOT`, `XOR`, `EQV`, and `IMP` are implemented with numeric truthiness for `int`, `float`, and `double`. | Verify precedence and whether Level II uses numeric bitwise or boolean semantics in every operand context. Existing anchor: `LogicalTest`. |
 | Equality and comparisons | Implemented | Numeric equality compares `int`, `float`, and `double` by value rather than runtime type. | Add mixed numeric ordering and string comparison compatibility cases. |
-| Control flow | Implemented | Existing `FOR/NEXT`, `GOSUB/RETURN`, `IF`, `ON`, and branch forms are available. Program `STOP` reports `BREAK IN line` and prints `READY` on the following line without an intervening blank line; `CONT` resumes at the next statement after `STOP`. `END` and `NEW` clear the continuation point, so `CONT` cannot resume beyond an ended or erased program. | Audit remaining Level II-specific syntax and error behavior. Existing anchors: `FlowControlTest`, `LogicalTest`, `Level2CompatibilityTest`. |
+| Control flow | Implemented | Existing `FOR/NEXT`, `GOSUB/RETURN`, `IF`, `ON`, and branch forms are available. Program `STOP` reports `BREAK IN line` and prints `READY` on the following line without an intervening blank line; `CONT` resumes at the next statement after `STOP`. `END`, `NEW`, and full program replacement through `LOAD` clear the continuation point, so `CONT` cannot resume beyond ended, erased, or replaced program text. | Audit remaining Level II-specific syntax and error behavior. Existing anchors: `FlowControlTest`, `LogicalTest`, `Level2CompatibilityTest`. |
 | User-defined functions | Implemented | One-parameter `DEF FN` declarations support forward references, caller-value restoration, exact arity rejection, and registry reset after `NEW` or a fresh `RUN`. Existing anchor: `NativeFunctionTest`. | Verify additional manual syntax and type-conversion rules if required by the Level II manual. |
 
 ## Built-in Functions
@@ -329,6 +329,7 @@ Recent Level II slices, in order:
 250. Updated `STOP` to report Level II `BREAK IN line` output with no blank line before `READY`.
 251. Cleared the continuation point on `END` so `CONT` cannot execute following program lines.
 252. Cleared the continuation point on `NEW` so `CONT` cannot execute erased program lines.
+253. Cleared the continuation point during `LOAD` program replacement so `CONT` cannot execute stale program lines.
 
 ## Next Slice Queue
 

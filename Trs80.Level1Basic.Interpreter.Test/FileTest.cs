@@ -28,6 +28,28 @@ public class FileTest
     }
 
     [TestMethod]
+    public void Load_Clears_The_Stop_Continuation_Point()
+    {
+        using var controller = new TestController();
+        controller.RunProgram(new List<string> {
+            "10 PRINT \"OLD\"",
+            "20 STOP",
+            "30 PRINT \"STALE\""
+        });
+
+        controller.ExecuteLine("LOAD \"load.bas\"");
+        controller.ExecuteLine("CONT");
+
+        controller.ReadOutputLine().Should().Be("OLD");
+        controller.ReadOutputLine().Should().Be("BREAK IN 20");
+        controller.ReadOutputLine().Should().Be("READY");
+        controller.ReadOutputLine().Should().Be("Loaded \"load.bas\".");
+        controller.ReadOutputLine().Should().BeEmpty();
+        controller.ReadOutputLine().Should().Be("READY");
+        controller.ReadOutputLine().Should().BeNull();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Execute_Empty_Load()
     {
         using var controller = new TestController();

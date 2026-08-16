@@ -142,6 +142,7 @@ public class Machine : IMachine
     public void NewProgram()
     {
         Program.Clear();
+        _nextStatement = null;
         Initialize();
     }
 
