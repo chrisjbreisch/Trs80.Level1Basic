@@ -229,6 +229,7 @@ Recent Level II slices, in order:
 150. Verified comma statement separators also handle string assignments, so `A$="A", B$="B"` executes both assignments.
 151. Verified comma statement separators handle mixed numeric and string assignments.
 152. Verified comma statement separators preserve complete numeric RHS expressions.
+153. Verified comma statement separators preserve exponent expressions, including fractional powers.
 
 ## Next Slice Queue
 
