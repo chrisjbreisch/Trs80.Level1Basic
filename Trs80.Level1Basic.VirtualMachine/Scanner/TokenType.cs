@@ -62,6 +62,7 @@ public enum TokenType
     Not,
     On,
     Out,
+    Poke,
     Or,
     Print,
     R,

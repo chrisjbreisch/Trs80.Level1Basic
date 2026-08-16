@@ -163,6 +163,7 @@ public class Scanner : IScanner
                     {"LIST", TokenType.List},
                     {"LOAD", TokenType.Load},
                     {"NEXT", TokenType.Next},
+                    {"POKE", TokenType.Poke},
                     {"READ", TokenType.Read},
                     {"REA.", TokenType.Read},
                     {"RET.", TokenType.Return},

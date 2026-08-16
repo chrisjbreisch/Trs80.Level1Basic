@@ -22,7 +22,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Baseline | Level I interpreter with existing command, expression, file, input, and control-flow suites |
 | Recent focus | Type declarations, arrays, numeric precision, Level II built-ins, `CLEAR`, `MID$` assignment, user-defined functions, string-function compatibility, and scanner/parser keyword coverage |
 | Latest implementation commit | `87e7bd1 Add SET keyword support` |
-| Latest documentation checkpoint | This update: complete the `SET` scanner/parser slice |
+| Latest documentation checkpoint | This update: complete the `POKE` scanner/parser slice |
 | Validation habit | Run the narrowest affected test first, then the affected test class, then the full project for shared changes |
 
 ## Language Core
@@ -59,8 +59,8 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Program editing commands | Partial | `LIST` with closed, open-ended, or reversed line ranges, `LOAD`, `SAVE`, `MERGE`, `CLEAR`, and explicit single-line, closed-range, or open-ended `DELETE` exist; `DEL.`, `LO.`, `ME.`, and `SA.` are accepted as DELETE, LOAD, MERGE, and SAVE abbreviations. `CLEAR` resets variables and arrays while preserving the program. `CLOAD` and `CSAVE` are intentionally unavailable; disk-based `LOAD` and `SAVE` are the supported equivalents. | Verify remaining Level II command abbreviations. Existing anchor: `CommandTest`, `FileTest`. |
 | Data statements | Implemented | `DATA`, `READ`, and `RESTORE` exist. | Add mixed-type, exhaustion, and `CLEAR` interaction cases. Existing anchor: `DataTest`. |
 | Console input/output | Implemented | `INPUT`, `PRINT`, `TAB`, `SPC`, and cursor-related behavior exist. | Audit formatting, commas/semicolons, input errors, and Level II line-width behavior. Existing anchors: `InputTest`, `PrintTest`, `NativeFunctionTest`. |
-| Hardware statements | Partial | `SET`, `RESET`, `POKE`, and related APIs exist as host-machine abstractions; explicit `SET x, y` and `RESET x, y` scanner/parser dispatch now routes to the existing graphics APIs. | Specify whether each operation is emulated, approximated, rejected, or intentionally unavailable. |
-| Remaining Level II commands | Partial | `BEEP`, `OUT`, `WAIT`, `LPRINT`, `LLIST`, `SYSTEM`, `SET`, and `RESET` are recognized by the scanner and parser with focused coverage; hardware and printer statements remain limited pending host support policies, while `SYSTEM` ends the current BASIC run through the machine halt lifecycle. The parser statement dispatch is centralized in `Parser.Statement()`. | Compare the scanner keyword table and parser dispatch with the manual, then implement one command family per slice. Define audio, port-hardware, and printer-output policies before adding runtime behavior for the remaining limited commands. |
+| Hardware statements | Partial | `SET`, `RESET`, `POKE`, and related APIs exist as host-machine abstractions; explicit `SET x, y`, `RESET x, y`, and `POKE address, value` scanner/parser dispatch now routes to the existing graphics and memory APIs. | Specify whether each operation is emulated, approximated, rejected, or intentionally unavailable. |
+| Remaining Level II commands | Partial | `BEEP`, `OUT`, `WAIT`, `LPRINT`, `LLIST`, `SYSTEM`, `SET`, `RESET`, and `POKE` are recognized by the scanner and parser with focused coverage; hardware and printer statements remain limited pending host support policies, while `SYSTEM` ends the current BASIC run through the machine halt lifecycle. The parser statement dispatch is centralized in `Parser.Statement()`. | Compare the scanner keyword table and parser dispatch with the manual, then implement one command family per slice. Define audio, port-hardware, and printer-output policies before adding runtime behavior for the remaining limited commands. |
 
 ## Runtime and Compatibility
 
@@ -118,6 +118,7 @@ Recent Level II slices, in order:
 39. Added scanner, parser, and statement dispatch support for the no-argument `SYSTEM` keyword; execution ends the current BASIC run through the machine halt lifecycle.
 40. Added explicit scanner, parser, and statement dispatch support for `RESET x, y`, routing execution to the existing graphics reset API with focused scanner/parser coverage.
 41. Added explicit scanner, parser, and statement dispatch support for `SET x, y`, routing execution to the existing graphics set API while preserving the parenthesized native-call form.
+42. Added explicit scanner, parser, and statement dispatch support for `POKE address, value`, routing execution to the existing memory API while preserving the parenthesized native-call form.
 
 ## Next Slice Queue
 

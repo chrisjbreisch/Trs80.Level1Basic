@@ -953,4 +953,10 @@ public class Interpreter : IInterpreter
         _trs80.Set((float)Evaluate(statement.X), (float)Evaluate(statement.Y));
         return null!;
     }
+
+    public Void VisitPokeStatement(PokeStatement statement)
+    {
+        _trs80Api.Poke((int)Evaluate(statement.Address), (int)Evaluate(statement.Value));
+        return null!;
+    }
 }

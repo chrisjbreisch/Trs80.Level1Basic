@@ -35,6 +35,7 @@ public interface IVisitor<out T>
     T VisitNextStatement(Next statement);
     T VisitOnStatement(On statement);
     T VisitOutStatement(Out statement);
+    T VisitPokeStatement(PokeStatement statement);
     T VisitPrintStatement(Print statement);
     T VisitReplaceStatement(Replace statement);
     T VisitReadStatement(Read statement);

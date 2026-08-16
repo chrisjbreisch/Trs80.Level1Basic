@@ -172,6 +172,15 @@ public class CommandTest
     }
 
     [TestMethod]
+    public void Parser_Can_Parse_Poke_Command()
+    {
+        using var controller = new TestController();
+        var tokens = controller.Scanner.ScanTokens(new SourceLine("POKE 100, 65"));
+
+        controller.Parser.Parse(tokens).Should().BeOfType<PokeStatement>();
+    }
+
+    [TestMethod]
     public void Parser_Can_Parse_Abbreviated_Merge_Command()
     {
         using var controller = new TestController();

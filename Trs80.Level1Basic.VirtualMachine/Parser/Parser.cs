@@ -151,6 +151,8 @@ public class Parser : IParser
             return OnStatement();
         if (Match(TokenType.Out))
             return OutStatement();
+        if (Match(TokenType.Poke))
+            return PokeStatement();
         if (Match(TokenType.Wait))
             return WaitStatement();
         if (Match(TokenType.Print))
@@ -634,6 +636,17 @@ public class Parser : IParser
         if (parenthesized)
             Consume(TokenType.RightParen, "Expected ')' after SET arguments.");
         return StatementWrapper(new SetStatement(x, y));
+    }
+
+    private IStatement PokeStatement()
+    {
+        bool parenthesized = Match(TokenType.LeftParen);
+        Expression address = Expression();
+        Consume(TokenType.Comma, "Expected ',' after POKE address.");
+        Expression value = Expression();
+        if (parenthesized)
+            Consume(TokenType.RightParen, "Expected ')' after POKE arguments.");
+        return StatementWrapper(new PokeStatement(address, value));
     }
 
     private IStatement RunStatement()
