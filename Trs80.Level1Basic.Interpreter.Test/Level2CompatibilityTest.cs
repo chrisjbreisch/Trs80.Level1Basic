@@ -892,4 +892,20 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be("HELLOHELLO");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void String_Formatting_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT STR$(42)",
+            "20 PRINT \"A\";SPACE$(3);\"B\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("42");
+        controller.ReadOutputLine().Should().Be("A   B");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
