@@ -198,6 +198,7 @@ Recent Level II slices, in order:
 119. Enabled string concatenation in assignment expressions, so string variables and literals can be combined with `+`.
 120. Verified the first-two-character significance rule for string variables with `$` suffixes.
 121. Verified the first-two-character significance rule for alphanumeric numeric variables.
+122. Allowed integer-looking numeric literals beyond `Int32` range to fall back to Level II float parsing; `12345678901` now prints `1.23457E+10`.
 
 ## Next Slice Queue
 

@@ -699,7 +699,12 @@ public class Scanner : IScanner
 
         object value;
         if (isInt)
-            value = int.Parse(_source.Substring(TokenStart, TokenLength));
+        {
+            string number = _source.Substring(TokenStart, TokenLength);
+            value = int.TryParse(number, out int integerValue)
+                ? integerValue
+                : float.Parse(number);
+        }
         else
             value = float.Parse(_source.Substring(TokenStart, TokenLength));
 
