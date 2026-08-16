@@ -174,6 +174,21 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Applies_Two_Character_Rule_To_String_Variables()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 NUMBER$=\"TOBY\"",
+            "20 PRINT NU$"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("TOBY");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_Zero()
     {
         using var controller = new TestController();
