@@ -55,6 +55,20 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Print_With_Question_Mark_Alias()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 ? 3"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_Zero()
     {
         using var controller = new TestController();

@@ -253,6 +253,9 @@ public class Scanner : IScanner
             case '*':
                 AddToken(TokenType.Star);
                 break;
+            case '?':
+                AddToken(TokenType.Print);
+                break;
             case '/':
                 AddToken(TokenType.Slash);
                 break;
