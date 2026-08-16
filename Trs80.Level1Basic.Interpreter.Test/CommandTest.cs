@@ -343,7 +343,8 @@ public class CommandTest
         controller.ExecuteLine("LIST 20");
 
         controller.ReadOutputLine().Should().Be(" 20  PRINT 20");
-        controller.ReadOutputLine().Should().BeNull();
+        controller.ReadOutputLine().Should().BeEmpty();
+        controller.ReadOutputLine().Should().Be("READY");
     }
 
     [TestMethod]
@@ -358,7 +359,8 @@ public class CommandTest
         controller.ExecuteLine("LIST .");
 
         controller.ReadOutputLine().Should().Be(" 20  PRINT 20");
-        controller.ReadOutputLine().Should().BeNull();
+        controller.ReadOutputLine().Should().BeEmpty();
+        controller.ReadOutputLine().Should().Be("READY");
     }
 
     [TestMethod]
@@ -374,7 +376,8 @@ public class CommandTest
         controller.ExecuteLine("LIST .");
 
         controller.ReadOutputLine().Should().Be(" 10  PRINT UPDATED");
-        controller.ReadOutputLine().Should().BeNull();
+        controller.ReadOutputLine().Should().BeEmpty();
+        controller.ReadOutputLine().Should().Be("READY");
     }
 
     [TestMethod]
@@ -390,6 +393,47 @@ public class CommandTest
 
         controller.ReadOutputLine().Should().Be(" 20  PRINT 20");
         controller.ReadOutputLine().Should().Be(" 30  PRINT 30");
+    }
+
+    [TestMethod]
+    public void Interpreter_Does_Not_Pause_After_The_Final_List_Page()
+    {
+        using var controller = new TestController();
+        controller.ExecuteStatements(new List<string> {
+            "10 PRINT 1", "20 PRINT 2", "30 PRINT 3", "40 PRINT 4",
+            "50 PRINT 5", "60 PRINT 6", "70 PRINT 7", "80 PRINT 8",
+            "90 PRINT 9", "100 PRINT 10", "110 PRINT 11", "120 PRINT 12"
+        });
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false));
+
+        controller.ExecuteLine("LIST");
+
+        controller.Host.ReadKeyCount.Should().Be(0);
+        for (int line = 1; line <= 12; line++)
+            controller.ReadOutputLine().Should().Be($" {line * 10}  PRINT {line}");
+        controller.ReadOutputLine().Should().BeEmpty();
+        controller.ReadOutputLine().Should().Be("READY");
+    }
+
+    [TestMethod]
+    public void Interpreter_Pauses_When_Another_List_Page_Remains()
+    {
+        using var controller = new TestController();
+        controller.ExecuteStatements(new List<string> {
+            "10 PRINT 1", "20 PRINT 2", "30 PRINT 3", "40 PRINT 4",
+            "50 PRINT 5", "60 PRINT 6", "70 PRINT 7", "80 PRINT 8",
+            "90 PRINT 9", "100 PRINT 10", "110 PRINT 11", "120 PRINT 12",
+            "130 PRINT 13"
+        });
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('\0', ConsoleKey.UpArrow, false, false, false));
+
+        controller.ExecuteLine("LIST");
+
+        controller.Host.ReadKeyCount.Should().Be(1);
+        for (int line = 1; line <= 13; line++)
+            controller.ReadOutputLine().Should().Be($" {line * 10}  PRINT {line}");
+        controller.ReadOutputLine().Should().BeEmpty();
+        controller.ReadOutputLine().Should().Be("READY");
     }
 
 

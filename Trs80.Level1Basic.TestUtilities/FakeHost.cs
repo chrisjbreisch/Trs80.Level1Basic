@@ -15,6 +15,7 @@ public class FakeHost : IHost
     private readonly Queue<ConsoleKeyInfo> _queuedKeys = new();
 
     public int BeepCount { get; private set; }
+    public int ReadKeyCount { get; private set; }
     public List<string> PrintedDocuments { get; } = new();
     public string FileNameForLoad { get; set; } = string.Empty;
     public string FileNameForSave { get; set; } = string.Empty;
@@ -64,6 +65,7 @@ public class FakeHost : IHost
 
     public ConsoleKeyInfo ReadKey()
     {
+        ReadKeyCount++;
         return _queuedKeys.Count > 0 ? _queuedKeys.Dequeue() : new ConsoleKeyInfo();
     }
 

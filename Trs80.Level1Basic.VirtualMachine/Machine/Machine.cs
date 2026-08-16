@@ -90,32 +90,35 @@ public class Machine : IMachine
     {
         int firstLine = endLineNumber.HasValue ? Math.Min(lineNumber, endLineNumber.Value) : lineNumber;
         int lastLine = endLineNumber.HasValue ? Math.Max(lineNumber, endLineNumber.Value) : int.MaxValue;
-        int index = 0;
-        bool exitList = false;
-        foreach (IStatement statement in Program.List().Where(s => s.LineNumber >= firstLine && s.LineNumber <= lastLine))
-        {
-            _trs80.WriteLine(statement.LineNumber >= 0 ? $" {statement.LineNumber}  {statement.SourceLine}" : $"{statement.SourceLine}");
-            index++;
-            if (index < 12) continue;
+        var statements = Program.List()
+            .Where(statement => statement.LineNumber >= firstLine && statement.LineNumber <= lastLine)
+            .ToList();
+        int linesOnPage = 0;
 
-            bool readAnotherKey = true;
-            while (readAnotherKey)
+        for (int statementIndex = 0; statementIndex < statements.Count; statementIndex++)
+        {
+            IStatement statement = statements[statementIndex];
+            _trs80.WriteLine(statement.LineNumber >= 0 ? $" {statement.LineNumber}  {statement.SourceLine}" : $"{statement.SourceLine}");
+            linesOnPage++;
+            if (linesOnPage < 12 || statementIndex == statements.Count - 1)
+                continue;
+
+            while (true)
             {
                 ConsoleKeyInfo key = _trs80.ReadKey();
 
                 if (key.Key == ConsoleKey.Enter)
                 {
                     _trs80.WriteLine();
-                    exitList = true;
-                    break;
+                    return;
                 }
 
                 if (key.Key == ConsoleKey.UpArrow)
-                    readAnotherKey = false;
+                {
+                    linesOnPage = 0;
+                    break;
+                }
             }
-
-            if (exitList)
-                break;
         }
     }
 

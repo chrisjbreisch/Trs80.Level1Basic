@@ -704,6 +704,7 @@ public class Interpreter : IInterpreter
             if (_program.LastLineNumber.HasValue)
                 _machine.ListProgram(_program.LastLineNumber.Value, _program.LastLineNumber.Value);
 
+            WritePrompt();
             return null!;
         }
 
@@ -712,6 +713,7 @@ public class Interpreter : IInterpreter
             ? null
             : GetStartingLineNumber(statement.EndAtLineNumber);
         _machine.ListProgram(lineNumber, endLineNumber);
+        WritePrompt();
 
         return null!;
     }
