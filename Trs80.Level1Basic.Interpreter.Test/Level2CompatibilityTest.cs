@@ -271,4 +271,22 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be("A  B    C");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Clear_Preserves_Program_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A=42",
+            "20 DIM B(1)",
+            "30 B(1)=7",
+            "40 CLEAR",
+            "50 PRINT A;B(1)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0  0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
