@@ -99,7 +99,7 @@ public class DataTest
     }
 
     [TestMethod]
-    public void Interpreter_Does_Not_Fail_When_Reading_Strings_Into_Number_Variables()
+    public void Interpreter_Reports_Type_Mismatch_When_Reading_String_Data_Into_Numeric_Variable()
     {
         using var controller = new TestController();
         var program = new List<string> {
@@ -110,7 +110,9 @@ public class DataTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.ReadOutputLine().Should().Be("?TM ERROR");
+        controller.ReadErrorLine().Should().Be(" 20  READ ?A");
+        controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
     }
 

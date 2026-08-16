@@ -918,7 +918,10 @@ public class Interpreter : IInterpreter
         {
             dynamic value = _machine.Data.GetNext();
             if (variable is Identifier identifier && !identifier.Name.Lexeme.EndsWith('$') && value is string)
-                Assign(variable, 0);
+                throw new TypeMismatchException(_program.CurrentStatement.LineNumber,
+                    _program.CurrentStatement.SourceLine,
+                    identifier.LinePosition - identifier.Name.Lexeme.Length,
+                    "Cannot read string data into a numeric variable.");
             else
                 Assign(variable, value);
         }
