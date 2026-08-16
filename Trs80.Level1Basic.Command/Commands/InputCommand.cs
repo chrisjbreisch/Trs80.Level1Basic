@@ -30,7 +30,7 @@ public class InputCommand : ICommand<InputModel>
         {
             string prompt = _autoLineNumbering.IsActive
                 ? $"{_autoLineNumbering.NextLineNumber} "
-                : ">";
+                : parameterObject.WritePrompt ? ">" : string.Empty;
             SourceLine sourceLine = GetInputLine(out bool cancelled, prompt: prompt);
 
             if (cancelled)
@@ -43,7 +43,8 @@ public class InputCommand : ICommand<InputModel>
 
             if (!_autoLineNumbering.IsActive && TryGetEditLine(sourceLine.Original, out int editLineNumber, out string existingLine))
             {
-                SourceLine editedLine = GetInputLine(out cancelled, existingLine, ">");
+                string editPrompt = parameterObject.WritePrompt ? ">" : string.Empty;
+                SourceLine editedLine = GetInputLine(out cancelled, existingLine, editPrompt);
                 if (cancelled)
                     continue;
 
