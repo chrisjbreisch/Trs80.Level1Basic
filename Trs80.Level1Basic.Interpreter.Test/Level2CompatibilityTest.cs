@@ -169,6 +169,23 @@ public class Level2CompatibilityTest
     }
 
     [TestMethod]
+    public void Data_Type_Mismatch_Compatibility_Program_Reports_An_Error()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DATA TEXT",
+            "20 READ A"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("?TM ERROR");
+        controller.ReadErrorLine().Should().Be(" 20  READ ?A");
+        controller.ReadOutputLine();
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Binary_Conversion_Compatibility_Program()
     {
         using var controller = new TestController();

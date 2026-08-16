@@ -341,6 +341,7 @@ Recent Level II slices, in order:
 262. Extended symmetric `READ` type-mismatch checks and target diagnostics to array elements.
 263. Reported `?TM ERROR` for scalar string/numeric assignment mismatches in either direction.
 264. Expanded the compatibility corpus with a scalar type-mismatch program and its `?TM ERROR` diagnostic.
+265. Expanded the compatibility corpus with a `DATA`/`READ` type-mismatch program and its `?TM ERROR` diagnostic.
 
 ## Next Slice Queue
 
