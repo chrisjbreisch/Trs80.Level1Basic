@@ -189,6 +189,7 @@ Recent Level II slices, in order:
 110. Fixed parsing and evaluation of explicit unary plus, so `PRINT +3.12` outputs `3.12` instead of `WHAT?`; added a focused regression test.
 111. Added `?` as a scanner alias for `PRINT`, so `? 3` outputs `3`; added a focused regression test.
 112. Fixed numeric formatting so `0.01` uses fixed `.01` output while `0.001` retains scientific notation; added boundary regressions.
+113. Fixed parser progress on malformed nested-quote PRINT input, preventing a hang and preserving the partial `HE SAID` output before `WHAT?`.
 
 ## Next Slice Queue
 

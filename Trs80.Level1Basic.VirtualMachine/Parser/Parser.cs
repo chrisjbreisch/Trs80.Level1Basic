@@ -1131,8 +1131,10 @@ public class Parser : IParser
 
         if (!IsIdentifierShortHand())
         {
-            Expression literal = new Literal(Peek().Lexeme, Peek().Lexeme, Peek().LinePosition);
-            literal.ParseException = new ParseException(_lineNumber, _source, Peek().LinePosition, "Expected expression.");
+            Token unexpected = Peek();
+            Advance();
+            Expression literal = new Literal(unexpected.Lexeme, unexpected.Lexeme, unexpected.LinePosition);
+            literal.ParseException = new ParseException(_lineNumber, _source, unexpected.LinePosition, "Expected expression.");
             return literal;
         }
 

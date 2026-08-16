@@ -97,6 +97,20 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Reports_Error_After_Closed_Quote()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT \"HE SAID \"TO BE OR NOT TO BE\"\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HE SAID WHAT?");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_Zero()
     {
         using var controller = new TestController();
