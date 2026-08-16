@@ -668,4 +668,18 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 10 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Delete_Abbreviation_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        controller.ExecuteLine("NEW");
+        controller.ExecuteLine("10 PRINT 10");
+        controller.ExecuteLine("20 PRINT 20");
+        controller.ExecuteLine("DEL. 10");
+        controller.ExecuteLine("RUN");
+
+        controller.ReadOutputLine().Should().Be(" 20 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
