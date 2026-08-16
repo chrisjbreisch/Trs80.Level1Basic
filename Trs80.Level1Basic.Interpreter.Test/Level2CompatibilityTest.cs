@@ -801,4 +801,18 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" .333333 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Midpoint_Integer_Conversion_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT CINT(2.5);CINT(-2.5)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3 -3 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
