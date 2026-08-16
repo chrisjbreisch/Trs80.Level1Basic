@@ -232,6 +232,22 @@ public class Level2CompatibilityTest
     }
 
     [TestMethod]
+    public void Invalid_Statement_Error_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT CHRIS"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadErrorLine().Should().Be(" 10  PRINT C?HRIS");
+        controller.ReadOutputLine();
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Numeric_Conversion_Compatibility_Program()
     {
         using var controller = new TestController();
