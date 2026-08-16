@@ -63,6 +63,28 @@ public class FlowControlTest
     }
 
     [TestMethod]
+    public void New_Clears_The_Stop_Continuation_Point()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT \"BEFORE\"",
+            "20 STOP",
+            "30 PRINT \"AFTER\""
+        };
+
+        controller.RunProgram(program);
+        controller.ExecuteLine("NEW");
+        controller.ExecuteLine("CONT");
+
+        controller.ReadOutputLine().Should().Be("BEFORE");
+        controller.ReadOutputLine().Should().Be("BREAK IN 20");
+        controller.ReadOutputLine().Should().Be("READY");
+        controller.ReadOutputLine().Should().BeEmpty();
+        controller.ReadOutputLine().Should().Be("READY");
+        controller.ReadOutputLine().Should().BeNull();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Execute_Gosub()
     {
         using var controller = new TestController();

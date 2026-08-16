@@ -820,6 +820,7 @@ public class Interpreter : IInterpreter
     public Void VisitNewStatement(New statement)
     {
         _machine.Program.Clear();
+        _machine.SetNextStatement(null);
         _userFunctions.Clear();
 
         return null!;
