@@ -424,6 +424,21 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Uses_Scientific_Format_Beyond_Double_Fixed_Boundary()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A#=123456789",
+            "20 PRINT A#"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1.234568E+08 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Applies_Two_Character_Rule_To_Integer_Suffix_Variables()
     {
         using var controller = new TestController();

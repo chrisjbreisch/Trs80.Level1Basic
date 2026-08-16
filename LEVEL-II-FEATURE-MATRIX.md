@@ -219,6 +219,7 @@ Recent Level II slices, in order:
 140. Verified valid `%` integer boundaries: `32767` and `-32768` are accepted.
 141. Verified negative `%` overflow below the Level II lower bound; `-32769` reports `HOW?` at use.
 142. Raised the double fixed-format threshold so `A#=14593*846` prints `12345678` instead of scientific notation.
+143. Verified the double formatting boundary: values through eight digits remain fixed, while larger values use the established six-digit scientific format.
 
 ## Next Slice Queue
 
