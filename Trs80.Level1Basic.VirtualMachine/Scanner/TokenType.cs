@@ -67,6 +67,7 @@ public enum TokenType
     R,
     Read,
     Rem,
+    Reset,
     Restore,
     Return,
     Run,

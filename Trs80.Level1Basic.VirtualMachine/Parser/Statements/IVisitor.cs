@@ -39,6 +39,7 @@ public interface IVisitor<out T>
     T VisitReplaceStatement(Replace statement);
     T VisitReadStatement(Read statement);
     T VisitRemStatement(Rem statement);
+    T VisitResetStatement(ResetStatement statement);
     T VisitRestoreStatement(Restore statement);
     T VisitReturnStatement(Return statement);
     T VisitRunStatement(Run statement);

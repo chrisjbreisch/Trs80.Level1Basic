@@ -159,6 +159,8 @@ public class Parser : IParser
             return ReadStatement();
         if (Match(TokenType.Rem))
             return RemarkStatement();
+        if (Match(TokenType.Reset))
+            return ResetStatement();
         if (Match(TokenType.Restore))
             return RestoreStatement();
         if (Match(TokenType.Return))
@@ -608,6 +610,17 @@ public class Parser : IParser
     private IStatement SystemStatement()
     {
         return StatementWrapper(new SystemStatement());
+    }
+
+    private IStatement ResetStatement()
+    {
+        bool parenthesized = Match(TokenType.LeftParen);
+        Expression x = Expression();
+        Consume(TokenType.Comma, "Expected ',' after RESET x coordinate.");
+        Expression y = Expression();
+        if (parenthesized)
+            Consume(TokenType.RightParen, "Expected ')' after RESET arguments.");
+        return StatementWrapper(new ResetStatement(x, y));
     }
 
     private IStatement RunStatement()

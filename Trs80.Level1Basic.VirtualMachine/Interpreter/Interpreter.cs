@@ -941,4 +941,10 @@ public class Interpreter : IInterpreter
         _machine.HaltRun();
         return null!;
     }
+
+    public Void VisitResetStatement(ResetStatement statement)
+    {
+        _trs80.Reset((float)Evaluate(statement.X), (float)Evaluate(statement.Y));
+        return null!;
+    }
 }

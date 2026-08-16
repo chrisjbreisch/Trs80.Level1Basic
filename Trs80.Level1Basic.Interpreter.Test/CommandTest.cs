@@ -154,6 +154,15 @@ public class CommandTest
     }
 
     [TestMethod]
+    public void Parser_Can_Parse_Reset_Command()
+    {
+        using var controller = new TestController();
+        var tokens = controller.Scanner.ScanTokens(new SourceLine("RESET 23, 20"));
+
+        controller.Parser.Parse(tokens).Should().BeOfType<ResetStatement>();
+    }
+
+    [TestMethod]
     public void Parser_Can_Parse_Abbreviated_Merge_Command()
     {
         using var controller = new TestController();

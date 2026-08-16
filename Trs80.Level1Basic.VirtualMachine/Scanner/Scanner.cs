@@ -182,6 +182,7 @@ public class Scanner : IScanner
                     {"MERGE", TokenType.Merge},
                     {"PRINT", TokenType.Print},
                     {"REST.", TokenType.Restore},
+                    {"RESET", TokenType.Reset},
                 }
             },
             {
