@@ -858,4 +858,20 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 1 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Numeric_Base_Format_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT HEX$(255)",
+            "20 PRINT OCT$(255)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("FF");
+        controller.ReadOutputLine().Should().Be("377");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
