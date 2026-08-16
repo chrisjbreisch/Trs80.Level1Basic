@@ -1,0 +1,6 @@
+ 10  D=10000
+ 20  R=.07
+ 30  I=D*R
+ 40  PRINT I
+ 50  PRINT D+I
+ 60  END
