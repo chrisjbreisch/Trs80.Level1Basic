@@ -23,7 +23,7 @@ public class ConsumeTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadOutputLine().Should().Be("?SN ERROR");
         controller.ReadErrorLine().Should().Be(" 10  FOR I ?1 TO 10");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
