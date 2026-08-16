@@ -419,6 +419,8 @@ public class Trs80Api : ITrs80Api
     }
 
     public static Random Rand = new();
+    private static float LastRandom;
+    private static bool HasLastRandom;
 
     public dynamic Rnd(dynamic control)
     {
@@ -429,13 +431,24 @@ public class Trs80Api : ITrs80Api
         if (integerControl < 0)
         {
             Rand = new Random(integerControl);
-            return (float)Rand.NextDouble();
+            LastRandom = (float)Rand.NextDouble();
+            HasLastRandom = true;
+            return LastRandom;
         }
 
         if (integerControl == 0)
-            return (float)Rand.NextDouble();
+        {
+            if (HasLastRandom)
+                return LastRandom;
 
-        return (int)Math.Floor(integerControl * Rand.NextDouble() + 1);
+            LastRandom = (float)Rand.NextDouble();
+            HasLastRandom = true;
+            return LastRandom;
+        }
+
+        LastRandom = (int)Math.Floor(integerControl * Rand.NextDouble() + 1);
+        HasLastRandom = true;
+        return LastRandom;
     }
 
     public string Tab(dynamic value)

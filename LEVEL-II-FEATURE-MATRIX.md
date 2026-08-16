@@ -47,7 +47,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | `MID$` assignment | Implemented | Supports `MID$(A$, start, length) = value$` and optional length. Replacement is fixed-length, does not expand the target, ignores out-of-range starts and nonpositive arguments, and requires a string target. | Keep as a regression anchor while the broader string-function row is completed. |
 | Numeric conversion | Implemented | `CINT`, `CSNG`, `CDBL`, `FIX`, and `INT` exist. `CINT`, `FIX`, and `INT` avoid unnecessary `float` narrowing for double inputs. | Verify overflow, exact midpoint rounding, and conversion from strings. Existing anchor: `NativeFunctionTest`. |
 | Math functions | Implemented | `SQR`, `SIN`, `COS`, `TAN`, `ATN`, `LOG`, and `EXP` are registered and callable. | Confirm domain errors, precision, and Level II output expectations. |
-| Random numbers | Partial | One- and zero-argument `RND` exist; numeric controls are truncated to integer controls; negative controls reseed the generator deterministically and repeat the seeded first value. | Define zero-control repeat behavior and verify the remaining manual boundary cases. |
+| Random numbers | Partial | One- and zero-argument `RND` exist; numeric controls are truncated to integer controls; negative controls reseed the generator deterministically and repeat the seeded first value; zero control repeats the last generated value after initialization. | Verify the remaining manual boundary cases. |
 | Keyboard/input functions | Partial | `INPUT$` and `INKEY$` exist. | Verify blocking behavior, end-of-input, character case, and interaction with `INPUT`. |
 | Memory/display functions | Partial | `PEEK`, `POKE`, `MEM`, `FRE`, `POS`, `CSRLIN`, `POINT`, `SPC`, and `TAB` exist. | Document host-machine emulation, address wrapping, cursor behavior, and unsupported hardware assumptions. |
 | Remaining Level II functions | Partial | The native-function registry is centralized in `NativeFunctions`; `CVI`, `CVS`, `CVD`, `MKI$`, `MKS$`, and `MKD$` are now registered and covered for valid little-endian binary conversion. | Build an authoritative manual checklist and add one focused test for every remaining missing function. |
@@ -279,6 +279,7 @@ Recent Level II slices, in order:
 200. Added `CLOAD` and `CSAVE` scanner aliases for file-backed `LOAD` and `SAVE` behavior.
 201. Verified `CLOAD` and `CSAVE` execute the file-backed load/save round trip.
 202. Added deterministic negative-control seeding and repeatability coverage for `RND`.
+203. Added last-value repeat behavior for `RND(0)` with focused coverage.
 
 ## Next Slice Queue
 

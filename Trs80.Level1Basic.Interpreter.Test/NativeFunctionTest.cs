@@ -995,6 +995,21 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Repeat_The_Last_Rnd_Value_With_Zero_Control()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT RND(-7)",
+            "20 PRINT RND(0)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(controller.ReadOutputLine());
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Rnd_2()
     {
         using var controller = new TestController();
