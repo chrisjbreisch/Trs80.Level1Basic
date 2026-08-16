@@ -46,4 +46,20 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 42 HAILO");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Binary_Conversion_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT CVI(\"AB\")",
+            "20 PRINT MKI$(16961)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 16961 ");
+        controller.ReadOutputLine().Should().Be("AB");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
