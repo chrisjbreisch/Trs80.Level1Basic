@@ -241,14 +241,17 @@ public class Trs80Api : ITrs80Api
 
     public int Peek(int address)
     {
-        int normalizedAddress = address % MemorySize;
-        return Memory[normalizedAddress];
+        return Memory[NormalizeAddress(address)];
     }
 
     public void Poke(int address, int value)
     {
-        int normalizedAddress = address % MemorySize;
-        Memory[normalizedAddress] = (byte)(value & 0xFF);
+        Memory[NormalizeAddress(address)] = (byte)(value & 0xFF);
+    }
+
+    private static int NormalizeAddress(int address)
+    {
+        return ((address % MemorySize) + MemorySize) % MemorySize;
     }
 
     public int Pos(int position)

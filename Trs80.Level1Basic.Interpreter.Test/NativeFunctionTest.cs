@@ -673,6 +673,21 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Wraps_Negative_Memory_Address()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 POKE -1,65",
+            "20 PRINT PEEK(65535)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 65 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Pos_And_Csrlin()
     {
         using var controller = new TestController();
