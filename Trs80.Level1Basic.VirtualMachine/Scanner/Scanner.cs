@@ -713,6 +713,7 @@ public class Scanner : IScanner
 
         object value;
         string number = _source.Substring(TokenStart, TokenLength);
+        bool integerSuffix = number.EndsWith('%');
         if (number.EndsWith('#') || number.EndsWith('!') || number.EndsWith('%'))
             number = number[..^1];
         if (_source[TokenStart..(TokenStart + TokenLength)].EndsWith('#')
@@ -721,9 +722,15 @@ public class Scanner : IScanner
                 System.Globalization.CultureInfo.InvariantCulture);
         else if (isInt)
         {
-            value = int.TryParse(number, out int integerValue)
-                ? integerValue
-                : float.Parse(number);
+            if (int.TryParse(number, out int integerValue))
+            {
+                if (integerSuffix && (integerValue < short.MinValue || integerValue > short.MaxValue))
+                    throw new ValueOutOfRangeException(-1, string.Empty, "Integer value out of range.");
+
+                value = integerValue;
+            }
+            else
+                value = float.Parse(number);
         }
         else
             value = float.Parse(number, System.Globalization.CultureInfo.InvariantCulture);

@@ -245,6 +245,16 @@ public class ErrorTest
     }
 
     [TestMethod]
+    public void Interpreter_Reports_Integer_Literal_Suffix_Overflow()
+    {
+        using var controller = new TestController();
+
+        controller.ExecuteLine("PRINT 32768%");
+
+        controller.ReadOutputLine().Should().Be("?OV ERROR");
+    }
+
+    [TestMethod]
     public void Interpreter_Handles_Divide_By_Zero_In_Command()
     {
         using var controller = new TestController();

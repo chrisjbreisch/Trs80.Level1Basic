@@ -244,6 +244,7 @@ Recent Level II slices, in order:
 165. Added numeric-literal `#` suffix support, so `PRINT 1/3#` evaluates as double precision.
 166. Added numeric-literal `!` suffix support, so `PRINT 1.23!` evaluates as single precision.
 167. Added numeric-literal `%` suffix support, completing explicit `%`, `!`, and `#` numeric literal suffixes.
+168. Enforced the 16-bit range for numeric `%` literals; `PRINT 32768%` now reports `?OV ERROR`.
 
 ## Next Slice Queue
 
