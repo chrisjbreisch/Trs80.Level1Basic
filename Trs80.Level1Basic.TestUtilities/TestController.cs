@@ -58,7 +58,7 @@ public class TestController : DisposableBase
         Parser = new Parser(Trs80, natives, appSettings);
         IProgram program = new BasicProgram(Scanner, Parser);
         IMachine environment = new Machine(Trs80, program);
-        ITrs80Api trs80Api = new Trs80Api(program, Trs80);
+        ITrs80Api trs80Api = new Trs80Api(program, environment, Trs80);
         _interpreter = new Interpreter(host, Trs80, trs80Api, environment, program, appSettings);
     }
 

@@ -304,6 +304,7 @@ Recent Level II slices, in order:
 225. Added direct `InputCommand` coverage for the Pause/Break `AUTO` exit path.
 226. Added direct `InputCommand` coverage for AUTO source-line progression from 10 to 20.
 227. Verified `CINT` exact midpoint rounding away from zero for positive and negative values.
+228. Added 7-byte scalar-variable allocation accounting to `MEM`, including the `A=1` reduction from 15572 to 15565.
 
 ## Next Slice Queue
 

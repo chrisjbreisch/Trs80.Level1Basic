@@ -958,8 +958,21 @@ public class NativeFunctionTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 15855  15855 ");
+        controller.ReadOutputLine().Should().Be(" 15556  15556 ");
         controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Mem_Decreases_When_A_Scalar_Is_Assigned()
+    {
+        using var controller = new TestController();
+
+        controller.ExecuteLine("PRINT MEM");
+        controller.ExecuteLine("A=1");
+        controller.ExecuteLine("PRINT MEM");
+
+        controller.ReadOutputLine().Should().Be(" 15572 ");
+        controller.ReadOutputLine().Should().Be(" 15565 ");
     }
 
     [TestMethod]

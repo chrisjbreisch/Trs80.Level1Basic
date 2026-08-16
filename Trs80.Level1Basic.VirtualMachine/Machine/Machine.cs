@@ -18,6 +18,7 @@ public class Machine : IMachine
     public int CursorY { get; set; }
     public DataElements Data { get; } = new();
     public IProgram Program { get; }
+    public int VariableMemorySize => _globals.VariableMemorySize;
     public bool ExecutionHalted { get; set; }
 
     public Machine(ITrs80 trs80, IProgram program)

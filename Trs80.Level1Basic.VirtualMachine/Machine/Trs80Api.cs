@@ -9,14 +9,16 @@ public class Trs80Api : ITrs80Api
     private const int MemorySize = 64 * 1024;
     private static readonly byte[] Memory = new byte[MemorySize];
     private readonly IProgram _program;
+    private readonly IMachine _machine;
     private readonly ITrs80 _trs80;
     public const int AdditionalMem = 12 * 1024;
     public const int BaseMem = 3284;
     public const int TotalMemory = BaseMem + AdditionalMem;
 
-    public Trs80Api(IProgram program, ITrs80 trs80)
+    public Trs80Api(IProgram program, IMachine machine, ITrs80 trs80)
     {
         _program = program ?? throw new ArgumentNullException(nameof(program));
+        _machine = machine ?? throw new ArgumentNullException(nameof(machine));
         _trs80 = trs80 ?? throw new ArgumentNullException(nameof(trs80));
     }
 
@@ -28,7 +30,7 @@ public class Trs80Api : ITrs80Api
 
     public dynamic Mem()
     {
-        return TotalMemory - _program.Size();
+        return TotalMemory - _program.Size() - _machine.VariableMemorySize;
     }
 
     public dynamic Fre(dynamic value)

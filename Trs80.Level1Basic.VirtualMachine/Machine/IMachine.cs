@@ -9,6 +9,7 @@ public interface IMachine
     bool ExecutionHalted { get;  }
     DataElements Data { get; }
     IProgram Program { get; }
+    int VariableMemorySize { get; }
     int CursorX { get; set; }
     int CursorY { get; set; }
 

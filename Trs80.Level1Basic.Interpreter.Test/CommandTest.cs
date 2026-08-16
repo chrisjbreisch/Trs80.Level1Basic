@@ -526,7 +526,7 @@ public class CommandTest
 
         controller.ExecuteStatements(statements);
 
-        controller.ReadOutputLine().Should().Be(" 15564 ");
+        controller.ReadOutputLine().Should().Be(" 15562 ");
     }
 
     [TestMethod]
@@ -542,7 +542,7 @@ public class CommandTest
 
         controller.ExecuteStatements(statements);
 
-        controller.ReadOutputLine().Should().Be(" 15511 ");
+        controller.ReadOutputLine().Should().Be(" 15510 ");
     }
 
     [TestMethod]

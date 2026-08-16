@@ -21,7 +21,10 @@ public class Environment
     private readonly Dictionary<string, Dictionary<string, dynamic>> _matrixArrays = new();
     private readonly Dictionary<string, int[]> _arrayDimensions = new();
     private readonly Dictionary<string, VariableType> _declaredTypes = new();
+    private readonly HashSet<string> _assignedVariables = new();
+    private bool _initializingVariables;
     private const string names = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    public int VariableMemorySize => _assignedVariables.Count * 7;
 
     public Environment()
     {
@@ -106,6 +109,8 @@ public class Environment
         value = CastValue(value, targetType);
 
         _variables[normalizedName] = value;
+        if (!_initializingVariables)
+            _assignedVariables.Add(normalizedName);
 
         if (normalizedName.Length == 1 && targetType == VariableType.String)
             _variables[$"{normalizedName}$"] = value;
@@ -295,12 +300,15 @@ public class Environment
 
     public void InitializeVariables()
     {
+        _assignedVariables.Clear();
+        _initializingVariables = true;
         foreach (string name in _arrays.Keys)
         {
             _arrays[name] = new Dictionary<int, dynamic>();
             Set(name, 0);
             Set($"{name}$", "");
         }
+        _initializingVariables = false;
     }
 
     public dynamic GetArrayValue(string name, int index)
