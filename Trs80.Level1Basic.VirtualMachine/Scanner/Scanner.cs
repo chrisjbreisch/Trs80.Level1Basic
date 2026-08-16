@@ -276,6 +276,9 @@ public class Scanner : IScanner
             case '"':
                 GetString();
                 break;
+            case '\'':
+                CreateApostropheRemarkToken();
+                break;
             case '<':
                 if (Match('='))
                     AddToken(TokenType.LessThanOrEqual);
@@ -683,6 +686,15 @@ public class Scanner : IScanner
             Advance();
         string remark = _source.Substring(TokenStart + 4, TokenLength - 4);
         AddToken(keyword, remark);
+    }
+
+    private void CreateApostropheRemarkToken()
+    {
+        while (Peek() != '\r' && !IsAtEnd())
+            Advance();
+
+        string remark = _source.Substring(TokenStart + 1, TokenLength - 1);
+        AddToken(TokenType.Rem, remark);
     }
 
     private void GetNumber(char c)
