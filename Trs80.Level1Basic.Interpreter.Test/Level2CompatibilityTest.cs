@@ -1170,4 +1170,18 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 1 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Spc_With_Nonpositive_Count_Adds_No_Padding()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT \"A\";SPC(-1);\"B\";SPC(0);\"C\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("ABC");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }

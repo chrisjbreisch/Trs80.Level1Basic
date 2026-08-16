@@ -295,6 +295,7 @@ Recent Level II slices, in order:
 216. Verified `POS` ignores its compatibility argument and returns the current cursor column.
 217. Verified `CSRLIN` advances to the next 0-based row after a normal `PRINT` newline.
 218. Defined symmetric screen-coordinate wrapping for negative `SET`, `RESET`, and `POINT` coordinates.
+219. Verified `SPC` contributes no padding for nonpositive counts.
 
 ## Next Slice Queue
 
