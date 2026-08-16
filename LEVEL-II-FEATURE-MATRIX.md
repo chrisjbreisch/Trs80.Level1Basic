@@ -230,6 +230,7 @@ Recent Level II slices, in order:
 151. Verified comma statement separators handle mixed numeric and string assignments.
 152. Verified comma statement separators preserve complete numeric RHS expressions.
 153. Verified comma statement separators preserve exponent expressions, including fractional powers.
+154. Verified comma statement separators preserve parenthesized RHS expressions.
 
 ## Next Slice Queue
 
