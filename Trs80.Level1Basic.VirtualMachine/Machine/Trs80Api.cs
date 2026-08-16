@@ -218,7 +218,11 @@ public class Trs80Api : ITrs80Api
 
     public float CSng(dynamic value)
     {
-        return Convert.ToSingle(value, System.Globalization.CultureInfo.InvariantCulture);
+        double numericValue = Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture);
+        if (Math.Abs(numericValue) > 1.701411E+38)
+            throw new ValueOutOfRangeException(-1, string.Empty, "Single value out of range.");
+
+        return (float)numericValue;
     }
 
     public string LCase(string value)
