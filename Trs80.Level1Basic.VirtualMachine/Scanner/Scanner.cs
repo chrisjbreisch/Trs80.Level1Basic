@@ -313,6 +313,14 @@ public class Scanner : IScanner
     {
         if (Peek() == '$')
             AddStringIdentifierToken();
+        else if (IsDigit(Peek()))
+        {
+            while (IsIdentifierCharacter(Peek()))
+                Advance();
+            if (Peek() == '$')
+                Advance();
+            AddUnknownIdentifierToken();
+        }
         else if (IsAlpha(Peek()) || Peek() == '.')
             // makeToken
             Add2PlusCharsToken();
@@ -336,7 +344,7 @@ public class Scanner : IScanner
             return;
         }
 
-        while (IsAlpha(Peek()))
+        while (IsIdentifierCharacter(Peek()))
             Advance();
 
         try
@@ -405,7 +413,12 @@ public class Scanner : IScanner
 
     private bool AtIdentifierEnd()
     {
-        return IsAtEnd() || (!IsAlpha(Peek()) && Peek() != '.');
+        return IsAtEnd() || (!IsIdentifierCharacter(Peek()) && Peek() != '.');
+    }
+
+    private static bool IsIdentifierCharacter(char c)
+    {
+        return IsAlpha(c) || IsDigit(c);
     }
 
     private void AddUnknownIdentifierToken()
@@ -552,7 +565,7 @@ public class Scanner : IScanner
             }
             catch
             {
-                while (!IsAtEnd() && (IsAlpha(Peek()) || Peek() == '.'))
+                while (!IsAtEnd() && (IsIdentifierCharacter(Peek()) || Peek() == '.'))
                     Advance();
 
                 AddUnknownIdentifierToken();

@@ -133,6 +133,18 @@ public class ScannerTest
     }
 
     [TestMethod]
+    public void Scanner_Recognizes_Alphanumeric_String_Identifier()
+    {
+        using var controller = new TestController();
+        IScanner scanner = controller.Scanner;
+
+        var tokens = scanner.ScanTokens(new SourceLine("10 N1$=\"TOBY\""));
+
+        tokens[1].Type.Should().Be(TokenType.Identifier);
+        tokens[1].Lexeme.Should().Be("N1$");
+    }
+
+    [TestMethod]
     public void Scanner_Recognizes_Out_Keyword()
     {
         using var controller = new TestController();

@@ -193,6 +193,7 @@ Recent Level II slices, in order:
 114. Enabled multi-character numeric and string variable names at runtime; `NU=1` followed by `PRINT NU` now outputs `1`.
 115. Applied the Level II first-two-character significance rule to variable storage, so `NUMBER=1` and `PRINT NU` refer to the same variable.
 116. Rejected variable names containing the reserved `ON` keyword, so `GONE=7` reports `WHAT?`.
+117. Added alphanumeric identifier support with optional `$` suffix, so `N1$="TOBY"` is a valid assignment.
 
 ## Next Slice Queue
 

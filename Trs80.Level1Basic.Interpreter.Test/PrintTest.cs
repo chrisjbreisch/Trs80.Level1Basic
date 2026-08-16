@@ -126,6 +126,21 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Use_Alphanumeric_String_Variable()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 N1$=\"TOBY\"",
+            "20 PRINT N1$"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("TOBY");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_Zero()
     {
         using var controller = new TestController();
