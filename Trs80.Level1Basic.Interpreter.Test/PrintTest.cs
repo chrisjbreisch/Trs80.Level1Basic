@@ -115,7 +115,7 @@ public class PrintTest
     {
         using var controller = new TestController();
         var program = new List<string> {
-            "10 NU=1",
+            "10 NUMBER=1",
             "20 PRINT NU"
         };
 

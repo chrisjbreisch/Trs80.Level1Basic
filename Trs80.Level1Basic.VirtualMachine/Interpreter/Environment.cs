@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
@@ -281,9 +282,13 @@ public class Environment
     private string NormalizeName(string name)
     {
         if (string.IsNullOrEmpty(name)) return string.Empty;
-        if (name.Length == 2 && name[1] == '$') return name.ToUpperInvariant();
-        if (name.Length == 1) return name.ToUpperInvariant();
-        return name.ToUpperInvariant();
+
+           string normalizedName = name.ToUpperInvariant();
+           bool isString = normalizedName.EndsWith('$');
+           string baseName = isString ? normalizedName[..^1] : normalizedName;
+           baseName = baseName[..Math.Min(2, baseName.Length)];
+
+           return isString ? $"{baseName}$" : baseName;
     }
 
     public void InitializeVariables()

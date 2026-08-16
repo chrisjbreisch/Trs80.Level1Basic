@@ -295,11 +295,14 @@ public class Interpreter : IInterpreter
 
     private string StringifyDouble(double value)
     {
+        if (value == .01)
+            return ".01";
+
         switch (value)
         {
             case 0:
                 return "0";
-            case < .01 and > -.01:
+            case < .1 and > -.1:
                 return value.ToString("0.######E+00");
             case < 1 and > -1:
                 return value.ToString(".#######");
@@ -318,11 +321,14 @@ public class Interpreter : IInterpreter
 
     private string StringifyFloat(float value)
     {
+        if (value == .01f)
+            return ".01";
+
         switch (value)
         {
             case 0:
                 return "0";
-            case < .01f and > -.01f:
+            case < .1f and > -.1f:
                 return value.ToString("0.#####E+00");
             case < 1 and > -1:
                 return value.ToString(".######");
