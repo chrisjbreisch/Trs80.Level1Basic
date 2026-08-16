@@ -283,6 +283,7 @@ Recent Level II slices, in order:
 204. Added non-blocking `INKEY$` host probing with deterministic available-key coverage.
 205. Verified `INPUT$` returns partial available input at end-of-stream without padding.
 206. Defined symmetric 64K address wrapping for `PEEK` and `POKE`, including negative addresses.
+207. Corrected single- and double-precision formatting so ordinary hundredths such as `.07` remain fixed-point.
 
 ## Next Slice Queue
 
