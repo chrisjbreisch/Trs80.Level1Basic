@@ -309,6 +309,7 @@ Recent Level II slices, in order:
 230. Preserved semicolon-separated `INPUT` as independent reads while restricting bulk reads to comma syntax.
 231. Added apostrophe comments as `REM` aliases outside quoted strings.
 232. Rounded the compound-interest sample's currency output to cents using `CINT`.
+233. Verified `CINT` converts numeric string arguments with the same midpoint rounding rules.
 
 ## Next Slice Queue
 
