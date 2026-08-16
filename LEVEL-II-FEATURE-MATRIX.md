@@ -21,8 +21,8 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Branch | `level2/type-declarations` |
 | Baseline | Level I interpreter with existing command, expression, file, input, and control-flow suites |
 | Recent focus | Type declarations, arrays, numeric precision, Level II built-ins, `CLEAR`, `MID$` assignment, user-defined functions, string-function compatibility, and scanner/parser keyword coverage |
-| Latest implementation commit | `cfc8b9c Add POKE keyword support` |
-| Latest documentation checkpoint | This update: support explicit unary plus in numeric expressions |
+| Latest implementation commit | `a3f1bdb Report scalar assignment type mismatches` |
+| Latest documentation checkpoint | This update: add a compatibility program for scalar type-mismatch diagnostics |
 | Validation habit | Run the narrowest affected test first, then the affected test class, then the full project for shared changes |
 
 ## Language Core
@@ -340,6 +340,7 @@ Recent Level II slices, in order:
 261. Reported `?TM ERROR` for numeric DATA read into string targets while honoring implicit `DEFSTR` targets.
 262. Extended symmetric `READ` type-mismatch checks and target diagnostics to array elements.
 263. Reported `?TM ERROR` for scalar string/numeric assignment mismatches in either direction.
+264. Expanded the compatibility corpus with a scalar type-mismatch program and its `?TM ERROR` diagnostic.
 
 ## Next Slice Queue
 
