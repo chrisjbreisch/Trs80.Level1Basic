@@ -815,4 +815,18 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 3 -3 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Invalid_Value_Conversion_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT VAL(\"NO NUMBER\")"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
