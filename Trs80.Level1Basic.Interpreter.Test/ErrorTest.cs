@@ -507,7 +507,8 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadOutputLine().Should().Be("BOO");
+        controller.ReadOutputLine().Should().Be("?SN ERROR");
         controller.ReadErrorLine().Should().Be(" 10  PRINT AT 3 ?\"BOO\"");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -691,6 +692,6 @@ public class ErrorTest
 
         controller.ExecuteLine(statement);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadOutputLine().Should().Be("?SN ERROR");
     }
 }
