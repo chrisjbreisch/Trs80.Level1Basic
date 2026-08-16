@@ -111,15 +111,20 @@ public class FakeHost : IHost
     public TextWriter Error { get; set; } = Console.Error;
     public void WriteLine(string text = "")
     {
-        Out.WriteLine(text);
+        int startingRow = _cursorY;
+        Write(text);
+        Out.WriteLine();
+        if (_cursorY == startingRow || _cursorX != 0)
+            _cursorY++;
         _cursorX = 0;
-        _cursorY++;
     }
 
     public void Write(string text)
     {
         Out.Write(text);
-        _cursorX += text.Length;
+        int totalColumns = _cursorX + text.Length;
+        _cursorY += totalColumns / ScreenWidth;
+        _cursorX = totalColumns % ScreenWidth;
     }
 
     public void Print(string text)

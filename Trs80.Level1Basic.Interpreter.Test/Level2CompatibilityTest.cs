@@ -1198,4 +1198,19 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be("ABC");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Console_Output_Wraps_At_The_64_Column_Line_Width()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT STRING$(64,\"X\");",
+            "20 PRINT POS(0)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(new string('X', 64) + " 0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
