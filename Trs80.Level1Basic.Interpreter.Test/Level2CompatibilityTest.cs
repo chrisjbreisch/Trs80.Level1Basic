@@ -736,4 +736,19 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 10 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Stop_Abbreviation_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        controller.ExecuteLine("NEW");
+        controller.ExecuteLine("10 PRINT \"BEFORE\"");
+        controller.ExecuteLine("20 ST.");
+        controller.ExecuteLine("30 PRINT \"AFTER\"");
+        controller.ExecuteLine("RUN");
+
+        controller.ReadOutputLine().Should().Be("BEFORE");
+        controller.ReadOutputLine().Should().Be("BREAK AT 20");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
