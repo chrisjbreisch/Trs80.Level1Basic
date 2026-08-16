@@ -200,6 +200,7 @@ Recent Level II slices, in order:
 121. Verified the first-two-character significance rule for alphanumeric numeric variables.
 122. Allowed integer-looking numeric literals beyond `Int32` range to fall back to Level II float parsing; `12345678901` now prints `1.23457E+10`.
 123. Rejected adjacent text after a closed string literal, making malformed nested-quote PRINT forms consistently report `WHAT?` instead of evaluating trailing words as variables.
+124. Verified explicit quoted-string concatenation remains valid after malformed-quote validation.
 
 ## Next Slice Queue
 

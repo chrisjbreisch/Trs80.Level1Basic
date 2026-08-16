@@ -125,6 +125,20 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Concatenate_Adjacent_Quoted_Expressions()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT \"A\"+\"B\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("AB");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Use_Multi_Character_Variable()
     {
         using var controller = new TestController();
