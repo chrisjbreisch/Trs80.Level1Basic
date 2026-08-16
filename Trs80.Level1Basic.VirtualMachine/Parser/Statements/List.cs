@@ -17,11 +17,13 @@ public class List : Statement
 {
     public Expression StartAtLineNumber { get; init; }
     public Expression EndAtLineNumber { get; init; }
+    public bool IsLastLine { get; init; }
 
-    public List(Expression startAtLineNumber, Expression endAtLineNumber = null)
+    public List(Expression startAtLineNumber, Expression endAtLineNumber = null, bool isLastLine = false)
     {
         StartAtLineNumber = startAtLineNumber;
         EndAtLineNumber = endAtLineNumber;
+        IsLastLine = isLastLine;
     }
 
     public override T Accept<T>(IVisitor<T> visitor)

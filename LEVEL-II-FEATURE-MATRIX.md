@@ -286,6 +286,8 @@ Recent Level II slices, in order:
 207. Corrected single- and double-precision formatting so ordinary hundredths such as `.07` remain fixed-point.
 208. Verified the same fixed-point formatting for negative single-precision hundredths such as `-.07`.
 209. Verified fixed-point formatting for double-precision hundredths such as `R#=.07`.
+210. Corrected `LIST line` to emit only the requested line, distinct from open-ended `LIST line-`.
+211. Added `LIST .` support for listing only the most recently entered or edited program line.
 
 ## Next Slice Queue
 

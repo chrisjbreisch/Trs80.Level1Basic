@@ -246,6 +246,53 @@ public class CommandTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_List_Only_A_Single_Line()
+    {
+        using var controller = new TestController();
+        controller.ExecuteStatements(new List<string> {
+            "10 PRINT 10",
+            "20 PRINT 20",
+            "30 PRINT 30"
+        });
+
+        controller.ExecuteLine("LIST 20");
+
+        controller.ReadOutputLine().Should().Be(" 20  PRINT 20");
+        controller.ReadOutputLine().Should().BeNull();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_List_The_Last_Entered_Line()
+    {
+        using var controller = new TestController();
+        controller.ExecuteStatements(new List<string> {
+            "10 PRINT 10",
+            "20 PRINT 20"
+        });
+
+        controller.ExecuteLine("LIST .");
+
+        controller.ReadOutputLine().Should().Be(" 20  PRINT 20");
+        controller.ReadOutputLine().Should().BeNull();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_List_The_Last_Edited_Line()
+    {
+        using var controller = new TestController();
+        controller.ExecuteStatements(new List<string> {
+            "10 PRINT 10",
+            "20 PRINT 20"
+        });
+
+        controller.ExecuteLine("10 PRINT UPDATED");
+        controller.ExecuteLine("LIST .");
+
+        controller.ReadOutputLine().Should().Be(" 10  PRINT UPDATED");
+        controller.ReadOutputLine().Should().BeNull();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_List_A_Reversed_Line_Range()
     {
         using var controller = new TestController();

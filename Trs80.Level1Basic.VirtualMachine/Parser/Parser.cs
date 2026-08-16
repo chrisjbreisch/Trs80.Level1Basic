@@ -612,6 +612,13 @@ public class Parser : IParser
 
     private IStatement ListStatement()
     {
+        if (string.Equals(Peek().Lexeme, ".", StringComparison.Ordinal))
+        {
+            Token dot = Peek();
+            Advance();
+            return new List(new Literal(0, null, dot.LinePosition), isLastLine: true);
+        }
+
         if (Match(TokenType.Minus))
         {
             Consume(TokenType.Number, "Expected ending line number after LIST range.");
@@ -633,7 +640,7 @@ public class Parser : IParser
                 return new List(startExpression, new Literal(end.Literal, null, end.LinePosition));
             }
 
-            return new List(startExpression);
+            return new List(startExpression, startExpression);
         }
 
         Expression value = !IsAtEnd() ? Expression() : new Literal(0, null, 0);

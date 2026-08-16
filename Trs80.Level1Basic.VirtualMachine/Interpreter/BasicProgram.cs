@@ -17,6 +17,7 @@ public class BasicProgram : IProgram
     private readonly IParser _parser;
 
     public IStatement CurrentStatement { get; set; }
+    public int? LastLineNumber { get; private set; }
 
     public BasicProgram(IScanner scanner, IParser parser)
     {
@@ -51,6 +52,7 @@ public class BasicProgram : IProgram
     public void Clear()
     {
         _statements.Clear();
+        LastLineNumber = null;
     }
 
     public void Load(string path)
@@ -79,6 +81,7 @@ public class BasicProgram : IProgram
     public void ReplaceStatement(IStatement statement)
     {
         _statements.Replace(statement.LineNumber, statement);
+        LastLineNumber = statement.LineNumber;
     }
 
     private void AddStatement(IStatement statement)
@@ -89,6 +92,8 @@ public class BasicProgram : IProgram
             _statements.Replace(statement.LineNumber, statement);
         else
             _statements.Add(statement);
+
+        LastLineNumber = statement.LineNumber;
     }
 
     public IStatement GetFirstStatement()

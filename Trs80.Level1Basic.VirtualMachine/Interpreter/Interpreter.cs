@@ -665,6 +665,14 @@ public class Interpreter : IInterpreter
 
     public Void VisitListStatement(List statement)
     {
+        if (statement.IsLastLine)
+        {
+            if (_program.LastLineNumber.HasValue)
+                _machine.ListProgram(_program.LastLineNumber.Value, _program.LastLineNumber.Value);
+
+            return null!;
+        }
+
         int lineNumber = GetStartingLineNumber(statement.StartAtLineNumber);
         int? endLineNumber = statement.EndAtLineNumber is null
             ? null

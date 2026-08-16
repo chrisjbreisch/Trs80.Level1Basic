@@ -300,7 +300,9 @@ public class Scanner : IScanner
                     _currentLine = null;
                 break;
             default:
-                if (IsDigit(c) || c == '.')
+                if (c == '.' && !IsDigit(Peek()))
+                    AddToken(TokenType.Identifier, ".");
+                else if (IsDigit(c) || c == '.')
                     GetNumber(c);
                 else if (IsAlpha(c))
                     GetKeywordOrIdentifier();

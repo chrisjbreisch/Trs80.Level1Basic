@@ -6,6 +6,7 @@ public interface IProgram
 {
     void Initialize();
     IStatement GetExecutableStatement(int lineNumber);
+    int? LastLineNumber { get; }
     LineList List();
     void Clear();
     void Load(string path);
