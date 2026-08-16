@@ -859,8 +859,10 @@ public class Parser : IParser
 
         while (!IsAtStatementEnd())
         {
-            if (values.Count > 0
-                && values[^1] is Literal { Value: string }
+            Expression value = Expression();
+            values.Add(value);
+
+            if (value is Literal { Value: string }
                 && !Check(TokenType.Plus)
                 && !Check(TokenType.Comma)
                 && !Check(TokenType.Semicolon)
@@ -871,8 +873,6 @@ public class Parser : IParser
                     Peek().LinePosition, "Expected separator after string expression.");
                 break;
             }
-
-            values.Add(Expression());
 
             if (Match(TokenType.Semicolon) && IsAtStatementEnd())
                 newline = false;
