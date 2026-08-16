@@ -1124,4 +1124,19 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be("ABC 3  0 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Pos_Ignores_Its_Argument_And_Returns_Current_Column()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT \"AB\";",
+            "20 PRINT POS(99)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("AB 2 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }

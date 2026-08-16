@@ -292,6 +292,7 @@ Recent Level II slices, in order:
 213. Preserved available control characters in non-blocking `INKEY$` results, with deterministic Enter-key coverage.
 214. Documented and tested the intentional empty result for extended keys without character payloads.
 215. Verified `POS` and `CSRLIN` reflect the host cursor after console output.
+216. Verified `POS` ignores its compatibility argument and returns the current cursor column.
 
 ## Next Slice Queue
 
