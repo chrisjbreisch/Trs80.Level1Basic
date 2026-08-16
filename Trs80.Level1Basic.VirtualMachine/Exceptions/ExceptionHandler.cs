@@ -23,6 +23,10 @@ public static class ExceptionHandler
                 if (pe.LineNumber >= 0)
                     pendingEdit?.Request(pe.LineNumber);
                 break;
+            case TypeMismatchException tme:
+                trs80.WriteLine("?TM ERROR");
+                BaseError(trs80, tme, settings.DetailedErrors);
+                break;
             case RuntimeExpressionException ree:
                 trs80.WriteLine("WHAT?");
                 BaseError(trs80, ree, settings.DetailedErrors);

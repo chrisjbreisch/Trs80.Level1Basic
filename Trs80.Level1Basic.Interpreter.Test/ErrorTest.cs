@@ -122,10 +122,24 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadOutputLine().Should().Be("?TM ERROR");
         controller.ReadErrorLine().Should().Be(" 10  PRINT \"3\" ?* \"4\"");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Reports_Type_Mismatch_For_String_And_Numeric_Addition()
+    {
+        using var controller = new TestController();
+
+        controller.ExecuteLine("DEFSNG A");
+        controller.ExecuteLine("DEFSTR S");
+        controller.ExecuteLine("S=\"STRING\"");
+        controller.ExecuteLine("A=1.234567");
+        controller.ExecuteLine("PRINT S+A");
+
+        controller.ReadOutputLine().Should().Be("?TM ERROR");
     }
 
     [TestMethod]

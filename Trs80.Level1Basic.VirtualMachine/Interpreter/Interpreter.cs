@@ -254,7 +254,7 @@ public class Interpreter : IInterpreter
             case double when right is int:
                 return;
             default:
-                throw new RuntimeExpressionException(_program.CurrentStatement.LineNumber,
+                throw new TypeMismatchException(_program.CurrentStatement.LineNumber,
                     _program.CurrentStatement.SourceLine, operatorType.LinePosition,
                     "Operands are of incompatible types.");
         }

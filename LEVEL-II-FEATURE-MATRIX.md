@@ -69,7 +69,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Level I regression suite | Implemented | Existing Level I behavior remains the compatibility baseline. | Run the full interpreter project after changes to shared parser, environment, or interpreter code. |
 | Level II focused tests | Partial | Type declarations, arrays, built-ins, `CLEAR`, and `MID$` assignment have focused coverage distributed across `ExpressionTest`, `NativeFunctionTest`, `CommandTest`, and `ErrorTest`. | Consolidate new type and Level II cases into clearer files as the feature surface grows. |
 | Level II compatibility programs | Partial | `Level2CompatibilityTest` now contains executable hardware and typed-array/string-assignment programs with stated expected output. | Add short programs grouped by the remaining feature families and attach manual references as the corpus grows. |
-| Error compatibility | Partial | Existing errors preserve BASIC-style `WHAT?`, `HOW?`, and `SORRY` output with detailed diagnostics. | Map Level II error cases and expected source-position behavior explicitly. |
+| Error compatibility | Partial | Existing errors preserve BASIC-style `WHAT?`, `HOW?`, and `SORRY` output with detailed diagnostics. Syntax failures use `?SN ERROR`, numeric overflow uses `?OV ERROR`, and incompatible binary operand types use `?TM ERROR`. | Map remaining Level II error cases and expected source-position behavior explicitly. |
 | Line editor | Partial | `LineEditorBuffer` owns cursor position and deterministic insertion, Home/End, left/right movement, backspace, delete, and clear behavior; `InputCommand` connects it to console key handling, including immediate Escape cancellation and Ctrl+U line clearing, redraws the edited line, preserves original and uppercase source forms, supports Up/Down recall with draft restoration through session-scoped `LineEditorHistory`, recognizes `AUTO`, `AUTO start`, and `AUTO start,increment` until a blank entry, and preloads existing lines for plain `EDIT line`. Numbered input replaces an existing program line through the interpreter's established `Replace` path. The modern cursor-based `EDIT` UI is an intentional compatibility deviation from the original arrow-less TRS-80 keyboard design. | Add richer `EDIT` command behavior and recall/rendering coverage as needed. |
 | ROM/RAM emulation | Intentionally limited | Host-machine APIs provide bounded approximations for memory and graphics operations. | Keep hardware policy outside the parser; document unsupported ROM, cassette, and machine-specific behavior. |
 
@@ -335,6 +335,7 @@ Recent Level II slices, in order:
 256. Applied DEF type declarations by variable initial and enforced 16-bit overflow on implicit `DEFINT` scalar assignments.
 257. Preserved DEFDBL assignment precision by classifying unsuffixed constants with more than seven significant digits as double precision.
 258. Preserved large double literals through evaluation and removed the artificial eight-digit scientific-format boundary.
+259. Added Level II `?TM ERROR` diagnostics for incompatible binary operand types.
 
 ## Next Slice Queue
 
