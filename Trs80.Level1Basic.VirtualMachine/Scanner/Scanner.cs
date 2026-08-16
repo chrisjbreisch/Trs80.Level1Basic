@@ -743,9 +743,6 @@ public class Scanner : IScanner
         {
             endQuote = true;
             Advance();
-
-            if (IsIdentifierCharacter(Peek()) || Peek() == '$')
-                throw new ScanException("Expected separator after string literal.");
         }
 
         string value = _original.Substring(TokenStart + 1, TokenLength - (endQuote ? 2 : 1));

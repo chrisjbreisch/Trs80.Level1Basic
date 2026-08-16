@@ -487,7 +487,21 @@ public class Parser : IParser
 
         while (!IsAtStatementEnd())
         {
-            values.Add(Expression());
+            Expression value = Expression();
+            values.Add(value);
+
+            if (value is Literal { Value: string }
+                && !Check(TokenType.Plus)
+                && !Check(TokenType.Comma)
+                && !Check(TokenType.Semicolon)
+                && !Check(TokenType.Colon)
+                && !Check(TokenType.EndOfLine))
+            {
+                _parseException ??= new ParseException(_lineNumber, _source,
+                    Peek().LinePosition, "Expected separator after string expression.");
+                values.RemoveAt(values.Count - 1);
+                break;
+            }
 
             Match(TokenType.Semicolon);
 
@@ -845,6 +859,19 @@ public class Parser : IParser
 
         while (!IsAtStatementEnd())
         {
+            if (values.Count > 0
+                && values[^1] is Literal { Value: string }
+                && !Check(TokenType.Plus)
+                && !Check(TokenType.Comma)
+                && !Check(TokenType.Semicolon)
+                && !Check(TokenType.Colon)
+                && !Check(TokenType.EndOfLine))
+            {
+                _parseException ??= new ParseException(_lineNumber, _source,
+                    Peek().LinePosition, "Expected separator after string expression.");
+                break;
+            }
+
             values.Add(Expression());
 
             if (Match(TokenType.Semicolon) && IsAtStatementEnd())

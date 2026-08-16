@@ -806,11 +806,14 @@ public class Interpreter : IInterpreter
             foreach (Expression expression in statement.Expressions)
                 _trs80.Write(Stringify(Evaluate(expression)));
 
-        if (!statement.WriteNewline) return null!;
+        if (!statement.WriteNewline && statement.ParseException == null) return null!;
 
         _trs80.WriteLine();
         _machine.CursorX = 0;
         _machine.CursorY++;
+
+        if (statement.ParseException != null)
+            throw statement.ParseException;
 
         return null!;
     }

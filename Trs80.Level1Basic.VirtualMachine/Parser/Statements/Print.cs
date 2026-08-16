@@ -28,7 +28,6 @@ public class Print : Statement
 
     public override T Accept<T>(IVisitor<T> visitor)
     {
-        CheckExceptions();
         return visitor.VisitPrintStatement(this);
     }
 }

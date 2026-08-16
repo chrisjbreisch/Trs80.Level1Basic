@@ -236,6 +236,7 @@ Recent Level II slices, in order:
 157. Verified comma statement separators preserve high-precision `#` double assignments.
 158. Verified first-two-character name collisions across comma-separated assignments.
 159. Added Level II error labels: syntax/scan failures use `?SN ERROR`, and typed numeric overflows use `?OV ERROR`.
+160. Fixed malformed nested-quote PRINT recovery so the valid prefix prints on its own line before `?SN ERROR`.
 
 ## Next Slice Queue
 
