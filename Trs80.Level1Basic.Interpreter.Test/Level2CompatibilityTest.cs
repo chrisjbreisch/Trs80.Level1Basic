@@ -1204,6 +1204,22 @@ public class Level2CompatibilityTest
     }
 
     [TestMethod]
+    public void Graphics_Coordinates_Wrap_For_Negative_Reset_And_Point()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 SET 127,47",
+            "20 RESET -1,-1",
+            "30 PRINT POINT(127,47)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Spc_With_Nonpositive_Count_Adds_No_Padding()
     {
         using var controller = new TestController();

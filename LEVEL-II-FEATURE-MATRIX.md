@@ -317,6 +317,7 @@ Recent Level II slices, in order:
 238. Enforced the documented double-precision range for `CDBL` with overflow coverage.
 239. Made numbered program syntax errors report `?SN ERROR IN line` while preserving generic command syntax errors.
 240. Opened `EDIT` automatically on the failing line after a numbered program syntax error.
+241. Added regression coverage for symmetric negative-coordinate wrapping in `RESET`.
 
 ## Next Slice Queue
 
