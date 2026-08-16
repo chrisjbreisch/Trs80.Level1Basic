@@ -499,6 +499,21 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Applies_Two_Character_Rule_To_Alphanumeric_Single_Name()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 NUMBER1!=3.9",
+            "20 PRINT NU!"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3.9 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Supports_Maximum_String_Length()
     {
         using var controller = new TestController();

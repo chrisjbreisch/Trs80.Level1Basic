@@ -224,6 +224,7 @@ Recent Level II slices, in order:
 145. Enforced the documented double-precision `#` range at use; `1.8E+38` reports `HOW?`.
 146. Verified a valid double-precision `#` value near the upper bound; `1.7E+38` is accepted.
 147. Verified first-two-character normalization for long alphanumeric names with `%` suffixes.
+148. Verified first-two-character normalization for long alphanumeric names with `!` suffixes.
 
 ## Next Slice Queue
 
