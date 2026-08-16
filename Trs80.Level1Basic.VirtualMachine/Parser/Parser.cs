@@ -169,6 +169,8 @@ public class Parser : IParser
             return SaveStatement();
         if (Match(TokenType.Stop))
             return StopStatement();
+        if (Match(TokenType.System))
+            return SystemStatement();
         if (Peek().Type == TokenType.Identifier && _natives.Get(Peek().Lexeme) != null && !Check(TokenType.LeftParen) && !Check(TokenType.Equal))
             return StatementWrapper(new StatementExpression(NativeStatementCall()));
         if (Peek().Type != TokenType.R || PeekNext().Type == TokenType.LeftParen)
@@ -601,6 +603,11 @@ public class Parser : IParser
     {
         var list = (List)ListStatement();
         return StatementWrapper(new Llist(list.StartAtLineNumber, list.EndAtLineNumber));
+    }
+
+    private IStatement SystemStatement()
+    {
+        return StatementWrapper(new SystemStatement());
     }
 
     private IStatement RunStatement()

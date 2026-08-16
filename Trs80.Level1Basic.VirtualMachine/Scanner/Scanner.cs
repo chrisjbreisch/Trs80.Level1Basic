@@ -194,6 +194,7 @@ public class Scanner : IScanner
                     {"DEFSTR", TokenType.DefStr},
                     {"LPRINT", TokenType.Lprint},
                     {"RETURN", TokenType.Return},
+                    {"SYSTEM", TokenType.System},
                 }
             },
             {

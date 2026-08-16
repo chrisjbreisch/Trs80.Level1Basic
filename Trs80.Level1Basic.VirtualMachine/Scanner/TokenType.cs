@@ -73,6 +73,7 @@ public enum TokenType
     Save,
     Step,
     Stop,
+    System,
     T,
     Then,
     To,

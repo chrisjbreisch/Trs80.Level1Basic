@@ -935,4 +935,10 @@ public class Interpreter : IInterpreter
     {
         return null!;
     }
+
+    public Void VisitSystemStatement(SystemStatement statement)
+    {
+        _machine.HaltRun();
+        return null!;
+    }
 }

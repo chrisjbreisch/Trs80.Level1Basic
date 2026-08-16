@@ -155,4 +155,16 @@ public class ScannerTest
         tokens[0].Type.Should().Be(TokenType.Number);
         tokens[1].Type.Should().Be(TokenType.Llist);
     }
+
+    [TestMethod]
+    public void Scanner_Recognizes_System_Keyword()
+    {
+        using var controller = new TestController();
+        IScanner scanner = controller.Scanner;
+
+        var tokens = scanner.ScanTokens(new SourceLine("10 system"));
+
+        tokens[0].Type.Should().Be(TokenType.Number);
+        tokens[1].Type.Should().Be(TokenType.System);
+    }
 }

@@ -145,6 +145,15 @@ public class CommandTest
     }
 
     [TestMethod]
+    public void Parser_Can_Parse_System_Command()
+    {
+        using var controller = new TestController();
+        var tokens = controller.Scanner.ScanTokens(new SourceLine("SYSTEM"));
+
+        controller.Parser.Parse(tokens).Should().BeOfType<SystemStatement>();
+    }
+
+    [TestMethod]
     public void Parser_Can_Parse_Abbreviated_Merge_Command()
     {
         using var controller = new TestController();
