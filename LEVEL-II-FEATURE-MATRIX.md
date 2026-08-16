@@ -22,7 +22,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Baseline | Level I interpreter with existing command, expression, file, input, and control-flow suites |
 | Recent focus | Type declarations, arrays, numeric precision, Level II built-ins, `CLEAR`, `MID$` assignment, user-defined functions, string-function compatibility, and scanner/parser keyword coverage |
 | Latest implementation commit | `cfc8b9c Add POKE keyword support` |
-| Latest documentation checkpoint | This update: add the first executable hardware compatibility contract |
+| Latest documentation checkpoint | This update: start the Level II compatibility-program corpus |
 | Validation habit | Run the narrowest affected test first, then the affected test class, then the full project for shared changes |
 
 ## Language Core
@@ -68,7 +68,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | --- | --- | --- | --- |
 | Level I regression suite | Implemented | Existing Level I behavior remains the compatibility baseline. | Run the full interpreter project after changes to shared parser, environment, or interpreter code. |
 | Level II focused tests | Partial | Type declarations, arrays, built-ins, `CLEAR`, and `MID$` assignment have focused coverage distributed across `ExpressionTest`, `NativeFunctionTest`, `CommandTest`, and `ErrorTest`. | Consolidate new type and Level II cases into clearer files as the feature surface grows. |
-| Level II compatibility programs | Not started | No dedicated manual-derived program corpus exists yet. | Add short programs grouped by feature; each should have a stated expected output and manual reference. |
+| Level II compatibility programs | Partial | `Level2CompatibilityTest` now contains executable hardware and typed-array/string-assignment programs with stated expected output. | Add short programs grouped by the remaining feature families and attach manual references as the corpus grows. |
 | Error compatibility | Partial | Existing errors preserve BASIC-style `WHAT?`, `HOW?`, and `SORRY` output with detailed diagnostics. | Map Level II error cases and expected source-position behavior explicitly. |
 | Line editor | Not started | The application accepts commands and program lines but has no dedicated editor subsystem. | Implement separately after language compatibility is stable: cursor movement, insert/delete, recall, and line replacement. |
 | ROM/RAM emulation | Intentionally limited | Host-machine APIs provide bounded approximations for memory and graphics operations. | Keep hardware policy outside the parser; document unsupported ROM, cassette, and machine-specific behavior. |
@@ -121,6 +121,7 @@ Recent Level II slices, in order:
 42. Added explicit scanner, parser, and statement dispatch support for `POKE address, value`, routing execution to the existing memory API while preserving the parenthesized native-call form.
 43. Closed the scanner/parser keyword inventory audit: VM-backed commands have focused coverage, while `AUTO`/`EDIT` and cassette commands have explicit deferred or unavailable policies.
 44. Added the first executable Level II hardware compatibility program covering explicit `SET`, `RESET`, `POKE`, `POINT`, and `PEEK` behavior.
+45. Started the Level II compatibility-program corpus with a typed-array and `MID$` assignment program.
 
 ## Next Slice Queue
 

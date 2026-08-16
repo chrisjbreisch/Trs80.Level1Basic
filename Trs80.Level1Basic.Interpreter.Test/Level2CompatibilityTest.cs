@@ -27,4 +27,23 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 0  65 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Typed_Array_And_Mid_Assignment_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DEFINT A",
+            "20 DIM A(2)",
+            "30 A(1)=42",
+            "40 B$=\"HELLO\"",
+            "50 MID$(B$,2,2)=\"AI\"",
+            "60 PRINT A(1);B$"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 42 HAILO");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
