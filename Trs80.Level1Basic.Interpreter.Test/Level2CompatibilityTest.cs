@@ -307,4 +307,20 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be("DONE");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Descending_For_Loop_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 FOR I=3 TO 1 STEP -1",
+            "20 PRINT I;",
+            "30 NEXT I"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3  2  1 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }

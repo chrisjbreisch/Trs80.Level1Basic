@@ -22,7 +22,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Baseline | Level I interpreter with existing command, expression, file, input, and control-flow suites |
 | Recent focus | Type declarations, arrays, numeric precision, Level II built-ins, `CLEAR`, `MID$` assignment, user-defined functions, string-function compatibility, and scanner/parser keyword coverage |
 | Latest implementation commit | `cfc8b9c Add POKE keyword support` |
-| Latest documentation checkpoint | This update: expand the Level II compatibility-program corpus with conditional branching |
+| Latest documentation checkpoint | This update: expand the Level II compatibility-program corpus with descending loops |
 | Validation habit | Run the narrowest affected test first, then the affected test class, then the full project for shared changes |
 
 ## Language Core
@@ -138,6 +138,7 @@ Recent Level II slices, in order:
 59. Expanded the compatibility corpus with combined `SPC` and `TAB` console formatting behavior.
 60. Expanded the compatibility corpus with `CLEAR` variable/array reset while preserving the program.
 61. Expanded the compatibility corpus with an `IF`/`THEN` conditional and inline `GOTO` branch.
+62. Expanded the compatibility corpus with descending `FOR`/`NEXT` behavior using `STEP -1`.
 
 ## Next Slice Queue
 
