@@ -441,6 +441,21 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Accepts_Double_D_Exponent_Literal()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A#=1.2345678901234567D+0",
+            "20 PRINT A#"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1.2345678901234567 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Preserves_Fixed_Format_For_Double_Product()
     {
         using var controller = new TestController();

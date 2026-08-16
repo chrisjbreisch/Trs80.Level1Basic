@@ -237,6 +237,7 @@ Recent Level II slices, in order:
 158. Verified first-two-character name collisions across comma-separated assignments.
 159. Added Level II error labels: syntax/scan failures use `?SN ERROR`, and typed numeric overflows use `?OV ERROR`.
 160. Fixed malformed nested-quote PRINT recovery so the valid prefix prints on its own line before `?SN ERROR`.
+161. Added `D`/`d` exponent-marker support for high-precision double literals.
 
 ## Next Slice Queue
 

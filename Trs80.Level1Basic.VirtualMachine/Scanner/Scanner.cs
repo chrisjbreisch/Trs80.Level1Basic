@@ -696,7 +696,7 @@ public class Scanner : IScanner
                 Advance();
         }
 
-        if ((Peek() == 'E' || Peek() == 'e') &&
+        if ((Peek() == 'E' || Peek() == 'e' || Peek() == 'D' || Peek() == 'd') &&
             (IsDigit(PeekNext()) || PeekNext() == '+' || PeekNext() == '-'))
         {
             isInt = false;
@@ -709,9 +709,12 @@ public class Scanner : IScanner
         }
 
         object value;
-        if (isInt)
+        string number = _source.Substring(TokenStart, TokenLength);
+        if (number.Contains('D') || number.Contains('d'))
+            value = double.Parse(number.Replace('D', 'E').Replace('d', 'e'),
+                System.Globalization.CultureInfo.InvariantCulture);
+        else if (isInt)
         {
-            string number = _source.Substring(TokenStart, TokenLength);
             value = int.TryParse(number, out int integerValue)
                 ? integerValue
                 : float.Parse(number);

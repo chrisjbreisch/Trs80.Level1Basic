@@ -773,7 +773,7 @@ public class Parser : IParser
             if (identifierToken.Lexeme.EndsWith('#')
                 && valueToken.Type == TokenType.Number
                 && valueToken.Lexeme.Contains('.'))
-                initializer = new Literal(double.Parse(valueToken.Lexeme,
+                initializer = new Literal(double.Parse(valueToken.Lexeme.Replace('D', 'E').Replace('d', 'e'),
                     System.Globalization.CultureInfo.InvariantCulture), null, valueToken.LinePosition);
 
             return StatementWrapper(new Let(identifier, initializer));
