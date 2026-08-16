@@ -724,7 +724,12 @@ public class Scanner : IScanner
         {
             if (int.TryParse(number, out int integerValue))
             {
-                if (integerSuffix && (integerValue < short.MinValue || integerValue > short.MaxValue))
+                bool negativeBoundary = integerValue == short.MaxValue + 1
+                    && TokenStart > 0
+                    && _source[TokenStart - 1] == '-';
+                if (integerSuffix
+                    && (integerValue < short.MinValue || integerValue > short.MaxValue)
+                    && !negativeBoundary)
                     throw new ValueOutOfRangeException(-1, string.Empty, "Integer value out of range.");
 
                 value = integerValue;
