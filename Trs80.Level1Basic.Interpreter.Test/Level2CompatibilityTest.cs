@@ -181,4 +181,20 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be("ELL! 65  5 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Logical_Operator_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT 1 AND 1;1 OR 0;NOT 0",
+            "20 PRINT 1 XOR 0;1 EQV 1;0 IMP 1"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1  1  1 ");
+        controller.ReadOutputLine().Should().Be(" 1  1  1 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
