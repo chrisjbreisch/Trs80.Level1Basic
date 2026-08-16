@@ -22,7 +22,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Baseline | Level I interpreter with existing command, expression, file, input, and control-flow suites |
 | Recent focus | Type declarations, arrays, numeric precision, Level II built-ins, `CLEAR`, `MID$` assignment, user-defined functions, string-function compatibility, and scanner/parser keyword coverage |
 | Latest implementation commit | `cfc8b9c Add POKE keyword support` |
-| Latest documentation checkpoint | This update: expand the Level II compatibility-program corpus with NEW lifecycle behavior |
+| Latest documentation checkpoint | This update: expand the Level II compatibility-program corpus with SAVE and LOAD |
 | Validation habit | Run the narrowest affected test first, then the affected test class, then the full project for shared changes |
 
 ## Language Core
@@ -151,6 +151,7 @@ Recent Level II slices, in order:
 72. Expanded the compatibility corpus with `STOP` break output and `CONT` resumption behavior.
 73. Expanded the compatibility corpus with `RUN` starting from an explicit line number.
 74. Expanded the compatibility corpus with `NEW` clearing the stored program before `RUN`.
+75. Expanded the compatibility corpus with `SAVE`/`LOAD` program round-trip behavior across `NEW`.
 
 ## Next Slice Queue
 

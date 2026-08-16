@@ -521,4 +521,21 @@ public class Level2CompatibilityTest
 
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Save_Load_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        controller.ExecuteLine("NEW");
+        controller.ExecuteLine("10 PRINT 80");
+        controller.ExecuteLine("SAVE \"save.bas\"");
+        controller.ExecuteLine("NEW");
+        controller.ExecuteLine("LOAD \"save.bas\"");
+        controller.ExecuteLine("RUN");
+
+        controller.ReadOutputLine().Should().Be("Saved \"save.bas\".");
+        controller.ReadOutputLine().Should().Be("Loaded \"save.bas\".");
+        controller.ReadOutputLine().Should().Be(" 80 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
