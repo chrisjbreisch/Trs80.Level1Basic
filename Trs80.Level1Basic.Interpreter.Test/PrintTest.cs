@@ -423,6 +423,21 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Applies_Two_Character_Rule_To_Long_String_Name()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 NUMBER1$=\"TOBY\"",
+            "20 PRINT NU$"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("TOBY");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_Large_Level_Two_Integer_Literal()
     {
         using var controller = new TestController();

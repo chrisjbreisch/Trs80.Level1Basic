@@ -214,6 +214,7 @@ Recent Level II slices, in order:
 135. Verified the first-two-character significance rule for integer-suffixed variables.
 136. Preserved high-precision decimal literals assigned to `#` variables and used round-trip double formatting, so `AB#=1.2345678901234567` retains all digits.
 137. Verified the Level II 255-character maximum string capacity with a `STRING$`/`LEN` boundary regression.
+138. Verified first-two-character significance for long alphanumeric string names with `$` suffixes.
 
 ## Next Slice Queue
 
