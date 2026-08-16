@@ -15,19 +15,31 @@ public class InputCommand : ICommand<InputModel>
     private readonly LineEditorHistory _history;
     private readonly AutoLineNumbering _autoLineNumbering;
     private readonly IProgram _program;
+    private readonly PendingEditRequest _pendingEdit;
 
-    public InputCommand(ITrs80 trs80, LineEditorHistory history, AutoLineNumbering autoLineNumbering, IProgram program)
+    public InputCommand(ITrs80 trs80, LineEditorHistory history, AutoLineNumbering autoLineNumbering,
+        IProgram program, PendingEditRequest pendingEdit)
     {
         _trs80 = trs80 ?? throw new ArgumentNullException(nameof(trs80));
         _history = history ?? throw new ArgumentNullException(nameof(history));
         _autoLineNumbering = autoLineNumbering ?? throw new ArgumentNullException(nameof(autoLineNumbering));
         _program = program ?? throw new ArgumentNullException(nameof(program));
+        _pendingEdit = pendingEdit ?? throw new ArgumentNullException(nameof(pendingEdit));
     }
 
     public void Execute(InputModel parameterObject)
     {
         while (true)
         {
+            if (!_autoLineNumbering.IsActive && TryConsumePendingEdit(out SourceLine pendingEditLine))
+            {
+                if (pendingEditLine.Line.Length == 0)
+                    continue;
+
+                parameterObject.SourceLine = pendingEditLine;
+                break;
+            }
+
             string prompt = _autoLineNumbering.IsActive
                 ? $"{_autoLineNumbering.NextLineNumber} "
                 : parameterObject.WritePrompt ? ">" : string.Empty;
@@ -88,6 +100,30 @@ public class InputCommand : ICommand<InputModel>
 
         if (parameterObject.SourceLine.Line == "EXIT")
             parameterObject.Done = true;
+    }
+
+    private bool TryConsumePendingEdit(out SourceLine sourceLine)
+    {
+        sourceLine = new SourceLine { Line = string.Empty, Original = string.Empty };
+
+        if (!_pendingEdit.TryTake(out int lineNumber))
+            return false;
+
+        IStatement? statement = _program.List().FirstOrDefault(item => item.LineNumber == lineNumber);
+        if (statement == null)
+            return false;
+
+        SourceLine editedLine = GetInputLine(out bool cancelled, out _, statement.SourceLine, $"{lineNumber} ");
+        if (cancelled || string.IsNullOrWhiteSpace(editedLine.Original))
+            return true;
+
+        string numberedLine = $"{lineNumber} {editedLine.Original}";
+        sourceLine = new SourceLine
+        {
+            Original = numberedLine,
+            Line = new(numberedLine.Select(Upper).ToArray())
+        };
+        return true;
     }
 
     private bool TryStartAuto(string sourceLine)

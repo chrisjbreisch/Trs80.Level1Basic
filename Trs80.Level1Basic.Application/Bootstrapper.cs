@@ -244,6 +244,7 @@ public sealed class Bootstrapper : DisposableBase
             .AddSingleton<IMachine, Machine>()
             .AddSingleton<LineEditorHistory>()
             .AddSingleton<AutoLineNumbering>()
+            .AddSingleton<PendingEditRequest>()
             .AddSingleton<ITrs80DataModel, Trs80DataModel>()
             .AddSingleton<IHost, Host>()
             .AddSingleton<INativeFunctions, NativeFunctions>()

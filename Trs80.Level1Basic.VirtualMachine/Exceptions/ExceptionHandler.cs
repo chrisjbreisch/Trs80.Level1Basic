@@ -8,7 +8,8 @@ namespace Trs80.Level1Basic.VirtualMachine.Exceptions;
 
 public static class ExceptionHandler
 {
-    public static void HandleError(ITrs80 trs80, IAppSettings settings, Exception ex)
+    public static void HandleError(ITrs80 trs80, IAppSettings settings, Exception ex,
+        PendingEditRequest pendingEdit = null)
     {
         switch (ex)
         {
@@ -17,8 +18,10 @@ public static class ExceptionHandler
                 ScanError(trs80, se, settings.DetailedErrors);
                 break;
             case ParseException pe:
-                trs80.WriteLine("?SN ERROR");
+                trs80.WriteLine(pe.LineNumber >= 0 ? $"?SN ERROR IN {pe.LineNumber}" : "?SN ERROR");
                 BaseError(trs80, pe, settings.DetailedErrors);
+                if (pe.LineNumber >= 0)
+                    pendingEdit?.Request(pe.LineNumber);
                 break;
             case RuntimeExpressionException ree:
                 trs80.WriteLine("WHAT?");

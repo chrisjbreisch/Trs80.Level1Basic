@@ -27,6 +27,8 @@ public class TestController : DisposableBase
     private readonly Action? _onImplicitDispose;
 
     public ITrs80 Trs80 { get; set; }
+    public PendingEditRequest PendingEdit { get; } = new();
+    public IProgram Program { get; }
 
     public TextReader Input
     {
@@ -57,9 +59,10 @@ public class TestController : DisposableBase
         Scanner = new Scanner(Trs80, natives, appSettings);
         Parser = new Parser(Trs80, natives, appSettings);
         IProgram program = new BasicProgram(Scanner, Parser);
+        Program = program;
         IMachine environment = new Machine(Trs80, program);
         ITrs80Api trs80Api = new Trs80Api(program, environment, Trs80);
-        _interpreter = new Interpreter(host, Trs80, trs80Api, environment, program, appSettings);
+        _interpreter = new Interpreter(host, Trs80, trs80Api, environment, program, appSettings, PendingEdit);
     }
 
     protected override void DisposeExplicit() => _onExplicitDispose?.DynamicInvoke();

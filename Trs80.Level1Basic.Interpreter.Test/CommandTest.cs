@@ -42,7 +42,7 @@ public class CommandTest
         var history = new LineEditorHistory();
         var auto = new AutoLineNumbering();
         IProgram program = new BasicProgram(controller.Scanner, controller.Parser);
-        var command = new InputCommand(controller.Trs80, history, auto, program);
+        var command = new InputCommand(controller.Trs80, history, auto, program, controller.PendingEdit);
         var model = new InputModel { WritePrompt = true };
 
         controller.Host.EnqueueKey(new ConsoleKeyInfo('A', ConsoleKey.A, false, false, false));
@@ -66,7 +66,7 @@ public class CommandTest
         var history = new LineEditorHistory();
         var auto = new AutoLineNumbering();
         IProgram program = new BasicProgram(controller.Scanner, controller.Parser);
-        var command = new InputCommand(controller.Trs80, history, auto, program);
+        var command = new InputCommand(controller.Trs80, history, auto, program, controller.PendingEdit);
         var firstModel = new InputModel();
         var secondModel = new InputModel();
         auto.Start();
@@ -94,6 +94,26 @@ public class CommandTest
         firstModel.SourceLine.Line.Should().Be("10 PRINT 1");
         secondModel.SourceLine.Line.Should().Be("20 PRINT 2");
         auto.IsActive.Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Input_Command_Opens_Edit_Mode_After_Numbered_Syntax_Error()
+    {
+        using var controller = new TestController();
+        controller.ExecuteLine("60 P=M*(1+I");
+        controller.ExecuteLine("RUN");
+        var history = new LineEditorHistory();
+        var auto = new AutoLineNumbering();
+        var command = new InputCommand(controller.Trs80, history, auto, controller.Program, controller.PendingEdit);
+        var model = new InputModel { WritePrompt = true };
+
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('\0', ConsoleKey.End, false, false, false));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo(')', ConsoleKey.D0, true, false, false));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false));
+
+        command.Execute(model);
+
+        model.SourceLine.Line.Should().Be("60 P=M*(1+I)");
     }
 
     [TestMethod]

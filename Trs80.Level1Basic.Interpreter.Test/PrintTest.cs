@@ -152,7 +152,7 @@ public class PrintTest
         controller.RunProgram(program);
 
         controller.ReadOutputLine().Should().Be("HE SAID ");
-        controller.ReadOutputLine().Should().Be("?SN ERROR");
+        controller.ReadOutputLine().Should().Be("?SN ERROR IN 10");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -167,7 +167,7 @@ public class PrintTest
         controller.RunProgram(program);
 
         controller.ReadOutputLine().Should().Be("HE SAID, ");
-        controller.ReadOutputLine().Should().Be("?SN ERROR");
+        controller.ReadOutputLine().Should().Be("?SN ERROR IN 10");
         controller.IsEndOfRun().Should().BeTrue();
     }
 

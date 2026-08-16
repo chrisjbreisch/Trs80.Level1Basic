@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 
 using FluentAssertions;
 
@@ -38,7 +39,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("?SN ERROR");
+        controller.ReadOutputLine().Should().Be("?SN ERROR IN 10");
         controller.ReadErrorLine().Should().Be(" 10  FOR C?HRIS = 1 TO 10");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -56,7 +57,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("?SN ERROR");
+        controller.ReadOutputLine().Should().Be("?SN ERROR IN 20");
         controller.ReadErrorLine().Should().Be(" 20  IF A$ ?THEN PRINT \"TRUE\" : END");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -106,7 +107,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("?SN ERROR");
+        controller.ReadOutputLine().Should().Be("?SN ERROR IN 20");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -155,6 +156,31 @@ public class ErrorTest
     }
 
     [TestMethod]
+    public void Program_Syntax_Error_Reports_The_Program_Line_Number()
+    {
+        using var controller = new TestController();
+        controller.Input = new StringReader("1200,1\r\n1\r\n");
+        controller.ExecuteStatements(new List<string> {
+            "10 REM PROGRAM COMPUTES MONTHLY MORTGAGE PAYMENTS",
+            "15 PRINT \"ENTER THE AMOUNT AND YEARS OF MORTGAGE\"",
+            "20 INPUT M,Y",
+            "25 PRINT \"ENTER THE INTEREST RATE IN %\"",
+            "30 INPUT I",
+            "40 N=Y*12",
+            "50 I=I/12",
+            "60 P=M*I*(I+1)^N/((1+I)^(N-1)"
+        });
+        controller.ExecuteLine("RUN");
+
+        controller.ReadOutputLine().Should().Be("ENTER THE AMOUNT AND YEARS OF MORTGAGE");
+        controller.ReadOutputLine().Should().Be("?ENTER THE INTEREST RATE IN %");
+        controller.ReadOutputLine().Should().Be("??SN ERROR IN 60");
+        controller.PendingEdit.TryTake(out int editLineNumber).Should().BeTrue();
+        editLineNumber.Should().Be(60);
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Rejects_Variable_Containing_Reserved_On()
     {
         using var controller = new TestController();
@@ -164,7 +190,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("?SN ERROR");
+        controller.ReadOutputLine().Should().Be("?SN ERROR IN 10");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -408,7 +434,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("?SN ERROR");
+        controller.ReadOutputLine().Should().Be("?SN ERROR IN 20");
         controller.ReadErrorLine().Should().Be(" 20  READ?");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -425,7 +451,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("?SN ERROR");
+        controller.ReadOutputLine().Should().Be("?SN ERROR IN 10");
         controller.ReadErrorLine().Should().Be(" 10  ON A?");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -441,7 +467,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("?SN ERROR");
+        controller.ReadOutputLine().Should().Be("?SN ERROR IN 10");
         controller.ReadErrorLine().Should().Be(" 10  A?");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -458,7 +484,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("?SN ERROR");
+        controller.ReadOutputLine().Should().Be("?SN ERROR IN 20");
         controller.ReadErrorLine().Should().Be(" 20  NEXT?");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -475,7 +501,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("?SN ERROR");
+        controller.ReadOutputLine().Should().Be("?SN ERROR IN 10");
         controller.ReadErrorLine().Should().Be(" 10  FOR ?3 = 1 TO 10");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -492,7 +518,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("?SN ERROR");
+        controller.ReadOutputLine().Should().Be("?SN ERROR IN 20");
         controller.ReadErrorLine().Should().Be(" 20  NEXT ?3");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -510,7 +536,7 @@ public class ErrorTest
         controller.RunProgram(program);
 
         controller.ReadOutputLine().Should().Be("BOO");
-        controller.ReadOutputLine().Should().Be("?SN ERROR");
+        controller.ReadOutputLine().Should().Be("?SN ERROR IN 10");
         controller.ReadErrorLine().Should().Be(" 10  PRINT AT 3 ?\"BOO\"");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -530,7 +556,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("?SN ERROR");
+        controller.ReadOutputLine().Should().Be("?SN ERROR IN 20");
         controller.ReadErrorLine().Should().Be(" 20  IF A = 1 ?100");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -546,7 +572,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("?SN ERROR");
+        controller.ReadOutputLine().Should().Be("?SN ERROR IN 10");
         controller.ReadErrorLine().Should().Be(" 10  LET ?3=4");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -562,7 +588,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("?SN ERROR");
+        controller.ReadOutputLine().Should().Be("?SN ERROR IN 10");
         controller.ReadErrorLine().Should().Be(" 10  A=MEM?(3)");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -578,7 +604,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("?SN ERROR");
+        controller.ReadOutputLine().Should().Be("?SN ERROR IN 10");
         controller.ReadErrorLine().Should().Be(" 10  A=INT(3?,4)");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -594,7 +620,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("?SN ERROR");
+        controller.ReadOutputLine().Should().Be("?SN ERROR IN 10");
         controller.ReadErrorLine().Should().Be(" 10  A=INT?");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -610,7 +636,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("?SN ERROR");
+        controller.ReadOutputLine().Should().Be("?SN ERROR IN 10");
         controller.ReadErrorLine().Should().Be(" 10  SET(3?)");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -627,7 +653,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("?SN ERROR");
+        controller.ReadOutputLine().Should().Be("?SN ERROR IN 10");
         controller.ReadErrorLine().Should().Be(" 10  ?+");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -669,7 +695,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("?SN ERROR");
+        controller.ReadOutputLine().Should().Be("?SN ERROR IN 10");
         controller.ReadErrorLine().Should().Be(" 10  ON A ?100, 200, 300");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();

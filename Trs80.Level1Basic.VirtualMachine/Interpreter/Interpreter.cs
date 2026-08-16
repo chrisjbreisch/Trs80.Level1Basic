@@ -27,9 +27,11 @@ public class Interpreter : IInterpreter
     private readonly IProgram _program;
     private readonly IHost _host;
     private readonly IAppSettings _appSettings;
+    private readonly PendingEditRequest _pendingEdit;
 
     public Interpreter(IHost host, ITrs80 trs80, ITrs80Api trs80Api,
-        IMachine machine, IProgram program, IAppSettings appSettings)
+        IMachine machine, IProgram program, IAppSettings appSettings,
+        PendingEditRequest pendingEdit)
     {
         _host = host ?? throw new ArgumentNullException(nameof(host));
         _trs80 = trs80 ?? throw new ArgumentNullException(nameof(trs80));
@@ -37,6 +39,7 @@ public class Interpreter : IInterpreter
         _machine = machine ?? throw new ArgumentNullException(nameof(machine));
         _program = program ?? throw new ArgumentNullException(nameof(program));
         _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
+        _pendingEdit = pendingEdit ?? throw new ArgumentNullException(nameof(pendingEdit));
     }
 
     public void Interpret(IStatement statement)
@@ -49,7 +52,7 @@ public class Interpreter : IInterpreter
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleError(_trs80, _appSettings, ex);
+            ExceptionHandler.HandleError(_trs80, _appSettings, ex, _pendingEdit);
         }
 
     }

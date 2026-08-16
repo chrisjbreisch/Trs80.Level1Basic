@@ -315,6 +315,8 @@ Recent Level II slices, in order:
 236. Made `EDIT line` display the selected line number while preloading the editable source.
 237. Documented the intentional modern `EDIT` UI deviation from the original arrow-less TRS-80 keyboard workflow.
 238. Enforced the documented double-precision range for `CDBL` with overflow coverage.
+239. Made numbered program syntax errors report `?SN ERROR IN line` while preserving generic command syntax errors.
+240. Opened `EDIT` automatically on the failing line after a numbered program syntax error.
 
 ## Next Slice Queue
 
