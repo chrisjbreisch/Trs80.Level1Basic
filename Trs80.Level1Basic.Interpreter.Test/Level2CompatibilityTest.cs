@@ -133,4 +133,21 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 5 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void String_Inspection_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A$=\"HELLO WORLD\"",
+            "20 PRINT LEFT$(A$,5);RIGHT$(A$,5)",
+            "30 PRINT INSTR(A$,\"WORLD\");VAL(\" 123.4XYZ\")"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HELLOWORLD");
+        controller.ReadOutputLine().Should().Be(" 7  123.4 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
