@@ -117,6 +117,7 @@ public class Interpreter : IInterpreter
             TokenType.Slash => right == 0 ? throw new ValueOutOfRangeException(_program.CurrentStatement.LineNumber, _program.CurrentStatement.SourceLine, "Divide by zero") : left is double || right is double ? (double)left / right : (float)left / right,
             TokenType.Mod => right == 0 ? throw new ValueOutOfRangeException(_program.CurrentStatement.LineNumber, _program.CurrentStatement.SourceLine, "Divide by zero") : left % right,
             TokenType.Star => (left is bool && right is bool) ? left && right : left * right,
+            TokenType.Caret => Math.Pow(Convert.ToDouble(left), Convert.ToDouble(right)),
             TokenType.And => IsTruthy(left) && IsTruthy(right),
             TokenType.Or => IsTruthy(left) || IsTruthy(right),
             TokenType.Xor => IsTruthy(left) ^ IsTruthy(right),

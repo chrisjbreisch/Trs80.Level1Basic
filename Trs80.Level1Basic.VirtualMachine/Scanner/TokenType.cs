@@ -5,6 +5,7 @@ public enum TokenType
     // Single character tokens
     Colon,
     Comma,
+    Caret,
     LeftParen,
     Minus,
     Plus,

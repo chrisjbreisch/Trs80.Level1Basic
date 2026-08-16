@@ -139,6 +139,22 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Use_Exponent_Operator()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT 5^2",
+            "20 PRINT 4^0.5"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 25 ");
+        controller.ReadOutputLine().Should().Be(" 2 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Use_Multi_Character_Variable()
     {
         using var controller = new TestController();

@@ -238,6 +238,9 @@ public class Scanner : IScanner
             case ',':
                 AddToken(TokenType.Comma);
                 break;
+            case '^':
+                AddToken(TokenType.Caret);
+                break;
             case '-':
                 AddToken(TokenType.Minus);
                 break;

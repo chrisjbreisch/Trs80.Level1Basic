@@ -956,15 +956,25 @@ public class Parser : IParser
 
     private Expression Factor()
     {
-        Expression left = Unary();
+        Expression left = Power();
         while (Match(TokenType.Slash, TokenType.Star, TokenType.Mod))
         {
             Token operatorType = Previous();
-            Expression right = Unary();
+            Expression right = Power();
             left = new Binary(left, operatorType, right, operatorType.LinePosition);
         }
 
         return left;
+    }
+
+    private Expression Power()
+    {
+        Expression left = Unary();
+        if (!Match(TokenType.Caret)) return left;
+
+        Token operatorType = Previous();
+        Expression right = Power();
+        return new Binary(left, operatorType, right, operatorType.LinePosition);
     }
 
     private Expression Unary()
