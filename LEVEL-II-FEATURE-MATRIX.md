@@ -21,7 +21,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Branch | `level2/type-declarations` |
 | Baseline | Level I interpreter with existing command, expression, file, input, and control-flow suites |
 | Recent focus | Type declarations, arrays, numeric precision, Level II built-ins, `CLEAR`, `MID$` assignment, user-defined functions, string-function compatibility, and scanner/parser keyword coverage |
-| Latest implementation commit | `78c582b Add WAIT keyword support` |
+| Latest implementation commit | `2bd2886 Add LPRINT keyword support` |
 | Latest documentation checkpoint | This update: complete the `LPRINT` scanner/parser slice |
 | Validation habit | Run the narrowest affected test first, then the affected test class, then the full project for shared changes |
 
