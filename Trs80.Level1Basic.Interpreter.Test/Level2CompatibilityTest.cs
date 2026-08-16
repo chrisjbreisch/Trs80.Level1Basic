@@ -150,4 +150,20 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 7  123.4 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Math_And_Formatting_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT SQR(9);ABS(-4);SGN(-2)",
+            "20 PRINT UCASE$(\"hello\");STRING$(3,\"!\")"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3  4 -1 ");
+        controller.ReadOutputLine().Should().Be("HELLO!!!");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
