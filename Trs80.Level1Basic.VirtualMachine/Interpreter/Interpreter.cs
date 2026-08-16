@@ -175,6 +175,10 @@ public class Interpreter : IInterpreter
             && Math.Abs(singleValue) > 1.701411E+38f)
             throw new ValueOutOfRangeException(_program.CurrentStatement.LineNumber,
                 _program.CurrentStatement.SourceLine, "Single value out of range.");
+        if (name.EndsWith('#') && value is double doubleValue
+            && Math.Abs(doubleValue) > 1.701411834544556E+38)
+            throw new ValueOutOfRangeException(_program.CurrentStatement.LineNumber,
+                _program.CurrentStatement.SourceLine, "Double value out of range.");
 
         return value;
     }
