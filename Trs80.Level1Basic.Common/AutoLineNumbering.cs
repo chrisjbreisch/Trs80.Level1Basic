@@ -8,6 +8,7 @@ public sealed class AutoLineNumbering
     private int _increment;
 
     public bool IsActive { get; private set; }
+    public int NextLineNumber => _nextLineNumber;
 
     public void Start(int firstLineNumber = 10, int increment = 10)
     {

@@ -288,6 +288,7 @@ Recent Level II slices, in order:
 209. Verified fixed-point formatting for double-precision hundredths such as `R#=.07`.
 210. Corrected `LIST line` to emit only the requested line, distinct from open-ended `LIST line-`.
 211. Added `LIST .` support for listing only the most recently entered or edited program line.
+212. Made interactive `AUTO` display the active next line number as the editor prompt, advancing from `10 ` to `20 ` after submission.
 
 ## Next Slice Queue
 

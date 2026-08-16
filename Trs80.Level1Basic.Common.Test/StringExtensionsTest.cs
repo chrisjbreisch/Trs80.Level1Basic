@@ -116,6 +116,17 @@ public class StringExtensionsTest
     }
 
     [TestMethod]
+    public void Auto_Line_Numbering_Exposes_The_Next_Line_Number()
+    {
+        var numbering = new AutoLineNumbering();
+        numbering.Start(10, 10);
+
+        numbering.NextLineNumber.Should().Be(10);
+        numbering.TryNumber("PRINT 1", out _).Should().BeTrue();
+        numbering.NextLineNumber.Should().Be(20);
+    }
+
+    [TestMethod]
     public void Auto_Line_Numbering_Rejects_Blank_Lines_And_Can_Stop()
     {
         var numbering = new AutoLineNumbering();

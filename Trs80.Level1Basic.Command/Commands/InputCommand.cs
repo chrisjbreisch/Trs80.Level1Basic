@@ -28,8 +28,10 @@ public class InputCommand : ICommand<InputModel>
     {
         while (true)
         {
-            _trs80.Write(">");
-            SourceLine sourceLine = GetInputLine(out bool cancelled);
+            string prompt = _autoLineNumbering.IsActive
+                ? $"{_autoLineNumbering.NextLineNumber} "
+                : ">";
+            SourceLine sourceLine = GetInputLine(out bool cancelled, prompt: prompt);
 
             if (cancelled)
                 continue;
@@ -41,7 +43,7 @@ public class InputCommand : ICommand<InputModel>
 
             if (!_autoLineNumbering.IsActive && TryGetEditLine(sourceLine.Original, out int editLineNumber, out string existingLine))
             {
-                SourceLine editedLine = GetInputLine(out cancelled, existingLine);
+                SourceLine editedLine = GetInputLine(out cancelled, existingLine, ">");
                 if (cancelled)
                     continue;
 
@@ -124,12 +126,12 @@ public class InputCommand : ICommand<InputModel>
         return true;
     }
 
-    private SourceLine GetInputLine(out bool cancelled, string initialText = "")
+    private SourceLine GetInputLine(out bool cancelled, string initialText = "", string prompt = ">")
     {
         cancelled = false;
         var buffer = new LineEditorBuffer(initialText);
         if (buffer.Length > 0)
-            RedrawLine(buffer);
+            RedrawLine(buffer, prompt);
 
         while (true)
         {
@@ -148,7 +150,7 @@ public class InputCommand : ICommand<InputModel>
             else if (key.Key == ConsoleKey.Escape)
             {
                 buffer.Clear();
-                RedrawLine(buffer);
+                RedrawLine(buffer, prompt);
                 cancelled = true;
                 return new SourceLine();
             }
@@ -171,7 +173,7 @@ public class InputCommand : ICommand<InputModel>
             else
                 continue;
 
-            RedrawLine(buffer);
+            RedrawLine(buffer, prompt);
         }
 
         string original = buffer.ToString();
@@ -186,10 +188,10 @@ public class InputCommand : ICommand<InputModel>
             };
     }
 
-    private void RedrawLine(LineEditorBuffer buffer)
+    private void RedrawLine(LineEditorBuffer buffer, string prompt = ">")
     {
         string text = new(buffer.ToString().Select(Upper).ToArray());
-        _trs80.Write($"\r>{text}\x1b[K");
+        _trs80.Write($"\r{prompt}{text}\x1b[K");
         int charactersToMoveLeft = text.Length - buffer.CursorIndex;
         if (charactersToMoveLeft > 0)
             _trs80.Write(new string('\b', charactersToMoveLeft));
