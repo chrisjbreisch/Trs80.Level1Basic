@@ -234,6 +234,7 @@ Recent Level II slices, in order:
 155. Verified comma statement separators preserve string-expression RHS assignments.
 156. Verified comma statement separators preserve explicit `%` and `!` typed assignments.
 157. Verified comma statement separators preserve high-precision `#` double assignments.
+158. Verified first-two-character name collisions across comma-separated assignments.
 
 ## Next Slice Queue
 

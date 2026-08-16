@@ -649,6 +649,21 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Applies_Name_Rule_Across_Comma_Assignments()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 NUMBER=1, NUCLEAR=2",
+            "20 PRINT NU"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 2 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Supports_Maximum_String_Length()
     {
         using var controller = new TestController();
