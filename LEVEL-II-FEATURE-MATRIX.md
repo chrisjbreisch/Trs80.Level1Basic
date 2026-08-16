@@ -192,6 +192,7 @@ Recent Level II slices, in order:
 113. Fixed parser progress on malformed nested-quote PRINT input, preventing a hang and preserving the partial `HE SAID` output before `WHAT?`.
 114. Enabled multi-character numeric and string variable names at runtime; `NU=1` followed by `PRINT NU` now outputs `1`.
 115. Applied the Level II first-two-character significance rule to variable storage, so `NUMBER=1` and `PRINT NU` refer to the same variable.
+116. Rejected variable names containing the reserved `ON` keyword, so `GONE=7` reports `WHAT?`.
 
 ## Next Slice Queue
 

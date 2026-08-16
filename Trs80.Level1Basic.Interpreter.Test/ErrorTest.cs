@@ -157,6 +157,20 @@ public class ErrorTest
     }
 
     [TestMethod]
+    public void Interpreter_Rejects_Variable_Containing_Reserved_On()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 GONE=7"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Handles_Divide_By_Zero_In_Command()
     {
         using var controller = new TestController();

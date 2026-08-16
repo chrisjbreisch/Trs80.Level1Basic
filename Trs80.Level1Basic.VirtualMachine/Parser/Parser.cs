@@ -731,6 +731,11 @@ public class Parser : IParser
         else
             identifier = Unary();
 
+        if (identifierToken.Type == TokenType.Identifier
+            && identifierToken.Lexeme.Contains("ON", StringComparison.OrdinalIgnoreCase))
+            _parseException = new ParseException(_lineNumber, _source,
+                identifierToken.LinePosition, "Invalid variable name.");
+
         Consume(TokenType.Equal, "Expected assignment.");
 
         if (!identifierToken.Lexeme.EndsWith('$') || Peek().Type == TokenType.String)
