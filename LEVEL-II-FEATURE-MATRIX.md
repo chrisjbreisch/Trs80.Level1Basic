@@ -203,6 +203,7 @@ Recent Level II slices, in order:
 124. Verified explicit quoted-string concatenation remains valid after malformed-quote validation.
 125. Added `^` exponentiation with higher precedence and fractional exponent support; `5^2` outputs `25` and `4^0.5` outputs `2`.
 126. Verified right-associative exponentiation, so `2^3^2` evaluates as `2^(3^2)` and outputs `512`.
+127. Verified exponentiation precedence over multiplication, so `2*3^2` outputs `18`.
 
 ## Next Slice Queue
 
