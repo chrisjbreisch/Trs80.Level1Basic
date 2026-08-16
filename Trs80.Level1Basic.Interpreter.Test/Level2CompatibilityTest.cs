@@ -166,4 +166,19 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be("HELLO!!!");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Character_And_Substring_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A$=\"HELLO\"",
+            "20 PRINT MID$(A$,2,3);CHR$(33);ASC(\"A\");LEN(A$)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("ELL! 65  5 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
