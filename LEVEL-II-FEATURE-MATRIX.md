@@ -222,6 +222,7 @@ Recent Level II slices, in order:
 143. Verified the double formatting boundary: values through eight digits remain fixed, while larger values use the established six-digit scientific format.
 144. Enforced the documented single-precision `!` range at use; approximately `1.7E+38` is accepted and `1.8E+38` reports `HOW?`.
 145. Enforced the documented double-precision `#` range at use; `1.8E+38` reports `HOW?`.
+146. Verified a valid double-precision `#` value near the upper bound; `1.7E+38` is accepted.
 
 ## Next Slice Queue
 
