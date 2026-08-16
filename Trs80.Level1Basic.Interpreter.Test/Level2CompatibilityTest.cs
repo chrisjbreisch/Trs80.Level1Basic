@@ -711,4 +711,17 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 80 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Merge_Abbreviation_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        controller.ExecuteLine("NEW");
+        controller.ExecuteLine("10 A=10");
+        controller.ExecuteLine("ME. \"merge.bas\"");
+        controller.ExecuteLine("RUN");
+
+        controller.ReadOutputLine().Should().Be("Merged \"merge.bas\".");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
