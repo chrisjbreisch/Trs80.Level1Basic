@@ -308,6 +308,7 @@ Recent Level II slices, in order:
 229. Added comma-separated multi-variable `INPUT` support for reading multiple values from one response line.
 230. Preserved semicolon-separated `INPUT` as independent reads while restricting bulk reads to comma syntax.
 231. Added apostrophe comments as `REM` aliases outside quoted strings.
+232. Rounded the compound-interest sample's currency output to cents using `CINT`.
 
 ## Next Slice Queue
 

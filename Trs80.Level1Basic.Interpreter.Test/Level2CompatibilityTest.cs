@@ -1111,6 +1111,38 @@ public class Level2CompatibilityTest
     }
 
     [TestMethod]
+    public void Compound_Interest_Sample_Rounds_Interest_To_Cents()
+    {
+        using var controller = new TestController
+        {
+            Input = new StringReader("0.07\n1000,10")
+        };
+        var program = new List<string> {
+            "10 PRINT \"ENTER THE INTEREST RATE, FOR EXAMPLE 0.07\"",
+            "20 INPUT R",
+            "25 PRINT \"ENTER THE INITIAL DEPOSIT & NUMBER OF YEARS SEPARATED BY A COMMA\"",
+            "30 INPUT D,N",
+            "35 B=D*(1+R)^N",
+            "40 PRINT \"THE BALANCE AFTER\";N;\"YEARS IS $\";B",
+            "45 PRINT \"THE TOTAL INTEREST PAID IS $\";CINT((B-D)*100)/100"
+        };
+
+        controller.RunProgram(program);
+
+        List<string?> output = new();
+        for (int index = 0; index < 10; index++)
+        {
+            string? line = controller.ReadOutputLine();
+            if (line is null)
+                break;
+            output.Add(line);
+        }
+
+        output.Should().Contain(line => line.Contains("THE TOTAL INTEREST PAID IS $ 967.15"));
+        output.Should().Contain("READY");
+    }
+
+    [TestMethod]
     public void Cursor_Position_Reflects_Console_Output()
     {
         using var controller = new TestController();
