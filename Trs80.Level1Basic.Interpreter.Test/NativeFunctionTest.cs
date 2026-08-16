@@ -442,6 +442,20 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Cint_Rounds_Exact_Midpoints_Away_From_Zero()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT CINT(2.5);CINT(-2.5)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3 -3 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Fix()
     {
         using var controller = new TestController();
