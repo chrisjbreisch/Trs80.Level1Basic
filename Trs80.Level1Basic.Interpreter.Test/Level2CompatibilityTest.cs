@@ -289,4 +289,22 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 0  0 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Conditional_Branch_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A=3",
+            "20 IF A=3 THEN PRINT \"YES\":GOTO 40",
+            "30 PRINT \"NO\"",
+            "40 PRINT \"DONE\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("YES");
+        controller.ReadOutputLine().Should().Be("DONE");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
