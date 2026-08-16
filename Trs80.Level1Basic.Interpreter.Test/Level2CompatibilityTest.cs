@@ -724,4 +724,16 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be("Merged \"merge.bas\".");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Run_Abbreviation_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        controller.ExecuteLine("NEW");
+        controller.ExecuteLine("10 PRINT 10");
+        controller.ExecuteLine("R.");
+
+        controller.ReadOutputLine().Should().Be(" 10 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
