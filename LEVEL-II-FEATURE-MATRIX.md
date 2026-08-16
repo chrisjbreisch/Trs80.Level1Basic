@@ -238,6 +238,7 @@ Recent Level II slices, in order:
 159. Added Level II error labels: syntax/scan failures use `?SN ERROR`, and typed numeric overflows use `?OV ERROR`.
 160. Fixed malformed nested-quote PRINT recovery so the valid prefix prints on its own line before `?SN ERROR`.
 161. Added `D`/`d` exponent-marker support for high-precision double literals.
+162. Verified negative `D` exponent literals and established scientific formatting for `1.23D-2`.
 
 ## Next Slice Queue
 
