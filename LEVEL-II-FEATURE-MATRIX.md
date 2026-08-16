@@ -207,6 +207,7 @@ Recent Level II slices, in order:
 128. Verified exponentiation precedence over division, so `8/2^2` outputs `2`.
 129. Verified exponentiation precedence over `MOD`, so `10 MOD 2^2` outputs `2`.
 130. Documented current unary-minus precedence: `-2^2` evaluates as `(-2)^2` and outputs `4`.
+131. Verified exponentiation of variables and grouped expressions: `A^2` and `(A+1)^2` produce `25` and `36`.
 
 ## Next Slice Queue
 
