@@ -22,7 +22,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Baseline | Level I interpreter with existing command, expression, file, input, and control-flow suites |
 | Recent focus | Type declarations, arrays, numeric precision, Level II built-ins, `CLEAR`, `MID$` assignment, user-defined functions, string-function compatibility, and scanner/parser keyword coverage |
 | Latest implementation commit | `cfc8b9c Add POKE keyword support` |
-| Latest documentation checkpoint | This update: complete the `POKE` scanner/parser slice |
+| Latest documentation checkpoint | This update: close the scanner/parser keyword inventory audit |
 | Validation habit | Run the narrowest affected test first, then the affected test class, then the full project for shared changes |
 
 ## Language Core
@@ -56,11 +56,11 @@ The project already has a mature Level I interpreter. Level II work is being add
 
 | Area | Status | Implemented now | Remaining work and evidence |
 | --- | --- | --- | --- |
-| Program editing commands | Partial | `LIST` with closed, open-ended, or reversed line ranges, `LOAD`, `SAVE`, `MERGE`, `CLEAR`, and explicit single-line, closed-range, or open-ended `DELETE` exist; `DEL.`, `LO.`, `ME.`, and `SA.` are accepted as DELETE, LOAD, MERGE, and SAVE abbreviations. `CLEAR` resets variables and arrays while preserving the program. `CLOAD` and `CSAVE` are intentionally unavailable; disk-based `LOAD` and `SAVE` are the supported equivalents. | Verify remaining Level II command abbreviations. Existing anchor: `CommandTest`, `FileTest`. |
+| Program editing commands | Partial | `LIST` with closed, open-ended, or reversed line ranges, `LOAD`, `SAVE`, `MERGE`, `CLEAR`, and explicit single-line, closed-range, or open-ended `DELETE` exist; `DEL.`, `LO.`, `ME.`, and `SA.` are accepted as DELETE, LOAD, MERGE, and SAVE abbreviations. `CLEAR` resets variables and arrays while preserving the program. `CLOAD` and `CSAVE` are intentionally unavailable; disk-based `LOAD` and `SAVE` are the supported equivalents. `AUTO` and `EDIT` remain deferred to the separate line-editor subsystem. | Verify remaining command abbreviations after the line editor is implemented. Existing anchor: `CommandTest`, `FileTest`. |
 | Data statements | Implemented | `DATA`, `READ`, and `RESTORE` exist. | Add mixed-type, exhaustion, and `CLEAR` interaction cases. Existing anchor: `DataTest`. |
 | Console input/output | Implemented | `INPUT`, `PRINT`, `TAB`, `SPC`, and cursor-related behavior exist. | Audit formatting, commas/semicolons, input errors, and Level II line-width behavior. Existing anchors: `InputTest`, `PrintTest`, `NativeFunctionTest`. |
 | Hardware statements | Partial | `SET`, `RESET`, `POKE`, and related APIs exist as host-machine abstractions; explicit `SET x, y`, `RESET x, y`, and `POKE address, value` scanner/parser dispatch now routes to the existing graphics and memory APIs. | Specify whether each operation is emulated, approximated, rejected, or intentionally unavailable. |
-| Remaining Level II commands | Partial | `BEEP`, `OUT`, `WAIT`, `LPRINT`, `LLIST`, `SYSTEM`, `SET`, `RESET`, and `POKE` are recognized by the scanner and parser with focused coverage; hardware and printer statements remain limited pending host support policies, while `SYSTEM` ends the current BASIC run through the machine halt lifecycle. The parser statement dispatch is centralized in `Parser.Statement()`. | Compare the scanner keyword table and parser dispatch with the manual, then implement one command family per slice. Define audio, port-hardware, and printer-output policies before adding runtime behavior for the remaining limited commands. |
+| Remaining Level II commands | Partial | All VM-backed Level II command keywords are now inventoried with focused scanner/parser coverage. `BEEP`, `OUT`, `WAIT`, `LPRINT`, and `LLIST` remain limited by host audio, port, and printer policies; `SYSTEM`, `SET`, `RESET`, and `POKE` dispatch to existing lifecycle, graphics, and memory APIs. `AUTO` and `EDIT` are deferred to the line editor; `CLOAD` and `CSAVE` remain intentionally unavailable. | Define hardware policies, then implement the line editor before revisiting `AUTO` and `EDIT`. The parser statement dispatch is centralized in `Parser.Statement()`. |
 
 ## Runtime and Compatibility
 
@@ -119,17 +119,16 @@ Recent Level II slices, in order:
 40. Added explicit scanner, parser, and statement dispatch support for `RESET x, y`, routing execution to the existing graphics reset API with focused scanner/parser coverage.
 41. Added explicit scanner, parser, and statement dispatch support for `SET x, y`, routing execution to the existing graphics set API while preserving the parenthesized native-call form.
 42. Added explicit scanner, parser, and statement dispatch support for `POKE address, value`, routing execution to the existing memory API while preserving the parenthesized native-call form.
+43. Closed the scanner/parser keyword inventory audit: VM-backed commands have focused coverage, while `AUTO`/`EDIT` and cassette commands have explicit deferred or unavailable policies.
 
 ## Next Slice Queue
 
 Work in this order unless manual research changes the dependency:
 
-1. Build the complete Level II scanner/parser keyword inventory.
-2. Add missing pure built-in functions one at a time.
-3. Complete statement and command families one at a time.
-4. Define and test hardware-dependent behavior.
-5. Add short Level II compatibility programs.
-6. Implement the line editor as a separate subsystem.
+1. Define and test hardware-dependent behavior.
+2. Add short Level II compatibility programs.
+3. Implement the line editor as a separate subsystem, then revisit `AUTO` and `EDIT`.
+4. Complete statement and command families one at a time as manual gaps are found.
 
 ## Slice Completion Checklist
 
