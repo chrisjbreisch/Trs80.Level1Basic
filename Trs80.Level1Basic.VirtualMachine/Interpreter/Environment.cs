@@ -107,6 +107,9 @@ public class Environment
 
         VariableType targetType = GetDeclaredType(normalizedName);
         value = CastValue(value, targetType);
+        if (targetType == VariableType.Integer && !normalizedName.EndsWith('%')
+            && (value < short.MinValue || value > short.MaxValue))
+            throw new ValueOutOfRangeException(-1, string.Empty, "Integer value out of range.");
 
         _variables[normalizedName] = value;
         if (!_initializingVariables)
@@ -173,6 +176,9 @@ public class Environment
 
         if (_declaredTypes.TryGetValue(normalizedName, out VariableType declaredType))
             return declaredType;
+
+        if (_declaredTypes.TryGetValue(normalizedName[..1], out VariableType initialDeclaredType))
+            return initialDeclaredType;
 
         if (_declaredTypes.TryGetValue($"{normalizedName}$", out VariableType stringDeclaredType))
             return stringDeclaredType;

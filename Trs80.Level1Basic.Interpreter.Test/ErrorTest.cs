@@ -223,6 +223,17 @@ public class ErrorTest
     }
 
     [TestMethod]
+    public void Interpreter_Reports_Defint_Assignment_Overflow()
+    {
+        using var controller = new TestController();
+
+        controller.ExecuteLine("DEFINT I");
+        controller.ExecuteLine("IT=40000");
+
+        controller.ReadOutputLine().Should().Be("?OV ERROR");
+    }
+
+    [TestMethod]
     public void Interpreter_Reports_Negative_Integer_Suffix_Overflow_At_Use()
     {
         using var controller = new TestController();

@@ -29,7 +29,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 
 | Area | Status | Implemented now | Remaining work and evidence |
 | --- | --- | --- | --- |
-| `DEFINT`, `DEFSNG`, `DEFDBL`, `DEFSTR` | Implemented | Declarations, ranges, aliases, and assignment casting are handled in `Environment` and `Parser`. | Add overflow, redeclaration, and mixed suffix cases. Existing anchors: `ExpressionTest` declaration tests. |
+| `DEFINT`, `DEFSNG`, `DEFDBL`, `DEFSTR` | Implemented | Declarations and ranges apply to unsuffixed variables by initial letter; aliases and assignment casting are handled in `Environment` and `Parser`. Implicit `DEFINT` scalar assignments enforce the Level II 16-bit range. | Add redeclaration, array-overflow, and mixed suffix cases. Existing anchors: `ExpressionTest` declaration tests and `ErrorTest` overflow tests. |
 | Typed scalar assignment | Partial | Integer, single, double, and string targets cast assigned values. Double values retain precision through division and conversion functions. | Define promotion and invalid-conversion rules from the Level II manual. Add a dedicated type-conversion test class when the rules are settled. |
 | `DIM` arrays | Implemented | One- and two-dimensional arrays are supported. Declared upper bounds and negative-subscript checks are enforced. | Verify higher dimensions, redeclaration, implicit-array rules, and exact error behavior. Existing anchors: `ExpressionTest` array tests. |
 | Typed arrays | Partial | Numeric and string element casting exists. Untouched string elements default to empty strings; numeric elements default to zero. | Verify redeclaration, array type changes, mixed suffixes, and bounds after `CLEAR`. |
@@ -332,6 +332,7 @@ Recent Level II slices, in order:
 253. Cleared the continuation point during `LOAD` program replacement so `CONT` cannot execute stale program lines.
 254. Preserved the current program when the Windows LOAD dialog is cancelled.
 255. Verified cancelling the Windows SAVE dialog preserves the current program and emits no success message.
+256. Applied DEF type declarations by variable initial and enforced 16-bit overflow on implicit `DEFINT` scalar assignments.
 
 ## Next Slice Queue
 
