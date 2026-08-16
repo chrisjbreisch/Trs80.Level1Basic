@@ -235,6 +235,7 @@ Recent Level II slices, in order:
 156. Verified comma statement separators preserve explicit `%` and `!` typed assignments.
 157. Verified comma statement separators preserve high-precision `#` double assignments.
 158. Verified first-two-character name collisions across comma-separated assignments.
+159. Added Level II error labels: syntax/scan failures use `?SN ERROR`, and typed numeric overflows use `?OV ERROR`.
 
 ## Next Slice Queue
 

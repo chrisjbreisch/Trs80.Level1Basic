@@ -13,11 +13,11 @@ public static class ExceptionHandler
         switch (ex)
         {
             case ScanException se:
-                trs80.WriteLine("WHAT?");
+                trs80.WriteLine("?SN ERROR");
                 ScanError(trs80, se, settings.DetailedErrors);
                 break;
             case ParseException pe:
-                trs80.WriteLine("WHAT?");
+                trs80.WriteLine("?SN ERROR");
                 BaseError(trs80, pe, settings.DetailedErrors);
                 break;
             case RuntimeExpressionException ree:
@@ -29,7 +29,7 @@ public static class ExceptionHandler
                 BaseError(trs80, rse, settings.DetailedErrors);
                 break;
             case ValueOutOfRangeException voore:
-                trs80.WriteLine("HOW?");
+                trs80.WriteLine(IsNumericOverflow(voore) ? "?OV ERROR" : "HOW?");
                 ValueOutOfRangeError(trs80, voore, settings.DetailedErrors);
                 break;
             case ProgramTooLargeException ptle:
@@ -67,6 +67,13 @@ public static class ExceptionHandler
     {
         trs80.WriteLine();
         trs80.WriteLine("READY");
+    }
+
+    private static bool IsNumericOverflow(ValueOutOfRangeException exception)
+    {
+        return exception.Message.Contains("Integer value out of range", StringComparison.Ordinal)
+            || exception.Message.Contains("Single value out of range", StringComparison.Ordinal)
+            || exception.Message.Contains("Double value out of range", StringComparison.Ordinal);
     }
 
     private static void ValueOutOfRangeError(ITrs80 trs80, ValueOutOfRangeException voore, bool detailedErrors)

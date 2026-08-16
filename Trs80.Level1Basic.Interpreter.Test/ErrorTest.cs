@@ -166,8 +166,18 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadOutputLine().Should().Be("?SN ERROR");
         controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Reports_Syntax_Error_For_Invalid_Command_Text()
+    {
+        using var controller = new TestController();
+
+        controller.ExecuteLine("TRS-80");
+
+        controller.ReadOutputLine().Should().Be("?SN ERROR");
     }
 
     [TestMethod]
@@ -181,7 +191,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("HOW?");
+        controller.ReadOutputLine().Should().Be("?OV ERROR");
         controller.ReadErrorLine().Should().Be("[Integer value out of range.]");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -198,7 +208,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("HOW?");
+        controller.ReadOutputLine().Should().Be("?OV ERROR");
         controller.ReadErrorLine().Should().Be("[Integer value out of range.]");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
