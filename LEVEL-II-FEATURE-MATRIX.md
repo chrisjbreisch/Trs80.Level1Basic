@@ -291,6 +291,7 @@ Recent Level II slices, in order:
 212. Made interactive `AUTO` display the active next line number as the editor prompt, advancing from `10 ` to `20 ` after submission.
 213. Preserved available control characters in non-blocking `INKEY$` results, with deterministic Enter-key coverage.
 214. Documented and tested the intentional empty result for extended keys without character payloads.
+215. Verified `POS` and `CSRLIN` reflect the host cursor after console output.
 
 ## Next Slice Queue
 

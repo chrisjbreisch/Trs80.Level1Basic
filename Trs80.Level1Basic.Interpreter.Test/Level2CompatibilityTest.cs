@@ -1109,4 +1109,19 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 0  0 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Cursor_Position_Reflects_Console_Output()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT \"ABC\";",
+            "20 PRINT POS(0);CSRLIN"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("ABC 3  0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
