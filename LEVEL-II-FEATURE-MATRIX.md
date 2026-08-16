@@ -243,6 +243,7 @@ Recent Level II slices, in order:
 164. Verified direct `D` exponent expressions without typed-variable assignment.
 165. Added numeric-literal `#` suffix support, so `PRINT 1/3#` evaluates as double precision.
 166. Added numeric-literal `!` suffix support, so `PRINT 1.23!` evaluates as single precision.
+167. Added numeric-literal `%` suffix support, completing explicit `%`, `!`, and `#` numeric literal suffixes.
 
 ## Next Slice Queue
 

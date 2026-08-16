@@ -708,12 +708,12 @@ public class Scanner : IScanner
                 Advance();
         }
 
-        if (Peek() is '#' or '!')
+        if (Peek() is '#' or '!' or '%')
             Advance();
 
         object value;
         string number = _source.Substring(TokenStart, TokenLength);
-        if (number.EndsWith('#') || number.EndsWith('!'))
+        if (number.EndsWith('#') || number.EndsWith('!') || number.EndsWith('%'))
             number = number[..^1];
         if (_source[TokenStart..(TokenStart + TokenLength)].EndsWith('#')
             || number.Contains('D') || number.Contains('d'))
