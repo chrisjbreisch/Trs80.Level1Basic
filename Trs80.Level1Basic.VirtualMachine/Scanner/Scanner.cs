@@ -708,8 +708,13 @@ public class Scanner : IScanner
                 Advance();
         }
 
+        if (Peek() == '#')
+            Advance();
+
         object value;
         string number = _source.Substring(TokenStart, TokenLength);
+        if (number.EndsWith('#'))
+            number = number[..^1];
         if (number.Contains('D') || number.Contains('d'))
             value = double.Parse(number.Replace('D', 'E').Replace('d', 'e'),
                 System.Globalization.CultureInfo.InvariantCulture);
