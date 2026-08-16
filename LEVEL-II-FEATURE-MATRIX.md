@@ -217,6 +217,7 @@ Recent Level II slices, in order:
 138. Verified first-two-character significance for long alphanumeric string names with `$` suffixes.
 139. Enforced the Level II 16-bit integer range when `%` variables are evaluated; `PRINT AB%` now reports overflow for `AB%=1234567`.
 140. Verified valid `%` integer boundaries: `32767` and `-32768` are accepted.
+141. Verified negative `%` overflow below the Level II lower bound; `-32769` reports `HOW?` at use.
 
 ## Next Slice Queue
 
