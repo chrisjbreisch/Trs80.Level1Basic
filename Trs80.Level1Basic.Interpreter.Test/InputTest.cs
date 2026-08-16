@@ -92,6 +92,42 @@ public class InputTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Read_Multiple_Numeric_Inputs_From_One_Comma_Separated_Line()
+    {
+        using var controller = new TestController();
+        controller.Input = new StringReader("1000,10");
+
+        var program = new List<string> {
+            "25 PRINT \"ENTER THE INITIAL DEPOSIT & NUMBER OF YEARS SEPARATED BY A COMMA\"",
+            "30 INPUT D,N",
+            "40 PRINT D;N"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("ENTER THE INITIAL DEPOSIT & NUMBER OF YEARS SEPARATED BY A COMMA");
+        controller.ReadOutputLine().Should().Be("? 1000  10 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Keeps_Semicolon_Input_As_Separate_Reads()
+    {
+        using var controller = new TestController();
+        controller.Input = new StringReader("100\n200");
+
+        var program = new List<string> {
+            "10 INPUT D;N",
+            "20 PRINT D;N"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("?? 100  200 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Handles_Indirect_References_On_Input1()
     {
         using var controller = new TestController();

@@ -597,10 +597,36 @@ public class Interpreter : IInterpreter
 
     public Void VisitInputStatement(Input statement)
     {
+        if (TryProcessCommaSeparatedInput(statement.Expressions))
+            return null!;
+
         foreach (Expression expression in statement.Expressions)
             ProcessInputExpression(expression);
 
         return null!;
+    }
+
+    private bool TryProcessCommaSeparatedInput(List<Expression> expressions)
+    {
+        List<Expression> variables = expressions
+            .Where(expression => expression is Identifier or Array)
+            .ToList();
+        bool hasOnlyVariablesAndSeparators = variables.Count > 1 &&
+            expressions.Any(expression => expression is Call) &&
+            expressions.All(expression => expression is Identifier or Array or Call);
+
+        if (!hasOnlyVariablesAndSeparators)
+            return false;
+
+        _trs80.Write("?");
+        string[] values = (_trs80.ReadLine() ?? string.Empty).Split(',');
+        for (int index = 0; index < variables.Count; index++)
+        {
+            string value = index < values.Length ? values[index].Trim() : string.Empty;
+            AssignInputValue(variables[index], value);
+        }
+
+        return true;
     }
 
     private void ProcessInputExpression(Expression expression)
@@ -624,6 +650,11 @@ public class Interpreter : IInterpreter
         _trs80.Write("?");
 
         string value = _trs80.ReadLine();
+        AssignInputValue(identifier, value);
+    }
+
+    private void AssignInputValue(Expression identifier, string value)
+    {
         if (value is null)
             Assign(identifier, null);
         else if (int.TryParse(value, out int intValue))
