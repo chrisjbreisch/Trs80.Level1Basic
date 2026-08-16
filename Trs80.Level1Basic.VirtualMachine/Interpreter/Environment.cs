@@ -161,8 +161,10 @@ public class Environment
     private VariableType GetDeclaredType(string name)
     {
         string normalizedName = NormalizeName(name);
-        if (normalizedName.EndsWith('$'))
-            return VariableType.String;
+        if (normalizedName.EndsWith('$')) return VariableType.String;
+        if (normalizedName.EndsWith('%')) return VariableType.Integer;
+        if (normalizedName.EndsWith('!')) return VariableType.Single;
+        if (normalizedName.EndsWith('#')) return VariableType.Double;
 
         if (_declaredTypes.TryGetValue(normalizedName, out VariableType declaredType))
             return declaredType;
@@ -284,11 +286,11 @@ public class Environment
         if (string.IsNullOrEmpty(name)) return string.Empty;
 
            string normalizedName = name.ToUpperInvariant();
-           bool isString = normalizedName.EndsWith('$');
-           string baseName = isString ? normalizedName[..^1] : normalizedName;
+        char suffix = normalizedName[^1] is '$' or '%' or '!' or '#' ? normalizedName[^1] : '\0';
+        string baseName = suffix == '\0' ? normalizedName : normalizedName[..^1];
            baseName = baseName[..Math.Min(2, baseName.Length)];
 
-           return isString ? $"{baseName}$" : baseName;
+        return suffix == '\0' ? baseName : $"{baseName}{suffix}";
     }
 
     public void InitializeVariables()

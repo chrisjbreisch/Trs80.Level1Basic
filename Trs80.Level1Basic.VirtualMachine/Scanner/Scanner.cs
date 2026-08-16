@@ -314,13 +314,16 @@ public class Scanner : IScanner
 
     private void GetKeywordOrIdentifier()
     {
-        if (Peek() == '$')
-            AddStringIdentifierToken();
+        if (IsTypeSuffix(Peek()))
+        {
+            Advance();
+            AddUnknownIdentifierToken();
+        }
         else if (IsDigit(Peek()))
         {
             while (IsIdentifierCharacter(Peek()))
                 Advance();
-            if (Peek() == '$')
+            if (IsTypeSuffix(Peek()))
                 Advance();
             AddUnknownIdentifierToken();
         }
@@ -424,11 +427,16 @@ public class Scanner : IScanner
         return IsAlpha(c) || IsDigit(c);
     }
 
+    private static bool IsTypeSuffix(char c)
+    {
+        return c is '$' or '%' or '!' or '#';
+    }
+
     private void AddUnknownIdentifierToken()
     {
         string identifier = _source.Substring(TokenStart, TokenLength);
 
-        if (TokenLength > 1 && Peek() == '$')
+        if (TokenLength > 1 && IsTypeSuffix(Peek()))
         {
             Advance();
             identifier = _source.Substring(TokenStart, TokenLength);
@@ -462,7 +470,7 @@ public class Scanner : IScanner
     {
         TokenType keyword = GetKeywordAtPosition();
         if (keyword == TokenType.Backup) return;
-        if (Peek() == '$')
+        if (IsTypeSuffix(Peek()))
         {
             AddUnknownIdentifierToken();
             return;
@@ -486,7 +494,7 @@ public class Scanner : IScanner
     {
         TokenType keyword = GetKeywordAtPosition();
         if (keyword == TokenType.Backup) return;
-        if (Peek() == '$')
+        if (IsTypeSuffix(Peek()))
         {
             AddUnknownIdentifierToken();
             return;
@@ -507,7 +515,7 @@ public class Scanner : IScanner
     {
         TokenType keyword = GetKeywordAtPosition();
         if (keyword == TokenType.Backup) return;
-        if (Peek() == '$')
+        if (IsTypeSuffix(Peek()))
         {
             AddUnknownIdentifierToken();
             return;
