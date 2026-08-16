@@ -595,4 +595,18 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 10  PRINT 10");
         controller.ReadOutputLine().Should().Be(" 20  PRINT 20");
     }
+
+    [TestMethod]
+    public void List_From_Line_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        controller.ExecuteLine("NEW");
+        controller.ExecuteLine("10 PRINT 10");
+        controller.ExecuteLine("20 PRINT 20");
+        controller.ExecuteLine("30 PRINT 30");
+        controller.ExecuteLine("LIST 20-");
+
+        controller.ReadOutputLine().Should().Be(" 20  PRINT 20");
+        controller.ReadOutputLine().Should().Be(" 30  PRINT 30");
+    }
 }
