@@ -59,6 +59,7 @@ public enum TokenType
     Next,
     Not,
     On,
+    Out,
     Or,
     Print,
     R,

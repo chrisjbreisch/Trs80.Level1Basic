@@ -105,6 +105,15 @@ public class CommandTest
     }
 
     [TestMethod]
+    public void Parser_Can_Parse_Out_Command()
+    {
+        using var controller = new TestController();
+        var tokens = controller.Scanner.ScanTokens(new SourceLine("OUT 255, 1"));
+
+        controller.Parser.Parse(tokens).Should().BeOfType<Out>();
+    }
+
+    [TestMethod]
     public void Parser_Can_Parse_Abbreviated_Merge_Command()
     {
         using var controller = new TestController();

@@ -139,6 +139,7 @@ public class Scanner : IScanner
                     {"MOD", TokenType.Mod},
                     {"NEW", TokenType.New},
                     {"NOT", TokenType.Not},
+                    {"OUT", TokenType.Out},
                     {"REM", TokenType.Rem},
                     {"RUN", TokenType.Run},
                     {"SA.", TokenType.Save},

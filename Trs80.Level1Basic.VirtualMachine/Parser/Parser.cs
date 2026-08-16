@@ -145,6 +145,8 @@ public class Parser : IParser
             return NextStatement();
         if (Match(TokenType.On))
             return OnStatement();
+        if (Match(TokenType.Out))
+            return OutStatement();
         if (Match(TokenType.Print))
             return PrintStatement();
         if (Match(TokenType.Read))
@@ -371,6 +373,14 @@ public class Parser : IParser
             Peek().LinePosition, "Expected 'GOTO' or 'GOSUB' after variable in 'ON'");
 
         return StatementWrapper(new On(selector, locations, linePositions, isGosub));
+    }
+
+    private IStatement OutStatement()
+    {
+        Expression port = Expression();
+        Consume(TokenType.Comma, "Expected ',' after OUT port.");
+        Expression value = Expression();
+        return StatementWrapper(new Out(port, value));
     }
 
     private IStatement StatementWrapper(IStatement statement)

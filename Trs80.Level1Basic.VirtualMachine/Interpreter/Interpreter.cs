@@ -915,4 +915,9 @@ public class Interpreter : IInterpreter
 
         return null!;
     }
+
+    public Void VisitOutStatement(Out statement)
+    {
+        return null!;
+    }
 }

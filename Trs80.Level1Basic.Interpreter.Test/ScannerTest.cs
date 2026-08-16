@@ -107,4 +107,16 @@ public class ScannerTest
         tokens[1].Type.Should().Be(TokenType.Beep);
         tokens[2].Type.Should().Be(TokenType.EndOfLine);
     }
+
+    [TestMethod]
+    public void Scanner_Recognizes_Out_Keyword()
+    {
+        using var controller = new TestController();
+        IScanner scanner = controller.Scanner;
+
+        var tokens = scanner.ScanTokens(new SourceLine("10 out 255, 1"));
+
+        tokens[0].Type.Should().Be(TokenType.Number);
+        tokens[1].Type.Should().Be(TokenType.Out);
+    }
 }
