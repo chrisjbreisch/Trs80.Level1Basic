@@ -22,7 +22,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Baseline | Level I interpreter with existing command, expression, file, input, and control-flow suites |
 | Recent focus | Type declarations, arrays, numeric precision, Level II built-ins, `CLEAR`, `MID$` assignment, user-defined functions, string-function compatibility, and scanner/parser keyword coverage |
 | Latest implementation commit | `cfc8b9c Add POKE keyword support` |
-| Latest documentation checkpoint | This update: expand the Level II compatibility-program corpus with cursor positions |
+| Latest documentation checkpoint | This update: expand the Level II compatibility-program corpus with false logical results |
 | Validation habit | Run the narrowest affected test first, then the affected test class, then the full project for shared changes |
 
 ## Language Core
@@ -178,6 +178,7 @@ Recent Level II slices, in order:
 99. Expanded the compatibility corpus with `LCASE$`, `TRIM$`, `LTRIM$`, and `RTRIM$` normalization behavior.
 100. Expanded the compatibility corpus with `STR$` numeric conversion and `SPACE$` formatting behavior.
 101. Expanded the compatibility corpus with deterministic `POS` and `CSRLIN` cursor values.
+102. Expanded the compatibility corpus with numeric zero results for false `AND`, `OR`, `NOT`, `XOR`, `EQV`, and `IMP` cases.
 
 ## Next Slice Queue
 

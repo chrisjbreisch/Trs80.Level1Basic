@@ -200,6 +200,22 @@ public class Level2CompatibilityTest
     }
 
     [TestMethod]
+    public void Logical_False_Result_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT 1 AND 0;0 OR 0;NOT 1",
+            "20 PRINT 1 XOR 1;1 EQV 0;1 IMP 0"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0  0  0 ");
+        controller.ReadOutputLine().Should().Be(" 0  0  0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Numeric_Conversion_Compatibility_Program()
     {
         using var controller = new TestController();
