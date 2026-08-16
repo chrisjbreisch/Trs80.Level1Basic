@@ -312,7 +312,7 @@ public class Interpreter : IInterpreter
             case < -999999:
                 return value.ToString("0.######E+00");
             default:
-                return value.ToString("######.######");
+                return value.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
         }
     }
 

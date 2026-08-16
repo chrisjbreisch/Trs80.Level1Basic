@@ -378,6 +378,21 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Preserves_Double_Suffixed_Literal_Precision()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 AB#=1.2345678901234567",
+            "20 PRINT AB#"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1.2345678901234567 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Applies_Two_Character_Rule_To_Integer_Suffix_Variables()
     {
         using var controller = new TestController();

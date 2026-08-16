@@ -212,6 +212,7 @@ Recent Level II slices, in order:
 133. Added explicit single-precision `!` suffix support, so `A!=3.9` preserves the single value.
 134. Added explicit double-precision `#` suffix support, so `A#=1/3` stores a double value.
 135. Verified the first-two-character significance rule for integer-suffixed variables.
+136. Preserved high-precision decimal literals assigned to `#` variables and used round-trip double formatting, so `AB#=1.2345678901234567` retains all digits.
 
 ## Next Slice Queue
 

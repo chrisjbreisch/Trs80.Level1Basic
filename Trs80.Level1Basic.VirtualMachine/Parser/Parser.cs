@@ -738,10 +738,20 @@ public class Parser : IParser
 
         Consume(TokenType.Equal, "Expected assignment.");
 
+        Token valueToken = Peek();
         if (!identifierToken.Lexeme.EndsWith('$')
             || Peek().Type == TokenType.String
             || Peek().Type == TokenType.Identifier)
-            return StatementWrapper(new Let(identifier, Expression()));
+        {
+            Expression initializer = Expression();
+            if (identifierToken.Lexeme.EndsWith('#')
+                && valueToken.Type == TokenType.Number
+                && valueToken.Lexeme.Contains('.'))
+                initializer = new Literal(double.Parse(valueToken.Lexeme,
+                    System.Globalization.CultureInfo.InvariantCulture), null, valueToken.LinePosition);
+
+            return StatementWrapper(new Let(identifier, initializer));
+        }
 
         Expression unquoted = GetUnquotedExpression();
 
