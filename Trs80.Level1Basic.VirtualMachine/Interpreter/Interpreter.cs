@@ -304,10 +304,10 @@ public class Interpreter : IInterpreter
         {
             case 0:
                 return "0";
-            case < .1 and > -.1:
+            case < .01 and > -.01:
                 return value.ToString("0.######E+00");
             case < 1 and > -1:
-                return value.ToString("0.#######");
+                return value.ToString(".#######");
             case > 999999:
             case < -999999:
                 return value.ToString("0.######E+00");
@@ -327,7 +327,7 @@ public class Interpreter : IInterpreter
         {
             case 0:
                 return "0";
-            case < .1f and > -.1f:
+            case < .01f and > -.01f:
                 return value.ToString("0.#####E+00");
             case < 1 and > -1:
                 return value.ToString(".######");

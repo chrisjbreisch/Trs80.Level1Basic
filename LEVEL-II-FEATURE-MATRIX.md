@@ -188,6 +188,7 @@ Recent Level II slices, in order:
 109. Expanded the compatibility corpus with deterministic `SQR(9)` behavior.
 110. Fixed parsing and evaluation of explicit unary plus, so `PRINT +3.12` outputs `3.12` instead of `WHAT?`; added a focused regression test.
 111. Added `?` as a scanner alias for `PRINT`, so `? 3` outputs `3`; added a focused regression test.
+112. Fixed numeric formatting so `0.01` uses fixed `.01` output while `0.001` retains scientific notation; added boundary regressions.
 
 ## Next Slice Queue
 

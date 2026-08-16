@@ -69,6 +69,34 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Uses_Fixed_Format_For_Hundredth()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT 0.01"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" .01 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Uses_Scientific_Format_For_Thousandth()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT 0.001"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1E-03 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_Zero()
     {
         using var controller = new TestController();
