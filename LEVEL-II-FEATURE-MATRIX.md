@@ -197,6 +197,7 @@ Recent Level II slices, in order:
 118. Fixed string-variable assignment expressions, so `N1$=N2$` copies the source variable value.
 119. Enabled string concatenation in assignment expressions, so string variables and literals can be combined with `+`.
 120. Verified the first-two-character significance rule for string variables with `$` suffixes.
+121. Verified the first-two-character significance rule for alphanumeric numeric variables.
 
 ## Next Slice Queue
 
