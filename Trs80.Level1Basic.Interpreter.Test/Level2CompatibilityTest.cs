@@ -421,4 +421,20 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be("CHRIS");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Ranged_Integer_Declaration_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DEFINT A-C",
+            "20 A=1.9:B=2.9:C=3.9",
+            "30 PRINT A;B;C"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1  2  3 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
