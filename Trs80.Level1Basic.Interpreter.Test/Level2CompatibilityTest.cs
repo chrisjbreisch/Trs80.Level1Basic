@@ -64,6 +64,24 @@ public class Level2CompatibilityTest
     }
 
     [TestMethod]
+    public void Llist_Closed_Range_Prints_Only_Selected_Lines()
+    {
+        using var controller = new TestController();
+        controller.ExecuteStatements(new List<string> {
+            "10 PRINT \"TEN\"",
+            "20 PRINT \"TWENTY\"",
+            "30 PRINT \"THIRTY\""
+        });
+
+        controller.ExecuteLine("LLIST 20-20");
+
+        controller.Host.PrintedDocuments.Should().ContainSingle();
+        controller.Host.PrintedDocuments[0].Should().Contain(" 20  PRINT \"TWENTY\"");
+        controller.Host.PrintedDocuments[0].Should().NotContain(" 10  ");
+        controller.Host.PrintedDocuments[0].Should().NotContain(" 30  ");
+    }
+
+    [TestMethod]
     public void Hardware_Statements_Preserve_Graphics_And_Memory_Behavior()
     {
         using var controller = new TestController();
