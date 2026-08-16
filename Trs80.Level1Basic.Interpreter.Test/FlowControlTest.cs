@@ -43,6 +43,26 @@ public class FlowControlTest
     }
 
     [TestMethod]
+    public void Cont_Does_Not_Resume_After_End()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT \"BEFORE\"",
+            "20 END",
+            "30 PRINT \"AFTER\""
+        };
+
+        controller.RunProgram(program);
+        controller.ExecuteLine("CONT");
+
+        controller.ReadOutputLine().Should().Be("BEFORE");
+        controller.IsEndOfRun().Should().BeTrue();
+        controller.ReadOutputLine().Should().BeEmpty();
+        controller.ReadOutputLine().Should().Be("READY");
+        controller.ReadOutputLine().Should().BeNull();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Execute_Gosub()
     {
         using var controller = new TestController();

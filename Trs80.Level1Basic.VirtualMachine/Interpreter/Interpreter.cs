@@ -502,6 +502,7 @@ public class Interpreter : IInterpreter
 
     public Void VisitEndStatement(End statement)
     {
+        _machine.SetNextStatement(null);
         _machine.HaltRun();
 
         return null!;
