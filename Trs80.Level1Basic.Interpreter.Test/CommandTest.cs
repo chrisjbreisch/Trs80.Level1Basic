@@ -134,6 +134,17 @@ public class CommandTest
     }
 
     [TestMethod]
+    public void Parser_Can_Parse_Llist_Command_With_Range()
+    {
+        using var controller = new TestController();
+        var tokens = controller.Scanner.ScanTokens(new SourceLine("LLIST 10-20"));
+
+        var statement = controller.Parser.Parse(tokens).Should().BeOfType<Llist>().Subject;
+
+        statement.EndAtLineNumber.Should().NotBeNull();
+    }
+
+    [TestMethod]
     public void Parser_Can_Parse_Abbreviated_Merge_Command()
     {
         using var controller = new TestController();

@@ -178,6 +178,7 @@ public class Scanner : IScanner
                     {"CLEAR", TokenType.Clear},
                     {"GOSUB", TokenType.Gosub},
                     {"INPUT", TokenType.Input},
+                    {"LLIST", TokenType.Llist},
                     {"MERGE", TokenType.Merge},
                     {"PRINT", TokenType.Print},
                     {"REST.", TokenType.Restore},

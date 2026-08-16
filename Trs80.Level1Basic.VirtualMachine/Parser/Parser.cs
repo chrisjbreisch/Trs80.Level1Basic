@@ -133,6 +133,8 @@ public class Parser : IParser
             return LetStatement();
         if (Match(TokenType.List))
             return ListStatement();
+        if (Match(TokenType.Llist))
+            return LlistStatement();
         if (Match(TokenType.Lprint))
             return LprintStatement();
         if (Match(TokenType.Load))
@@ -593,6 +595,12 @@ public class Parser : IParser
 
         Expression value = !IsAtEnd() ? Expression() : new Literal(0, null, 0);
         return new List(value);
+    }
+
+    private IStatement LlistStatement()
+    {
+        var list = (List)ListStatement();
+        return StatementWrapper(new Llist(list.StartAtLineNumber, list.EndAtLineNumber));
     }
 
     private IStatement RunStatement()

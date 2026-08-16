@@ -143,4 +143,16 @@ public class ScannerTest
         tokens[0].Type.Should().Be(TokenType.Number);
         tokens[1].Type.Should().Be(TokenType.Lprint);
     }
+
+    [TestMethod]
+    public void Scanner_Recognizes_Llist_Keyword()
+    {
+        using var controller = new TestController();
+        IScanner scanner = controller.Scanner;
+
+        var tokens = scanner.ScanTokens(new SourceLine("10 llist"));
+
+        tokens[0].Type.Should().Be(TokenType.Number);
+        tokens[1].Type.Should().Be(TokenType.Llist);
+    }
 }

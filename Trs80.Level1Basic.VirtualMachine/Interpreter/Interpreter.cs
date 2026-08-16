@@ -656,6 +656,11 @@ public class Interpreter : IInterpreter
         return null!;
     }
 
+    public Void VisitLlistStatement(Llist statement)
+    {
+        return null!;
+    }
+
     private int GetStartingLineNumber(Expression startAtLineNumber)
     {
         int lineNumber = -1;
