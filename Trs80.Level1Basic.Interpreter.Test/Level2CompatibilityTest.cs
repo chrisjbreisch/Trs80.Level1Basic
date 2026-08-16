@@ -307,6 +307,20 @@ public class Level2CompatibilityTest
     }
 
     [TestMethod]
+    public void Square_Root_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT SQR(9)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Numeric_Conversion_Compatibility_Program()
     {
         using var controller = new TestController();
