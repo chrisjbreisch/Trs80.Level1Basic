@@ -166,7 +166,13 @@ public class Interpreter : IInterpreter
     public dynamic VisitIdentifierExpression(Identifier expression)
     {
         string name = expression.Name.Lexeme;
-        return _machine.Get(name);
+        dynamic value = _machine.Get(name);
+        if (name.EndsWith('%') && value is int integerValue
+            && (integerValue < short.MinValue || integerValue > short.MaxValue))
+            throw new ValueOutOfRangeException(_program.CurrentStatement.LineNumber,
+                _program.CurrentStatement.SourceLine, "Integer value out of range.");
+
+        return value;
     }
 
     public dynamic VisitLiteralExpression(Literal expression)

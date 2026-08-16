@@ -171,6 +171,23 @@ public class ErrorTest
     }
 
     [TestMethod]
+    public void Interpreter_Reports_Integer_Suffix_Overflow_At_Use()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 AB%=1234567",
+            "20 PRINT AB%"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HOW?");
+        controller.ReadErrorLine().Should().Be("[Integer value out of range.]");
+        controller.ReadOutputLine();
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Handles_Divide_By_Zero_In_Command()
     {
         using var controller = new TestController();
