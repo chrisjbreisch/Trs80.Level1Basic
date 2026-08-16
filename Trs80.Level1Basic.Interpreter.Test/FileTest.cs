@@ -143,6 +143,19 @@ public class FileTest
     }
 
     [TestMethod]
+    public void Cancelling_Save_Preserves_The_Current_Program_Without_A_Success_Message()
+    {
+        using var controller = new TestController();
+        controller.ExecuteLine("10 PRINT \"KEPT\"");
+
+        controller.ExecuteLine("SAVE");
+        controller.ExecuteLine("RUN");
+
+        controller.ReadOutputLine().Should().Be("KEPT");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Uses_File_Save_Dialog_Path_For_Bare_Save()
     {
         string path = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.bas");
