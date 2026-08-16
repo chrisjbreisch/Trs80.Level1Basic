@@ -73,7 +73,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.ReadOutputLine().Should().Be("WHAT?");
         controller.ReadErrorLine().Should().Be(" 20  NEXT C?HRIS");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -406,7 +406,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadOutputLine().Should().Be("?SN ERROR");
         controller.ReadErrorLine().Should().Be(" 20  READ?");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -423,7 +423,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadOutputLine().Should().Be("?SN ERROR");
         controller.ReadErrorLine().Should().Be(" 10  ON A?");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -559,7 +559,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadOutputLine().Should().Be("?SN ERROR");
         controller.ReadErrorLine().Should().Be(" 10  A=MEM?(3)");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -575,7 +575,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadOutputLine().Should().Be("?SN ERROR");
         controller.ReadErrorLine().Should().Be(" 10  A=INT(3?,4)");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -591,7 +591,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadOutputLine().Should().Be("?SN ERROR");
         controller.ReadErrorLine().Should().Be(" 10  A=INT?");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -607,7 +607,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadOutputLine().Should().Be("?SN ERROR");
         controller.ReadErrorLine().Should().Be(" 10  SET(3?)");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();

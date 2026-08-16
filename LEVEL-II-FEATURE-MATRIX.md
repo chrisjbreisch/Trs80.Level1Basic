@@ -251,6 +251,7 @@ Recent Level II slices, in order:
 172. Verified long unquoted DATA strings and semicolon-separated PRINT string expressions after parser recovery changes.
 173. Aligned syntax-error regression expectations with `?SN ERROR` while retaining `WHAT?` for runtime expression/statement errors.
 174. Aligned unknown numeric identifier regressions with Level II default-zero semantics.
+175. Aligned malformed `NEXT`, `READ`, `ON`, and function-argument regressions with Level II `?SN ERROR` diagnostics.
 
 ## Next Slice Queue
 
