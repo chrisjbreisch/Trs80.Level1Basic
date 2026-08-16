@@ -492,4 +492,21 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be("AFTER");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Run_From_Line_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT \"SKIP\"",
+            "20 PRINT \"RUN\""
+        };
+
+        controller.ExecuteLine("NEW");
+        controller.ExecuteStatements(program);
+        controller.ExecuteLine("RUN 20");
+
+        controller.ReadOutputLine().Should().Be("RUN");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
