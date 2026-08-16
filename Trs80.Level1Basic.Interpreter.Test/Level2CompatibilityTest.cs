@@ -62,4 +62,20 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be("AB");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Floating_Binary_Conversion_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT MKS$(CVS(\"ABCD\"))",
+            "20 PRINT MKD$(CVD(\"ABCDEFGH\"))"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("ABCD");
+        controller.ReadOutputLine().Should().Be("ABCDEFGH");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
