@@ -682,4 +682,16 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 20 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Load_Abbreviation_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        controller.ExecuteLine("LO. \"load.bas\"");
+        controller.ExecuteLine("RUN");
+
+        controller.ReadOutputLine().Should().Be("Loaded \"load.bas\".");
+        controller.ReadOutputLine().Should().Be(" 10 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
