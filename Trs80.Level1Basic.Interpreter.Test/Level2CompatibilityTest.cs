@@ -437,4 +437,21 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 1  2  3 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void On_Goto_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 ON 2 GOTO 100,200",
+            "20 PRINT \"DONE\":END",
+            "100 PRINT \"ONE\":END",
+            "200 PRINT \"TWO\":END"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("TWO");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
