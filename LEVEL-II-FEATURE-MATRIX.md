@@ -204,6 +204,7 @@ Recent Level II slices, in order:
 125. Added `^` exponentiation with higher precedence and fractional exponent support; `5^2` outputs `25` and `4^0.5` outputs `2`.
 126. Verified right-associative exponentiation, so `2^3^2` evaluates as `2^(3^2)` and outputs `512`.
 127. Verified exponentiation precedence over multiplication, so `2*3^2` outputs `18`.
+128. Verified exponentiation precedence over division, so `8/2^2` outputs `2`.
 
 ## Next Slice Queue
 
