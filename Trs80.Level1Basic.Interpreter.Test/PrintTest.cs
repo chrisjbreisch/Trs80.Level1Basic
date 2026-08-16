@@ -379,6 +379,21 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Accepts_Single_Suffix_Upper_Bound()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A!=1.7E+38",
+            "20 PRINT A!"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Contain("1.7E+38");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Use_Double_Type_Suffix()
     {
         using var controller = new TestController();

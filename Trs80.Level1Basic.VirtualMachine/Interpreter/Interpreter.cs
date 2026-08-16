@@ -171,6 +171,10 @@ public class Interpreter : IInterpreter
             && (integerValue < short.MinValue || integerValue > short.MaxValue))
             throw new ValueOutOfRangeException(_program.CurrentStatement.LineNumber,
                 _program.CurrentStatement.SourceLine, "Integer value out of range.");
+        if (name.EndsWith('!') && value is float singleValue
+            && Math.Abs(singleValue) > 1.701411E+38f)
+            throw new ValueOutOfRangeException(_program.CurrentStatement.LineNumber,
+                _program.CurrentStatement.SourceLine, "Single value out of range.");
 
         return value;
     }
