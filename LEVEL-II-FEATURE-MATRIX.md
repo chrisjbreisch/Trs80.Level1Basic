@@ -285,6 +285,7 @@ Recent Level II slices, in order:
 206. Defined symmetric 64K address wrapping for `PEEK` and `POKE`, including negative addresses.
 207. Corrected single- and double-precision formatting so ordinary hundredths such as `.07` remain fixed-point.
 208. Verified the same fixed-point formatting for negative single-precision hundredths such as `-.07`.
+209. Verified fixed-point formatting for double-precision hundredths such as `R#=.07`.
 
 ## Next Slice Queue
 

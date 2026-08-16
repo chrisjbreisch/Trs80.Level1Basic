@@ -127,6 +127,21 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Uses_Fixed_Format_For_Double_Seven_Hundredths()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 R#=.07",
+            "20 PRINT R#"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" .07 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Reports_Error_After_Closed_Quote()
     {
         using var controller = new TestController();
