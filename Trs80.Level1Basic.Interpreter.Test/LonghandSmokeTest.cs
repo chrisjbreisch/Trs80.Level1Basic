@@ -38,7 +38,7 @@ public class LonghandSmokeTest
         controller.ExecuteLine("new");
         controller.ExecuteLine("print mem");
 
-        controller.ReadOutputLine().Should().Be(" 15871 ");
+        controller.ReadOutputLine().Should().Be(" 15572 ");
     }
 
     [TestMethod]
@@ -141,7 +141,7 @@ public class LonghandSmokeTest
         controller.ExecuteLine("new");
         controller.ExecuteLine("print mem");
 
-        controller.ReadOutputLine().Should().Be(" 15871 ");
+        controller.ReadOutputLine().Should().Be(" 15572 ");
     }
 
     [TestMethod]

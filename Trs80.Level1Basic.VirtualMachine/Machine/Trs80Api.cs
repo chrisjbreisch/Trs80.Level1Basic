@@ -11,7 +11,7 @@ public class Trs80Api : ITrs80Api
     private readonly IProgram _program;
     private readonly ITrs80 _trs80;
     public const int AdditionalMem = 12 * 1024;
-    public const int BaseMem = 3583;
+    public const int BaseMem = 3284;
     public const int TotalMemory = BaseMem + AdditionalMem;
 
     public Trs80Api(IProgram program, ITrs80 trs80)

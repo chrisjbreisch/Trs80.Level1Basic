@@ -38,7 +38,7 @@ public class ShorthandTest
         controller.ExecuteLine("n.");
         controller.ExecuteLine("print mem");
 
-        controller.ReadOutputLine().Should().Be(" 15871 ");
+        controller.ReadOutputLine().Should().Be(" 15572 ");
     }
 
     [TestMethod]
@@ -142,7 +142,7 @@ public class ShorthandTest
         controller.ExecuteLine("new");
         controller.ExecuteLine("p.m.");
 
-        controller.ReadOutputLine().Should().Be(" 15871 ");
+        controller.ReadOutputLine().Should().Be(" 15572 ");
     }
 
     [TestMethod]

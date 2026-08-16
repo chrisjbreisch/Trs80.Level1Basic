@@ -511,7 +511,7 @@ public class CommandTest
 
         controller.ExecuteStatements(statements);
 
-        controller.ReadOutputLine().Should().Be(" 15871 ");
+        controller.ReadOutputLine().Should().Be(" 15572 ");
     }
 
     [TestMethod]
@@ -526,7 +526,7 @@ public class CommandTest
 
         controller.ExecuteStatements(statements);
 
-        controller.ReadOutputLine().Should().Be(" 15861 ");
+        controller.ReadOutputLine().Should().Be(" 15564 ");
     }
 
     [TestMethod]
@@ -542,7 +542,7 @@ public class CommandTest
 
         controller.ExecuteStatements(statements);
 
-        controller.ReadOutputLine().Should().Be(" 15809 ");
+        controller.ReadOutputLine().Should().Be(" 15511 ");
     }
 
     [TestMethod]
