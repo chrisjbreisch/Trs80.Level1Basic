@@ -302,6 +302,7 @@ Recent Level II slices, in order:
 223. Made `InputCommand` honor the workflow `WritePrompt` setting while preserving numbered `AUTO` prompts.
 224. Made Pause/Break exit interactive `AUTO` mode without submitting the current line.
 225. Added direct `InputCommand` coverage for the Pause/Break `AUTO` exit path.
+226. Added direct `InputCommand` coverage for AUTO source-line progression from 10 to 20.
 
 ## Next Slice Queue
 

@@ -60,6 +60,43 @@ public class CommandTest
     }
 
     [TestMethod]
+    public void Input_Command_Auto_Advances_Numbered_Source_Lines()
+    {
+        using var controller = new TestController();
+        var history = new LineEditorHistory();
+        var auto = new AutoLineNumbering();
+        IProgram program = new BasicProgram(controller.Scanner, controller.Parser);
+        var command = new InputCommand(controller.Trs80, history, auto, program);
+        var firstModel = new InputModel();
+        var secondModel = new InputModel();
+        auto.Start();
+
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('P', ConsoleKey.P, false, false, false));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('R', ConsoleKey.R, false, false, false));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('I', ConsoleKey.I, false, false, false));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('N', ConsoleKey.N, false, false, false));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('T', ConsoleKey.T, false, false, false));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo(' ', ConsoleKey.Spacebar, false, false, false));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('1', ConsoleKey.D1, false, false, false));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false));
+        command.Execute(firstModel);
+
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('P', ConsoleKey.P, false, false, false));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('R', ConsoleKey.R, false, false, false));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('I', ConsoleKey.I, false, false, false));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('N', ConsoleKey.N, false, false, false));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('T', ConsoleKey.T, false, false, false));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo(' ', ConsoleKey.Spacebar, false, false, false));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('2', ConsoleKey.D2, false, false, false));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false));
+        command.Execute(secondModel);
+
+        firstModel.SourceLine.Line.Should().Be("10 PRINT 1");
+        secondModel.SourceLine.Line.Should().Be("20 PRINT 2");
+        auto.IsActive.Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Delete_A_Line_Range_With_Delete_Command()
     {
         using var controller = new TestController();
