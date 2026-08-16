@@ -301,6 +301,7 @@ Recent Level II slices, in order:
 222. Restored the initial interactive prompt and made blank input scanner-safe by returning an empty `SourceLine`.
 223. Made `InputCommand` honor the workflow `WritePrompt` setting while preserving numbered `AUTO` prompts.
 224. Made Pause/Break exit interactive `AUTO` mode without submitting the current line.
+225. Added direct `InputCommand` coverage for the Pause/Break `AUTO` exit path.
 
 ## Next Slice Queue
 

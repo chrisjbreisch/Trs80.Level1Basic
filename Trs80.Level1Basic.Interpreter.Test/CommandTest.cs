@@ -1,11 +1,15 @@
+using System;
 using System.Collections.Generic;
 
 using FluentAssertions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using Trs80.Level1Basic.Command.Commands;
+using Trs80.Level1Basic.CommandModels;
 using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.TestUtilities;
+using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
 
@@ -29,6 +33,30 @@ public class CommandTest
 
         controller.ReadOutputLine().Should().Be(" 20 ");
         controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Input_Command_Exits_Auto_On_Pause_Break()
+    {
+        using var controller = new TestController();
+        var history = new LineEditorHistory();
+        var auto = new AutoLineNumbering();
+        IProgram program = new BasicProgram(controller.Scanner, controller.Parser);
+        var command = new InputCommand(controller.Trs80, history, auto, program);
+        var model = new InputModel { WritePrompt = true };
+
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('A', ConsoleKey.A, false, false, false));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('U', ConsoleKey.U, false, false, false));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('T', ConsoleKey.T, false, false, false));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('O', ConsoleKey.O, false, false, false));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('\0', ConsoleKey.Pause, false, false, false));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false));
+
+        command.Execute(model);
+
+        auto.IsActive.Should().BeFalse();
+        model.SourceLine.Line.Should().BeEmpty();
     }
 
     [TestMethod]
