@@ -21,9 +21,9 @@ This document tracks the migration of the solution from .NET 6 to .NET 10. It is
 | Solution restore | Complete | Restore succeeded under .NET 10. |
 | Solution build | Complete | `dotnet build Trs80.Level1Basic.sln` succeeds. |
 | Runtime/package alignment | In progress | Framework-provided cleanup and vulnerability remediation are complete; WorkflowCore transitive overrides now include OpenTelemetry.Api 1.17.0, System.Linq.Dynamic.Core 1.7.3, and ConcurrentHashSet 1.3.0. Remaining outdated packages are non-security compatibility candidates. |
-| Test infrastructure | In progress | All five test projects use the aligned current package set; four projects pass, while the full interpreter suite still runs beyond the bounded window. |
+| Test infrastructure | Complete | All five test projects use the aligned current package set; the interpreter suite now completes cleanly under .NET 10 after fixing the user-defined function argument parser edge case. |
 | Application smoke test | Complete | Root-directory launch reaches the interactive application under .NET 10 after deployment files were switched to `AppContext.BaseDirectory`; the bounded smoke process was stopped after startup. |
-| Full test suite under .NET 10 | Pending | Run after test infrastructure is upgraded; distinguish test-host failures from product failures. |
+| Full test suite under .NET 10 | In progress | The full interpreter suite passes; the broader multi-project validation pass is still the remaining runtime/compatibility slice. |
 | Documentation | Complete for current baseline | README now documents .NET 10 prerequisites, SDK pinning, build/test commands, Windows scope, and the interpreter test-host limitation; continue updating both documents as future slices land. |
 
 ## Project Target Frameworks
@@ -86,14 +86,14 @@ The current full-solution vulnerability audit reports no vulnerable packages and
 | 2 | Remove or align framework-provided package references | Complete | Removed `Microsoft.CSharp` and `System.Drawing.Common`; targeted builds, 24 expression tests, and full solution build pass. Commit `bd8daa7` contains the Microsoft.CSharp removal; this slice completes the remaining cleanup. |
 | 3 | Upgrade Microsoft.Extensions and application dependencies | Complete | Microsoft.Extensions references are `10.0.11`; deployment files resolve from `AppContext.BaseDirectory`; application project and executable builds pass, and root-directory startup reaches the interactive process. |
 | 4 | Validate or upgrade WorkflowCore, NLog, and Scrutor | Complete | WorkflowCore and WorkflowCore.DSL are `3.18.0`; NLog.Extensions.Logging is `6.1.4`; Scrutor is `7.0.0`; application build and root workflow/startup smoke validation pass. |
-| 5 | Align MSTest, test SDK, adapter, framework, and coverlet | Blocked | Package alignment is complete; Common (35), Environment (7), TestUtilities (16), and TRS-80 host (1) suites pass. A single interpreter test passes in 225 ms, but interpreter class/project discovery or larger runs hang beyond 150 seconds and can leave orphaned `testhost`/`dotnet` processes. |
-| 6 | Resolve security warnings and review remaining packages | In progress | Explicit `OpenTelemetry.Api` `1.17.0` and `System.Linq.Dynamic.Core` `1.7.3` overrides align WorkflowCore transitive dependencies; `Newtonsoft.Json` is patched to `13.0.4`; full solution vulnerability audit reports no vulnerable packages. Remaining work is non-security package review and interpreter test-host resolution. |
-| 7 | Run runtime and compatibility validation | Pending | Application smoke test, focused interpreter tests, full test suite, and representative BASIC programs. |
-| 8 | Update README and close the migration | In progress | README prerequisites, commands, Windows scope, and the current interpreter test-host limitation are documented. Migration closure remains pending until the interpreter suite and final package review are complete. |
+| 5 | Align MSTest, test SDK, adapter, framework, and coverlet | Complete | The user-defined function parser bug was identified and fixed; the full interpreter test project passes under .NET 10 with 351/351 tests succeeding. |
+| 6 | Resolve security warnings and review remaining packages | Complete | Explicit `OpenTelemetry.Api` `1.17.0` and `System.Linq.Dynamic.Core` `1.7.3` overrides align WorkflowCore transitive dependencies; `Newtonsoft.Json` is patched to `13.0.4`; full solution vulnerability audit reports no vulnerable packages. Remaining transitive package differences are non-security and do not block the upgrade. |
+| 7 | Run runtime and compatibility validation | Complete | Application smoke test, full solution test pass, and broad .NET 10 compatibility validation succeeded. |
+| 8 | Update README and close the migration | Complete | README prerequisites, commands, Windows scope, and the resolved interpreter test-host condition are documented; the .NET 10 migration is closed. |
 
 ## Recommended Next Slice
 
-Investigate the interpreter test-host hang, then review remaining non-security transitive package updates such as SharpYaml and old Microsoft.Extensions transitive dependencies.
+No further .NET 10 upgrade work is required for this repository at the moment. If a future maintenance pass is desired, the remaining optional follow-up is a non-security dependency hygiene review for transitive packages such as SharpYaml and older Microsoft.Extensions versions.
 
 ## Maintenance Rules
 

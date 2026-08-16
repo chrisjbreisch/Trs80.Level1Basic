@@ -21,9 +21,9 @@ dotnet test .\Trs80.Level1Basic.TestUtilities.Test\Trs80.Level1Basic.TestUtiliti
 dotnet test .\Trs80.Level1Basic.Trs80.Test\Trs80.Level1Basic.Trs80.Test.csproj --no-restore
 ```
 
-The interpreter test project builds under .NET 10 and individual tests pass, but larger class or
-project runs can exceed the expected duration and leave an orphaned test host. Treat those runs
-as a test-infrastructure issue until the runner behavior is isolated.
+The full interpreter test project passes under .NET 10. This includes the broader interpreter suite
+and the previously identified user-defined function parser edge case that could leave the test host
+in a bad state during longer runs.
 
 ## Why?
 

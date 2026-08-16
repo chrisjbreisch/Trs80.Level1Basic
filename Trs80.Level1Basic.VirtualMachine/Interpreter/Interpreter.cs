@@ -404,6 +404,11 @@ public class Interpreter : IInterpreter
         return null!;
     }
 
+    public Void VisitBeepStatement(Beep statement)
+    {
+        return null!;
+    }
+
     public Void VisitClearStatement(Clear statement)
     {
         _machine.Initialize();

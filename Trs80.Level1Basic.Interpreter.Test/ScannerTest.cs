@@ -94,4 +94,17 @@ public class ScannerTest
         tokens[2].Lexeme.Should().Be("ATN");
         tokens[3].Type.Should().Be(TokenType.LeftParen);
     }
+
+    [TestMethod]
+    public void Scanner_Recognizes_Beep_Keyword()
+    {
+        using var controller = new TestController();
+        IScanner scanner = controller.Scanner;
+
+        var tokens = scanner.ScanTokens(new SourceLine("10 beep"));
+
+        tokens[0].Type.Should().Be(TokenType.Number);
+        tokens[1].Type.Should().Be(TokenType.Beep);
+        tokens[2].Type.Should().Be(TokenType.EndOfLine);
+    }
 }

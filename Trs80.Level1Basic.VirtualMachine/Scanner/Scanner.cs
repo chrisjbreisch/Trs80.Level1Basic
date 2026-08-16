@@ -149,6 +149,7 @@ public class Scanner : IScanner
             {
                 4, new Dictionary<string, TokenType>
                 {
+                    {"BEEP", TokenType.Beep},
                     {"CONT", TokenType.Cont},
                     {"DATA", TokenType.Data},
                     {"DEFD", TokenType.DefDbl},

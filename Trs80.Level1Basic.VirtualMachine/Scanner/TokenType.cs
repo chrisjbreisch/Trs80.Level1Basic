@@ -30,6 +30,7 @@ public enum TokenType
     A,
     And,
     At,
+    Beep,
     Clear,
     Cls,
     Cont,

@@ -8,6 +8,7 @@ namespace Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 
 public interface IVisitor<out T>
 {
+    T VisitBeepStatement(Beep statement);
     T VisitClearStatement(Clear statement);
     T VisitClsStatement(Cls statement);
     T VisitCompoundStatement(Compound statement);

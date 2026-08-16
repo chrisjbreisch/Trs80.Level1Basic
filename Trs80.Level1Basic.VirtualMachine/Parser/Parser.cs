@@ -99,6 +99,8 @@ public class Parser : IParser
     {
         if (IsDefFunction())
             return DefFunctionStatement();
+        if (Match(TokenType.Beep))
+            return BeepStatement();
         if (Match(TokenType.Clear))
             return ClearStatement();
         if (IsMidAssignment())
@@ -225,6 +227,11 @@ public class Parser : IParser
     private IStatement ClearStatement()
     {
         return StatementWrapper(new Clear());
+    }
+
+    private IStatement BeepStatement()
+    {
+        return StatementWrapper(new Beep());
     }
 
     private bool IsMidAssignment()
@@ -943,8 +950,15 @@ public class Parser : IParser
     private Expression FinishUserCall(Token name)
     {
         var arguments = new List<Expression>();
+
         if (!Check(TokenType.RightParen))
-            arguments.Add(Expression());
+        {
+            do
+            {
+                arguments.Add(Expression());
+            }
+            while (Match(TokenType.Comma));
+        }
 
         Consume(TokenType.RightParen, "Expected ')' after function arguments.");
         return new Call(name.Lexeme, arguments, name.LinePosition);
