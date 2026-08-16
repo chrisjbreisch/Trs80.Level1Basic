@@ -253,6 +253,7 @@ Recent Level II slices, in order:
 174. Aligned unknown numeric identifier regressions with Level II default-zero semantics.
 175. Aligned malformed `NEXT`, `READ`, `ON`, and function-argument regressions with Level II `?SN ERROR` diagnostics.
 176. Aligned PRINT recovery and invalid-character regressions with Level II partial output and `?SN ERROR` diagnostics.
+177. Stabilized the full `ErrorTest` baseline for Level II syntax labels, typed overflow labels, and diagnostic ordering.
 
 ## Next Slice Queue
 

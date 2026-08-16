@@ -190,6 +190,7 @@ public class ErrorTest
         controller.RunProgram(program);
 
         controller.ReadOutputLine().Should().Be("?OV ERROR");
+        controller.ReadErrorLine().Should().Be(" 20  PRINT AB%?");
         controller.ReadErrorLine().Should().Be("[Integer value out of range.]");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -207,6 +208,7 @@ public class ErrorTest
         controller.RunProgram(program);
 
         controller.ReadOutputLine().Should().Be("?OV ERROR");
+        controller.ReadErrorLine().Should().Be(" 20  PRINT AB%?");
         controller.ReadErrorLine().Should().Be("[Integer value out of range.]");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -223,7 +225,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("HOW?");
+        controller.ReadOutputLine().Should().Be("?OV ERROR");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -238,7 +240,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("HOW?");
+        controller.ReadOutputLine().Should().Be("?OV ERROR");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -439,7 +441,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadOutputLine().Should().Be("?SN ERROR");
         controller.ReadErrorLine().Should().Be(" 10  A?");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -456,7 +458,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadOutputLine().Should().Be("?SN ERROR");
         controller.ReadErrorLine().Should().Be(" 20  NEXT?");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -473,7 +475,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadOutputLine().Should().Be("?SN ERROR");
         controller.ReadErrorLine().Should().Be(" 10  FOR ?3 = 1 TO 10");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -490,7 +492,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadOutputLine().Should().Be("?SN ERROR");
         controller.ReadErrorLine().Should().Be(" 20  NEXT ?3");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -528,7 +530,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadOutputLine().Should().Be("?SN ERROR");
         controller.ReadErrorLine().Should().Be(" 20  IF A = 1 ?100");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -544,7 +546,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadOutputLine().Should().Be("?SN ERROR");
         controller.ReadErrorLine().Should().Be(" 10  LET ?3=4");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -625,7 +627,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadOutputLine().Should().Be("?SN ERROR");
         controller.ReadErrorLine().Should().Be(" 10  ?+");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -667,7 +669,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadOutputLine().Should().Be("?SN ERROR");
         controller.ReadErrorLine().Should().Be(" 10  ON A ?100, 200, 300");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
