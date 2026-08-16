@@ -169,6 +169,7 @@ public class Scanner : IScanner
                     {"STEP", TokenType.Step},
                     {"STOP", TokenType.Stop},
                     {"THEN", TokenType.Then},
+                    {"WAIT", TokenType.Wait},
                 }
             },
             {

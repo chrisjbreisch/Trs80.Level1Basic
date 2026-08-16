@@ -22,7 +22,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Baseline | Level I interpreter with existing command, expression, file, input, and control-flow suites |
 | Recent focus | Type declarations, arrays, numeric precision, Level II built-ins, `CLEAR`, `MID$` assignment, user-defined functions, string-function compatibility, and scanner/parser keyword coverage |
 | Latest implementation commit | `0d100c3 Add OUT keyword support` |
-| Latest documentation checkpoint | This update: complete the `OUT` scanner/parser slice |
+| Latest documentation checkpoint | This update: complete the `WAIT` scanner/parser slice |
 | Validation habit | Run the narrowest affected test first, then the affected test class, then the full project for shared changes |
 
 ## Language Core
@@ -60,7 +60,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Data statements | Implemented | `DATA`, `READ`, and `RESTORE` exist. | Add mixed-type, exhaustion, and `CLEAR` interaction cases. Existing anchor: `DataTest`. |
 | Console input/output | Implemented | `INPUT`, `PRINT`, `TAB`, `SPC`, and cursor-related behavior exist. | Audit formatting, commas/semicolons, input errors, and Level II line-width behavior. Existing anchors: `InputTest`, `PrintTest`, `NativeFunctionTest`. |
 | Hardware statements | Partial | `SET`, `RESET`, `POKE`, and related APIs exist as host-machine abstractions. | Specify whether each operation is emulated, approximated, rejected, or intentionally unavailable. |
-| Remaining Level II commands | Partial | `BEEP` and `OUT` are recognized by the scanner and parser with focused coverage; `BEEP` remains silent pending host-audio modeling, and `OUT` remains silent pending a port-hardware policy. The parser statement dispatch is centralized in `Parser.Statement()`. | Compare the scanner keyword table and parser dispatch with the manual, then implement one command family per slice. Define audio and port-hardware policies before adding runtime output for these commands. |
+| Remaining Level II commands | Partial | `BEEP`, `OUT`, and `WAIT` are recognized by the scanner and parser with focused coverage; `BEEP` remains silent pending host-audio modeling, while `OUT` and `WAIT` remain silent pending port-hardware policies. The parser statement dispatch is centralized in `Parser.Statement()`. | Compare the scanner keyword table and parser dispatch with the manual, then implement one command family per slice. Define audio and port-hardware policies before adding runtime behavior for these commands. |
 
 ## Runtime and Compatibility
 
@@ -112,6 +112,7 @@ Recent Level II slices, in order:
 33. Added the `MKD$` pure built-in for eight-byte double-to-string conversion.
 34. Added scanner, parser, and statement dispatch support for the `BEEP` keyword with focused scanner coverage; runtime audio remains intentionally silent pending a host-audio policy.
 35. Added scanner, parser, and statement dispatch support for the `OUT port, value` keyword form with focused scanner and parser coverage; runtime port output remains intentionally silent pending a hardware policy.
+36. Added scanner, parser, and statement dispatch support for the `WAIT port, mask[, invert]` keyword form with focused scanner and parser coverage; runtime port polling remains intentionally silent pending a hardware policy.
 
 ## Next Slice Queue
 

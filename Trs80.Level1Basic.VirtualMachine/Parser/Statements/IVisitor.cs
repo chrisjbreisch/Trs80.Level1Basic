@@ -43,4 +43,5 @@ public interface IVisitor<out T>
     T VisitSaveStatement(Save statement);
     T VisitStatementExpressionStatement(StatementExpression statement);
     T VisitStopStatement(Stop statement);
+    T VisitWaitStatement(Wait statement);
 }

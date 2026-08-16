@@ -147,6 +147,8 @@ public class Parser : IParser
             return OnStatement();
         if (Match(TokenType.Out))
             return OutStatement();
+        if (Match(TokenType.Wait))
+            return WaitStatement();
         if (Match(TokenType.Print))
             return PrintStatement();
         if (Match(TokenType.Read))
@@ -381,6 +383,18 @@ public class Parser : IParser
         Consume(TokenType.Comma, "Expected ',' after OUT port.");
         Expression value = Expression();
         return StatementWrapper(new Out(port, value));
+    }
+
+    private IStatement WaitStatement()
+    {
+        Expression port = Expression();
+        Consume(TokenType.Comma, "Expected ',' after WAIT port.");
+        Expression mask = Expression();
+        Expression invert = null;
+        if (Match(TokenType.Comma))
+            invert = Expression();
+
+        return StatementWrapper(new Wait(port, mask, invert));
     }
 
     private IStatement StatementWrapper(IStatement statement)

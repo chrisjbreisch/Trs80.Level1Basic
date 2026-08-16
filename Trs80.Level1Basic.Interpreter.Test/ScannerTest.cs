@@ -119,4 +119,16 @@ public class ScannerTest
         tokens[0].Type.Should().Be(TokenType.Number);
         tokens[1].Type.Should().Be(TokenType.Out);
     }
+
+    [TestMethod]
+    public void Scanner_Recognizes_Wait_Keyword()
+    {
+        using var controller = new TestController();
+        IScanner scanner = controller.Scanner;
+
+        var tokens = scanner.ScanTokens(new SourceLine("10 wait 255, 1, 2"));
+
+        tokens[0].Type.Should().Be(TokenType.Number);
+        tokens[1].Type.Should().Be(TokenType.Wait);
+    }
 }

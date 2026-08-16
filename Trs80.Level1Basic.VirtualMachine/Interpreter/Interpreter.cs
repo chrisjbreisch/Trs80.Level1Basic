@@ -920,4 +920,9 @@ public class Interpreter : IInterpreter
     {
         return null!;
     }
+
+    public Void VisitWaitStatement(Wait statement)
+    {
+        return null!;
+    }
 }

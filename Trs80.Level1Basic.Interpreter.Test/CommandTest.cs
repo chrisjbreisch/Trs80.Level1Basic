@@ -114,6 +114,17 @@ public class CommandTest
     }
 
     [TestMethod]
+    public void Parser_Can_Parse_Wait_Command_With_Optional_Invert_Mask()
+    {
+        using var controller = new TestController();
+        var tokens = controller.Scanner.ScanTokens(new SourceLine("WAIT 255, 1, 2"));
+
+        var statement = controller.Parser.Parse(tokens).Should().BeOfType<Wait>().Subject;
+
+        statement.Invert.Should().NotBeNull();
+    }
+
+    [TestMethod]
     public void Parser_Can_Parse_Abbreviated_Merge_Command()
     {
         using var controller = new TestController();

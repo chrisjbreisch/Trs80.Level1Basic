@@ -74,6 +74,7 @@ public enum TokenType
     T,
     Then,
     To,
+    Wait,
     Xor,
 
     // EOL
