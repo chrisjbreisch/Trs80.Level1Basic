@@ -132,6 +132,8 @@ public class InputCommand : ICommand<InputModel>
         var buffer = new LineEditorBuffer(initialText);
         if (buffer.Length > 0)
             RedrawLine(buffer, prompt);
+        else
+            _trs80.Write(prompt);
 
         while (true)
         {
@@ -152,7 +154,7 @@ public class InputCommand : ICommand<InputModel>
                 buffer.Clear();
                 RedrawLine(buffer, prompt);
                 cancelled = true;
-                return new SourceLine();
+                return new SourceLine { Line = string.Empty, Original = string.Empty };
             }
             else if (key.Key == ConsoleKey.U && key.Modifiers.HasFlag(ConsoleModifiers.Control))
                 buffer.Clear();
@@ -180,7 +182,7 @@ public class InputCommand : ICommand<InputModel>
         string line = new(original.Select(Upper).ToArray());
         _history.Add(original);
         return original.Length <= 0
-            ? new SourceLine()
+            ? new SourceLine { Line = string.Empty, Original = string.Empty }
             : new SourceLine
             {
                 Line = line,
