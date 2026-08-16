@@ -61,6 +61,19 @@ public class FileTest
     }
 
     [TestMethod]
+    public void Cancelling_Load_Preserves_The_Current_Program()
+    {
+        using var controller = new TestController();
+        controller.ExecuteLine("10 PRINT \"KEPT\"");
+
+        controller.ExecuteLine("LOAD");
+        controller.ExecuteLine("RUN");
+
+        controller.ReadOutputLine().Should().Be("KEPT");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Uses_File_Open_Dialog_Path_For_Bare_Load()
     {
         using var controller = new TestController();

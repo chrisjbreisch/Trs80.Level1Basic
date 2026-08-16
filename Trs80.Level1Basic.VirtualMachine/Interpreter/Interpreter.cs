@@ -771,7 +771,6 @@ public class Interpreter : IInterpreter
 
     public Void VisitLoadStatement(Load statement)
     {
-        _machine.NewProgram();
         if (statement.Path is not Literal literalPath)
             throw new ParseException(statement.LineNumber, statement.SourceLine,
                 statement.Path.LinePosition, "Path must be a quoted string.");
@@ -782,6 +781,7 @@ public class Interpreter : IInterpreter
 
         if (string.IsNullOrEmpty(path)) return null!;
 
+    _machine.NewProgram();
         _machine.LoadProgram(path);
         _trs80.WriteLine($"Loaded \"{path}\".");
 
