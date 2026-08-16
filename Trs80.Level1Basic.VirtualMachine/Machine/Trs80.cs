@@ -108,6 +108,7 @@ public class Trs80 : ITrs80
     }
 
     public ConsoleKeyInfo ReadKey() => _host.ReadKey();
+    public bool TryReadKey(out ConsoleKeyInfo key) => _host.TryReadKey(out key);
     public void InitializeWindow()
     {
         SetCurrentFont(new HostFont { FontName = _appSettings.FontName, FontSize = _appSettings.FontSize });

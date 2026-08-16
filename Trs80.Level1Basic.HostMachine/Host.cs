@@ -283,6 +283,18 @@ public class Host : IHost, IDisposable
         return Console.ReadKey();
     }
 
+    public bool TryReadKey(out ConsoleKeyInfo key)
+    {
+        if (!Console.KeyAvailable)
+        {
+            key = default;
+            return false;
+        }
+
+        key = Console.ReadKey(true);
+        return true;
+    }
+
     public void SetWindowSize(int width, int height)
     {
         if (!OperatingSystem.IsWindows()) return;

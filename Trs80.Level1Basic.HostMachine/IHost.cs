@@ -13,6 +13,7 @@ public interface IHost
     void Clear();
     void Beep();
     ConsoleKeyInfo ReadKey();
+    bool TryReadKey(out ConsoleKeyInfo key);
     void SetWindowSize(int width, int height);
     void SetBufferSize(int width, int height);
     void Fill(int x, int y, int width, int height);

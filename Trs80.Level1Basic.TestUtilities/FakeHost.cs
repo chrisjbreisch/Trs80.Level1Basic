@@ -1,4 +1,5 @@
 ﻿using Trs80.Level1Basic.HostMachine;
+using System.Collections.Generic;
 
 namespace Trs80.Level1Basic.TestUtilities;
 
@@ -11,6 +12,7 @@ public class FakeHost : IHost
     private readonly bool[,] _screen = new bool[ScreenPixelWidth, ScreenPixelHeight];
     private int _cursorX;
     private int _cursorY;
+    private readonly Queue<ConsoleKeyInfo> _queuedKeys = new();
 
     public int BeepCount { get; private set; }
     public List<string> PrintedDocuments { get; } = new();
@@ -60,7 +62,24 @@ public class FakeHost : IHost
 
     public ConsoleKeyInfo ReadKey()
     {
-        return new ConsoleKeyInfo();
+        return _queuedKeys.Count > 0 ? _queuedKeys.Dequeue() : new ConsoleKeyInfo();
+    }
+
+    public bool TryReadKey(out ConsoleKeyInfo key)
+    {
+        if (_queuedKeys.Count == 0)
+        {
+            key = default;
+            return false;
+        }
+
+        key = _queuedKeys.Dequeue();
+        return true;
+    }
+
+    public void EnqueueKey(ConsoleKeyInfo key)
+    {
+        _queuedKeys.Enqueue(key);
     }
 
     public void SetWindowSize(int width, int height)

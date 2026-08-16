@@ -263,7 +263,10 @@ public class Trs80Api : ITrs80Api
 
     public string InKey()
     {
-        return string.Empty;
+        if (!_trs80.TryReadKey(out ConsoleKeyInfo key) || char.IsControl(key.KeyChar))
+            return string.Empty;
+
+        return key.KeyChar.ToString().ToUpperInvariant();
     }
 
     public string InputString(int length)

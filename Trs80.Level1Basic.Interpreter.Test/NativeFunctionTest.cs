@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -696,6 +697,21 @@ public class NativeFunctionTest
         controller.RunProgram(program);
 
         controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Read_Available_Inkey_Character()
+    {
+        using var controller = new TestController();
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('a', ConsoleKey.A, false, false, false));
+        var program = new List<string> {
+            "10 PRINT INKEY$"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("A");
         controller.IsEndOfRun().Should().BeTrue();
     }
 

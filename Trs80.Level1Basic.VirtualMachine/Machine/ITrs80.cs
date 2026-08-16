@@ -27,5 +27,6 @@ public interface ITrs80
     HostFont GetCurrentFont();
     void SetCurrentFont(HostFont font);
     ConsoleKeyInfo ReadKey();
+    bool TryReadKey(out ConsoleKeyInfo key);
     void InitializeWindow();
 }
