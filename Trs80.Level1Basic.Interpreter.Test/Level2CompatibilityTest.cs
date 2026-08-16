@@ -339,4 +339,21 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 42 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Typed_String_Array_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DEFSTR A",
+            "20 DIM A$(2)",
+            "30 A$(1)=\"HELLO\"",
+            "40 PRINT A$(1);A$(2)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HELLO");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
