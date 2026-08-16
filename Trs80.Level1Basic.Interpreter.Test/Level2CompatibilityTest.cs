@@ -243,4 +243,18 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be("NAME?HELLO, CHRIS");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Date_And_Time_Shape_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT LEN(DATE$);LEN(TIME$)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 8  8 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
