@@ -203,7 +203,7 @@ public class Interpreter : IInterpreter
             return IsTruthy(right) ? 0 : 1;
 
         CheckNumericOperand(expression.UnaryOperator, right);
-        return -1 * right;
+        return expression.UnaryOperator.Type == TokenType.Plus ? right : -1 * right;
     }
 
     private void CheckNumericOperand(Token operatorType, dynamic operand)

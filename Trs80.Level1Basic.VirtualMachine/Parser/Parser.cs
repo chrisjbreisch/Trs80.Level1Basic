@@ -969,7 +969,7 @@ public class Parser : IParser
             return new Unary(operatorType, right, operatorType.LinePosition);
         }
 
-        if (!Match(TokenType.Minus)) return Call();
+        if (!Match(TokenType.Minus, TokenType.Plus)) return Call();
 
         Token operatorType2 = Previous();
         Expression right2 = Unary();

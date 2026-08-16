@@ -41,6 +41,20 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Print_Positive_Unary_Number()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT +3.12"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3.12 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_Zero()
     {
         using var controller = new TestController();

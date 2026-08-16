@@ -22,7 +22,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Baseline | Level I interpreter with existing command, expression, file, input, and control-flow suites |
 | Recent focus | Type declarations, arrays, numeric precision, Level II built-ins, `CLEAR`, `MID$` assignment, user-defined functions, string-function compatibility, and scanner/parser keyword coverage |
 | Latest implementation commit | `cfc8b9c Add POKE keyword support` |
-| Latest documentation checkpoint | This update: expand the Level II compatibility-program corpus with square root |
+| Latest documentation checkpoint | This update: support explicit unary plus in numeric expressions |
 | Validation habit | Run the narrowest affected test first, then the affected test class, then the full project for shared changes |
 
 ## Language Core
@@ -186,6 +186,7 @@ Recent Level II slices, in order:
 107. Expanded the compatibility corpus with deterministic zero-angle `SIN`, `COS`, and `TAN` behavior.
 108. Expanded the compatibility corpus with deterministic `LOG(1)` and `EXP(0)` behavior.
 109. Expanded the compatibility corpus with deterministic `SQR(9)` behavior.
+110. Fixed parsing and evaluation of explicit unary plus, so `PRINT +3.12` outputs `3.12` instead of `WHAT?`; added a focused regression test.
 
 ## Next Slice Queue
 
