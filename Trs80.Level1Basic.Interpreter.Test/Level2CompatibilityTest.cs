@@ -874,4 +874,22 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be("377");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void String_Normalization_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT LCASE$(\"HELLO\")",
+            "20 PRINT TRIM$(\"  HELLO  \" )",
+            "30 PRINT LTRIM$(\"  HELLO\");RTRIM$(\"HELLO  \" )"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("hello");
+        controller.ReadOutputLine().Should().Be("HELLO");
+        controller.ReadOutputLine().Should().Be("HELLOHELLO");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
