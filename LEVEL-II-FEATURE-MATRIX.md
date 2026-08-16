@@ -49,7 +49,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Math functions | Implemented | `SQR`, `SIN`, `COS`, `TAN`, `ATN`, `LOG`, and `EXP` are registered and callable. | Confirm domain errors, precision, and Level II output expectations. |
 | Random numbers | Partial | One- and zero-argument `RND` exist; numeric controls are truncated to integer controls; negative controls reseed the generator deterministically and repeat the seeded first value; zero control repeats the last generated value after initialization. | Verify the remaining manual boundary cases. |
 | Keyboard/input functions | Partial | `INPUT$` remains length-bounded input and returns available characters without padding at end-of-input; `INKEY$` performs a non-blocking host key probe, normalizes printable input to uppercase, and returns available control characters. Extended keys with no character payload intentionally remain empty. | Define any TRS-80-specific extended-key encoding and verify interaction with `INPUT`. |
-| Memory/display functions | Partial | `PEEK`, `POKE`, `MEM`, `FRE`, `POS`, `CSRLIN`, `POINT`, `SPC`, and `TAB` exist; memory addresses wrap across the bounded 64K host memory, including negative addresses. | Document cursor behavior and unsupported hardware assumptions. |
+| Memory/display functions | Partial | `PEEK`, `POKE`, `MEM`, `FRE`, `POS`, `CSRLIN`, `POINT`, `SPC`, and `TAB` exist; memory addresses wrap symmetrically across the bounded 64K host memory for negative and positive out-of-range addresses. | Document cursor behavior and unsupported hardware assumptions. |
 | Remaining Level II functions | Partial | The native-function registry is centralized in `NativeFunctions`; `CVI`, `CVS`, `CVD`, `MKI$`, `MKS$`, and `MKD$` are now registered and covered for valid little-endian binary conversion. | Build an authoritative manual checklist and add one focused test for every remaining missing function. |
 
 ## Statements and Commands
@@ -321,6 +321,7 @@ Recent Level II slices, in order:
 242. Verified bare `LOAD` and `SAVE` commands use Windows file-dialog paths while quoted paths remain supported.
 243. Fixed `CLS` to clear the final graphics row and column as part of the full 128-by-48 screen.
 244. Added regression coverage for positive-boundary wrapping of `SET` and `POINT` coordinates.
+245. Added regression coverage for positive-boundary wrapping of `POKE` and `PEEK` addresses.
 
 ## Next Slice Queue
 
