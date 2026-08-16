@@ -408,6 +408,21 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Supports_Maximum_String_Length()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A$=STRING$(255,\"A\")",
+            "20 PRINT LEN(A$)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 255 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_Large_Level_Two_Integer_Literal()
     {
         using var controller = new TestController();
