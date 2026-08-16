@@ -694,4 +694,21 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 10 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Save_Abbreviation_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        controller.ExecuteLine("NEW");
+        controller.ExecuteLine("10 PRINT 80");
+        controller.ExecuteLine("SA. \"save.bas\"");
+        controller.ExecuteLine("NEW");
+        controller.ExecuteLine("LO. \"save.bas\"");
+        controller.ExecuteLine("RUN");
+
+        controller.ReadOutputLine().Should().Be("Saved \"save.bas\".");
+        controller.ReadOutputLine().Should().Be("Loaded \"save.bas\".");
+        controller.ReadOutputLine().Should().Be(" 80 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
