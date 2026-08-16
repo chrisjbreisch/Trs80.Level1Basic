@@ -783,6 +783,7 @@ public class Parser : IParser
         Token valueToken = Peek();
         if (!identifierToken.Lexeme.EndsWith('$')
             || Peek().Type == TokenType.String
+            || Peek().Type == TokenType.Number
             || (Peek().Type == TokenType.Identifier && Peek().Lexeme.EndsWith('$')))
         {
             Expression initializer = Expression();

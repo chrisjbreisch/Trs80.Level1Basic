@@ -86,8 +86,11 @@ public class Interpreter : IInterpreter
         switch (expression)
         {
             case Identifier identifier:
-                if (!identifier.Name.Lexeme.EndsWith('$') && value is string && !_machine.IsStringVariable(identifier.Name.Lexeme))
-                    throw new ValueOutOfRangeException(-1, string.Empty, string.Empty);
+                if (_machine.IsStringVariable(identifier.Name.Lexeme) != (value is string))
+                    throw new TypeMismatchException(_program.CurrentStatement.LineNumber,
+                        _program.CurrentStatement.SourceLine,
+                        identifier.LinePosition - identifier.Name.Lexeme.TrimEnd('$', '%', '!', '#').Length,
+                        "Assignment target and value types do not match.");
 
                 _machine.Set(identifier.Name.Lexeme, value);
                 break;

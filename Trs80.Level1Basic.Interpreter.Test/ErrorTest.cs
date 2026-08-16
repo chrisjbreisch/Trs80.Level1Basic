@@ -143,6 +143,26 @@ public class ErrorTest
     }
 
     [TestMethod]
+    public void Interpreter_Reports_Type_Mismatch_Assigning_String_To_Numeric_Variable()
+    {
+        using var controller = new TestController();
+
+        controller.ExecuteLine("A=\"STRING\"");
+
+        controller.ReadOutputLine().Should().Be("?TM ERROR");
+    }
+
+    [TestMethod]
+    public void Interpreter_Reports_Type_Mismatch_Assigning_Number_To_String_Variable()
+    {
+        using var controller = new TestController();
+
+        controller.ExecuteLine("A$=42");
+
+        controller.ReadOutputLine().Should().Be("?TM ERROR");
+    }
+
+    [TestMethod]
     public void Interpreter_Handles_Invalid_Identifier_In_Command()
     {
         using var controller = new TestController();
