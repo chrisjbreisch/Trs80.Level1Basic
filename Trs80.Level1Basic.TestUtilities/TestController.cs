@@ -33,7 +33,8 @@ public class TestController : DisposableBase
         set { Trs80.In = value; }
     }
 
-    public TestController(Action onExplicitDispose, Action onImplicitDispose) : this()    {
+    public TestController(Action onExplicitDispose, Action onImplicitDispose) : this()
+    {
         _onExplicitDispose = onExplicitDispose;
         _onImplicitDispose = onImplicitDispose;
     }

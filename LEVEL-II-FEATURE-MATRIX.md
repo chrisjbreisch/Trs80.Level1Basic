@@ -254,6 +254,10 @@ Recent Level II slices, in order:
 175. Aligned malformed `NEXT`, `READ`, `ON`, and function-argument regressions with Level II `?SN ERROR` diagnostics.
 176. Aligned PRINT recovery and invalid-character regressions with Level II partial output and `?SN ERROR` diagnostics.
 177. Stabilized the full `ErrorTest` baseline for Level II syntax labels, typed overflow labels, and diagnostic ordering.
+178. Fixed parser end-of-line checks so valid terminal string expressions no longer emit false `?SN ERROR` diagnostics.
+179. Aligned expression, native-function, and compatibility regressions with Level II high-precision numeric formatting.
+180. Fixed bare-text string assignments so unquoted strings are preserved across single- and multi-statement lines.
+181. Added IF...THEN...ELSE execution, preserved single-letter `R` variable contexts, and aligned the final unknown-identifier compatibility baseline.
 
 ## Next Slice Queue
 

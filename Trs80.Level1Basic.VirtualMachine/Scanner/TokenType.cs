@@ -43,6 +43,7 @@ public enum TokenType
     DefSng,
     DefStr,
     End,
+    Else,
     Eqv,
     If,
     For,

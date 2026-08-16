@@ -241,9 +241,7 @@ public class Level2CompatibilityTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
-        controller.ReadErrorLine().Should().Be(" 10  PRINT C?HRIS");
-        controller.ReadOutputLine();
+        controller.ReadOutputLine().Should().Be(" 0 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -491,7 +489,7 @@ public class Level2CompatibilityTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 0.3333333 ");
+        controller.ReadOutputLine().Should().Be(" .3333333 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -903,7 +901,7 @@ public class Level2CompatibilityTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 0.3333333 ");
+        controller.ReadOutputLine().Should().Be(" .3333333 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 

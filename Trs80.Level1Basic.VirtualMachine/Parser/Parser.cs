@@ -191,7 +191,7 @@ public class Parser : IParser
             return SystemStatement();
         if (Peek().Type == TokenType.Identifier && _natives.Get(Peek().Lexeme) != null && !Check(TokenType.LeftParen) && !Check(TokenType.Equal))
             return StatementWrapper(new StatementExpression(NativeStatementCall()));
-        if (Peek().Type != TokenType.R || PeekNext().Type == TokenType.LeftParen)
+        if (Peek().Type != TokenType.R || PeekNext().Type is TokenType.LeftParen or TokenType.Equal)
             return Peek().Type == TokenType.Identifier ? LetStatement() : ExpressionStatement();
 
         Advance();
@@ -573,7 +573,16 @@ public class Parser : IParser
         while (Match(TokenType.Colon))
             thenBranch.Add(Statement());
 
-        return StatementWrapper(new If(condition, current.LinePosition, thenBranch, thenException));
+        CompoundStatementList elseBranch = null;
+        if (Match(TokenType.Else))
+        {
+            elseBranch = new CompoundStatementList(Peek().LinePosition);
+            elseBranch.Add(Statement());
+            while (Match(TokenType.Colon))
+                elseBranch.Add(Statement());
+        }
+
+        return StatementWrapper(new If(condition, current.LinePosition, thenBranch, elseBranch, thenException));
     }
 
     private IStatement SaveStatement()
@@ -767,7 +776,7 @@ public class Parser : IParser
         Token valueToken = Peek();
         if (!identifierToken.Lexeme.EndsWith('$')
             || Peek().Type == TokenType.String
-            || Peek().Type == TokenType.Identifier)
+            || (Peek().Type == TokenType.Identifier && Peek().Lexeme.EndsWith('$')))
         {
             Expression initializer = Expression();
             if (identifierToken.Lexeme.EndsWith('#')
@@ -834,7 +843,7 @@ public class Parser : IParser
 
     private bool IsAtStatementEnd()
     {
-        return IsAtEnd() || Peek().Type == TokenType.Colon;
+        return IsAtEnd() || Peek().Type is TokenType.Colon or TokenType.Else;
     }
 
     private IStatement PrintStatement()
@@ -1195,6 +1204,14 @@ public class Parser : IParser
             return new Identifier(previous, previous.LinePosition + 1);
         }
 
+        if (Match(TokenType.R))
+        {
+            Token previous = Previous();
+            var variableToken = new Token(TokenType.Identifier, previous.Lexeme, previous.Lexeme,
+                _source, previous.LinePosition);
+            return new Identifier(variableToken, previous.LinePosition + 1);
+        }
+
         if (!IsIdentifierShortHand())
         {
             Token unexpected = Peek();
@@ -1244,7 +1261,6 @@ public class Parser : IParser
 
     private bool Check(TokenType type)
     {
-        if (IsAtEnd()) return false;
         return Peek().Type == type;
     }
 

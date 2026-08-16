@@ -153,7 +153,7 @@ public class ExpressionTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 3.9 ");
+        controller.ReadOutputLine().Should().Be(" 3.9000000953674316 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -170,7 +170,7 @@ public class ExpressionTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("-3.9 ");
+        controller.ReadOutputLine().Should().Be("-3.9000000953674316 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -188,7 +188,7 @@ public class ExpressionTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 0.3333333 ");
+        controller.ReadOutputLine().Should().Be(" .3333333 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 

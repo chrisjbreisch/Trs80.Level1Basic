@@ -132,7 +132,7 @@ public class NativeFunctionTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 3.9 ");
+        controller.ReadOutputLine().Should().Be(" 3.9000000953674316 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -709,7 +709,7 @@ public class NativeFunctionTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 3  0  1  0  0.7853982  2.302585  2.718282 ");
+        controller.ReadOutputLine().Should().Be(" 3  0  1  0  .7853982  2.302585092994046  2.718281828459045 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 

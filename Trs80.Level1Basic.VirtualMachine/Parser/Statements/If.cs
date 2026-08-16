@@ -18,13 +18,16 @@ public class If : Statement
     public Expression Condition { get; init; }
     public int ThenPosition { get; init; }
     public CompoundStatementList ThenBranch { get; init; }
+    public CompoundStatementList ElseBranch { get; init; }
     public ParseException ThenException { get; init; }
 
-    public If(Expression condition, int thenPosition, CompoundStatementList thenBranch, ParseException thenException)
+    public If(Expression condition, int thenPosition, CompoundStatementList thenBranch,
+        CompoundStatementList elseBranch, ParseException thenException)
     {
         Condition = condition;
         ThenPosition = thenPosition;
         ThenBranch = thenBranch;
+        ElseBranch = elseBranch;
         ThenException = thenException;
     }
 

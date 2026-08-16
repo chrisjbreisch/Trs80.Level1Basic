@@ -579,7 +579,12 @@ public class Interpreter : IInterpreter
             throw new ParseException(statement.LineNumber, statement.SourceLine,
                 statement.ThenPosition, "Cannot convert string to logical expression.");
 
-        if (!IsTruthy(logicalExpression)) return null!;
+        if (!IsTruthy(logicalExpression))
+        {
+            if (statement.ElseBranch != null)
+                _machine.RunCompoundStatement(statement.ElseBranch, this);
+            return null!;
+        }
 
         if (statement.ThenException != null)
             throw statement.ThenException;
