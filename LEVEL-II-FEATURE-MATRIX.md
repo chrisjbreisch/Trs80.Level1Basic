@@ -194,6 +194,7 @@ Recent Level II slices, in order:
 115. Applied the Level II first-two-character significance rule to variable storage, so `NUMBER=1` and `PRINT NU` refer to the same variable.
 116. Rejected variable names containing the reserved `ON` keyword, so `GONE=7` reports `WHAT?`.
 117. Added alphanumeric identifier support with optional `$` suffix, so `N1$="TOBY"` is a valid assignment.
+118. Fixed string-variable assignment expressions, so `N1$=N2$` copies the source variable value.
 
 ## Next Slice Queue
 

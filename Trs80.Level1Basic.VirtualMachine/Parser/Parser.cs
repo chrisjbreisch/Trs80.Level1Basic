@@ -738,7 +738,9 @@ public class Parser : IParser
 
         Consume(TokenType.Equal, "Expected assignment.");
 
-        if (!identifierToken.Lexeme.EndsWith('$') || Peek().Type == TokenType.String)
+        if (!identifierToken.Lexeme.EndsWith('$')
+            || Peek().Type == TokenType.String
+            || Peek().Type == TokenType.Identifier)
             return StatementWrapper(new Let(identifier, Expression()));
 
         Expression unquoted = GetUnquotedExpression();

@@ -141,6 +141,22 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Assign_String_Variable_To_String_Variable()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 N2$=\"MARION AND ERIC\"",
+            "20 N1$=N2$",
+            "30 PRINT N1$"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("MARION AND ERIC");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_Zero()
     {
         using var controller = new TestController();
