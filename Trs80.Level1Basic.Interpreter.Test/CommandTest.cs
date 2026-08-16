@@ -125,6 +125,15 @@ public class CommandTest
     }
 
     [TestMethod]
+    public void Parser_Can_Parse_Lprint_Command()
+    {
+        using var controller = new TestController();
+        var tokens = controller.Scanner.ScanTokens(new SourceLine("LPRINT \"HELLO\""));
+
+        controller.Parser.Parse(tokens).Should().BeOfType<Lprint>();
+    }
+
+    [TestMethod]
     public void Parser_Can_Parse_Abbreviated_Merge_Command()
     {
         using var controller = new TestController();

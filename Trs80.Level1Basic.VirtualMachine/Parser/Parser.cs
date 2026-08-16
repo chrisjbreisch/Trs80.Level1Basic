@@ -133,6 +133,8 @@ public class Parser : IParser
             return LetStatement();
         if (Match(TokenType.List))
             return ListStatement();
+        if (Match(TokenType.Lprint))
+            return LprintStatement();
         if (Match(TokenType.Load))
             return LoadStatement();
         if (Match(TokenType.Merge))
@@ -773,6 +775,12 @@ public class Parser : IParser
         }
 
         return StatementWrapper(new Print(atPosition, values, newline));
+    }
+
+    private IStatement LprintStatement()
+    {
+        var print = (Print)PrintStatement();
+        return StatementWrapper(new Lprint(print.AtPosition, print.Expressions, print.WriteNewline));
     }
 
     private int GetLineNumberValue(Token lineNumber)

@@ -131,4 +131,16 @@ public class ScannerTest
         tokens[0].Type.Should().Be(TokenType.Number);
         tokens[1].Type.Should().Be(TokenType.Wait);
     }
+
+    [TestMethod]
+    public void Scanner_Recognizes_Lprint_Keyword()
+    {
+        using var controller = new TestController();
+        IScanner scanner = controller.Scanner;
+
+        var tokens = scanner.ScanTokens(new SourceLine("10 lprint \"hello\""));
+
+        tokens[0].Type.Should().Be(TokenType.Number);
+        tokens[1].Type.Should().Be(TokenType.Lprint);
+    }
 }

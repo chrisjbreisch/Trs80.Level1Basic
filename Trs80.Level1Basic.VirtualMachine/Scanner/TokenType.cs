@@ -51,6 +51,7 @@ public enum TokenType
     Input,
     Let,
     List,
+    Lprint,
     Load,
     Merge,
     Mod,
