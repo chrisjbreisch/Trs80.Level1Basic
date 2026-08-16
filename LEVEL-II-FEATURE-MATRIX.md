@@ -248,6 +248,7 @@ Recent Level II slices, in order:
 169. Verified the negative numeric `%` boundary: `PRINT -32768%` is accepted while positive `32768%` remains overflow.
 170. Verified negative numeric `!` suffix literals, such as `PRINT -1.23!`.
 171. Updated the missing-assignment regression to the Level II `?SN ERROR` syntax label.
+172. Verified long unquoted DATA strings and semicolon-separated PRINT string expressions after parser recovery changes.
 
 ## Next Slice Queue
 
