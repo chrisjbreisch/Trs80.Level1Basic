@@ -31,7 +31,15 @@ public class InputCommand : ICommand<InputModel>
             string prompt = _autoLineNumbering.IsActive
                 ? $"{_autoLineNumbering.NextLineNumber} "
                 : parameterObject.WritePrompt ? ">" : string.Empty;
-            SourceLine sourceLine = GetInputLine(out bool cancelled, prompt: prompt);
+            SourceLine sourceLine = GetInputLine(out bool cancelled, out bool pauseRequested, prompt: prompt);
+
+            if (pauseRequested)
+            {
+                if (_autoLineNumbering.IsActive)
+                    _autoLineNumbering.Stop();
+
+                continue;
+            }
 
             if (cancelled)
                 continue;
@@ -44,7 +52,7 @@ public class InputCommand : ICommand<InputModel>
             if (!_autoLineNumbering.IsActive && TryGetEditLine(sourceLine.Original, out int editLineNumber, out string existingLine))
             {
                 string editPrompt = parameterObject.WritePrompt ? ">" : string.Empty;
-                SourceLine editedLine = GetInputLine(out cancelled, existingLine, editPrompt);
+                SourceLine editedLine = GetInputLine(out cancelled, out _, existingLine, editPrompt);
                 if (cancelled)
                     continue;
 
@@ -127,9 +135,11 @@ public class InputCommand : ICommand<InputModel>
         return true;
     }
 
-    private SourceLine GetInputLine(out bool cancelled, string initialText = "", string prompt = ">")
+    private SourceLine GetInputLine(out bool cancelled, out bool pauseRequested,
+        string initialText = "", string prompt = ">")
     {
         cancelled = false;
+        pauseRequested = false;
         var buffer = new LineEditorBuffer(initialText);
         if (buffer.Length > 0)
             RedrawLine(buffer, prompt);
@@ -155,6 +165,11 @@ public class InputCommand : ICommand<InputModel>
                 buffer.Clear();
                 RedrawLine(buffer, prompt);
                 cancelled = true;
+                return new SourceLine { Line = string.Empty, Original = string.Empty };
+            }
+            else if (key.Key == ConsoleKey.Pause)
+            {
+                pauseRequested = true;
                 return new SourceLine { Line = string.Empty, Original = string.Empty };
             }
             else if (key.Key == ConsoleKey.U && key.Modifiers.HasFlag(ConsoleModifiers.Control))

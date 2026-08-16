@@ -300,6 +300,7 @@ Recent Level II slices, in order:
 221. Added 64-column wrapping to the fake host and verified cursor continuation after a full console line.
 222. Restored the initial interactive prompt and made blank input scanner-safe by returning an empty `SourceLine`.
 223. Made `InputCommand` honor the workflow `WritePrompt` setting while preserving numbered `AUTO` prompts.
+224. Made Pause/Break exit interactive `AUTO` mode without submitting the current line.
 
 ## Next Slice Queue
 
