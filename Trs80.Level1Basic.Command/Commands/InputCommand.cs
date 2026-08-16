@@ -51,7 +51,7 @@ public class InputCommand : ICommand<InputModel>
 
             if (!_autoLineNumbering.IsActive && TryGetEditLine(sourceLine.Original, out int editLineNumber, out string existingLine))
             {
-                string editPrompt = parameterObject.WritePrompt ? ">" : string.Empty;
+                string editPrompt = $"{editLineNumber} ";
                 SourceLine editedLine = GetInputLine(out cancelled, out _, existingLine, editPrompt);
                 if (cancelled)
                     continue;
