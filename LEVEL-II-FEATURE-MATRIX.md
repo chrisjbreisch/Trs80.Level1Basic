@@ -249,6 +249,7 @@ Recent Level II slices, in order:
 170. Verified negative numeric `!` suffix literals, such as `PRINT -1.23!`.
 171. Updated the missing-assignment regression to the Level II `?SN ERROR` syntax label.
 172. Verified long unquoted DATA strings and semicolon-separated PRINT string expressions after parser recovery changes.
+173. Aligned syntax-error regression expectations with `?SN ERROR` while retaining `WHAT?` for runtime expression/statement errors.
 
 ## Next Slice Queue
 

@@ -40,7 +40,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadOutputLine().Should().Be("?SN ERROR");
         controller.ReadErrorLine().Should().Be(" 10  FOR C?HRIS = 1 TO 10");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -58,7 +58,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadOutputLine().Should().Be("?SN ERROR");
         controller.ReadErrorLine().Should().Be(" 20  IF A$ ?THEN PRINT \"TRUE\" : END");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -108,7 +108,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.ReadOutputLine().Should().Be("?SN ERROR");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
