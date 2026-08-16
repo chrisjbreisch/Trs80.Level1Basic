@@ -20,9 +20,9 @@ The project already has a mature Level I interpreter. Level II work is being add
 | --- | --- |
 | Branch | `level2/type-declarations` |
 | Baseline | Level I interpreter with existing command, expression, file, input, and control-flow suites |
-| Recent focus | Type declarations, arrays, numeric precision, Level II built-ins, `CLEAR`, `MID$` assignment, user-defined functions, and string-function compatibility |
-| Latest implementation commit | `99b741f Support forward DEF FN references` |
-| Latest documentation checkpoint | This update: complete the `DEF FN` lifecycle slice |
+| Recent focus | Type declarations, arrays, numeric precision, Level II built-ins, `CLEAR`, `MID$` assignment, user-defined functions, string-function compatibility, and scanner/parser keyword coverage |
+| Latest implementation commit | `420c2e1 Add BEEP keyword support` |
+| Latest documentation checkpoint | This update: complete the `BEEP` scanner/parser slice |
 | Validation habit | Run the narrowest affected test first, then the affected test class, then the full project for shared changes |
 
 ## Language Core
@@ -60,7 +60,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Data statements | Implemented | `DATA`, `READ`, and `RESTORE` exist. | Add mixed-type, exhaustion, and `CLEAR` interaction cases. Existing anchor: `DataTest`. |
 | Console input/output | Implemented | `INPUT`, `PRINT`, `TAB`, `SPC`, and cursor-related behavior exist. | Audit formatting, commas/semicolons, input errors, and Level II line-width behavior. Existing anchors: `InputTest`, `PrintTest`, `NativeFunctionTest`. |
 | Hardware statements | Partial | `SET`, `RESET`, `POKE`, and related APIs exist as host-machine abstractions. | Specify whether each operation is emulated, approximated, rejected, or intentionally unavailable. |
-| Remaining Level II commands | Not audited | The parser statement dispatch is centralized in `Parser.Statement()`. | Compare the scanner keyword table and parser dispatch with the manual, then implement one command family per slice. |
+| Remaining Level II commands | Partial | `BEEP` is recognized by the scanner and parser and has focused scanner coverage; the current interpreter execution is intentionally silent because host audio behavior is not yet modeled. The parser statement dispatch is centralized in `Parser.Statement()`. | Compare the scanner keyword table and parser dispatch with the manual, then implement one command family per slice. Define an audio emulation policy before adding runtime output for `BEEP`. |
 
 ## Runtime and Compatibility
 
@@ -110,6 +110,7 @@ Recent Level II slices, in order:
 31. Added the `MKI$` pure built-in for two-byte integer-to-string conversion.
 32. Added the `MKS$` pure built-in for four-byte single-to-string conversion.
 33. Added the `MKD$` pure built-in for eight-byte double-to-string conversion.
+34. Added scanner, parser, and statement dispatch support for the `BEEP` keyword with focused scanner coverage; runtime audio remains intentionally silent pending a host-audio policy.
 
 ## Next Slice Queue
 
