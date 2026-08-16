@@ -48,7 +48,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Numeric conversion | Implemented | `CINT`, `CSNG`, `CDBL`, `FIX`, and `INT` exist. `CINT`, `FIX`, and `INT` avoid unnecessary `float` narrowing for double inputs. | Verify overflow, exact midpoint rounding, and conversion from strings. Existing anchor: `NativeFunctionTest`. |
 | Math functions | Implemented | `SQR`, `SIN`, `COS`, `TAN`, `ATN`, `LOG`, and `EXP` are registered and callable. | Confirm domain errors, precision, and Level II output expectations. |
 | Random numbers | Partial | One- and zero-argument `RND` exist; numeric controls are truncated to integer controls; negative controls reseed the generator deterministically and repeat the seeded first value; zero control repeats the last generated value after initialization. | Verify the remaining manual boundary cases. |
-| Keyboard/input functions | Partial | `INPUT$` remains length-bounded input and returns available characters without padding at end-of-input; `INKEY$` performs a non-blocking host key probe, normalizes printable input to uppercase, and returns available control characters. Keys with no character payload remain empty. | Verify extended/special-key encoding and interaction with `INPUT`. |
+| Keyboard/input functions | Partial | `INPUT$` remains length-bounded input and returns available characters without padding at end-of-input; `INKEY$` performs a non-blocking host key probe, normalizes printable input to uppercase, and returns available control characters. Extended keys with no character payload intentionally remain empty. | Define any TRS-80-specific extended-key encoding and verify interaction with `INPUT`. |
 | Memory/display functions | Partial | `PEEK`, `POKE`, `MEM`, `FRE`, `POS`, `CSRLIN`, `POINT`, `SPC`, and `TAB` exist; memory addresses wrap across the bounded 64K host memory, including negative addresses. | Document cursor behavior and unsupported hardware assumptions. |
 | Remaining Level II functions | Partial | The native-function registry is centralized in `NativeFunctions`; `CVI`, `CVS`, `CVD`, `MKI$`, `MKS$`, and `MKD$` are now registered and covered for valid little-endian binary conversion. | Build an authoritative manual checklist and add one focused test for every remaining missing function. |
 
@@ -290,6 +290,7 @@ Recent Level II slices, in order:
 211. Added `LIST .` support for listing only the most recently entered or edited program line.
 212. Made interactive `AUTO` display the active next line number as the editor prompt, advancing from `10 ` to `20 ` after submission.
 213. Preserved available control characters in non-blocking `INKEY$` results, with deterministic Enter-key coverage.
+214. Documented and tested the intentional empty result for extended keys without character payloads.
 
 ## Next Slice Queue
 

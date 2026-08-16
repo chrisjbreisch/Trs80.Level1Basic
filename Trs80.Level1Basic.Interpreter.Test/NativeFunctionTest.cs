@@ -746,6 +746,21 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Returns_Empty_Inkey_For_Extended_Key_Without_Character()
+    {
+        using var controller = new TestController();
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('\0', ConsoleKey.LeftArrow, false, false, false));
+        var program = new List<string> {
+            "10 PRINT LEN(INKEY$)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Math_Functions()
     {
         using var controller = new TestController();
