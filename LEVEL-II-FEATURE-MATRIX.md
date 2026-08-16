@@ -22,7 +22,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Baseline | Level I interpreter with existing command, expression, file, input, and control-flow suites |
 | Recent focus | Type declarations, arrays, numeric precision, Level II built-ins, `CLEAR`, `MID$` assignment, user-defined functions, string-function compatibility, and scanner/parser keyword coverage |
 | Latest implementation commit | `cfc8b9c Add POKE keyword support` |
-| Latest documentation checkpoint | This update: start the Level II compatibility-program corpus |
+| Latest documentation checkpoint | This update: expand the Level II compatibility-program corpus with binary conversions |
 | Validation habit | Run the narrowest affected test first, then the affected test class, then the full project for shared changes |
 
 ## Language Core
@@ -122,6 +122,7 @@ Recent Level II slices, in order:
 43. Closed the scanner/parser keyword inventory audit: VM-backed commands have focused coverage, while `AUTO`/`EDIT` and cassette commands have explicit deferred or unavailable policies.
 44. Added the first executable Level II hardware compatibility program covering explicit `SET`, `RESET`, `POKE`, `POINT`, and `PEEK` behavior.
 45. Started the Level II compatibility-program corpus with a typed-array and `MID$` assignment program.
+46. Expanded the compatibility corpus with direct `CVI` and `MKI$` binary-conversion programs.
 
 ## Next Slice Queue
 
