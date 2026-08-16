@@ -16,6 +16,8 @@ public class FakeHost : IHost
 
     public int BeepCount { get; private set; }
     public List<string> PrintedDocuments { get; } = new();
+    public string FileNameForLoad { get; set; } = string.Empty;
+    public string FileNameForSave { get; set; } = string.Empty;
 
     public FakeHost()
     {
@@ -139,11 +141,11 @@ public class FakeHost : IHost
 
     public string GetFileNameForSave()
     {
-        return string.Empty;
+        return FileNameForSave;
     }
 
     public string GetFileNameForLoad()
     {
-        return string.Empty;
+        return FileNameForLoad;
     }
 }

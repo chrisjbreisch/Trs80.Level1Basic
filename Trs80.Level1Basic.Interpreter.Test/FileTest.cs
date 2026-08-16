@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 
 using FluentAssertions;
 
@@ -33,6 +35,20 @@ public class FileTest
         controller.ExecuteLine("LOAD");
         controller.ExecuteLine("RUN");
 
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Uses_File_Open_Dialog_Path_For_Bare_Load()
+    {
+        using var controller = new TestController();
+        controller.Host.FileNameForLoad = "load.bas";
+
+        controller.ExecuteLine("LOAD");
+        controller.ExecuteLine("RUN");
+
+        controller.ReadOutputLine().Should().Be("Loaded \"load.bas\".");
+        controller.ReadOutputLine().Should().Be(" 10 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -89,5 +105,27 @@ public class FileTest
         controller.ReadOutputLine().Should().Be("Loaded \"save.bas\".");
         controller.ReadOutputLine().Should().Be(" 80 ");
         controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Uses_File_Save_Dialog_Path_For_Bare_Save()
+    {
+        string path = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.bas");
+
+        try
+        {
+            using var controller = new TestController();
+            controller.Host.FileNameForSave = path;
+            controller.ExecuteLine("10 PRINT 10");
+
+            controller.ExecuteLine("SAVE");
+
+            File.Exists(path).Should().BeTrue();
+            controller.ReadOutputLine().Should().Be($"Saved \"{path}\".");
+        }
+        finally
+        {
+            File.Delete(path);
+        }
     }
 }
