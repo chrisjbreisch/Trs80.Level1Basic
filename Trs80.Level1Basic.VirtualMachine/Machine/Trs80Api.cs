@@ -213,7 +213,11 @@ public class Trs80Api : ITrs80Api
 
     public double CDbl(dynamic value)
     {
-        return Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture);
+        double numericValue = Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture);
+        if (Math.Abs(numericValue) > 1.701411834544556E+38)
+            throw new ValueOutOfRangeException(-1, string.Empty, "Double value out of range.");
+
+        return numericValue;
     }
 
     public float CSng(dynamic value)

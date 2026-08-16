@@ -314,6 +314,7 @@ Recent Level II slices, in order:
 235. Enforced the documented single-precision range for `CSNG` with overflow coverage.
 236. Made `EDIT line` display the selected line number while preloading the editable source.
 237. Documented the intentional modern `EDIT` UI deviation from the original arrow-less TRS-80 keyboard workflow.
+238. Enforced the documented double-precision range for `CDBL` with overflow coverage.
 
 ## Next Slice Queue
 
