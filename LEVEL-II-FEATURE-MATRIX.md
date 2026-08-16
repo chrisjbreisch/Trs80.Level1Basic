@@ -209,6 +209,7 @@ Recent Level II slices, in order:
 130. Documented current unary-minus precedence: `-2^2` evaluates as `(-2)^2` and outputs `4`.
 131. Verified exponentiation of variables and grouped expressions: `A^2` and `(A+1)^2` produce `25` and `36`.
 132. Added explicit integer `%` suffix support, so `A%=3.9` stores the truncated integer value `3`.
+133. Added explicit single-precision `!` suffix support, so `A!=3.9` preserves the single value.
 
 ## Next Slice Queue
 
