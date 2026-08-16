@@ -193,6 +193,8 @@ public class Interpreter : IInterpreter
         {
             case float:
                 return expression.Value;
+            case double:
+                return expression.Value;
             case string:
                 return expression.UpperValue;
         }
@@ -326,9 +328,6 @@ public class Interpreter : IInterpreter
                 return value.ToString("0.######E+00");
             case < 1 and > -1:
                 return value.ToString(".#######");
-            case > 99999999:
-            case < -99999999:
-                return value.ToString("0.######E+00");
             default:
                 return value.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
         }

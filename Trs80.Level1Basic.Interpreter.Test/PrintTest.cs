@@ -630,18 +630,15 @@ public class PrintTest
     }
 
     [TestMethod]
-    public void Interpreter_Uses_Scientific_Format_Beyond_Double_Fixed_Boundary()
+    public void Interpreter_Uses_Fixed_Format_For_Large_Defdbl_Value()
     {
         using var controller = new TestController();
-        var program = new List<string> {
-            "10 A#=123456789",
-            "20 PRINT A#"
-        };
 
-        controller.RunProgram(program);
+        controller.ExecuteLine("DEFDBL D");
+        controller.ExecuteLine("D=123456789");
+        controller.ExecuteLine("PRINT D");
 
-        controller.ReadOutputLine().Should().Be(" 1.234568E+08 ");
-        controller.IsEndOfRun().Should().BeTrue();
+        controller.ReadOutputLine().Should().Be(" 123456789 ");
     }
 
     [TestMethod]
@@ -870,7 +867,7 @@ public class PrintTest
     }
 
     [TestMethod]
-    public void Interpreter_Can_Print_Large_Level_Two_Integer_Literal()
+    public void Interpreter_Can_Print_Large_Level_Two_Integer_Literal_In_Fixed_Format()
     {
         using var controller = new TestController();
         var program = new List<string> {
@@ -879,7 +876,7 @@ public class PrintTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 1.23457E+10 ");
+        controller.ReadOutputLine().Should().Be(" 12345678901 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
