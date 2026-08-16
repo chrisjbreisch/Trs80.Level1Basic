@@ -242,6 +242,7 @@ Recent Level II slices, in order:
 163. Verified positive `D` exponent literals with an explicit exponent, so `1.23D+2` evaluates to `123`.
 164. Verified direct `D` exponent expressions without typed-variable assignment.
 165. Added numeric-literal `#` suffix support, so `PRINT 1/3#` evaluates as double precision.
+166. Added numeric-literal `!` suffix support, so `PRINT 1.23!` evaluates as single precision.
 
 ## Next Slice Queue
 

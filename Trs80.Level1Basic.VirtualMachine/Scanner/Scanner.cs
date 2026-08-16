@@ -708,14 +708,15 @@ public class Scanner : IScanner
                 Advance();
         }
 
-        if (Peek() == '#')
+        if (Peek() is '#' or '!')
             Advance();
 
         object value;
         string number = _source.Substring(TokenStart, TokenLength);
-        if (number.EndsWith('#'))
+        if (number.EndsWith('#') || number.EndsWith('!'))
             number = number[..^1];
-        if (number.Contains('D') || number.Contains('d'))
+        if (_source[TokenStart..(TokenStart + TokenLength)].EndsWith('#')
+            || number.Contains('D') || number.Contains('d'))
             value = double.Parse(number.Replace('D', 'E').Replace('d', 'e'),
                 System.Globalization.CultureInfo.InvariantCulture);
         else if (isInt)
@@ -725,7 +726,7 @@ public class Scanner : IScanner
                 : float.Parse(number);
         }
         else
-            value = float.Parse(_source.Substring(TokenStart, TokenLength));
+            value = float.Parse(number, System.Globalization.CultureInfo.InvariantCulture);
 
         AddToken(TokenType.Number, value);
     }

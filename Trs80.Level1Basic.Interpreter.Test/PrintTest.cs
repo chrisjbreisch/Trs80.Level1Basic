@@ -514,6 +514,20 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Use_Single_Suffix_On_Numeric_Literal()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT 1.23!"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1.23 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Preserves_Fixed_Format_For_Double_Product()
     {
         using var controller = new TestController();
