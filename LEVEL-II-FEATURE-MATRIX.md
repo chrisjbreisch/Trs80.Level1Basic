@@ -232,6 +232,7 @@ Recent Level II slices, in order:
 153. Verified comma statement separators preserve exponent expressions, including fractional powers.
 154. Verified comma statement separators preserve parenthesized RHS expressions.
 155. Verified comma statement separators preserve string-expression RHS assignments.
+156. Verified comma statement separators preserve explicit `%` and `!` typed assignments.
 
 ## Next Slice Queue
 
