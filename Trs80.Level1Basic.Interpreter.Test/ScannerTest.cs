@@ -109,6 +109,30 @@ public class ScannerTest
     }
 
     [TestMethod]
+    public void Scanner_Recognizes_Multi_Character_Identifier()
+    {
+        using var controller = new TestController();
+        IScanner scanner = controller.Scanner;
+
+        var tokens = scanner.ScanTokens(new SourceLine("10 NU=1"));
+
+        tokens[1].Type.Should().Be(TokenType.Identifier);
+        tokens[1].Lexeme.Should().Be("NU");
+    }
+
+    [TestMethod]
+    public void Scanner_Recognizes_Multi_Character_Identifier_In_Print()
+    {
+        using var controller = new TestController();
+        IScanner scanner = controller.Scanner;
+
+        var tokens = scanner.ScanTokens(new SourceLine("20 PRINT NU"));
+
+        tokens[2].Type.Should().Be(TokenType.Identifier);
+        tokens[2].Lexeme.Should().Be("NU");
+    }
+
+    [TestMethod]
     public void Scanner_Recognizes_Out_Keyword()
     {
         using var controller = new TestController();

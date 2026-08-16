@@ -165,11 +165,6 @@ public class Interpreter : IInterpreter
     public dynamic VisitIdentifierExpression(Identifier expression)
     {
         string name = expression.Name.Lexeme;
-        if (name.Length > 1 &&
-            (!name.EndsWith('$') || name.Length > 2))
-            throw new ParseException(_program.CurrentStatement.LineNumber,
-                _program.CurrentStatement.SourceLine, expression.LinePosition, "Invalid Identifier.");
-
         return _machine.Get(name);
     }
 

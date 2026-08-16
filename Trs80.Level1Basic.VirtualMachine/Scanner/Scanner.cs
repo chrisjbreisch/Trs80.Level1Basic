@@ -336,13 +336,16 @@ public class Scanner : IScanner
             return;
         }
 
+        while (IsAlpha(Peek()))
+            Advance();
+
         try
         {
             AddKeywordToken();
         }
         catch
         {
-            Add3PlusCharsToken();
+            AddUnknownIdentifierToken();
         }
     }
 

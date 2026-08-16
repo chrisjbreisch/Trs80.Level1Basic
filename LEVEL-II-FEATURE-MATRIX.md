@@ -190,6 +190,7 @@ Recent Level II slices, in order:
 111. Added `?` as a scanner alias for `PRINT`, so `? 3` outputs `3`; added a focused regression test.
 112. Fixed numeric formatting so `0.01` uses fixed `.01` output while `0.001` retains scientific notation; added boundary regressions.
 113. Fixed parser progress on malformed nested-quote PRINT input, preventing a hang and preserving the partial `HE SAID` output before `WHAT?`.
+114. Enabled multi-character numeric and string variable names at runtime; `NU=1` followed by `PRINT NU` now outputs `1`.
 
 ## Next Slice Queue
 
