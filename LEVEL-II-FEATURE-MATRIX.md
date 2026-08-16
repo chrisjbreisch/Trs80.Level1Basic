@@ -195,6 +195,7 @@ Recent Level II slices, in order:
 116. Rejected variable names containing the reserved `ON` keyword, so `GONE=7` reports `WHAT?`.
 117. Added alphanumeric identifier support with optional `$` suffix, so `N1$="TOBY"` is a valid assignment.
 118. Fixed string-variable assignment expressions, so `N1$=N2$` copies the source variable value.
+119. Enabled string concatenation in assignment expressions, so string variables and literals can be combined with `+`.
 
 ## Next Slice Queue
 

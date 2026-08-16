@@ -221,6 +221,7 @@ public class Interpreter : IInterpreter
         switch (left)
         {
             case bool when right is bool:
+            case string when right is string && operatorType.Type == TokenType.Plus:
             case float when right is float:
             case float when right is int:
             case float when right is double:

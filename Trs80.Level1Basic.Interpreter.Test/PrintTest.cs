@@ -157,6 +157,23 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Concatenate_String_Variables()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A$=\"HELLO\"",
+            "20 B$=\" WORLD\"",
+            "30 C$=A$+B$+\"!\"",
+            "40 PRINT C$"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HELLO WORLD!");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_Zero()
     {
         using var controller = new TestController();
