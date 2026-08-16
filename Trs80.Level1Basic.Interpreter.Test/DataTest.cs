@@ -99,6 +99,23 @@ public class DataTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Read_String_Data_Into_Defstr_Variable()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DEFSTR S",
+            "20 DATA STRING",
+            "30 READ S",
+            "40 PRINT S"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("STRING");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Reports_Type_Mismatch_When_Reading_String_Data_Into_Numeric_Variable()
     {
         using var controller = new TestController();
@@ -112,6 +129,23 @@ public class DataTest
 
         controller.ReadOutputLine().Should().Be("?TM ERROR");
         controller.ReadErrorLine().Should().Be(" 20  READ ?A");
+        controller.ReadOutputLine();
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Reports_Type_Mismatch_When_Reading_Numeric_Data_Into_String_Variable()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DATA 42",
+            "20 READ A$"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("?TM ERROR");
+        controller.ReadErrorLine().Should().Be(" 20  READ ?A$");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
     }
