@@ -454,4 +454,21 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be("TWO");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Gosub_Return_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 GOSUB 100",
+            "20 PRINT \"DONE\":END",
+            "100 PRINT \"SUB\":RETURN"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("SUB");
+        controller.ReadOutputLine().Should().Be("DONE");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
