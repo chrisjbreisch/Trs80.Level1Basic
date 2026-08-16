@@ -509,4 +509,16 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be("RUN");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void New_Clears_Program_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        controller.ExecuteLine("NEW");
+        controller.ExecuteLine("10 PRINT \"OLD\"");
+        controller.ExecuteLine("NEW");
+        controller.ExecuteLine("RUN");
+
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
