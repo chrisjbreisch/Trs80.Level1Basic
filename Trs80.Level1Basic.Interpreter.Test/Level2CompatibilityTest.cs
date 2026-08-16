@@ -471,4 +471,25 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be("DONE");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Stop_Cont_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT \"BEFORE\"",
+            "20 STOP",
+            "30 PRINT \"AFTER\""
+        };
+
+        controller.RunProgram(program);
+        controller.ExecuteLine("CONT");
+
+        controller.ReadOutputLine().Should().Be("BEFORE");
+        controller.ReadOutputLine().Should().Be("BREAK AT 20");
+        controller.ReadOutputLine().Should().BeEmpty();
+        controller.ReadOutputLine().Should().Be("READY");
+        controller.ReadOutputLine().Should().Be("AFTER");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
