@@ -323,4 +323,20 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 3  2  1 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Two_Dimensional_Array_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DIM A(2,2)",
+            "20 A(1,2)=42",
+            "30 PRINT A(1,2)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 42 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
