@@ -389,4 +389,20 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 3 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Single_Declaration_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DEFSNG A",
+            "20 A=3.9",
+            "30 PRINT A"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3.9 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
