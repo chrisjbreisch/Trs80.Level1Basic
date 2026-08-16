@@ -348,6 +348,22 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Accepts_Integer_Suffix_Boundaries()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A%=32767",
+            "20 B%=-32768",
+            "30 PRINT A%;B%"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 32767 -32768 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Use_Single_Type_Suffix()
     {
         using var controller = new TestController();

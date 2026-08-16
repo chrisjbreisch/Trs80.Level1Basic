@@ -216,6 +216,7 @@ Recent Level II slices, in order:
 137. Verified the Level II 255-character maximum string capacity with a `STRING$`/`LEN` boundary regression.
 138. Verified first-two-character significance for long alphanumeric string names with `$` suffixes.
 139. Enforced the Level II 16-bit integer range when `%` variables are evaluated; `PRINT AB%` now reports overflow for `AB%=1234567`.
+140. Verified valid `%` integer boundaries: `32767` and `-32768` are accepted.
 
 ## Next Slice Queue
 
