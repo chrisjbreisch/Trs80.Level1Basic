@@ -113,4 +113,24 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be("DONE");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Data_Read_Restore_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DATA 5,4,3",
+            "20 READ A,B,C",
+            "30 PRINT A;B;C",
+            "40 RESTORE",
+            "50 READ D",
+            "60 PRINT D"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 5  4  3 ");
+        controller.ReadOutputLine().Should().Be(" 5 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
