@@ -210,6 +210,7 @@ Recent Level II slices, in order:
 131. Verified exponentiation of variables and grouped expressions: `A^2` and `(A+1)^2` produce `25` and `36`.
 132. Added explicit integer `%` suffix support, so `A%=3.9` stores the truncated integer value `3`.
 133. Added explicit single-precision `!` suffix support, so `A!=3.9` preserves the single value.
+134. Added explicit double-precision `#` suffix support, so `A#=1/3` stores a double value.
 
 ## Next Slice Queue
 

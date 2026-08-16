@@ -363,6 +363,21 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Use_Double_Type_Suffix()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A#=1/3",
+            "20 PRINT A#"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" .3333333 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_Large_Level_Two_Integer_Literal()
     {
         using var controller = new TestController();
