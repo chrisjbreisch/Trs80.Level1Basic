@@ -154,19 +154,25 @@ public class Trs80 : ITrs80
 
     public object Set(float x, float y)
     {
-        Fill((int)x % ScreenPixelWidth, (int)y % ScreenPixelHeight, 1, 1);
+        Fill(NormalizeCoordinate(x, ScreenPixelWidth), NormalizeCoordinate(y, ScreenPixelHeight), 1, 1);
         return null!;
     }
 
     public object Reset(float x, float y)
     {
-        Erase((int)x % ScreenPixelWidth, (int)y % ScreenPixelHeight, 1, 1);
+        Erase(NormalizeCoordinate(x, ScreenPixelWidth), NormalizeCoordinate(y, ScreenPixelHeight), 1, 1);
         return null!;
     }
 
     public int Point(int x, int y)
     {
-        return _screen[x % ScreenPixelWidth, y % ScreenPixelHeight] ? 1 : 0;
+        return _screen[NormalizeCoordinate(x, ScreenPixelWidth), NormalizeCoordinate(y, ScreenPixelHeight)] ? 1 : 0;
+    }
+
+    private static int NormalizeCoordinate(float coordinate, int size)
+    {
+        int value = (int)coordinate;
+        return ((value % size) + size) % size;
     }
 
     public string PadToPosition(int position)

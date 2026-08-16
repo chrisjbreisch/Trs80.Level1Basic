@@ -1155,4 +1155,19 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 1 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Graphics_Coordinates_Wrap_For_Negative_Set_And_Point()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 SET -1,-1",
+            "20 PRINT POINT(127,47)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
