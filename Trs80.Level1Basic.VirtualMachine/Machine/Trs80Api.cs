@@ -418,13 +418,19 @@ public class Trs80Api : ITrs80Api
         return new string(result);
     }
 
-    public static readonly Random Rand = new();
+    public static Random Rand = new();
 
     public dynamic Rnd(dynamic control)
     {
         int integerControl = control is null
             ? 0
             : (int)Convert.ToSingle(control, System.Globalization.CultureInfo.InvariantCulture);
+
+        if (integerControl < 0)
+        {
+            Rand = new Random(integerControl);
+            return (float)Rand.NextDouble();
+        }
 
         if (integerControl == 0)
             return (float)Rand.NextDouble();
