@@ -257,4 +257,18 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 8  8 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Spc_And_Tab_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT \"A\";SPC(2);\"B\";TAB(8);\"C\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("A  B    C");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
