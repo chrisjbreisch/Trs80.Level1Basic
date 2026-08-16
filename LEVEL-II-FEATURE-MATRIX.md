@@ -310,6 +310,7 @@ Recent Level II slices, in order:
 231. Added apostrophe comments as `REM` aliases outside quoted strings.
 232. Rounded the compound-interest sample's currency output to cents using `CINT`.
 233. Verified `CINT` converts numeric string arguments with the same midpoint rounding rules.
+234. Enforced the Level II 16-bit range for `CINT` and covered direct and rounded overflow reporting.
 
 ## Next Slice Queue
 

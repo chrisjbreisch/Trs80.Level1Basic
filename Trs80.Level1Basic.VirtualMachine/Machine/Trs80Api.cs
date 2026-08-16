@@ -1,5 +1,6 @@
 ﻿using System;
 
+using Trs80.Level1Basic.VirtualMachine.Exceptions;
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
 
 namespace Trs80.Level1Basic.VirtualMachine.Machine;
@@ -118,7 +119,11 @@ public class Trs80Api : ITrs80Api
     public int CInt(dynamic value)
     {
         double numericValue = Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture);
-        return (int)Math.Round(numericValue, MidpointRounding.AwayFromZero);
+        double roundedValue = Math.Round(numericValue, MidpointRounding.AwayFromZero);
+        if (roundedValue < short.MinValue || roundedValue > short.MaxValue)
+            throw new ValueOutOfRangeException(-1, string.Empty, "Integer value out of range.");
+
+        return (int)roundedValue;
     }
 
     public int Cvi(string value)

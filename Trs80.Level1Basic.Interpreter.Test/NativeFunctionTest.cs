@@ -470,6 +470,34 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Cint_Reports_Overflow_Outside_The_16_Bit_Range()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT CINT(32768)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("?OV ERROR");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Cint_Reports_Overflow_After_Rounding_Past_The_Boundary()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT CINT(32767.5)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("?OV ERROR");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Fix()
     {
         using var controller = new TestController();
