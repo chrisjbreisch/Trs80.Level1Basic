@@ -1139,4 +1139,20 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be("AB 2 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void CsrLin_Advances_After_A_Print_Newline()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT \"ABC\"",
+            "20 PRINT CSRLIN"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("ABC");
+        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }

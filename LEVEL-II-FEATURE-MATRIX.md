@@ -293,6 +293,7 @@ Recent Level II slices, in order:
 214. Documented and tested the intentional empty result for extended keys without character payloads.
 215. Verified `POS` and `CSRLIN` reflect the host cursor after console output.
 216. Verified `POS` ignores its compatibility argument and returns the current cursor column.
+217. Verified `CSRLIN` advances to the next 0-based row after a normal `PRINT` newline.
 
 ## Next Slice Queue
 
