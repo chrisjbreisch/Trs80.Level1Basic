@@ -559,6 +559,21 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Use_Comma_Between_Expression_Assignments()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A=1+2, B=3*4",
+            "20 PRINT A;B"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3  12 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Supports_Maximum_String_Length()
     {
         using var controller = new TestController();
