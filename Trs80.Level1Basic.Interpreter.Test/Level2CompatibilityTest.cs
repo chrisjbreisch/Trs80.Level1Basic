@@ -829,4 +829,19 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 0 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Random_Number_Shape_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 R=RND",
+            "20 IF R>=0 AND R<1 THEN PRINT 1 ELSE PRINT 0"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
