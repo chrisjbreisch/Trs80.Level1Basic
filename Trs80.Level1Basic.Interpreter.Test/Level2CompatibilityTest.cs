@@ -405,4 +405,20 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 3.9 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void String_Declaration_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DEFSTR A",
+            "20 A=\"CHRIS\"",
+            "30 PRINT A"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("CHRIS");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
