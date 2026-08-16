@@ -1421,6 +1421,17 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Print_At_The_Final_Display_Position()
+    {
+        using var controller = new TestController();
+
+        controller.ExecuteLine("PRINT AT 1023,\"\";");
+
+        controller.Trs80.CursorX.Should().Be(63);
+        controller.Trs80.CursorY.Should().Be(15);
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_With_Tab()
     {
         using var controller = new TestController();
