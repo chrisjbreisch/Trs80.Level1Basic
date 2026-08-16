@@ -106,7 +106,21 @@ public class PrintTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("HE SAID WHAT?");
+        controller.ReadOutputLine().Should().Be("WHAT?");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Rejects_Adjacent_Text_After_Closed_Quote()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT \"HE SAID, \"I AM HAPPY\"\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("WHAT?");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
