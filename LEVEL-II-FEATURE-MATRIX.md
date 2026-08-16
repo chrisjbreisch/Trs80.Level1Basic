@@ -296,6 +296,7 @@ Recent Level II slices, in order:
 217. Verified `CSRLIN` advances to the next 0-based row after a normal `PRINT` newline.
 218. Defined symmetric screen-coordinate wrapping for negative `SET`, `RESET`, and `POINT` coordinates.
 219. Verified `SPC` contributes no padding for nonpositive counts.
+220. Verified `TAB` contributes no padding when its target is at or behind the current column.
 
 ## Next Slice Queue
 

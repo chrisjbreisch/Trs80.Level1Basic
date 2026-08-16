@@ -1184,4 +1184,18 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be("ABC");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Tab_Targets_Behind_Current_Column_Add_No_Padding()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT \"A\";TAB(0);\"B\";TAB(-1);\"C\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("ABC");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
