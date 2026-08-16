@@ -709,11 +709,21 @@ public class Level2CompatibilityTest
         controller.ExecuteLine("CONT");
 
         controller.ReadOutputLine().Should().Be("BEFORE");
-        controller.ReadOutputLine().Should().Be("BREAK AT 20");
-        controller.ReadOutputLine().Should().BeEmpty();
+        controller.ReadOutputLine().Should().Be("BREAK IN 20");
         controller.ReadOutputLine().Should().Be("READY");
         controller.ReadOutputLine().Should().Be("AFTER");
         controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Stop_Uses_Level_II_Break_Message_Without_Blank_Line_Before_Ready()
+    {
+        using var controller = new TestController();
+
+        controller.RunProgram(new List<string> { "25 STOP" });
+
+        controller.ReadOutputLine().Should().Be("BREAK IN 25");
+        controller.ReadOutputLine().Should().Be("READY");
     }
 
     [TestMethod]
@@ -971,7 +981,7 @@ public class Level2CompatibilityTest
         controller.ExecuteLine("RUN");
 
         controller.ReadOutputLine().Should().Be("BEFORE");
-        controller.ReadOutputLine().Should().Be("BREAK AT 20");
+        controller.ReadOutputLine().Should().Be("BREAK IN 20");
         controller.IsEndOfRun().Should().BeTrue();
     }
 

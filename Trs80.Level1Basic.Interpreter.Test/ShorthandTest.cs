@@ -211,7 +211,7 @@ public class ShorthandTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("BREAK AT 20");
+        controller.ReadOutputLine().Should().Be("BREAK IN 20");
     }
 
     [TestMethod]
@@ -227,8 +227,7 @@ public class ShorthandTest
         controller.RunProgram(program);
         controller.ExecuteLine("c.");
 
-        controller.ReadOutputLine().Should().Be("BREAK AT 20");
-        controller.ReadOutputLine().Should().Be("");
+        controller.ReadOutputLine().Should().Be("BREAK IN 20");
         controller.ReadOutputLine().Should().Be("READY");
         controller.ReadOutputLine().Should().Be(" 3 ");
         controller.IsEndOfRun().Should().BeTrue();

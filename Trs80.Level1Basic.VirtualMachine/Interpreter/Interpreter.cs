@@ -28,6 +28,7 @@ public class Interpreter : IInterpreter
     private readonly IHost _host;
     private readonly IAppSettings _appSettings;
     private readonly PendingEditRequest _pendingEdit;
+    private bool _omitBlankLineBeforePrompt;
 
     public Interpreter(IHost host, ITrs80 trs80, ITrs80Api trs80Api,
         IMachine machine, IProgram program, IAppSettings appSettings,
@@ -975,7 +976,10 @@ public class Interpreter : IInterpreter
 
     private void WritePrompt()
     {
-        _trs80.WriteLine();
+        if (!_omitBlankLineBeforePrompt)
+            _trs80.WriteLine();
+
+        _omitBlankLineBeforePrompt = false;
         _trs80.WriteLine("READY");
     }
 
@@ -1020,7 +1024,8 @@ public class Interpreter : IInterpreter
 
     public Void VisitStopStatement(Stop statement)
     {
-        _trs80.WriteLine($"BREAK AT {statement.LineNumber}");
+        _trs80.WriteLine($"BREAK IN {statement.LineNumber}");
+        _omitBlankLineBeforePrompt = statement.LineNumber >= 0;
         _machine.HaltRun();
 
         return null!;
