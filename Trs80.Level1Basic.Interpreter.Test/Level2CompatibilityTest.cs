@@ -211,4 +211,19 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 3 -2 -3 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Optional_String_Argument_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A$=\"HELLO\"",
+            "20 PRINT INSTR(3,A$,\"L\");MID$(A$,2,2)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3 EL");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
