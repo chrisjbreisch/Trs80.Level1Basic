@@ -248,6 +248,23 @@ public class Level2CompatibilityTest
     }
 
     [TestMethod]
+    public void Input_String_Compatibility_Program()
+    {
+        using var controller = new TestController
+        {
+            Input = new StringReader("abc")
+        };
+        var program = new List<string> {
+            "10 PRINT INPUT$(3)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("ABC");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Numeric_Conversion_Compatibility_Program()
     {
         using var controller = new TestController();
