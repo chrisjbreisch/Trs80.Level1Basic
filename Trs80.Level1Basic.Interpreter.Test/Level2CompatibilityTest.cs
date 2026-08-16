@@ -265,6 +265,20 @@ public class Level2CompatibilityTest
     }
 
     [TestMethod]
+    public void Inkey_Empty_State_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT LEN(INKEY$)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Numeric_Conversion_Compatibility_Program()
     {
         using var controller = new TestController();
