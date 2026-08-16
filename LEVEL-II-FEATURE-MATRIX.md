@@ -225,6 +225,7 @@ Recent Level II slices, in order:
 146. Verified a valid double-precision `#` value near the upper bound; `1.7E+38` is accepted.
 147. Verified first-two-character normalization for long alphanumeric names with `%` suffixes.
 148. Verified first-two-character normalization for long alphanumeric names with `!` suffixes.
+149. Added comma statement separators for assignment-shaped continuations, so `A=3, B=5` executes both assignments.
 
 ## Next Slice Queue
 

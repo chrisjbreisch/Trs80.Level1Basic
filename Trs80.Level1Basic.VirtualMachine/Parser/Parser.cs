@@ -87,12 +87,24 @@ public class Parser : IParser
             IStatement current = Statement();
             compound.Statements.Add(current);
 
-        } while (Match(TokenType.Colon));
+        } while (Match(TokenType.Colon) || MatchCommaStatementSeparator());
 
         if (compound.Statements.Count != 1) return StatementWrapper(compound);
 
         var statement = (IListStatementDecorator)compound.Statements[0];
         return StatementWrapper(statement.UnDecorate());
+    }
+
+    private bool MatchCommaStatementSeparator()
+    {
+        if (!Check(TokenType.Comma)
+            || _current + 2 >= _tokens.Count
+            || _tokens[_current + 1].Type != TokenType.Identifier
+            || _tokens[_current + 2].Type != TokenType.Equal)
+            return false;
+
+        Advance();
+        return true;
     }
 
     private IStatement Statement()
