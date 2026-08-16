@@ -205,6 +205,7 @@ Recent Level II slices, in order:
 126. Verified right-associative exponentiation, so `2^3^2` evaluates as `2^(3^2)` and outputs `512`.
 127. Verified exponentiation precedence over multiplication, so `2*3^2` outputs `18`.
 128. Verified exponentiation precedence over division, so `8/2^2` outputs `2`.
+129. Verified exponentiation precedence over `MOD`, so `10 MOD 2^2` outputs `2`.
 
 ## Next Slice Queue
 
