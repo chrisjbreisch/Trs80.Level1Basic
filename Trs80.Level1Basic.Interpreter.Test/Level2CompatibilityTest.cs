@@ -751,4 +751,22 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be("BREAK AT 20");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Restore_Line_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DATA 1,2,3",
+            "20 READ A",
+            "30 RESTORE 10",
+            "40 READ B",
+            "50 PRINT A;B"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1  1 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
