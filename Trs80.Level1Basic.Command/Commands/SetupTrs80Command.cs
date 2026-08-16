@@ -32,8 +32,11 @@ public class SetupTrs80Command : ICommand<SetupTrs80Model>
 
     private void WriteBanner()
     {
-        _trs80.WriteLine("TRS-80 Model I Level I BASIC Interpreter by Chris J. Breisch");
-        _trs80.WriteLine("Copyright 2022 - Apache 2.0 license");
+        _trs80.WriteLine("TRS-80 Model I Level I & Level II BASIC Interpreter by Chris J. Breisch");
+        _trs80.WriteLine("Copyright 2026 - Apache 2.0 license");
+        //_trs80.WriteLine("MEMORY SIZE?");
+        //_trs80.WriteLine();
+        //_trs80.ReadLine();
     }
 
     private void WritePrompt()
