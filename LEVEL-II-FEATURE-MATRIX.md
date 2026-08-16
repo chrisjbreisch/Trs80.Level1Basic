@@ -22,7 +22,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Baseline | Level I interpreter with existing command, expression, file, input, and control-flow suites |
 | Recent focus | Type declarations, arrays, numeric precision, Level II built-ins, `CLEAR`, `MID$` assignment, user-defined functions, string-function compatibility, and scanner/parser keyword coverage |
 | Latest implementation commit | `cfc8b9c Add POKE keyword support` |
-| Latest documentation checkpoint | This update: expand the Level II compatibility-program corpus with typed string arrays |
+| Latest documentation checkpoint | This update: expand the Level II compatibility-program corpus with double precision |
 | Validation habit | Run the narrowest affected test first, then the affected test class, then the full project for shared changes |
 
 ## Language Core
@@ -141,6 +141,7 @@ Recent Level II slices, in order:
 62. Expanded the compatibility corpus with descending `FOR`/`NEXT` behavior using `STEP -1`.
 63. Expanded the compatibility corpus with a two-dimensional array declaration, assignment, and readback program.
 64. Expanded the compatibility corpus with typed string-array assignment and empty-element defaults.
+65. Expanded the compatibility corpus with declared `DEFDBL` precision during division.
 
 ## Next Slice Queue
 

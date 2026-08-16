@@ -356,4 +356,21 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be("HELLO");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Double_Precision_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DEFDBL A-B",
+            "20 A=1",
+            "30 B=3",
+            "40 PRINT A/B"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0.3333333 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
