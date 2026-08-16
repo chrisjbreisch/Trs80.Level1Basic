@@ -246,6 +246,7 @@ Recent Level II slices, in order:
 167. Added numeric-literal `%` suffix support, completing explicit `%`, `!`, and `#` numeric literal suffixes.
 168. Enforced the 16-bit range for numeric `%` literals; `PRINT 32768%` now reports `?OV ERROR`.
 169. Verified the negative numeric `%` boundary: `PRINT -32768%` is accepted while positive `32768%` remains overflow.
+170. Verified negative numeric `!` suffix literals, such as `PRINT -1.23!`.
 
 ## Next Slice Queue
 
