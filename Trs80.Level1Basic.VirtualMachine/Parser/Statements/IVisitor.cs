@@ -44,6 +44,7 @@ public interface IVisitor<out T>
     T VisitReturnStatement(Return statement);
     T VisitRunStatement(Run statement);
     T VisitSaveStatement(Save statement);
+    T VisitSetStatement(SetStatement statement);
     T VisitStatementExpressionStatement(StatementExpression statement);
     T VisitStopStatement(Stop statement);
     T VisitSystemStatement(SystemStatement statement);

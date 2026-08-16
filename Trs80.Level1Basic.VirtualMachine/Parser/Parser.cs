@@ -169,6 +169,8 @@ public class Parser : IParser
             return RunStatement();
         if (Match(TokenType.Save))
             return SaveStatement();
+        if (Match(TokenType.Set))
+            return SetStatement();
         if (Match(TokenType.Stop))
             return StopStatement();
         if (Match(TokenType.System))
@@ -621,6 +623,17 @@ public class Parser : IParser
         if (parenthesized)
             Consume(TokenType.RightParen, "Expected ')' after RESET arguments.");
         return StatementWrapper(new ResetStatement(x, y));
+    }
+
+    private IStatement SetStatement()
+    {
+        bool parenthesized = Match(TokenType.LeftParen);
+        Expression x = Expression();
+        Consume(TokenType.Comma, "Expected ',' after SET x coordinate.");
+        Expression y = Expression();
+        if (parenthesized)
+            Consume(TokenType.RightParen, "Expected ')' after SET arguments.");
+        return StatementWrapper(new SetStatement(x, y));
     }
 
     private IStatement RunStatement()

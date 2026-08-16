@@ -947,4 +947,10 @@ public class Interpreter : IInterpreter
         _trs80.Reset((float)Evaluate(statement.X), (float)Evaluate(statement.Y));
         return null!;
     }
+
+    public Void VisitSetStatement(SetStatement statement)
+    {
+        _trs80.Set((float)Evaluate(statement.X), (float)Evaluate(statement.Y));
+        return null!;
+    }
 }

@@ -72,6 +72,7 @@ public enum TokenType
     Return,
     Run,
     Save,
+    Set,
     Step,
     Stop,
     System,
