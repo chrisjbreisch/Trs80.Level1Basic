@@ -170,4 +170,39 @@ public class DataTest
         controller.ReadOutputLine().Should().Be(" 1  2  3  4  5 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Interpreter_Reports_Type_Mismatch_When_Reading_Numeric_Data_Into_String_Array()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DEFSTR A",
+            "20 DATA 42",
+            "30 READ A(1)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("?TM ERROR");
+        controller.ReadErrorLine().Should().Be(" 30  READ ?A(1)");
+        controller.ReadOutputLine();
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Reports_Type_Mismatch_When_Reading_String_Data_Into_Numeric_Array()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DATA STRING",
+            "20 READ A(1)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("?TM ERROR");
+        controller.ReadErrorLine().Should().Be(" 20  READ ?A(1)");
+        controller.ReadOutputLine();
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }

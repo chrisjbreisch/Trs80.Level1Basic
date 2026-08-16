@@ -917,11 +917,16 @@ public class Interpreter : IInterpreter
         foreach (Expression variable in statement.Variables)
         {
             dynamic value = _machine.Data.GetNext();
-            if (variable is Identifier identifier
-                && _machine.IsStringVariable(identifier.Name.Lexeme) != (value is string))
+            (Token target, int linePosition) = variable switch
+            {
+                Identifier identifier => (identifier.Name,
+                    identifier.LinePosition - identifier.Name.Lexeme.TrimEnd('$', '%', '!', '#').Length),
+                Array array => (array.Name, array.Name.LinePosition),
+                _ => (null, 0)
+            };
+            if (target != null && _machine.IsStringVariable(target.Lexeme) != (value is string))
                 throw new TypeMismatchException(_program.CurrentStatement.LineNumber,
-                    _program.CurrentStatement.SourceLine,
-                    identifier.LinePosition - identifier.Name.Lexeme.TrimEnd('$', '%', '!', '#').Length,
+                    _program.CurrentStatement.SourceLine, linePosition,
                     "READ source and target types do not match.");
             else
                 Assign(variable, value);
