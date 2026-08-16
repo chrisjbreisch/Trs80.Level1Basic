@@ -307,6 +307,7 @@ Recent Level II slices, in order:
 228. Added 7-byte scalar-variable allocation accounting to `MEM`, including the `A=1` reduction from 15572 to 15565.
 229. Added comma-separated multi-variable `INPUT` support for reading multiple values from one response line.
 230. Preserved semicolon-separated `INPUT` as independent reads while restricting bulk reads to comma syntax.
+231. Added apostrophe comments as `REM` aliases outside quoted strings.
 
 ## Next Slice Queue
 

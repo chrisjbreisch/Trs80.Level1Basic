@@ -101,4 +101,36 @@ public class InterpreterTest
         controller.ReadOutputLine().Should().Be(" 9 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Interpreter_Handles_Apostrophe_Remarks()
+    {
+        using var controller = new TestController();
+        controller.ExecuteLine("10 ' A = A * 3");
+        controller.ExecuteLine("RUN");
+
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Handles_Apostrophe_Remarks_After_A_Statement()
+    {
+        using var controller = new TestController();
+        controller.ExecuteLine("10 PRINT \"BEFORE\":' comment");
+        controller.ExecuteLine("RUN");
+
+        controller.ReadOutputLine().Should().Be("BEFORE");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Preserves_Apostrophes_Inside_Strings()
+    {
+        using var controller = new TestController();
+        controller.ExecuteLine("10 PRINT \"DON'T ALTER\"");
+        controller.ExecuteLine("RUN");
+
+        controller.ReadOutputLine().Should().Be("DON'T ALTER");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
