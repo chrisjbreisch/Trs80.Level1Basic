@@ -158,6 +158,18 @@ public class ExpressionTest
     }
 
     [TestMethod]
+    public void Interpreter_Preserves_High_Precision_Literal_Assigned_Through_Defdbl()
+    {
+        using var controller = new TestController();
+
+        controller.ExecuteLine("DEFDBL D");
+        controller.ExecuteLine("D=1.23456789");
+        controller.ExecuteLine("PRINT D");
+
+        controller.ReadOutputLine().Should().Be(" 1.23456789 ");
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Apply_Unary_Negation_To_Double()
     {
         using var controller = new TestController();

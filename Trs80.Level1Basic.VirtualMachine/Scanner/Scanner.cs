@@ -731,10 +731,12 @@ public class Scanner : IScanner
         object value;
         string number = _source.Substring(TokenStart, TokenLength);
         bool integerSuffix = number.EndsWith('%');
+        bool singleSuffix = number.EndsWith('!');
         if (number.EndsWith('#') || number.EndsWith('!') || number.EndsWith('%'))
             number = number[..^1];
         if (_source[TokenStart..(TokenStart + TokenLength)].EndsWith('#')
-            || number.Contains('D') || number.Contains('d'))
+            || number.Contains('D') || number.Contains('d')
+            || (!singleSuffix && HasMoreThanSevenSignificantDigits(number)))
             value = double.Parse(number.Replace('D', 'E').Replace('d', 'e'),
                 System.Globalization.CultureInfo.InvariantCulture);
         else if (isInt)
@@ -758,6 +760,14 @@ public class Scanner : IScanner
             value = float.Parse(number, System.Globalization.CultureInfo.InvariantCulture);
 
         AddToken(TokenType.Number, value);
+    }
+
+    private static bool HasMoreThanSevenSignificantDigits(string number)
+    {
+        int exponentIndex = number.IndexOfAny(['E', 'e']);
+        string mantissa = exponentIndex >= 0 ? number[..exponentIndex] : number;
+        string digits = mantissa.Replace(".", string.Empty).TrimStart('0');
+        return digits.Length > 7;
     }
 
     private char PeekNext()

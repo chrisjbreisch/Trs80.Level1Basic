@@ -45,7 +45,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | --- | --- | --- | --- |
 | String inspection and slicing | Partial | `CHR$`, `ASC`, `LEN`, `LEFT$`, `RIGHT$`, `MID$`, `INSTR`, `STR$`, `VAL`, and case/trim helpers exist. Fractional numeric arguments truncate consistently, including `STRING$` character codes; `INSTR` supports its optional start position; `MID$` supports both `(source$, start)` and `(source$, start, length)`; empty-string behavior is covered; and `VAL` consumes a leading numeric prefix. | Audit remaining conversion and exact error behavior. Existing anchor: `NativeFunctionTest`. |
 | `MID$` assignment | Implemented | Supports `MID$(A$, start, length) = value$` and optional length. Replacement is fixed-length, does not expand the target, ignores out-of-range starts and nonpositive arguments, and requires a string target. | Keep as a regression anchor while the broader string-function row is completed. |
-| Numeric conversion | Implemented | `CINT`, `CSNG`, `CDBL`, `FIX`, and `INT` exist. `CINT`, `FIX`, and `INT` avoid unnecessary `float` narrowing for double inputs. | Verify overflow, exact midpoint rounding, and conversion from strings. Existing anchor: `NativeFunctionTest`. |
+| Numeric conversion | Implemented | `CINT`, `CSNG`, `CDBL`, `FIX`, and `INT` exist. `CINT`, `FIX`, and `INT` avoid unnecessary `float` narrowing for double inputs. Unsuffixed numeric constants with more than seven significant mantissa digits are classified as double precision, while explicit `!` retains single precision. | Verify remaining overflow, exact midpoint rounding, and conversion from strings. Existing anchors: `NativeFunctionTest`, `ExpressionTest`, `PrintTest`. |
 | Math functions | Implemented | `SQR`, `SIN`, `COS`, `TAN`, `ATN`, `LOG`, and `EXP` are registered and callable. | Confirm domain errors, precision, and Level II output expectations. |
 | Random numbers | Partial | One- and zero-argument `RND` exist; numeric controls are truncated to integer controls; negative controls reseed the generator deterministically and repeat the seeded first value; zero control repeats the last generated value after initialization. | Verify the remaining manual boundary cases. |
 | Keyboard/input functions | Partial | `INPUT$` remains length-bounded input and returns available characters without padding at end-of-input; `INKEY$` performs a non-blocking host key probe, normalizes printable input to uppercase, and returns available control characters. Extended keys with no character payload intentionally remain empty. | Define any TRS-80-specific extended-key encoding and verify interaction with `INPUT`. |
@@ -333,6 +333,7 @@ Recent Level II slices, in order:
 254. Preserved the current program when the Windows LOAD dialog is cancelled.
 255. Verified cancelling the Windows SAVE dialog preserves the current program and emits no success message.
 256. Applied DEF type declarations by variable initial and enforced 16-bit overflow on implicit `DEFINT` scalar assignments.
+257. Preserved DEFDBL assignment precision by classifying unsuffixed constants with more than seven significant digits as double precision.
 
 ## Next Slice Queue
 
