@@ -227,6 +227,7 @@ Recent Level II slices, in order:
 148. Verified first-two-character normalization for long alphanumeric names with `!` suffixes.
 149. Added comma statement separators for assignment-shaped continuations, so `A=3, B=5` executes both assignments.
 150. Verified comma statement separators also handle string assignments, so `A$="A", B$="B"` executes both assignments.
+151. Verified comma statement separators handle mixed numeric and string assignments.
 
 ## Next Slice Queue
 
