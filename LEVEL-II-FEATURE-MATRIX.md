@@ -202,6 +202,7 @@ Recent Level II slices, in order:
 123. Rejected adjacent text after a closed string literal, making malformed nested-quote PRINT forms consistently report `WHAT?` instead of evaluating trailing words as variables.
 124. Verified explicit quoted-string concatenation remains valid after malformed-quote validation.
 125. Added `^` exponentiation with higher precedence and fractional exponent support; `5^2` outputs `25` and `4^0.5` outputs `2`.
+126. Verified right-associative exponentiation, so `2^3^2` evaluates as `2^(3^2)` and outputs `512`.
 
 ## Next Slice Queue
 

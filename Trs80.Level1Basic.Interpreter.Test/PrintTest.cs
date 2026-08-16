@@ -155,6 +155,20 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Uses_Right_Associative_Exponentiation()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT 2^3^2"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 512 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Use_Multi_Character_Variable()
     {
         using var controller = new TestController();
