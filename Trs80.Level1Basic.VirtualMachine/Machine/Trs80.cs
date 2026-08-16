@@ -84,7 +84,7 @@ public class Trs80 : ITrs80
     public void Clear()
     {
         _host.Clear();
-        Erase(0, 0, ScreenPixelWidth - 1, ScreenPixelHeight - 1);
+        Erase(0, 0, ScreenPixelWidth, ScreenPixelHeight);
     }
 
     public void SetCursorPosition(int column, int row)

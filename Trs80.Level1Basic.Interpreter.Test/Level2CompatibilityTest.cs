@@ -1220,6 +1220,23 @@ public class Level2CompatibilityTest
     }
 
     [TestMethod]
+    public void Cls_Clears_All_Graphics_Pixels()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 SET 0,0",
+            "20 SET 127,47",
+            "30 CLS",
+            "40 PRINT POINT(0,0);POINT(127,47)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0  0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Spc_With_Nonpositive_Count_Adds_No_Padding()
     {
         using var controller = new TestController();
