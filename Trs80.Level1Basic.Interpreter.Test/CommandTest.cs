@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.TestUtilities;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
+using Trs80.Level1Basic.VirtualMachine.Scanner;
 
 namespace Trs80.Level1Basic.Interpreter.Test;
 
@@ -102,6 +103,18 @@ public class CommandTest
         var tokens = controller.Scanner.ScanTokens(new SourceLine("SA. \"PROGRAM.BAS\""));
 
         controller.Parser.Parse(tokens).Should().BeOfType<Save>();
+    }
+
+    [TestMethod]
+    public void Parser_Can_Parse_Cassette_Command_Aliases_As_File_Commands()
+    {
+        using var controller = new TestController();
+
+        List<Token> loadTokens = controller.Scanner.ScanTokens(new SourceLine("CLOAD \"PROGRAM.BAS\""));
+        List<Token> saveTokens = controller.Scanner.ScanTokens(new SourceLine("CSAVE \"PROGRAM.BAS\""));
+
+        controller.Parser.Parse(loadTokens).Should().BeOfType<Load>();
+        controller.Parser.Parse(saveTokens).Should().BeOfType<Save>();
     }
 
     [TestMethod]

@@ -16,6 +16,122 @@ public class StringExtensionsTest
     private const string testCamelCaseString = "fourScoreAndSevenYearsAgo";
 
     [TestMethod]
+    public void Line_Editor_Buffer_Supports_Cursor_Editing()
+    {
+        var buffer = new LineEditorBuffer("AC");
+
+        buffer.MoveRight();
+        buffer.Insert('B');
+        buffer.MoveLeft();
+        buffer.Delete();
+        buffer.Backspace();
+        buffer.MoveRight();
+
+        buffer.ToString().Should().Be("C");
+        buffer.CursorIndex.Should().Be(1);
+    }
+
+    [TestMethod]
+    public void Line_Editor_Buffer_Supports_Home_And_End_Movement()
+    {
+        var buffer = new LineEditorBuffer("ABC");
+
+        buffer.MoveHome();
+        buffer.CursorIndex.Should().Be(0);
+
+        buffer.MoveEnd();
+        buffer.CursorIndex.Should().Be(3);
+    }
+
+    [TestMethod]
+    public void Line_Editor_Buffer_Can_Clear_The_Current_Line()
+    {
+        var buffer = new LineEditorBuffer("CANCEL ME");
+
+        buffer.Clear();
+
+        buffer.ToString().Should().BeEmpty();
+        buffer.CursorIndex.Should().Be(0);
+    }
+
+    [TestMethod]
+    public void Line_Editor_History_Recalls_Recent_Lines_In_Reverse_Order()
+    {
+        var history = new LineEditorHistory();
+        history.Add("FIRST");
+        history.Add("SECOND");
+
+        history.TryGetPrevious(out string second).Should().BeTrue();
+        history.TryGetPrevious(out string first).Should().BeTrue();
+        history.TryGetPrevious(out string oldest).Should().BeTrue();
+
+        second.Should().Be("SECOND");
+        first.Should().Be("FIRST");
+        oldest.Should().Be("FIRST");
+    }
+
+    [TestMethod]
+    public void Line_Editor_History_Recalls_Newer_Lines_And_Clears_After_Latest()
+    {
+        var history = new LineEditorHistory();
+        history.Add("FIRST");
+        history.Add("SECOND");
+        history.TryGetPrevious(out _).Should().BeTrue();
+        history.TryGetPrevious(out _).Should().BeTrue();
+
+        history.TryGetNext(out string second).Should().BeTrue();
+        history.TryGetNext(out string cleared).Should().BeTrue();
+
+        second.Should().Be("SECOND");
+        cleared.Should().BeEmpty();
+    }
+
+    [TestMethod]
+    public void Line_Editor_History_Restores_Draft_After_Recall_Navigation()
+    {
+        var history = new LineEditorHistory();
+        history.Add("FIRST");
+        history.Add("SECOND");
+
+        history.TryGetPrevious("DRAFT", out string recalled).Should().BeTrue();
+        history.TryGetPrevious(recalled, out _).Should().BeTrue();
+        history.TryGetNext(out _).Should().BeTrue();
+        history.TryGetNext(out string draft).Should().BeTrue();
+
+        recalled.Should().Be("SECOND");
+        draft.Should().Be("DRAFT");
+    }
+
+    [TestMethod]
+    public void Auto_Line_Numbering_Generates_Successive_Numbered_Lines()
+    {
+        var numbering = new AutoLineNumbering();
+        numbering.Start(100, 20);
+
+        numbering.TryNumber("PRINT 1", out string first).Should().BeTrue();
+        numbering.TryNumber("PRINT 2", out string second).Should().BeTrue();
+
+        first.Should().Be("100 PRINT 1");
+        second.Should().Be("120 PRINT 2");
+    }
+
+    [TestMethod]
+    public void Auto_Line_Numbering_Rejects_Blank_Lines_And_Can_Stop()
+    {
+        var numbering = new AutoLineNumbering();
+        numbering.Start();
+
+        numbering.TryNumber("  ", out string blank).Should().BeFalse();
+        numbering.IsActive.Should().BeTrue();
+
+        numbering.Stop();
+
+        numbering.IsActive.Should().BeFalse();
+        numbering.TryNumber("PRINT 1", out string stopped).Should().BeFalse();
+        stopped.Should().BeEmpty();
+    }
+
+    [TestMethod]
     public void Can_Convert_Empty_String_To_Pascal_Case()
     {
         string? result = string.Empty.ToPascalCase();

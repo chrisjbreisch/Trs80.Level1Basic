@@ -12,6 +12,9 @@ public class FakeHost : IHost
     private int _cursorX;
     private int _cursorY;
 
+    public int BeepCount { get; private set; }
+    public List<string> PrintedDocuments { get; } = new();
+
     public FakeHost()
     {
         Clear();
@@ -48,6 +51,11 @@ public class FakeHost : IHost
         Erase(0, 0, ScreenPixelWidth, ScreenPixelHeight);
         _cursorX = 0;
         _cursorY = 0;
+    }
+
+    public void Beep()
+    {
+        BeepCount++;
     }
 
     public ConsoleKeyInfo ReadKey()
@@ -93,6 +101,11 @@ public class FakeHost : IHost
     {
         Out.Write(text);
         _cursorX += text.Length;
+    }
+
+    public void Print(string text)
+    {
+        PrintedDocuments.Add(text);
     }
 
     public string ReadLine()

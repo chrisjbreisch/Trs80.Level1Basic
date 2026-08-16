@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -81,6 +82,20 @@ public class Host : IHost, IDisposable
     public void WriteLine(string text = "") => Out.WriteLine(text);
 
     public void Write(string text) => Out.Write(text);
+
+    public void Print(string text)
+    {
+        using var document = new PrintDocument();
+        using var dialog = new PrintDialog { Document = document };
+        document.PrintPage += (_, eventArgs) =>
+        {
+            using var font = new Font("Consolas", 10);
+            eventArgs.Graphics.DrawString(text, font, Brushes.Black, eventArgs.MarginBounds.Left, eventArgs.MarginBounds.Top);
+        };
+
+        if (dialog.ShowDialog() == DialogResult.OK)
+            document.Print();
+    }
 
     public string ReadLine()
     {
@@ -255,6 +270,12 @@ public class Host : IHost, IDisposable
     public void Clear()
     {
         Console.Clear();
+    }
+
+    public void Beep()
+    {
+        if (OperatingSystem.IsWindows())
+            Console.Beep(800, 100);
     }
 
     public ConsoleKeyInfo ReadKey()

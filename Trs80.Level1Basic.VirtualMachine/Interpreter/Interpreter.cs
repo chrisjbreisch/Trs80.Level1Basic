@@ -423,6 +423,7 @@ public class Interpreter : IInterpreter
 
     public Void VisitBeepStatement(Beep statement)
     {
+        _host.Beep();
         return null!;
     }
 
@@ -675,11 +676,41 @@ public class Interpreter : IInterpreter
 
     public Void VisitLprintStatement(Lprint statement)
     {
+        var output = new StringBuilder();
+        if (statement.AtPosition != null)
+            output.Append(Stringify(Evaluate(statement.AtPosition)));
+
+        foreach (Expression expression in statement.Expressions)
+            output.Append(Stringify(Evaluate(expression)));
+
+        if (statement.WriteNewline)
+            output.AppendLine();
+
+        _host.Print(output.ToString());
         return null!;
     }
 
     public Void VisitLlistStatement(Llist statement)
     {
+        int firstLine = GetStartingLineNumber(statement.StartAtLineNumber);
+        int? endLine = statement.EndAtLineNumber is null
+            ? null
+            : GetStartingLineNumber(statement.EndAtLineNumber);
+        int lastLine = endLine ?? int.MaxValue;
+        int normalizedFirstLine = Math.Min(firstLine, lastLine);
+        int normalizedLastLine = Math.Max(firstLine, lastLine);
+        var output = new StringBuilder();
+
+        foreach (IStatement programStatement in _machine.Program.List()
+            .Where(programStatement => programStatement.LineNumber >= normalizedFirstLine &&
+                programStatement.LineNumber <= normalizedLastLine))
+        {
+            output.AppendLine(programStatement.LineNumber >= 0
+                ? $" {programStatement.LineNumber}  {programStatement.SourceLine}"
+                : programStatement.SourceLine);
+        }
+
+        _host.Print(output.ToString());
         return null!;
     }
 

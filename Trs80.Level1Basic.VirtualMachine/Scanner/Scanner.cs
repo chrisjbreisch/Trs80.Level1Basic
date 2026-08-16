@@ -179,6 +179,7 @@ public class Scanner : IScanner
                 5, new Dictionary<string, TokenType>
                 {
                     {"CLEAR", TokenType.Clear},
+                    {"CLOAD", TokenType.Load},
                     {"GOSUB", TokenType.Gosub},
                     {"INPUT", TokenType.Input},
                     {"LLIST", TokenType.Llist},
@@ -186,6 +187,7 @@ public class Scanner : IScanner
                     {"PRINT", TokenType.Print},
                     {"REST.", TokenType.Restore},
                     {"RESET", TokenType.Reset},
+                    {"CSAVE", TokenType.Save},
                 }
             },
             {

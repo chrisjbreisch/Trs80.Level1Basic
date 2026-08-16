@@ -56,11 +56,11 @@ The project already has a mature Level I interpreter. Level II work is being add
 
 | Area | Status | Implemented now | Remaining work and evidence |
 | --- | --- | --- | --- |
-| Program editing commands | Partial | `LIST` with closed, open-ended, or reversed line ranges, `LOAD`, `SAVE`, `MERGE`, `CLEAR`, and explicit single-line, closed-range, or open-ended `DELETE` exist; `DEL.`, `LO.`, `ME.`, and `SA.` are accepted as DELETE, LOAD, MERGE, and SAVE abbreviations. `CLEAR` resets variables and arrays while preserving the program. `CLOAD` and `CSAVE` are intentionally unavailable; disk-based `LOAD` and `SAVE` are the supported equivalents. `AUTO` and `EDIT` remain deferred to the separate line-editor subsystem. | Verify remaining command abbreviations after the line editor is implemented. Existing anchor: `CommandTest`, `FileTest`. |
+| Program editing commands | Partial | `LIST` with closed, open-ended, or reversed line ranges, `LOAD`, `SAVE`, `MERGE`, `CLEAR`, and explicit single-line, closed-range, or open-ended `DELETE` exist; `DEL.`, `LO.`, `ME.`, and `SA.` are accepted as DELETE, LOAD, MERGE, and SAVE abbreviations. `CLEAR` resets variables and arrays while preserving the program. Plain `AUTO` with optional start/increment and plain `EDIT line` are handled by the line editor. `CLOAD` and `CSAVE` are accepted as aliases for file-backed `LOAD` and `SAVE`; cassette transport is not emulated. | Verify remaining command abbreviations and richer editor forms. Existing anchor: `CommandTest`, `FileTest`. |
 | Data statements | Implemented | `DATA`, `READ`, and `RESTORE` exist. | Add mixed-type, exhaustion, and `CLEAR` interaction cases. Existing anchor: `DataTest`. |
 | Console input/output | Implemented | `INPUT`, `PRINT`, `TAB`, `SPC`, and cursor-related behavior exist. | Audit formatting, commas/semicolons, input errors, and Level II line-width behavior. Existing anchors: `InputTest`, `PrintTest`, `NativeFunctionTest`. |
-| Hardware statements | Partial | `SET`, `RESET`, `POKE`, and related APIs exist as host-machine abstractions; explicit `SET x, y`, `RESET x, y`, and `POKE address, value` scanner/parser dispatch now routes to the existing graphics and memory APIs. `Level2CompatibilityTest` locks the combined graphics/memory behavior. | Specify whether each operation is emulated, approximated, rejected, or intentionally unavailable; add equivalent contracts for intentionally limited audio, port, and printer behavior. |
-| Remaining Level II commands | Partial | All VM-backed Level II command keywords are now inventoried with focused scanner/parser coverage. `BEEP`, `OUT`, `WAIT`, `LPRINT`, and `LLIST` remain limited by host audio, port, and printer policies; `SYSTEM`, `SET`, `RESET`, and `POKE` dispatch to existing lifecycle, graphics, and memory APIs. `AUTO` and `EDIT` are deferred to the line editor; `CLOAD` and `CSAVE` remain intentionally unavailable. | Define hardware policies, then implement the line editor before revisiting `AUTO` and `EDIT`. The parser statement dispatch is centralized in `Parser.Statement()`. |
+| Hardware statements | Partial | `SET`, `RESET`, `POKE`, and related APIs exist as host-machine abstractions; explicit `SET x, y`, `RESET x, y`, and `POKE address, value` scanner/parser dispatch now routes to the existing graphics and memory APIs. `BEEP` routes through `IHost` to a short Windows console tone, while test hosts record the call without producing audio. `OUT` and `WAIT` are accepted as silent, non-blocking no-ops because no TRS-80 port devices are emulated. `LPRINT` and `LLIST` route through `IHost.Print`; the Windows host presents the standard print dialog and test hosts capture documents. | Specify whether each remaining operation is emulated, approximated, rejected, or intentionally unavailable. |
+| Remaining Level II commands | Partial | All VM-backed Level II command keywords are now inventoried with focused scanner/parser coverage. `BEEP` produces a short host tone; `OUT` and `WAIT` are intentionally silent, non-blocking no-ops because no TRS-80 port devices are emulated; `LPRINT` and `LLIST` invoke the host printer interface. `SYSTEM`, `SET`, `RESET`, and `POKE` dispatch to existing lifecycle, graphics, and memory APIs. `AUTO` and `EDIT` are handled by interactive input; `CLOAD` and `CSAVE` are file-backed aliases for `LOAD` and `SAVE`, not cassette emulation. | Add richer editor forms and revisit any remaining command abbreviations. The parser statement dispatch is centralized in `Parser.Statement()`. |
 
 ## Runtime and Compatibility
 
@@ -70,7 +70,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Level II focused tests | Partial | Type declarations, arrays, built-ins, `CLEAR`, and `MID$` assignment have focused coverage distributed across `ExpressionTest`, `NativeFunctionTest`, `CommandTest`, and `ErrorTest`. | Consolidate new type and Level II cases into clearer files as the feature surface grows. |
 | Level II compatibility programs | Partial | `Level2CompatibilityTest` now contains executable hardware and typed-array/string-assignment programs with stated expected output. | Add short programs grouped by the remaining feature families and attach manual references as the corpus grows. |
 | Error compatibility | Partial | Existing errors preserve BASIC-style `WHAT?`, `HOW?`, and `SORRY` output with detailed diagnostics. | Map Level II error cases and expected source-position behavior explicitly. |
-| Line editor | Not started | The application accepts commands and program lines but has no dedicated editor subsystem. | Implement separately after language compatibility is stable: cursor movement, insert/delete, recall, and line replacement. |
+| Line editor | Partial | `LineEditorBuffer` owns cursor position and deterministic insertion, Home/End, left/right movement, backspace, delete, and clear behavior; `InputCommand` connects it to console key handling, including immediate Escape cancellation and Ctrl+U line clearing, redraws the edited line, preserves original and uppercase source forms, supports Up/Down recall with draft restoration through session-scoped `LineEditorHistory`, recognizes `AUTO`, `AUTO start`, and `AUTO start,increment` until a blank entry, and preloads existing lines for plain `EDIT line`. Numbered input replaces an existing program line through the interpreter's established `Replace` path. | Add richer `EDIT` command behavior and recall/rendering coverage as needed. |
 | ROM/RAM emulation | Intentionally limited | Host-machine APIs provide bounded approximations for memory and graphics operations. | Keep hardware policy outside the parser; document unsupported ROM, cassette, and machine-specific behavior. |
 
 ## Completed Slice Log
@@ -103,7 +103,7 @@ Recent Level II slices, in order:
 24. `SA.` abbreviation for the `SAVE` command.
 25. `ME.` abbreviation for the `MERGE` command.
 26. Reversed `LIST` range normalization.
-27. Documented intentional limitation for cassette `CLOAD` and `CSAVE` commands.
+27. Documented file-backed alias policy for cassette `CLOAD` and `CSAVE` commands without cassette transport emulation.
 28. Added the `CVI` pure built-in for two-byte string-to-integer conversion.
 29. Added the `CVS` pure built-in for four-byte string-to-single conversion.
 30. Added the `CVD` pure built-in for eight-byte string-to-double conversion.
@@ -258,6 +258,26 @@ Recent Level II slices, in order:
 179. Aligned expression, native-function, and compatibility regressions with Level II high-precision numeric formatting.
 180. Fixed bare-text string assignments so unquoted strings are preserved across single- and multi-statement lines.
 181. Added IF...THEN...ELSE execution, preserved single-letter `R` variable contexts, and aligned the final unknown-identifier compatibility baseline.
+182. Routed `BEEP` through the host abstraction, producing a short Windows console tone while keeping test hosts silent and observable.
+183. Documented and tested the intentional silent, non-blocking no-op policy for `OUT` and `WAIT` without emulated TRS-80 port devices.
+184. Routed `LPRINT` and `LLIST` through the host printer interface, with a Windows print dialog and deterministic captured documents in tests.
+185. Started the line editor subsystem with a focused, console-independent editing buffer for cursor movement and insertion/deletion.
+186. Connected the line editor buffer to console input with cursor movement, insertion, deletion, and terminal redraw support.
+187. Added session-scoped Up-arrow command recall through the line editor history service.
+188. Added Down-arrow recall toward newer history entries, clearing the buffer after the newest entry.
+189. Added compatibility coverage for replacing an existing numbered program line through edited input.
+190. Added a tested auto-numbering policy object as the foundation for `AUTO` command integration.
+191. Integrated plain `AUTO` into interactive input with default 10-line numbering and blank-line termination.
+192. Added `AUTO start` and `AUTO start,increment` option parsing to interactive input.
+193. Added plain `EDIT line` input handling that preloads the existing source and routes the edited line through replacement.
+194. Added Home and End cursor movement to the line editor buffer and interactive input handling.
+195. Added Escape cancellation for the current line editor buffer.
+196. Added draft preservation while navigating backward and forward through command history.
+197. Added Ctrl+U as a line-clear shortcut alongside Escape cancellation.
+198. Made Escape cancel the active input or edit immediately without submitting a blank line.
+199. Aligned the command matrix with implemented `AUTO`/`EDIT` support and covered auto-numbering termination behavior.
+200. Added `CLOAD` and `CSAVE` scanner aliases for file-backed `LOAD` and `SAVE` behavior.
+201. Verified `CLOAD` and `CSAVE` execute the file-backed load/save round trip.
 
 ## Next Slice Queue
 

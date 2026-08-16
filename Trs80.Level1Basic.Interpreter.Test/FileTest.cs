@@ -37,6 +37,24 @@ public class FileTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Execute_Cassette_Aliases_Through_File_Commands()
+    {
+        using var controller = new TestController();
+
+        controller.ExecuteLine("CLOAD \"load.bas\"");
+        controller.ExecuteLine("CSAVE \"csave.bas\"");
+        controller.ExecuteLine("NEW");
+        controller.ExecuteLine("CLOAD \"csave.bas\"");
+        controller.ExecuteLine("RUN");
+
+        controller.ReadOutputLine().Should().Be("Loaded \"load.bas\".");
+        controller.ReadOutputLine().Should().Be("Saved \"csave.bas\".");
+        controller.ReadOutputLine().Should().Be("Loaded \"csave.bas\".");
+        controller.ReadOutputLine().Should().Be(" 10 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Execute_Merge()
     {
         using var controller = new TestController();

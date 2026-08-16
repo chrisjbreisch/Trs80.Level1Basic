@@ -21,6 +21,7 @@ public class TestController : DisposableBase
     private readonly IInterpreter _interpreter;
     private readonly StringWriter _output = new();
     private readonly StringWriter _error = new();
+    public FakeHost Host { get; }
 
     private readonly Action? _onExplicitDispose;
     private readonly Action? _onImplicitDispose;
@@ -46,7 +47,8 @@ public class TestController : DisposableBase
         ILoggerFactory? loggerFactory = bootstrapper.LogFactory;
 
         INativeFunctions natives = new NativeFunctions();
-        IHost host = new FakeHost();
+        Host = new FakeHost();
+        IHost host = Host;
         Trs80 = new VirtualMachine.Machine.Trs80(appSettings, loggerFactory, host)
         {
             Out = _output,

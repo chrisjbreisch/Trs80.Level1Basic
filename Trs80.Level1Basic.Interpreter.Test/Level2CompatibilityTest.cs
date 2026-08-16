@@ -13,6 +13,57 @@ namespace Trs80.Level1Basic.Interpreter.Test;
 public class Level2CompatibilityTest
 {
     [TestMethod]
+    public void Beep_Compatibility_Program_Invokes_Host_And_Completes()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 BEEP",
+            "20 PRINT \"AFTER BEEP\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.Host.BeepCount.Should().Be(1);
+        controller.ReadOutputLine().Should().Be("AFTER BEEP");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Out_And_Wait_Compatibility_Program_Is_Silent_And_NonBlocking()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 OUT 251,1",
+            "20 WAIT 251,1",
+            "30 PRINT \"AFTER PORTS\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("AFTER PORTS");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Lprint_And_Llist_Compatibility_Program_Uses_Host_Printer()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 LPRINT \"PRINTER OUTPUT\"",
+            "20 LLIST",
+            "30 PRINT \"AFTER PRINTER\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.Host.PrintedDocuments.Should().HaveCount(2);
+        controller.Host.PrintedDocuments[0].Should().Contain("PRINTER OUTPUT");
+        controller.Host.PrintedDocuments[1].Should().Contain(" 10  LPRINT");
+        controller.ReadOutputLine().Should().Be("AFTER PRINTER");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Hardware_Statements_Preserve_Graphics_And_Memory_Behavior()
     {
         using var controller = new TestController();
@@ -26,6 +77,23 @@ public class Level2CompatibilityTest
         controller.RunProgram(program);
 
         controller.ReadOutputLine().Should().Be(" 0  65 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Numbered_Input_Replaces_An_Existing_Program_Line()
+    {
+        using var controller = new TestController();
+        controller.ExecuteStatements(new List<string> {
+            "10 PRINT \"OLD\"",
+            "20 PRINT \"KEEP\""
+        });
+
+        controller.ExecuteLine("10 PRINT \"UPDATED\"");
+        controller.ExecuteLine("RUN");
+
+        controller.ReadOutputLine().Should().Be("UPDATED");
+        controller.ReadOutputLine().Should().Be("KEEP");
         controller.IsEndOfRun().Should().BeTrue();
     }
 

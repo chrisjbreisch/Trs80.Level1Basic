@@ -11,6 +11,7 @@ public interface IHost
     (int Left, int Top) GetCursorPosition();
     void SetCursorPosition(int column, int row);
     void Clear();
+    void Beep();
     ConsoleKeyInfo ReadKey();
     void SetWindowSize(int width, int height);
     void SetBufferSize(int width, int height);
@@ -21,6 +22,7 @@ public interface IHost
     TextWriter Error { get; set; }
     void WriteLine(string text = "");
     void Write(string text);
+    void Print(string text);
     string ReadLine();
     string GetFileNameForSave();
     string GetFileNameForLoad();
