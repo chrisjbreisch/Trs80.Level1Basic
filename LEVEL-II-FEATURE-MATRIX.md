@@ -22,7 +22,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Baseline | Level I interpreter with existing command, expression, file, input, and control-flow suites |
 | Recent focus | Type declarations, arrays, numeric precision, Level II built-ins, `CLEAR`, `MID$` assignment, user-defined functions, string-function compatibility, and scanner/parser keyword coverage |
 | Latest implementation commit | `cfc8b9c Add POKE keyword support` |
-| Latest documentation checkpoint | This update: expand the Level II compatibility-program corpus with RND range behavior |
+| Latest documentation checkpoint | This update: expand the Level II compatibility-program corpus with controlled RND behavior |
 | Validation habit | Run the narrowest affected test first, then the affected test class, then the full project for shared changes |
 
 ## Language Core
@@ -173,6 +173,7 @@ Recent Level II slices, in order:
 94. Expanded the compatibility corpus with positive and negative `CINT` midpoint rounding.
 95. Expanded the compatibility corpus with `VAL` returning zero for an invalid numeric prefix.
 96. Expanded the compatibility corpus with a deterministic predicate for zero-argument `RND` range behavior.
+97. Expanded the compatibility corpus with deterministic positive-control `RND(1)` behavior.
 
 ## Next Slice Queue
 

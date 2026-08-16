@@ -844,4 +844,18 @@ public class Level2CompatibilityTest
         controller.ReadOutputLine().Should().Be(" 1 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Controlled_Random_Number_Compatibility_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT RND(1)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
 }
