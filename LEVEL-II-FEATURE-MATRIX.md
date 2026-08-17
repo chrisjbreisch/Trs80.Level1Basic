@@ -351,6 +351,7 @@ Recent Level II slices, in order:
 271. Applied symmetric `?TM ERROR` validation to typed array element assignments before environment casting.
 272. Expanded the compatibility corpus with a typed single-precision overflow program and its `?OV ERROR` diagnostic.
 273. Expanded the compatibility corpus with a typed double-precision overflow program and its `?OV ERROR` diagnostic.
+274. Expanded the compatibility corpus with an explicit integer-literal overflow program and its `?OV ERROR` diagnostic.
 
 ## Next Slice Queue
 
