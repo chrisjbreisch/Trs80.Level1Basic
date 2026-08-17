@@ -347,6 +347,7 @@ Recent Level II slices, in order:
 267. Expanded the compatibility corpus with an array `DATA`/`READ` type-mismatch program and its `?TM ERROR` diagnostic.
 268. Expanded the compatibility corpus with an incompatible binary-expression program and its `?TM ERROR` diagnostic.
 269. Expanded the compatibility corpus with a typed integer-overflow program and its `?OV ERROR` diagnostic.
+270. Expanded the compatibility corpus with a negative typed integer-overflow program and its `?OV ERROR` diagnostic.
 
 ## Next Slice Queue
 
