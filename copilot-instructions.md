@@ -20,7 +20,7 @@
 - Use `LEVEL-II-FEATURE-MATRIX.md` as the implementation map and update it for every completed Level II slice.
 - Each slice should have one clearly named behavior, a focused regression or compatibility test, and the smallest implementation change needed.
 - Keep hardware approximations and intentional compatibility deviations explicit in the matrix.
-- After each completed step: validate it, update the matrix, commit the step separately, and push the active branch.
+- After each completed step: validate it, update the matrix, commit the step separately, and push the active branch. Then continue with the next slice.
 
 ## Editing
 
