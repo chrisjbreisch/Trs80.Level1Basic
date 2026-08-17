@@ -256,6 +256,21 @@ public class Level2CompatibilityTest
     }
 
     [TestMethod]
+    public void Single_Overflow_Compatibility_Program_Reports_An_Error()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A!=1.8E+38",
+            "20 PRINT A!"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("?OV ERROR");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Binary_Conversion_Compatibility_Program()
     {
         using var controller = new TestController();
