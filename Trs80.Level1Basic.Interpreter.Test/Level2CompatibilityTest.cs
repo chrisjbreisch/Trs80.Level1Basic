@@ -204,6 +204,22 @@ public class Level2CompatibilityTest
     }
 
     [TestMethod]
+    public void Binary_Type_Mismatch_Compatibility_Program_Reports_An_Error()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT \"3\" * \"4\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("?TM ERROR");
+        controller.ReadErrorLine().Should().Be(" 10  PRINT \"3\" ?* \"4\"");
+        controller.ReadOutputLine();
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Binary_Conversion_Compatibility_Program()
     {
         using var controller = new TestController();
