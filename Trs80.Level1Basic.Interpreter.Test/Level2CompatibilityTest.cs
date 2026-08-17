@@ -220,6 +220,24 @@ public class Level2CompatibilityTest
     }
 
     [TestMethod]
+    public void Integer_Overflow_Compatibility_Program_Reports_An_Error()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 AB%=1234567",
+            "20 PRINT AB%"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("?OV ERROR");
+        controller.ReadErrorLine().Should().Be(" 20  PRINT AB%?");
+        controller.ReadErrorLine().Should().Be("[Integer value out of range.]");
+        controller.ReadOutputLine();
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Binary_Conversion_Compatibility_Program()
     {
         using var controller = new TestController();
