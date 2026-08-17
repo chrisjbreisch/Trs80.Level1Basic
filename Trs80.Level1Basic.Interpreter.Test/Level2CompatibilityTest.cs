@@ -300,6 +300,22 @@ public class Level2CompatibilityTest
     }
 
     [TestMethod]
+    public void Array_Too_Large_Compatibility_Program_Reports_An_Error()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT A(3963)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("SORRY");
+        controller.ReadErrorLine().Should().Be(" 10  PRINT A(3963?)");
+        controller.ReadOutputLine();
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Binary_Conversion_Compatibility_Program()
     {
         using var controller = new TestController();
