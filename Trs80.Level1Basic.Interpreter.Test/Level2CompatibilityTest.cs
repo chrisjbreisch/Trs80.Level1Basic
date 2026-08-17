@@ -333,6 +333,28 @@ public class Level2CompatibilityTest
     }
 
     [TestMethod]
+    public void Invalid_On_Goto_Compatibility_Program_Reports_An_Error()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A = 3",
+            "20 ON A GOTO 100, 200, 300",
+            "30 END",
+            "100 PRINT 100",
+            "110 END",
+            "200 PRINT 200",
+            "210 END"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HOW?");
+        controller.ReadErrorLine().Should().Be(" 20  ON A GOTO 100, 200, 300?");
+        controller.ReadOutputLine();
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Binary_Conversion_Compatibility_Program()
     {
         using var controller = new TestController();
