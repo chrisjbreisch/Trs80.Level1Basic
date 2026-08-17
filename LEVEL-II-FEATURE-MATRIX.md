@@ -353,6 +353,7 @@ Recent Level II slices, in order:
 273. Expanded the compatibility corpus with a typed double-precision overflow program and its `?OV ERROR` diagnostic.
 274. Expanded the compatibility corpus with an explicit integer-literal overflow program and its `?OV ERROR` diagnostic.
 275. Expanded the compatibility corpus with an oversized-array program and its `SORRY` memory diagnostic.
+276. Expanded the compatibility corpus with an invalid-goto program and its `HOW?` flow-control diagnostic.
 
 ## Next Slice Queue
 
