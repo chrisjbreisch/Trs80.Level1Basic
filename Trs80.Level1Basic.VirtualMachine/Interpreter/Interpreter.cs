@@ -96,6 +96,12 @@ public class Interpreter : IInterpreter
                 break;
             case Array array:
                 {
+                    if (_machine.IsStringVariable(array.Name.Lexeme) != (value is string))
+                        throw new TypeMismatchException(_program.CurrentStatement.LineNumber,
+                            _program.CurrentStatement.SourceLine,
+                            array.LinePosition,
+                            "Assignment target and value types do not match.");
+
                     dynamic index = Evaluate(array.Index);
                     if (array.Index2 == null)
                     {

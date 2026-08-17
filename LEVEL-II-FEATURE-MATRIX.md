@@ -348,6 +348,7 @@ Recent Level II slices, in order:
 268. Expanded the compatibility corpus with an incompatible binary-expression program and its `?TM ERROR` diagnostic.
 269. Expanded the compatibility corpus with a typed integer-overflow program and its `?OV ERROR` diagnostic.
 270. Expanded the compatibility corpus with a negative typed integer-overflow program and its `?OV ERROR` diagnostic.
+271. Applied symmetric `?TM ERROR` validation to typed array element assignments before environment casting.
 
 ## Next Slice Queue
 
