@@ -344,6 +344,7 @@ Recent Level II slices, in order:
 264. Expanded the compatibility corpus with a scalar type-mismatch program and its `?TM ERROR` diagnostic.
 265. Expanded the compatibility corpus with a `DATA`/`READ` type-mismatch program and its `?TM ERROR` diagnostic.
 266. Relaunched Windows Terminal-hosted application instances under `conhost.exe` so configured console fonts are applied; preserved normal existing console launches.
+267. Expanded the compatibility corpus with an array `DATA`/`READ` type-mismatch program and its `?TM ERROR` diagnostic.
 
 ## Next Slice Queue
 

@@ -186,6 +186,24 @@ public class Level2CompatibilityTest
     }
 
     [TestMethod]
+    public void Array_Data_Type_Mismatch_Compatibility_Program_Reports_An_Error()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DEFSTR A",
+            "20 DATA 42",
+            "30 READ A(1)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("?TM ERROR");
+        controller.ReadErrorLine().Should().Be(" 30  READ ?A(1)");
+        controller.ReadOutputLine();
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Binary_Conversion_Compatibility_Program()
     {
         using var controller = new TestController();
