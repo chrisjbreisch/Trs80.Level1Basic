@@ -18,6 +18,7 @@
 ## Level II Slices
 
 - Use `LEVEL-II-FEATURE-MATRIX.md` as the implementation map and update it for every completed Level II slice.
+- Keep `ROADMAP.md` current as implementation progresses: update phase checklists, decisions, dependencies, validation evidence, and completion notes when they change.
 - Each slice should have one clearly named behavior, a focused regression or compatibility test, and the smallest implementation change needed.
 - Keep hardware approximations and intentional compatibility deviations explicit in the matrix.
 - After each completed step: validate it, update the matrix, commit the step separately, and push the active branch. Then continue with the next slice.
