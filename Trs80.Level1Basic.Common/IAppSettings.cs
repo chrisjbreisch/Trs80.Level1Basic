@@ -5,4 +5,5 @@ public interface IAppSettings
     string FontName { get; set; }
     short FontSize { get; set; }
     bool DetailedErrors { get; set; }
+    BasicLanguageLevel BasicLevel { get; set; }
 }

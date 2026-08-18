@@ -5,4 +5,5 @@ public sealed class AppSettings : IAppSettings
     public string FontName { get; set; }
     public short FontSize { get; set; }
     public bool DetailedErrors { get; set; }
+    public BasicLanguageLevel BasicLevel { get; set; } = BasicLanguageLevel.Level2;
 }
