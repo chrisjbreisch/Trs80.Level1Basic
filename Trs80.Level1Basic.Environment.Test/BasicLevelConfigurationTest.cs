@@ -2,6 +2,7 @@ using System;
 
 using FluentAssertions;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Trs80.Level1Basic.Application;
@@ -26,6 +27,8 @@ public class BasicLevelConfigurationTest
             using var bootstrapper = new Bootstrapper();
 
             bootstrapper.AppSettings.BasicLevel.Should().Be(BasicLanguageLevel.Level2);
+            bootstrapper.ScopedServiceProvider.GetRequiredService<BasicLanguageLevel>()
+                .Should().Be(BasicLanguageLevel.Level2);
         }
         finally
         {
@@ -44,6 +47,8 @@ public class BasicLevelConfigurationTest
             using var bootstrapper = new Bootstrapper();
 
             bootstrapper.AppSettings.BasicLevel.Should().Be(BasicLanguageLevel.Level1);
+            bootstrapper.ScopedServiceProvider.GetRequiredService<BasicLanguageLevel>()
+                .Should().Be(BasicLanguageLevel.Level1);
         }
         finally
         {

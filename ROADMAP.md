@@ -61,7 +61,7 @@ Record pre-existing failures separately. The repository's slice workflow remains
 - [x] Add an explicit `AppSettings:BasicLevel` default to the application JSON.
 - [x] Preserve environment-variable override through `AppSettings__BasicLevel`.
 - [x] Reject unknown values during startup with a clear configuration error.
-- [ ] Register the resolved profile as a singleton in `Bootstrapper`.
+- [x] Register the resolved profile as a singleton in `Bootstrapper`.
 - [ ] Allow test construction to inject an explicit profile without process-global state.
 - [ ] Add focused tests for default, explicit Level I, explicit Level II, environment override, and invalid values.
 
@@ -209,6 +209,7 @@ Manual smoke checks should cover:
 | 2026-08-18 | Roadmap created; strict Level I / Level II configuration approach approved | Plan recorded in session memory and materialized here |
 | 2026-08-18 | Added the language-level contract and Level2 default | `BasicLanguageLevelTest`: 3 passed; solution build succeeded |
 | 2026-08-18 | Verified BasicLevel startup binding and environment override | `BasicLevelConfigurationTest`: 3 passed |
+| 2026-08-18 | Registered the resolved BasicLanguageLevel for dependency injection | `BasicLevelConfigurationTest`: 3 passed; solution build succeeded |
 
 The full `Trs80.Level1Basic.Environment.Test` project currently has an unrelated pre-existing failure in `Environment_Can_Delete_Line` (expected `null`, received an empty string); the focused configuration tests remain green.
 

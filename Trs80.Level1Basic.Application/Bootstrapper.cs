@@ -81,6 +81,20 @@ public sealed class Bootstrapper : DisposableBase
         _configuration.GetSection("AppSettings").Bind(AppSettings);
     }
 
+    private BasicLanguageLevel GetConfiguredBasicLevel()
+    {
+        string configuredLevel = _configuration["AppSettings:BasicLevel"];
+        if (string.IsNullOrWhiteSpace(configuredLevel))
+            return BasicLanguageLevel.Level2;
+
+        if (Enum.TryParse(configuredLevel, ignoreCase: true, out BasicLanguageLevel basicLevel) &&
+            Enum.IsDefined(basicLevel))
+            return basicLevel;
+
+        throw new InvalidOperationException(
+            $"Unknown AppSettings:BasicLevel value '{configuredLevel}'. Expected Level1 or Level2.");
+    }
+
     public void LoadWorkflow(string workflowFileName)
     {
         if (string.IsNullOrEmpty(workflowFileName)) return;
@@ -236,6 +250,7 @@ public sealed class Bootstrapper : DisposableBase
     private void ConfigureGeneralServices()
     {
         _services
+            .AddSingleton(typeof(BasicLanguageLevel), GetConfiguredBasicLevel())
             .AddSingleton<IScanner, Scanner>()
             .AddSingleton<IParser, Parser>()
             .AddSingleton<ITrs80, VirtualMachine.Machine.Trs80>()
