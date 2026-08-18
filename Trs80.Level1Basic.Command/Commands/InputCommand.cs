@@ -68,9 +68,6 @@ public class InputCommand : ICommand<InputModel>
                 if (cancelled)
                     continue;
 
-                if (string.IsNullOrWhiteSpace(editedLine.Original))
-                    continue;
-
                 string numberedLine = $"{editLineNumber} {editedLine.Original}";
                 sourceLine = new SourceLine
                 {
@@ -114,7 +111,7 @@ public class InputCommand : ICommand<InputModel>
             return false;
 
         SourceLine editedLine = GetInputLine(out bool cancelled, out _, statement.SourceLine, $"{lineNumber} ");
-        if (cancelled || string.IsNullOrWhiteSpace(editedLine.Original))
+        if (cancelled)
             return true;
 
         string numberedLine = $"{lineNumber} {editedLine.Original}";
@@ -157,9 +154,17 @@ public class InputCommand : ICommand<InputModel>
         lineNumber = 0;
         existingLine = string.Empty;
         string command = sourceLine.Trim();
-        if (!command.StartsWith("EDIT", StringComparison.OrdinalIgnoreCase) ||
-            (command.Length > 4 && !char.IsWhiteSpace(command[4])) ||
-            !int.TryParse(command[4..].Trim(), out int parsedLineNumber))
+        int argumentStart;
+        if (command.StartsWith("EDIT", StringComparison.OrdinalIgnoreCase) &&
+            (command.Length == 4 || char.IsWhiteSpace(command[4])))
+            argumentStart = 4;
+        else if (command.StartsWith("ED.", StringComparison.OrdinalIgnoreCase) &&
+                 (command.Length == 3 || char.IsWhiteSpace(command[3])))
+            argumentStart = 3;
+        else
+            return false;
+
+        if (!int.TryParse(command[argumentStart..].Trim(), out int parsedLineNumber))
             return false;
 
         IStatement? statement = _program.List().FirstOrDefault(item => item.LineNumber == parsedLineNumber);

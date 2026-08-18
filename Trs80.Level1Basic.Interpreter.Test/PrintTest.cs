@@ -1429,6 +1429,20 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Wrap_Print_At_Positions_Outside_The_Display_Range()
+    {
+        using var controller = new TestController();
+
+        controller.ExecuteLine("PRINT AT -1,\"\";");
+        controller.Trs80.CursorX.Should().Be(63);
+        controller.Trs80.CursorY.Should().Be(15);
+
+        controller.ExecuteLine("PRINT AT 1024,\"\";");
+        controller.Trs80.CursorX.Should().Be(0);
+        controller.Trs80.CursorY.Should().Be(0);
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_With_Tab()
     {
         using var controller = new TestController();

@@ -49,7 +49,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Math functions | Implemented | `SQR`, `SIN`, `COS`, `TAN`, `ATN`, `LOG`, and `EXP` are registered and callable. | Confirm domain errors, precision, and Level II output expectations. |
 | Random numbers | Partial | One- and zero-argument `RND` exist; numeric controls are truncated to integer controls; negative controls reseed the generator deterministically and repeat the seeded first value; zero control repeats the last generated value after initialization. | Verify the remaining manual boundary cases. |
 | Keyboard/input functions | Partial | `INPUT$` remains length-bounded input and returns available characters without padding at end-of-input; `INKEY$` performs a non-blocking host key probe, normalizes printable input to uppercase, and returns available control characters. Extended keys with no character payload intentionally remain empty. | Define any TRS-80-specific extended-key encoding and verify interaction with `INPUT`. |
-| Memory/display functions | Partial | `PEEK`, `POKE`, `MEM`, `FRE`, `POS`, `CSRLIN`, `POINT`, `SPC`, and `TAB` exist; memory addresses wrap symmetrically across the bounded 64K host memory for negative and positive out-of-range addresses. `PRINT AT` maps valid absolute display positions 0 through 1023 across the 64-by-16 character screen. | Define out-of-range `PRINT AT` behavior and document unsupported hardware assumptions. |
+| Memory/display functions | Partial | `PEEK`, `POKE`, `MEM`, `FRE`, `POS`, `CSRLIN`, `POINT`, `SPC`, and `TAB` exist; memory addresses wrap symmetrically across the bounded 64K host memory for negative and positive out-of-range addresses. `PRINT AT` maps valid absolute display positions 0 through 1023 across the 64-by-16 character screen and wraps negative or overflowed positions back onto the display area. | Define the remaining hardware assumptions for unsupported `PRINT AT` edge cases and keep the explicit wrap policy documented. |
 | Remaining Level II functions | Partial | The native-function registry is centralized in `NativeFunctions`; `CVI`, `CVS`, `CVD`, `MKI$`, `MKS$`, and `MKD$` are now registered and covered for valid little-endian binary conversion. | Build an authoritative manual checklist and add one focused test for every remaining missing function. |
 
 ## Statements and Commands
@@ -355,7 +355,10 @@ Recent Level II slices, in order:
 275. Expanded the compatibility corpus with an oversized-array program and its `SORRY` memory diagnostic.
 276. Expanded the compatibility corpus with an invalid-goto program and its `HOW?` flow-control diagnostic.
 277. Expanded the compatibility corpus with an invalid ON GOTO program and its HOW? flow-control diagnostic.
-
+278. Added a `PRINT AT` wrap policy for negative and overflowed display positions with a focused cursor-position regression.
+279. Allowed a blank `EDIT line` submission to delete the selected numbered program line through the normal replacement path.
+280. Applied blank-line `EDIT` deletion consistently to syntax-error recovery through the pending-edit path.
+281. Added the interactive `ED.` abbreviation for selecting an existing line through `EDIT`.
 ## Next Slice Queue
 
 Work in this order unless manual research changes the dependency:

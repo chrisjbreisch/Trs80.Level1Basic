@@ -911,14 +911,21 @@ public class Interpreter : IInterpreter
 
     private void PrintAt(Expression position)
     {
-        dynamic value = Evaluate(position);
-        dynamic row = value / 64;
-        dynamic column = value % 64;
+        int displayPosition = NormalizeDisplayPosition(Evaluate(position));
+        int row = displayPosition / 64;
+        int column = displayPosition % 64;
 
         _trs80.SetCursorPosition(column, row);
 
         _machine.CursorX = column;
         _machine.CursorY = row;
+    }
+
+    private static int NormalizeDisplayPosition(dynamic value)
+    {
+        int normalized = (int)Math.Floor(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
+        const int screenSize = 64 * 16;
+        return ((normalized % screenSize) + screenSize) % screenSize;
     }
 
     public Void VisitReadStatement(Read statement)

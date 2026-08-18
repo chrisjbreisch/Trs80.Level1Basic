@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -5,7 +6,11 @@ using FluentAssertions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using Trs80.Level1Basic.Command.Commands;
+using Trs80.Level1Basic.CommandModels;
+using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.TestUtilities;
+using Trs80.Level1Basic.VirtualMachine.Interpreter;
 
 namespace Trs80.Level1Basic.Interpreter.Test;
 
@@ -622,6 +627,89 @@ public class Level2CompatibilityTest
 
         controller.ReadOutputLine().Should().Be(" 3 ");
         controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Auto_Numbering_Compatibility_Program_Uses_Sequential_Lines_And_Stops_On_Blank()
+    {
+        using var controller = new TestController();
+        var history = new LineEditorHistory();
+        var auto = new AutoLineNumbering();
+        IProgram program = new BasicProgram(controller.Scanner, controller.Parser);
+        var command = new InputCommand(controller.Trs80, history, auto, program, controller.PendingEdit);
+
+        auto.Start();
+
+        QueueInput(controller, "PRINT 1");
+        var firstModel = new InputModel { WritePrompt = true };
+        command.Execute(firstModel);
+        firstModel.SourceLine.Line.Should().Be("10 PRINT 1");
+
+        QueueInput(controller, "PRINT 2");
+        var secondModel = new InputModel { WritePrompt = true };
+        command.Execute(secondModel);
+        secondModel.SourceLine.Line.Should().Be("20 PRINT 2");
+
+        QueueInput(controller, "");
+        var blankModel = new InputModel { WritePrompt = true };
+        command.Execute(blankModel);
+        blankModel.SourceLine.Line.Should().BeEmpty();
+        auto.IsActive.Should().BeFalse();
+    }
+
+    private static void QueueInput(TestController controller, string text)
+    {
+        foreach (char character in text)
+        {
+            controller.Host.EnqueueKey(new ConsoleKeyInfo(character, ToConsoleKey(character), false, false, false));
+        }
+
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false));
+    }
+
+    private static ConsoleKey ToConsoleKey(char character)
+    {
+        return character switch
+        {
+            ' ' => ConsoleKey.Spacebar,
+            '0' => ConsoleKey.D0,
+            '1' => ConsoleKey.D1,
+            '2' => ConsoleKey.D2,
+            '3' => ConsoleKey.D3,
+            '4' => ConsoleKey.D4,
+            '5' => ConsoleKey.D5,
+            '6' => ConsoleKey.D6,
+            '7' => ConsoleKey.D7,
+            '8' => ConsoleKey.D8,
+            '9' => ConsoleKey.D9,
+            'A' => ConsoleKey.A,
+            'B' => ConsoleKey.B,
+            'C' => ConsoleKey.C,
+            'D' => ConsoleKey.D,
+            'E' => ConsoleKey.E,
+            'F' => ConsoleKey.F,
+            'G' => ConsoleKey.G,
+            'H' => ConsoleKey.H,
+            'I' => ConsoleKey.I,
+            'J' => ConsoleKey.J,
+            'K' => ConsoleKey.K,
+            'L' => ConsoleKey.L,
+            'M' => ConsoleKey.M,
+            'N' => ConsoleKey.N,
+            'O' => ConsoleKey.O,
+            'P' => ConsoleKey.P,
+            'Q' => ConsoleKey.Q,
+            'R' => ConsoleKey.R,
+            'S' => ConsoleKey.S,
+            'T' => ConsoleKey.T,
+            'U' => ConsoleKey.U,
+            'V' => ConsoleKey.V,
+            'W' => ConsoleKey.W,
+            'X' => ConsoleKey.X,
+            'Y' => ConsoleKey.Y,
+            'Z' => ConsoleKey.Z,
+            _ => ConsoleKey.A
+        };
     }
 
     [TestMethod]

@@ -117,6 +117,81 @@ public class CommandTest
     }
 
     [TestMethod]
+    public void Input_Command_Edit_Blank_Line_Deletes_The_Selected_Line()
+    {
+        using var controller = new TestController();
+        controller.ExecuteStatements(new List<string> {
+            "10 PRINT 10",
+            "20 PRINT 20"
+        });
+        var history = new LineEditorHistory();
+        var auto = new AutoLineNumbering();
+        var command = new InputCommand(controller.Trs80, history, auto, controller.Program, controller.PendingEdit);
+        var model = new InputModel();
+
+        QueueInput(controller, "EDIT 10");
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('\0', ConsoleKey.U, false, false, true));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false));
+        command.Execute(model);
+
+        model.SourceLine.Line.Should().Be("10 ");
+        controller.ExecuteLine(model.SourceLine.Original);
+        controller.Program.List().Should().ContainSingle(statement => statement.LineNumber == 20);
+    }
+
+    [TestMethod]
+    public void Input_Command_Pending_Edit_Blank_Line_Deletes_The_Selected_Line()
+    {
+        using var controller = new TestController();
+        controller.ExecuteStatements(new List<string> {
+            "10 PRINT 10",
+            "20 PRINT 20"
+        });
+        var history = new LineEditorHistory();
+        var auto = new AutoLineNumbering();
+        var command = new InputCommand(controller.Trs80, history, auto, controller.Program, controller.PendingEdit);
+        var model = new InputModel();
+
+        controller.PendingEdit.Request(10);
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('\0', ConsoleKey.U, false, false, true));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false));
+        command.Execute(model);
+
+        model.SourceLine.Line.Should().Be("10 ");
+        controller.ExecuteLine(model.SourceLine.Original);
+        controller.Program.List().Should().ContainSingle(statement => statement.LineNumber == 20);
+    }
+
+    [TestMethod]
+    public void Input_Command_ED_Abbreviation_Selects_Line_For_Editing()
+    {
+        using var controller = new TestController();
+        controller.ExecuteStatements(new List<string> {
+            "10 PRINT 10",
+            "20 PRINT 20"
+        });
+        var history = new LineEditorHistory();
+        var auto = new AutoLineNumbering();
+        var command = new InputCommand(controller.Trs80, history, auto, controller.Program, controller.PendingEdit);
+        var model = new InputModel();
+
+        QueueInput(controller, "ED. 10");
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('\0', ConsoleKey.U, false, false, true));
+        QueueInput(controller, "PRINT 11");
+        command.Execute(model);
+
+        model.SourceLine.Line.Should().Be("10 PRINT 11");
+    }
+
+    private static void QueueInput(TestController controller, string text)
+    {
+        foreach (char character in text)
+            controller.Host.EnqueueKey(new ConsoleKeyInfo(character, ConsoleKey.A, false, false, false));
+
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false));
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Delete_A_Line_Range_With_Delete_Command()
     {
         using var controller = new TestController();
