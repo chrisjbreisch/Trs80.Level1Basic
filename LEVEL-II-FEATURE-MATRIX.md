@@ -359,6 +359,7 @@ Recent Level II slices, in order:
 279. Allowed a blank `EDIT line` submission to delete the selected numbered program line through the normal replacement path.
 280. Applied blank-line `EDIT` deletion consistently to syntax-error recovery through the pending-edit path.
 281. Added the interactive `ED.` abbreviation for selecting an existing line through `EDIT`.
+282. Added the interactive `AU.` abbreviation for starting `AUTO` line numbering.
 ## Next Slice Queue
 
 Work in this order unless manual research changes the dependency:

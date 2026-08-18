@@ -97,6 +97,24 @@ public class CommandTest
     }
 
     [TestMethod]
+    public void Input_Command_AU_Abbreviation_Starts_Auto_Numbering()
+    {
+        using var controller = new TestController();
+        var history = new LineEditorHistory();
+        var auto = new AutoLineNumbering();
+        IProgram program = new BasicProgram(controller.Scanner, controller.Parser);
+        var command = new InputCommand(controller.Trs80, history, auto, program, controller.PendingEdit);
+        var model = new InputModel();
+
+        QueueInput(controller, "AU.");
+        QueueInput(controller, "PRINT 1");
+        command.Execute(model);
+
+        model.SourceLine.Line.Should().Be("10 PRINT 1");
+        auto.IsActive.Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Input_Command_Opens_Edit_Mode_After_Numbered_Syntax_Error()
     {
         using var controller = new TestController();

@@ -126,11 +126,17 @@ public class InputCommand : ICommand<InputModel>
     private bool TryStartAuto(string sourceLine)
     {
         string command = sourceLine.Trim();
-        if (!command.StartsWith("AUTO", StringComparison.OrdinalIgnoreCase) ||
-            (command.Length > 4 && !char.IsWhiteSpace(command[4])))
+        int argumentStart;
+        if (command.StartsWith("AUTO", StringComparison.OrdinalIgnoreCase) &&
+            (command.Length == 4 || char.IsWhiteSpace(command[4])))
+            argumentStart = 4;
+        else if (command.StartsWith("AU.", StringComparison.OrdinalIgnoreCase) &&
+                 (command.Length == 3 || char.IsWhiteSpace(command[3])))
+            argumentStart = 3;
+        else
             return false;
 
-        string options = command[4..].Trim();
+        string options = command[argumentStart..].Trim();
         if (options.Length == 0)
         {
             _autoLineNumbering.Start();
