@@ -364,6 +364,7 @@ Recent Level II slices, in order:
 284. Added parser regression coverage for the existing `REA.` `READ` abbreviation.
 285. Added parser regression coverage for the existing `RET.` `RETURN` abbreviation.
 286. Added parser regression coverage for the existing `REST.` `RESTORE` abbreviation.
+287. Added parser regression coverage for the existing `ST.` `STOP` abbreviation.
 ## Next Slice Queue
 
 Work in this order unless manual research changes the dependency:
