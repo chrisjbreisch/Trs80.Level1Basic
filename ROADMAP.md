@@ -44,8 +44,8 @@ Record pre-existing failures separately. The repository's slice workflow remains
 ## Phase 0: Roadmap And Baseline
 
 - [x] Materialize this roadmap at the repository root.
-- [ ] Capture the solution build and interpreter-test baseline.
-- [ ] Record known unrelated failures without folding them into mode work.
+- [x] Capture the solution build and interpreter-test baseline.
+- [x] Record known unrelated failures without folding them into mode work.
 - [ ] Convert remaining `Partial` and `Not audited` matrix rows into an ordered manual checklist.
 - [ ] Keep hardware approximations and intentional compatibility deviations explicit in the matrix.
 
@@ -212,5 +212,13 @@ Manual smoke checks should cover:
 | 2026-08-18 | Registered the resolved BasicLanguageLevel for dependency injection | `BasicLevelConfigurationTest`: 3 passed; solution build succeeded |
 
 The full `Trs80.Level1Basic.Environment.Test` project currently has an unrelated pre-existing failure in `Environment_Can_Delete_Line` (expected `null`, received an empty string); the focused configuration tests remain green.
+
+The 2026-08-18 Phase 0 baseline also found:
+
+- Solution build: succeeded.
+- `ErrorTest.Interpreter_Handles_Array_Max_Size`: expected `" 0 "`, received `"SORRY"`.
+- `InputTest.Interpreter_Handles_Invalid_Input_Type`: expected output ending in `" 3.14159 "`, but received no matching output.
+
+These failures are recorded as baseline defects and are excluded from language-profile work unless a focused regression shows that a mode change causes them.
 
 The roadmap is complete when all phases have exit criteria evidence, the feature matrix has no unexplained partial rows, and both runtime profiles have focused and end-to-end compatibility coverage.
