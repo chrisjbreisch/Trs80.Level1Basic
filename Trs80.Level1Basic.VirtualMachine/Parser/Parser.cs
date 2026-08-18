@@ -126,7 +126,10 @@ public class Parser : IParser
         if (Match(TokenType.Delete))
             return ExplicitDeleteStatement();
         if (Match(TokenType.DefDbl, TokenType.DefInt, TokenType.DefSng, TokenType.DefStr))
+        {
+            RejectLevel1TypeDeclaration();
             return DefTypeStatement();
+        }
         if (Match(TokenType.Dim))
             return DimStatement();
         if (Match(TokenType.End))
@@ -229,6 +232,15 @@ public class Parser : IParser
         } while (Match(TokenType.Comma));
 
         return StatementWrapper(new DefType(type, names));
+    }
+
+    private void RejectLevel1TypeDeclaration()
+    {
+        if (_appSettings.BasicLevel != BasicLanguageLevel.Level1)
+            return;
+
+        throw new ParseException(_lineNumber, _source, Previous().LinePosition,
+            "Type declarations are not available in Level I mode.");
     }
 
     private bool IsDefFunction()

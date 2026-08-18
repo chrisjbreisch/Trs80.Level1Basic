@@ -76,14 +76,14 @@ Phase 1 is complete. Configuration selects Level1 or Level2, the resolved profil
 **Owning areas:** `Scanner`, `Parser`, and parser-focused tests.
 
 - [ ] Confirm the Level I manual boundary for each Level II-only syntax form before implementation.
-- [ ] Identify and classify type suffixes and declarations.
+- [x] Identify and classify type declarations (`DEFINT`, `DEFSNG`, `DEFDBL`, `DEFSTR`); variable suffixes remain a separate gate.
 - [ ] Identify and classify double-exponent literals and exponentiation.
 - [ ] Identify and classify multidimensional `DIM` forms.
 - [ ] Identify and classify `MID$` assignment and other Level II-only statement forms.
 - [ ] Identify and classify Level II-only built-ins and commands.
 - [ ] Keep tokenization in `Scanner`; make parser acceptance profile-aware.
-- [ ] Reject Level II-only constructs in Level I with the agreed syntax diagnostic.
-- [ ] Preserve all current Level II parsing behavior.
+- [x] Reject type declaration statements in Level I with the existing syntax diagnostic.
+- [x] Preserve current Level II parsing behavior for type declarations.
 - [ ] Add data-driven tests that run the same source under both profiles.
 - [ ] Verify valid Level I programs remain accepted in both profiles where compatibility requires it.
 
@@ -216,6 +216,7 @@ Manual smoke checks should cover:
 | 2026-08-18 | Registered the resolved BasicLanguageLevel for dependency injection | `BasicLevelConfigurationTest`: 3 passed; solution build succeeded |
 | 2026-08-18 | Completed Phase 0 baseline and implementation checklist | Solution build succeeded; interpreter baseline recorded; matrix checklist and hardware policies documented |
 | 2026-08-18 | Completed Phase 1 language-mode contract | `BasicLevelConfigurationTest`: 5 passed; solution build succeeded |
+| 2026-08-18 | Gated DEFINT/DEFSNG/DEFDBL/DEFSTR in Level1 mode | `Level1SyntaxGatingTest`: 2 passed; Level2 declaration acceptance preserved |
 
 The full `Trs80.Level1Basic.Environment.Test` project currently has an unrelated pre-existing failure in `Environment_Can_Delete_Line` (expected `null`, received an empty string); the focused configuration tests remain green.
 

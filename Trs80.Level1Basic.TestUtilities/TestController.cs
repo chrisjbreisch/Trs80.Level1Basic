@@ -36,15 +36,23 @@ public class TestController : DisposableBase
         set { Trs80.In = value; }
     }
 
-    public TestController(Action onExplicitDispose, Action onImplicitDispose) : this()
+    public TestController(Action onExplicitDispose, Action onImplicitDispose) : this((BasicLanguageLevel?)null)
     {
         _onExplicitDispose = onExplicitDispose;
         _onImplicitDispose = onImplicitDispose;
     }
-    
-    public TestController()
+
+    public TestController() : this((BasicLanguageLevel?)null)
     {
-        var bootstrapper = new Bootstrapper();
+    }
+
+    public TestController(BasicLanguageLevel basicLevel) : this((BasicLanguageLevel?)basicLevel)
+    {
+    }
+
+    private TestController(BasicLanguageLevel? basicLevel)
+    {
+        var bootstrapper = new Bootstrapper(basicLevel);
         IAppSettings? appSettings = bootstrapper.AppSettings;
         ILoggerFactory? loggerFactory = bootstrapper.LogFactory;
 
