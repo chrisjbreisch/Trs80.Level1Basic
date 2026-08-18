@@ -35,6 +35,7 @@ public sealed class Bootstrapper : DisposableBase
     private bool _isDisposed;
     private IServiceCollection _services;
     private ILogger _logger;
+    private readonly BasicLanguageLevel? _basicLevelOverride;
 
     public string ApplicationName { get; private set; }
     public ILoggerFactory LogFactory { get; private set; }
@@ -48,8 +49,9 @@ public sealed class Bootstrapper : DisposableBase
 
     private IConfiguration _configuration;
 
-    public Bootstrapper()
+    public Bootstrapper(BasicLanguageLevel? basicLevelOverride = null)
     {
+        _basicLevelOverride = basicLevelOverride;
         _services = new ServiceCollection();
         ConfigureServicesExtensions();
 
@@ -79,10 +81,14 @@ public sealed class Bootstrapper : DisposableBase
     {
         AppSettings = ScopedServiceProvider.GetRequiredService<IAppSettings>();
         _configuration.GetSection("AppSettings").Bind(AppSettings);
+        AppSettings.BasicLevel = ScopedServiceProvider.GetRequiredService<BasicLanguageLevel>();
     }
 
     private BasicLanguageLevel GetConfiguredBasicLevel()
     {
+        if (_basicLevelOverride.HasValue)
+            return _basicLevelOverride.Value;
+
         string configuredLevel = _configuration["AppSettings:BasicLevel"];
         if (string.IsNullOrWhiteSpace(configuredLevel))
             return BasicLanguageLevel.Level2;

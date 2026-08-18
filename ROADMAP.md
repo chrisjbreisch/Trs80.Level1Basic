@@ -64,10 +64,12 @@ Phase 0 is complete. The solution build succeeded, the interpreter baseline and 
 - [x] Preserve environment-variable override through `AppSettings__BasicLevel`.
 - [x] Reject unknown values during startup with a clear configuration error.
 - [x] Register the resolved profile as a singleton in `Bootstrapper`.
-- [ ] Allow test construction to inject an explicit profile without process-global state.
-- [ ] Add focused tests for default, explicit Level I, explicit Level II, environment override, and invalid values.
+- [x] Allow test construction to inject an explicit profile without process-global state.
+- [x] Add focused tests for default, explicit Level I, explicit Level II, environment override, and invalid values.
 
 **Exit criteria:** startup and tests can select either profile deterministically, with Level II behavior unchanged when no setting is supplied.
+
+Phase 1 is complete. Configuration selects Level1 or Level2, the resolved profile is available through dependency injection, explicit test overrides avoid process-global state, and the current syntax/runtime behavior remains unchanged pending Phase 2 gates.
 
 ## Phase 2: Gate Level II Syntax At The Owning Boundaries
 
@@ -213,6 +215,7 @@ Manual smoke checks should cover:
 | 2026-08-18 | Verified BasicLevel startup binding and environment override | `BasicLevelConfigurationTest`: 3 passed |
 | 2026-08-18 | Registered the resolved BasicLanguageLevel for dependency injection | `BasicLevelConfigurationTest`: 3 passed; solution build succeeded |
 | 2026-08-18 | Completed Phase 0 baseline and implementation checklist | Solution build succeeded; interpreter baseline recorded; matrix checklist and hardware policies documented |
+| 2026-08-18 | Completed Phase 1 language-mode contract | `BasicLevelConfigurationTest`: 5 passed; solution build succeeded |
 
 The full `Trs80.Level1Basic.Environment.Test` project currently has an unrelated pre-existing failure in `Environment_Can_Delete_Line` (expected `null`, received an empty string); the focused configuration tests remain green.
 

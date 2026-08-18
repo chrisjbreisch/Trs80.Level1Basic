@@ -73,4 +73,16 @@ public class BasicLevelConfigurationTest
             System.Environment.SetEnvironmentVariable(BasicLevelEnvironmentVariable, originalValue);
         }
     }
+
+    [TestMethod]
+    [DataRow(BasicLanguageLevel.Level1)]
+    [DataRow(BasicLanguageLevel.Level2)]
+    public void Bootstrapper_Can_Use_An_Explicit_Test_Profile(BasicLanguageLevel expectedLevel)
+    {
+        using var bootstrapper = new Bootstrapper(expectedLevel);
+
+        bootstrapper.AppSettings.BasicLevel.Should().Be(expectedLevel);
+        bootstrapper.ScopedServiceProvider.GetRequiredService<BasicLanguageLevel>()
+            .Should().Be(expectedLevel);
+    }
 }
