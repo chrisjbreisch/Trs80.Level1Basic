@@ -329,6 +329,15 @@ public class CommandTest
     }
 
     [TestMethod]
+    public void Parser_Can_Parse_Abbreviated_Delete_Command()
+    {
+        using var controller = new TestController();
+        var tokens = controller.Scanner.ScanTokens(new SourceLine("DEL. 10"));
+
+        controller.Parser.Parse(tokens).Should().BeOfType<Delete>();
+    }
+
+    [TestMethod]
     public void Parser_Can_Parse_Cassette_Command_Aliases_As_File_Commands()
     {
         using var controller = new TestController();
