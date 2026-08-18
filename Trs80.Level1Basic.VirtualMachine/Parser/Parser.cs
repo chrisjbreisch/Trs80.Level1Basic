@@ -63,6 +63,8 @@ public class Parser : IParser
             _source = lineNumber.SourceLine[lineNumberLength..].TrimStart(' ');
         }
 
+        RejectLevel1NumericSuffixes();
+
         if (lineNumber.Type != TokenType.Number) return Compound();
 
         if (PeekNext().Type == TokenType.EndOfLine)
@@ -241,6 +243,21 @@ public class Parser : IParser
 
         throw new ParseException(_lineNumber, _source, Previous().LinePosition,
             "Type declarations are not available in Level I mode.");
+    }
+
+    private void RejectLevel1NumericSuffixes()
+    {
+        if (_appSettings.BasicLevel != BasicLanguageLevel.Level1 ||
+            !_tokens.Any(token =>
+                (token.Type is TokenType.Identifier or TokenType.Number) &&
+                (token.Lexeme.EndsWith('%') || token.Lexeme.EndsWith('!') || token.Lexeme.EndsWith('#'))))
+            return;
+
+        Token suffixToken = _tokens.First(token =>
+            (token.Type is TokenType.Identifier or TokenType.Number) &&
+            (token.Lexeme.EndsWith('%') || token.Lexeme.EndsWith('!') || token.Lexeme.EndsWith('#')));
+        throw new ParseException(_lineNumber, _source, suffixToken.LinePosition,
+            "Numeric type suffixes are not available in Level I mode.");
     }
 
     private bool IsDefFunction()
