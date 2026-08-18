@@ -361,6 +361,7 @@ Recent Level II slices, in order:
 281. Added the interactive `ED.` abbreviation for selecting an existing line through `EDIT`.
 282. Added the interactive `AU.` abbreviation for starting `AUTO` line numbering.
 283. Added parser regression coverage for the existing `IN.` `INPUT` abbreviation.
+284. Added parser regression coverage for the existing `REA.` `READ` abbreviation.
 ## Next Slice Queue
 
 Work in this order unless manual research changes the dependency:
