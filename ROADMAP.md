@@ -59,8 +59,8 @@ Record pre-existing failures separately. The repository's slice workflow remains
 - [x] Define `Level2` as the default to preserve current behavior.
 - [x] Add the configured level to `IAppSettings` and `AppSettings`.
 - [x] Add an explicit `AppSettings:BasicLevel` default to the application JSON.
-- [ ] Preserve environment-variable override through `AppSettings__BasicLevel`.
-- [ ] Reject unknown values during startup with a clear configuration error.
+- [x] Preserve environment-variable override through `AppSettings__BasicLevel`.
+- [x] Reject unknown values during startup with a clear configuration error.
 - [ ] Register the resolved profile as a singleton in `Bootstrapper`.
 - [ ] Allow test construction to inject an explicit profile without process-global state.
 - [ ] Add focused tests for default, explicit Level I, explicit Level II, environment override, and invalid values.
@@ -208,5 +208,8 @@ Manual smoke checks should cover:
 | --- | --- | --- |
 | 2026-08-18 | Roadmap created; strict Level I / Level II configuration approach approved | Plan recorded in session memory and materialized here |
 | 2026-08-18 | Added the language-level contract and Level2 default | `BasicLanguageLevelTest`: 3 passed; solution build succeeded |
+| 2026-08-18 | Verified BasicLevel startup binding and environment override | `BasicLevelConfigurationTest`: 3 passed |
+
+The full `Trs80.Level1Basic.Environment.Test` project currently has an unrelated pre-existing failure in `Environment_Can_Delete_Line` (expected `null`, received an empty string); the focused configuration tests remain green.
 
 The roadmap is complete when all phases have exit criteria evidence, the feature matrix has no unexplained partial rows, and both runtime profiles have focused and end-to-end compatibility coverage.
