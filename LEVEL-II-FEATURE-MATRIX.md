@@ -362,6 +362,7 @@ Recent Level II slices, in order:
 282. Added the interactive `AU.` abbreviation for starting `AUTO` line numbering.
 283. Added parser regression coverage for the existing `IN.` `INPUT` abbreviation.
 284. Added parser regression coverage for the existing `REA.` `READ` abbreviation.
+285. Added parser regression coverage for the existing `RET.` `RETURN` abbreviation.
 ## Next Slice Queue
 
 Work in this order unless manual research changes the dependency:
