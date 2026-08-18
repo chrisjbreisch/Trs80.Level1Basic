@@ -375,6 +375,38 @@ Work in this order unless manual research changes the dependency:
 3. Implement the line editor as a separate subsystem, then revisit `AUTO` and `EDIT`.
 4. Complete statement and command families one at a time as manual gaps are found.
 
+## Ordered Completion Checklist
+
+This checklist turns the remaining `Partial` and `Not audited` work into the next implementation sequence. Each item remains subject to the repository slice workflow: one behavior, one focused regression, one minimal change, affected validation, matrix update, separate commit, and push.
+
+1. [ ] Confirm the Level I/Level II language-profile contract and document which syntax, typing, and diagnostics differ by profile.
+2. [ ] Audit typed scalar promotion, invalid conversions, redeclarations, and mixed suffix behavior against the Level II manual.
+3. [ ] Audit typed arrays for higher dimensions, implicit creation, redeclaration, type changes, bounds, and `CLEAR` interaction.
+4. [ ] Audit string-function boundaries and conversion errors for `CHR$`, `ASC`, `LEN`, `LEFT$`, `RIGHT$`, `MID$`, `INSTR`, `STR$`, `VAL`, and case/trim helpers.
+5. [ ] Audit numeric promotion, overflow, midpoint rounding, scientific/fixed formatting, and string-to-number conversions.
+6. [ ] Audit logical-operator precedence and confirm numeric bitwise versus truth-value behavior in every operand context.
+7. [ ] Audit random-number controls and keyboard edge cases, including TRS-80 extended-key policy for `INKEY$`.
+8. [ ] Complete DATA/READ/RESTORE exhaustion, explicit-target, and `CLEAR` lifecycle coverage.
+9. [ ] Complete error-compatibility coverage for source positions, partial output, syntax, overflow, type mismatch, and array bounds.
+10. [ ] Complete the authoritative Level II built-in-function and statement inventory, adding one focused test for every remaining missing or intentionally limited item.
+11. [ ] Formalize graphics, memory, display, and printer policies, retaining symmetric address/coordinate wrapping where already implemented.
+12. [ ] Keep `OUT` and `WAIT` explicitly silent and non-blocking while no TRS-80 port devices are emulated.
+13. [ ] Keep `CLOAD` and `CSAVE` explicitly file-backed aliases; cassette transport emulation remains unavailable.
+14. [ ] Keep `PRINT AT` out-of-range behavior explicitly documented as wraparound across the 64-by-16 display.
+15. [ ] Add richer `EDIT` forms and recall/rendering coverage where supported by the manual and current host UI.
+16. [ ] Add richer `AUTO` forms and numbering-boundary coverage where supported by the manual.
+17. [ ] Expand executable Level II compatibility programs for every completed family and keep host-dependent expectations deterministic.
+
+### Explicit Hardware And Compatibility Policies
+
+- `OUT` and `WAIT`: accepted as silent, non-blocking no-ops because no TRS-80 port devices are emulated.
+- `BEEP`: routed through `IHost`; Windows hosts may produce a short tone while test hosts record the call without audio.
+- `LPRINT` and `LLIST`: routed through `IHost.Print`; Windows hosts use the print dialog and test hosts capture documents.
+- `CLOAD` and `CSAVE`: file-backed aliases for `LOAD` and `SAVE`; cassette transport is not emulated.
+- `PRINT AT`: valid positions map to the 64-by-16 character display; negative and overflowed positions wrap onto that display.
+- ROM/RAM and graphics: bounded host-machine approximations remain outside the scope of ROM emulation.
+- Modern `EDIT`: cursor-based editing is an intentional compatibility deviation from the original arrow-less TRS-80 keyboard.
+
 ## Slice Completion Checklist
 
 For every slice:

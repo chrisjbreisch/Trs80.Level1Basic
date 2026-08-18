@@ -46,10 +46,12 @@ Record pre-existing failures separately. The repository's slice workflow remains
 - [x] Materialize this roadmap at the repository root.
 - [x] Capture the solution build and interpreter-test baseline.
 - [x] Record known unrelated failures without folding them into mode work.
-- [ ] Convert remaining `Partial` and `Not audited` matrix rows into an ordered manual checklist.
-- [ ] Keep hardware approximations and intentional compatibility deviations explicit in the matrix.
+- [x] Convert remaining `Partial` and `Not audited` matrix rows into an ordered manual checklist.
+- [x] Keep hardware approximations and intentional compatibility deviations explicit in the matrix.
 
 **Exit criteria:** the baseline is reproducible, known failures are identified, and the next Level II slice is unambiguous.
+
+Phase 0 is complete. The solution build succeeded, the interpreter baseline and unrelated failures are recorded above, and the ordered checklist plus explicit hardware policies are now maintained in [LEVEL-II-FEATURE-MATRIX.md](LEVEL-II-FEATURE-MATRIX.md).
 
 ## Phase 1: Define The Language-Mode Contract
 
@@ -210,6 +212,7 @@ Manual smoke checks should cover:
 | 2026-08-18 | Added the language-level contract and Level2 default | `BasicLanguageLevelTest`: 3 passed; solution build succeeded |
 | 2026-08-18 | Verified BasicLevel startup binding and environment override | `BasicLevelConfigurationTest`: 3 passed |
 | 2026-08-18 | Registered the resolved BasicLanguageLevel for dependency injection | `BasicLevelConfigurationTest`: 3 passed; solution build succeeded |
+| 2026-08-18 | Completed Phase 0 baseline and implementation checklist | Solution build succeeded; interpreter baseline recorded; matrix checklist and hardware policies documented |
 
 The full `Trs80.Level1Basic.Environment.Test` project currently has an unrelated pre-existing failure in `Environment_Can_Delete_Line` (expected `null`, received an empty string); the focused configuration tests remain green.
 
