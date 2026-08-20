@@ -644,7 +644,7 @@ public class FlowControlTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("CUSTOMER'S NAME?NAME MUST BE LESS THAN 13 CHARACTERS");
+        controller.ReadOutputLine().Should().Be("CUSTOMER'S NAME? NAME MUST BE LESS THAN 13 CHARACTERS");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -662,7 +662,7 @@ public class FlowControlTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("CUSTOMER'S NUMBER?CUSTOMER'S ID NUMBER MUST BE LESS THAN 32768");
+        controller.ReadOutputLine().Should().Be("CUSTOMER'S NUMBER? CUSTOMER'S ID NUMBER MUST BE LESS THAN 32768");
         controller.IsEndOfRun().Should().BeTrue();
     }
 

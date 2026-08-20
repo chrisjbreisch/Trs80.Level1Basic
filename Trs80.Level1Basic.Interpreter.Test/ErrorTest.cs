@@ -277,8 +277,8 @@ public class ErrorTest
         controller.ExecuteLine("RUN");
 
         controller.ReadOutputLine().Should().Be("ENTER THE AMOUNT AND YEARS OF MORTGAGE");
-        controller.ReadOutputLine().Should().Be("?ENTER THE INTEREST RATE IN %");
-        controller.ReadOutputLine().Should().Be("??SN ERROR IN 60");
+        controller.ReadOutputLine().Should().Be("? ENTER THE INTEREST RATE IN %");
+        controller.ReadOutputLine().Should().Be("? ?SN ERROR IN 60");
         controller.PendingEdit.TryTake(out int editLineNumber).Should().BeTrue();
         editLineNumber.Should().Be(60);
         controller.IsEndOfRun().Should().BeTrue();

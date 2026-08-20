@@ -130,7 +130,7 @@ public class ShorthandTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("ENTER YOUR NAME?HELLO, CHRIS");
+        controller.ReadOutputLine().Should().Be("ENTER YOUR NAME? HELLO, CHRIS");
         controller.IsEndOfRun().Should().BeTrue();
     }
 

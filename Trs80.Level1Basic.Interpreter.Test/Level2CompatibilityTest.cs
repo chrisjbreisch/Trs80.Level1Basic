@@ -753,7 +753,7 @@ public class Level2CompatibilityTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("NAME?HELLO, CHRIS");
+        controller.ReadOutputLine().Should().Be("NAME? HELLO, CHRIS");
         controller.IsEndOfRun().Should().BeTrue();
     }
 

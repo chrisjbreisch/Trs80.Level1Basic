@@ -730,8 +730,10 @@ public class Interpreter : IInterpreter
             if (index < values.Length && !string.IsNullOrWhiteSpace(values[index]))
                 AssignInputValue(variables[index], values[index].Trim());
             else
-                GetInputValue(variables[index]);
+                GetInputValue(variables[index], false);
         }
+
+            _trs80.Write(" ");
 
         return true;
     }
@@ -752,9 +754,9 @@ public class Interpreter : IInterpreter
         }
     }
 
-    private void GetInputValue(Expression identifier)
+    private void GetInputValue(Expression identifier, bool includeTrailingSpace = true)
     {
-        _trs80.Write("?");
+        _trs80.Write(includeTrailingSpace ? "? " : "?");
 
         string value = _trs80.ReadLine();
         AssignInputValue(identifier, value);

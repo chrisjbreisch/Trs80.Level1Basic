@@ -35,7 +35,7 @@ public class InputTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("ENTER YOUR NAME?HELLO, CHRIS");
+        controller.ReadOutputLine().Should().Be("ENTER YOUR NAME? HELLO, CHRIS");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -87,7 +87,7 @@ public class InputTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("ENTER YOUR NAME?HELLO, CHRIS");
+        controller.ReadOutputLine().Should().Be("ENTER YOUR NAME? HELLO, CHRIS");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -106,7 +106,7 @@ public class InputTest
         controller.RunProgram(program);
 
         controller.ReadOutputLine().Should().Be("ENTER THE INITIAL DEPOSIT & NUMBER OF YEARS SEPARATED BY A COMMA");
-        controller.ReadOutputLine().Should().Be("? 1000  10 ");
+        controller.ReadOutputLine().Should().Be("?  1000  10 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -122,7 +122,7 @@ public class InputTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("?? 1000  10 ");
+        controller.ReadOutputLine().Should().Be("??  1000  10 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -139,7 +139,7 @@ public class InputTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("?? 100  200 ");
+        controller.ReadOutputLine().Should().Be("? ?  100  200 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -160,7 +160,7 @@ public class InputTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("ENTER (Y/N)?YOU ENTERED 'YES'");
+        controller.ReadOutputLine().Should().Be("ENTER (Y/N)? YOU ENTERED 'YES'");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -181,7 +181,7 @@ public class InputTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("ENTER (Y/N)?YOU ENTERED 'NO'");
+        controller.ReadOutputLine().Should().Be("ENTER (Y/N)? YOU ENTERED 'NO'");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -206,7 +206,7 @@ public class InputTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("ENTER (Y/N)?YOU DIDN'T ENTER 'Y' OR 'N'");
+        controller.ReadOutputLine().Should().Be("ENTER (Y/N)? YOU DIDN'T ENTER 'Y' OR 'N'");
         controller.IsEndOfRun().Should().BeTrue();
     }
 }
