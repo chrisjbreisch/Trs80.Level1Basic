@@ -549,6 +549,25 @@ public class FlowControlTest
     }
 
     [TestMethod]
+    public void Interpreter_Handles_Runtime_Error_With_On_Error_Go_To()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 ON ERROR GO TO 80",
+            "20 X=1/0",
+            "30 PRINT \"AFTER ERROR\":END",
+            "80 PRINT \"HANDLED\"",
+            "90 RESUME"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HANDLED");
+        controller.ReadOutputLine().Should().Be("AFTER ERROR");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Executes_Return_After_Then()
     {
         using var controller = new TestController();

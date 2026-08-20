@@ -30,6 +30,9 @@ public class Interpreter : IInterpreter
     private readonly BasicLanguageLevel _basicLevel;
     private readonly PendingEditRequest _pendingEdit;
     private bool _omitBlankLineBeforePrompt;
+    private IStatement _errorHandlerStatement;
+    private IStatement _errorResumeStatement;
+    private bool _handlingError;
 
     public Interpreter(IHost host, ITrs80 trs80, ITrs80Api trs80Api,
         IMachine machine, IProgram program, IAppSettings appSettings,
@@ -428,7 +431,25 @@ public class Interpreter : IInterpreter
     public void Execute(IStatement statement)
     {
         _program.CurrentStatement = statement;
-        statement.Accept(this);
+        try
+        {
+            statement.Accept(this);
+        }
+        catch (Exception exception) when (CanHandleError(statement, exception))
+        {
+            _errorResumeStatement = _machine.GetNextStatement(statement);
+            _handlingError = true;
+            _machine.SetNextStatement(_errorHandlerStatement);
+        }
+    }
+
+    private bool CanHandleError(IStatement statement, Exception exception)
+    {
+        return statement.LineNumber >= 0
+            && _errorHandlerStatement is not null
+            && !_handlingError
+            && exception is not ReturnFromGosub
+            && exception is not ParseException;
     }
 
     public Void VisitClsStatement(Cls statement)
@@ -459,6 +480,9 @@ public class Interpreter : IInterpreter
         {
             _machine.Initialize();
             RegisterUserFunctions();
+            _errorHandlerStatement = null;
+            _errorResumeStatement = null;
+            _handlingError = false;
         }
 
         _machine.RunStatementList(statement, this);
@@ -948,11 +972,28 @@ public class Interpreter : IInterpreter
 
     public Void VisitOnErrorStatement(OnError statement)
     {
+        int lineNumber = (int)Evaluate(statement.Location);
+        if (lineNumber == 0)
+        {
+            _errorHandlerStatement = null;
+            _errorResumeStatement = null;
+            _handlingError = false;
+            return null!;
+        }
+
+        _errorHandlerStatement = GetStatementByLineNumber(lineNumber);
+        if (_errorHandlerStatement is null)
+            throw new UndefinedLineException(statement.LineNumber, statement.SourceLine,
+                statement.Location.LinePosition, $"Can't GOTO line {lineNumber}");
+
         return null!;
     }
 
     public Void VisitResumeStatement(Resume statement)
     {
+        _machine.SetNextStatement(_errorResumeStatement);
+        _errorResumeStatement = null;
+        _handlingError = false;
         return null!;
     }
 
