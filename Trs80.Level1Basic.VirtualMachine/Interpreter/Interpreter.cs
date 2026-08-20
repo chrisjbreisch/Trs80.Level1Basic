@@ -84,15 +84,23 @@ public class Interpreter : IInterpreter
             throw new ProgramTooLargeException(_program.CurrentStatement.LineNumber,
                 _program.CurrentStatement.SourceLine, expression.LinePosition, "Insufficient memory.");
 
+        try
+        {
         if (expression.Index2 == null)
-            return _machine.Get(expression.Name.Lexeme, index);
+                return _machine.Get(expression.Name.Lexeme, index);
 
-        dynamic index2 = Evaluate(expression.Index2);
-        if (index2 > _trs80Api.GetMaxArrayIndex())
-            throw new ProgramTooLargeException(_program.CurrentStatement.LineNumber,
-                _program.CurrentStatement.SourceLine, expression.LinePosition, "Insufficient memory.");
+            dynamic index2 = Evaluate(expression.Index2);
+            if (index2 > _trs80Api.GetMaxArrayIndex())
+                throw new ProgramTooLargeException(_program.CurrentStatement.LineNumber,
+                    _program.CurrentStatement.SourceLine, expression.LinePosition, "Insufficient memory.");
 
-        return _machine.Get(expression.Name.Lexeme, index, index2);
+            return _machine.Get(expression.Name.Lexeme, index, index2);
+        }
+        catch (ValueOutOfRangeException exception)
+        {
+            throw new RuntimeStatementException(_program.CurrentStatement.LineNumber,
+                _program.CurrentStatement.SourceLine, expression.LinePosition, exception.Message);
+        }
     }
 
     private void Assign(Expression expression, dynamic value)
