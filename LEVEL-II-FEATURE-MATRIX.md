@@ -366,6 +366,10 @@ Recent Level II slices, in order:
 286. Added parser regression coverage for the existing `REST.` `RESTORE` abbreviation.
 287. Added parser regression coverage for the existing `ST.` `STOP` abbreviation.
 288. Added parser regression coverage for the existing `DEL.` `DELETE` abbreviation.
+289. Gated Level I parser acceptance for Level II-only syntax families: exponentiation (`^`), `D`-exponent literals, multidimensional `DIM`, `MID$` assignment, selected statements (`BEEP`, `OUT`, `WAIT`, `LPRINT`, `LLIST`, `PRINT AT`), and binary-conversion built-ins (`CVI`, `CVS`, `CVD`, `MKI$`, `MKS$`, `MKD$`), while preserving Level II acceptance in focused `Level1SyntaxGatingTest` coverage.
+290. Added profile-aware runtime diagnostics and conversion policy: Level1 now reports classic `WHAT?`/`HOW?` vocabulary, Level2 preserves `?SN`/`?OV`/`?TM`, Level II-only binary conversion built-ins are excluded from Level1 function registration, and focused `LevelRuntimeProfileTest` coverage verifies cross-profile behavior.
+291. Added typed scalar edge-case coverage for declaration redeclaration and explicit suffix precedence: the last `DEF*` declaration for an initial now has focused regression coverage, and explicit `%`/`!`/`#` suffixes remain authoritative over unsuffixed `DEF*` defaults.
+292. Added focused DATA lifecycle coverage proving `CLEAR` resets the `READ` stream position, so a subsequent `READ` restarts from the first DATA element without requiring explicit `RESTORE`.
 ## Next Slice Queue
 
 Work in this order unless manual research changes the dependency:

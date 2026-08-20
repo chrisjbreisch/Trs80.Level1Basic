@@ -83,6 +83,26 @@ public class DataTest
     }
 
     [TestMethod]
+    public void Interpreter_Clear_Resets_Data_Read_Position()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DATA 1,2",
+            "20 READ A",
+            "30 PRINT A",
+            "40 CLEAR",
+            "50 READ A",
+            "60 PRINT A"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Read_Strings()
     {
         using var controller = new TestController();
