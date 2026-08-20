@@ -503,6 +503,23 @@ public class FlowControlTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Execute_Immediate_On_Go_To_Into_Loaded_Program()
+    {
+        using var controller = new TestController();
+        controller.ExecuteStatements(new List<string> {
+            "10 PRINT \"LINE 10\":END",
+            "20 PRINT \"LINE 20\":END",
+            "30 PRINT \"LINE 30\":END",
+            "40 PRINT \"LINE 40\":END"
+        });
+
+        controller.ExecuteLine("Z=2");
+        controller.ExecuteLine("ON Z GO TO 30, 40");
+
+        controller.ReadOutputLine().Should().Be("LINE 40");
+    }
+
+    [TestMethod]
     public void Interpreter_Executes_Return_After_Then()
     {
         using var controller = new TestController();

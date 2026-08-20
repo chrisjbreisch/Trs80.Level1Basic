@@ -931,7 +931,10 @@ public class Interpreter : IInterpreter
             throw new UndefinedLineException(statement.LineNumber, statement.SourceLine,
                 linePositions[selector], $"Can't 'GOTO' line {locations[selector]}.");
 
-        _machine.SetNextStatement(nextStatement);
+        if (statement.LineNumber < 0)
+            _machine.RunStatementList(nextStatement, this);
+        else
+            _machine.SetNextStatement(nextStatement);
 
         return null!;
     }
