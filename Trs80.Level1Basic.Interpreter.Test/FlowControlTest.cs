@@ -468,6 +468,27 @@ public class FlowControlTest
     }
 
     [TestMethod]
+    public void Interpreter_Executes_On_Spaced_Go_To()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "5 Z=2",
+            "10 ON Z GO TO 30, 50, 40",
+            "30 PRINT \"TRANSFER TO LINE 30 WITH Z=\";Z:END",
+            "40 PRINT \"TRANSFER TO LINE 40 WITH Z=\";Z:END",
+            "50 PRINT \"TRANSFER TO LINE 50 WITH Z=\";Z:END",
+            "15 PRINT \"I SHOULDN'T BE HERE.\"",
+            "60 PRINT \"I SHOULDN'T BE HERE EITHER.\"",
+            "70 END"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("TRANSFER TO LINE 50 WITH Z= 2 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Executes_Return_After_Then()
     {
         using var controller = new TestController();

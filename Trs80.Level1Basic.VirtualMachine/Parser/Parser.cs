@@ -420,9 +420,16 @@ public class Parser : IParser
         var locations = new List<Expression>();
         var linePositions = new List<int>();
 
-        if (Match(TokenType.Goto, TokenType.Gosub))
+        bool isSpacedGoto = IsSpacedGoto();
+        if (isSpacedGoto)
         {
-            isGosub = Previous().Type == TokenType.Gosub;
+            Advance();
+            Advance();
+        }
+
+        if (isSpacedGoto || Match(TokenType.Goto, TokenType.Gosub))
+        {
+            isGosub = !isSpacedGoto && Previous().Type == TokenType.Gosub;
             do
             {
                 Token current = Peek();

@@ -394,6 +394,7 @@ Recent Level II slices, in order:
 314. Added focused implicit-array creation and untouched numeric-element default coverage.
 315. Added focused implicit string-array creation, assignment, and empty-element default coverage.
 316. Verified explicit integer and string array suffixes override conflicting `DEFSTR` and `DEFINT` declarations.
+317. Added spaced `ON ... GO TO` parsing with focused computed-transfer coverage.
 ## Next Slice Queue
 
 Work in this order unless manual research changes the dependency:
