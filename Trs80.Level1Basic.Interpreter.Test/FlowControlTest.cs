@@ -70,6 +70,24 @@ public class FlowControlTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Use_Outer_And_Inner_For_Variables()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 FOR OUTER=4 TO 4",
+            "20 FOR INNER=4 TO 4",
+            "30 PRINT OUTER*INNER",
+            "40 NEXT INNER",
+            "50 NEXT OUTER"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 16 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Execute_Immediate_Go_To_Into_Loaded_Program()
     {
         using var controller = new TestController();

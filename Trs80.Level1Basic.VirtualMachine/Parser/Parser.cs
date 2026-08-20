@@ -905,7 +905,8 @@ public class Parser : IParser
             identifier = Unary();
 
         if (identifierToken.Type == TokenType.Identifier
-            && identifierToken.Lexeme.Contains("ON", StringComparison.OrdinalIgnoreCase))
+            && identifierToken.Lexeme.Length >= 2
+            && identifierToken.Lexeme.StartsWith("GO", StringComparison.OrdinalIgnoreCase))
             _parseException = new ParseException(_lineNumber, _source,
                 identifierToken.LinePosition, "Invalid variable name.");
 

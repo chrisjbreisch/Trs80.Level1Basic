@@ -283,7 +283,7 @@ public class ErrorTest
     }
 
     [TestMethod]
-    public void Interpreter_Rejects_Variable_Containing_Reserved_On()
+    public void Interpreter_Rejects_Variable_With_Reserved_Go_Prefix()
     {
         using var controller = new TestController();
         var program = new List<string> {

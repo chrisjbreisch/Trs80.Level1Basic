@@ -622,6 +622,10 @@ public class Scanner : IScanner
             if (!candidates.TryGetValue(key, out TokenType keyword))
                 continue;
 
+            int followingIndex = TokenStart + candidateLength;
+            if (key is not "IF" and not "TO" && !key.Contains('.') && followingIndex < _source.Length && IsIdentifierCharacter(_source[followingIndex]))
+                continue;
+
             _currentIndex = TokenStart + candidateLength;
             return keyword;
         }

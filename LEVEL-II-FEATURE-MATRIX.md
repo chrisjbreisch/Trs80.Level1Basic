@@ -460,6 +460,7 @@ Recent Level II slices, in order:
 342. Made Enter continue paginated `LIST` output when another page remains, instead of terminating the listing early.
 343. Made the variable after `NEXT` optional, defaulting bare `NEXT` to the innermost active `FOR` loop variable.
 344. Enabled multi-character `FOR` variables under the Level II two-character significance rule with focused loop coverage.
+345. Corrected scanner keyword boundaries so `OUTER`/`INNER` remain valid identifiers, `GONE` is rejected for its reserved `GO` prefix, and compact `IF`/`TO` plus dotted abbreviations remain supported.
 ## Next Slice Queue
 
 The detailed queue is maintained in the [Phase 4 Dashboard](#phase-4-dashboard). Start with typed scalar promotion and invalid conversions, then work downward through typed arrays, conversions, numeric formatting, DATA/error lifecycle, host edges, and editor/corpus expansion. The queue is intentionally ordered so shared type and runtime rules settle before broader compatibility-program work.
