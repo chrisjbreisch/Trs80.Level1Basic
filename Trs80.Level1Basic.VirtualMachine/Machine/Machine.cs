@@ -53,6 +53,8 @@ public class Machine : IMachine
         return _globals.Set(name, value);
     }
 
+    public void SetStringCapacity(int length) => _globals.SetStringCapacity(length);
+
     public void SetVariableType(string name, TokenType type)
     {
         _globals.SetVariableType(name, type);
@@ -62,6 +64,8 @@ public class Machine : IMachine
     {
         return _globals.IsStringVariable(name);
     }
+
+    public bool IsIntegerVariable(string name) => _globals.IsIntegerVariable(name);
 
     public dynamic Set(string name, int index, dynamic value)
     {

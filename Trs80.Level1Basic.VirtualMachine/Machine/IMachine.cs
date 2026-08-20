@@ -14,12 +14,14 @@ public interface IMachine
     int CursorY { get; set; }
 
     dynamic Set(string name, dynamic value);
+    void SetStringCapacity(int length);
     dynamic Set(string name, int index, dynamic value);
     dynamic Set(string name, int index, int index2, dynamic value);
     void SetArrayDimensions(string name, int dimension1);
     void SetArrayDimensions(string name, int dimension1, int dimension2);
     void SetVariableType(string name, TokenType type);
     bool IsStringVariable(string name);
+    bool IsIntegerVariable(string name);
     dynamic Get(string name);
     dynamic Get(string name, int index);
     dynamic Get(string name, int index, int index2);

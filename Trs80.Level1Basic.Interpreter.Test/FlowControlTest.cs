@@ -1,10 +1,14 @@
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 using FluentAssertions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.TestUtilities;
+using Trs80.Level1Basic.VirtualMachine.Scanner;
 
 namespace Trs80.Level1Basic.Interpreter.Test;
 
@@ -622,6 +626,43 @@ public class FlowControlTest
         controller.RunProgram(program);
 
         controller.ReadOutputLine().Should().Be("HOW?");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Handles_Clear_String_Input_Overflow()
+    {
+        using var controller = new TestController();
+        controller.Input = new StringReader("CHRIS J BREISCH\r\n");
+        var program = new List<string> {
+            "100 CLEAR 12",
+            "110 ON ERROR GOTO 200",
+            "120 INPUT \"CUSTOMER'S NAME\";N$",
+            "130 END",
+            "200 IF ERL=120 THEN PRINT \"NAME MUST BE LESS THAN 13 CHARACTERS\":END"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("CUSTOMER'S NAME?NAME MUST BE LESS THAN 13 CHARACTERS");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Handles_Integer_Input_Overflow()
+    {
+        using var controller = new TestController();
+        controller.Input = new StringReader("404195481\r\n");
+        var program = new List<string> {
+            "100 ON ERROR GOTO 200",
+            "110 INPUT \"CUSTOMER'S NUMBER\";A%",
+            "120 END",
+            "200 IF ERL=110 THEN PRINT \"CUSTOMER'S ID NUMBER MUST BE LESS THAN 32768\":END"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("CUSTOMER'S NUMBER?CUSTOMER'S ID NUMBER MUST BE LESS THAN 32768");
         controller.IsEndOfRun().Should().BeTrue();
     }
 

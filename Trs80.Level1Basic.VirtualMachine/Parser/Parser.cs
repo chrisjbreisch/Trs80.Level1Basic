@@ -119,7 +119,8 @@ public class Parser : IParser
         if (IsResumeStatement())
         {
             Advance();
-            return StatementWrapper(new Resume());
+            Expression location = IsAtStatementEnd() ? null : Expression();
+            return StatementWrapper(new Resume(location));
         }
         if (IsSpacedGoto())
         {
@@ -335,7 +336,8 @@ public class Parser : IParser
 
     private IStatement ClearStatement()
     {
-        return StatementWrapper(new Clear());
+        Expression length = IsAtStatementEnd() ? null : Expression();
+        return StatementWrapper(new Clear(length));
     }
 
     private IStatement BeepStatement()

@@ -528,6 +528,8 @@ public class Interpreter : IInterpreter
     public Void VisitClearStatement(Clear statement)
     {
         _machine.Initialize();
+        if (statement.Length is not null)
+            _machine.SetStringCapacity((int)Evaluate(statement.Length));
 
         return null!;
     }
@@ -758,32 +760,53 @@ public class Interpreter : IInterpreter
 
     private void AssignInputValue(Expression identifier, string value)
     {
-        if (value is null)
-            Assign(identifier, null);
-        else if (int.TryParse(value, out int intValue))
-            Assign(identifier, intValue);
-        else if (float.TryParse(value, out float floatValue))
-            Assign(identifier, floatValue);
-        else if (_machine.Exists(value))
+        try
         {
-            dynamic lookup = _machine.Get(value);
-            Assign(identifier, lookup);
-        }
-        else
-            try
+            if (value is null)
+                Assign(identifier, null);
+            else if (int.TryParse(value, out int intValue))
             {
+                string targetName = identifier switch
+                {
+                    Identifier variable => variable.Name.Lexeme,
+                    Array array => array.Name.Lexeme,
+                    _ => string.Empty
+                };
+                bool integerTarget = _machine.IsIntegerVariable(targetName)
+                    || _program.CurrentStatement.SourceLine.Contains($"{targetName}%",
+                        StringComparison.OrdinalIgnoreCase);
+                if (integerTarget &&
+                    (intValue < short.MinValue || intValue > short.MaxValue))
+                    throw new ValueOutOfRangeException(-1, string.Empty, "Integer value out of range.");
+
+                Assign(identifier, intValue);
+            }
+            else if (float.TryParse(value, out float floatValue))
+                Assign(identifier, floatValue);
+            else if (_machine.Exists(value))
+            {
+                dynamic lookup = _machine.Get(value);
+                Assign(identifier, lookup);
+            }
+            else
                 Assign(identifier, value);
-            }
-            catch (ValueOutOfRangeException)
-            {
-                _trs80.WriteLine("WHAT?");
-                GetInputValue(identifier);
-            }
-            catch (TypeMismatchException)
-            {
-                _trs80.WriteLine("WHAT?");
-                GetInputValue(identifier);
-            }
+        }
+        catch (ValueOutOfRangeException)
+        {
+            if (_program.CurrentStatement.LineNumber >= 0 && _errorHandlerStatement is not null)
+                throw;
+
+            _trs80.WriteLine("WHAT?");
+            GetInputValue(identifier);
+        }
+        catch (TypeMismatchException)
+        {
+            if (_program.CurrentStatement.LineNumber >= 0 && _errorHandlerStatement is not null)
+                throw;
+
+            _trs80.WriteLine("WHAT?");
+            GetInputValue(identifier);
+        }
     }
 
     public Void VisitLetStatement(Let statement)
@@ -1016,7 +1039,18 @@ public class Interpreter : IInterpreter
             throw new FlowControlException(statement.LineNumber, statement.SourceLine,
                 0, "RESUME without an active error.");
 
-        _machine.SetNextStatement(_errorResumeStatement);
+        if (statement.Location is null)
+            _machine.SetNextStatement(_errorResumeStatement);
+        else
+        {
+            int lineNumber = (int)Evaluate(statement.Location);
+            IStatement resumeStatement = GetStatementByLineNumber(lineNumber);
+            if (resumeStatement is null)
+                throw new UndefinedLineException(statement.LineNumber, statement.SourceLine,
+                    statement.Location.LinePosition, $"Can't GOTO line {lineNumber}");
+
+            _machine.SetNextStatement(resumeStatement);
+        }
         _errorResumeStatement = null;
         _handlingError = false;
         return null!;

@@ -24,9 +24,11 @@ public class Environment
     private readonly Dictionary<string, VariableType> _declaredTypes = new();
     private readonly HashSet<string> _assignedVariables = new();
     private readonly BasicLanguageLevel _basicLevel;
+    private int _stringCapacity = 255;
     private bool _initializingVariables;
     private const string names = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     public int VariableMemorySize => _assignedVariables.Count * 7;
+    public int StringCapacity => _stringCapacity;
 
     public Environment(BasicLanguageLevel basicLevel = BasicLanguageLevel.Level2)
     {
@@ -89,6 +91,11 @@ public class Environment
     public bool IsStringVariable(string name)
     {
         return GetDeclaredType(name) == VariableType.String;
+    }
+
+    public bool IsIntegerVariable(string name)
+    {
+        return GetDeclaredType(name) == VariableType.Integer;
     }
 
     public void SetArrayDimensions(string name, int dimension1)
@@ -173,7 +180,11 @@ public class Environment
                 if (value is int intValueDouble) return (double)intValueDouble;
                 return value;
             case VariableType.String:
-                return value is null ? string.Empty : value.ToString();
+                string stringValue = value is null ? string.Empty : value.ToString();
+                if (stringValue.Length > _stringCapacity)
+                    throw new ValueOutOfRangeException(-1, string.Empty, "String value exceeds CLEAR capacity.");
+
+                return stringValue;
             default:
                 return value;
         }
@@ -334,6 +345,11 @@ public class Environment
             _matrixArrays[name] = new Dictionary<string, dynamic>();
 
         _initializingVariables = false;
+    }
+
+    public void SetStringCapacity(int length)
+    {
+        _stringCapacity = Math.Clamp(length, 0, 255);
     }
 
     public dynamic GetArrayValue(string name, int index)
