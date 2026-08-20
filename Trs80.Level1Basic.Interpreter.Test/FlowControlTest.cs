@@ -51,6 +51,25 @@ public class FlowControlTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Use_A_MultiCharacter_For_Variable()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 FOR KOUNT=0 TO 3",
+            "20 PRINT KOUNT",
+            "30 NEXT"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.ReadOutputLine().Should().Be(" 2 ");
+        controller.ReadOutputLine().Should().Be(" 3 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Execute_Immediate_Go_To_Into_Loaded_Program()
     {
         using var controller = new TestController();

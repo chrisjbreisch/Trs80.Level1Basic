@@ -610,10 +610,6 @@ public class Interpreter : IInterpreter
             throw new ParseException(statement.LineNumber, statement.SourceLine,
                 statement.Identifier.LinePosition, "Expected variable after 'FOR'.");
 
-        if (!_machine.Exists(statement.IdentifierName.Lexeme))
-            throw new ParseException(statement.LineNumber, statement.SourceLine,
-                statement.Identifier.LinePosition, "Invalid identifier after 'FOR'.");
-
         dynamic current = Evaluate(statement.StartValue);
         Assign(statement.Identifier, current);
 

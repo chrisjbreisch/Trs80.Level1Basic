@@ -299,7 +299,10 @@ public class Environment
 
     internal bool Exists(string name)
     {
-        return _variables.ContainsKey(name);
+        string normalizedName = string.Equals(name, "ERL", StringComparison.OrdinalIgnoreCase)
+            ? "ERL"
+            : NormalizeName(name);
+        return _variables.ContainsKey(normalizedName);
     }
 
     internal dynamic Get(string name)

@@ -63,7 +63,7 @@ public class ErrorTest
     }
 
     [TestMethod]
-    public void Interpreter_Handles_Invalid_Identifier_In_For()
+    public void Interpreter_Allows_MultiCharacter_Identifier_In_For()
     {
         using var controller = new TestController();
         var program = new List<string> {
@@ -73,9 +73,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("?SN ERROR IN 10");
-        controller.ReadErrorLine().Should().Be(" 10  FOR C?HRIS = 1 TO 10");
-        controller.ReadOutputLine();
+        controller.ReadOutputLine().Should().BeEmpty();
         controller.IsEndOfRun().Should().BeTrue();
     }
 
