@@ -954,7 +954,6 @@ public class Interpreter : IInterpreter
     {
         foreach (Expression variable in statement.Variables)
         {
-            dynamic value = _machine.Data.GetNext();
             (Token target, int linePosition) = variable switch
             {
                 Identifier identifier => (identifier.Name,
@@ -962,6 +961,17 @@ public class Interpreter : IInterpreter
                 Array array => (array.Name, array.Name.LinePosition),
                 _ => (null, 0)
             };
+            dynamic value;
+            try
+            {
+                value = _machine.Data.GetNext();
+            }
+            catch (OutOfDataException exception)
+            {
+                throw new OutOfDataException(_program.CurrentStatement.LineNumber,
+                    _program.CurrentStatement.SourceLine, linePosition, exception.Message);
+            }
+
             if (target != null && _machine.IsStringVariable(target.Lexeme) != (value is string))
                 throw new TypeMismatchException(_program.CurrentStatement.LineNumber,
                     _program.CurrentStatement.SourceLine, linePosition,

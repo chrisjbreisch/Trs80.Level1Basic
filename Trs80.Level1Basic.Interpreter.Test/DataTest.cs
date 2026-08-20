@@ -114,6 +114,7 @@ public class DataTest
         controller.RunProgram(program);
 
         controller.ReadOutputLine().Should().Be("?OD ERROR");
+        controller.ReadErrorLine().Should().Be(" 20  READ A,?B");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
     }
