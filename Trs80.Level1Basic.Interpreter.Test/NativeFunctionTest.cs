@@ -181,6 +181,20 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Rejects_Chr_Outside_Byte_Range()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT CHR$(256)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HOW?");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_String_With_Fractional_Character_Code()
     {
         using var controller = new TestController();

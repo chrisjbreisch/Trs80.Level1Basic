@@ -56,7 +56,11 @@ public class Trs80Api : ITrs80Api
 
     public dynamic Chr(dynamic value)
     {
-        return (char)value;
+        int characterCode = (int)Math.Truncate(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
+        if (characterCode is < 0 or > byte.MaxValue)
+            throw new ValueOutOfRangeException(-1, string.Empty, "Character code out of range.");
+
+        return (char)characterCode;
     }
 
     public int Asc(dynamic value)
