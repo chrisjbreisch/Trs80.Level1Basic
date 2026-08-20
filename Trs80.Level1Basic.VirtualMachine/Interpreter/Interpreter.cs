@@ -493,9 +493,7 @@ public class Interpreter : IInterpreter
         {
             _machine.Initialize();
             RegisterUserFunctions();
-            _errorHandlerStatement = null;
-            _errorResumeStatement = null;
-            _handlingError = false;
+            ResetErrorState();
         }
 
         _machine.RunStatementList(statement, this);
@@ -887,6 +885,7 @@ public class Interpreter : IInterpreter
         if (string.IsNullOrEmpty(path)) return null!;
 
     _machine.NewProgram();
+        ResetErrorState();
         _machine.LoadProgram(path);
         _trs80.WriteLine($"Loaded \"{path}\".");
 
@@ -926,13 +925,18 @@ public class Interpreter : IInterpreter
     {
         _machine.Program.Clear();
         _machine.SetNextStatement(null);
+        ResetErrorState();
+        _userFunctions.Clear();
+
+        return null!;
+    }
+
+    private void ResetErrorState()
+    {
         _machine.Set("ERL", 0);
         _errorHandlerStatement = null;
         _errorResumeStatement = null;
         _handlingError = false;
-        _userFunctions.Clear();
-
-        return null!;
     }
 
     public Void VisitNextStatement(Next statement)

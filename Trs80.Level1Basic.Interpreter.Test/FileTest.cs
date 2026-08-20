@@ -50,6 +50,19 @@ public class FileTest
     }
 
     [TestMethod]
+    public void Load_Clears_On_Error_State()
+    {
+        using var controller = new TestController();
+        controller.ExecuteLine("80 PRINT \"STALE HANDLER\"");
+        controller.ExecuteLine("ON ERROR GO TO 80");
+        controller.ExecuteLine("LOAD \"load.bas\"");
+        controller.ExecuteLine("S=1/A");
+
+        controller.ReadOutputLine().Should().Be("Loaded \"load.bas\".");
+        controller.ReadOutputLine().Should().Be("?/0 ERROR");
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Execute_Empty_Load()
     {
         using var controller = new TestController();
