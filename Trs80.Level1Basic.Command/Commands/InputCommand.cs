@@ -81,7 +81,8 @@ public class InputCommand : ICommand<InputModel>
                 if (!_autoLineNumbering.TryNumber(sourceLine.Original, out string numberedLine))
                 {
                     _autoLineNumbering.Stop();
-                    continue;
+                    parameterObject.SourceLine = sourceLine;
+                    break;
                 }
 
                 sourceLine = new SourceLine
