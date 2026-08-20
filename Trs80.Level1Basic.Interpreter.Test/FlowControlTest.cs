@@ -92,9 +92,9 @@ public class FlowControlTest
     {
         using var controller = new TestController();
         var program = new List<string> {
-            "10 FOR I=1 TO 2",
-            "20 FOR K=1 TO 2",
-            "30 PRINT I;K",
+            "10 FOR K=1 TO 2",
+            "20 FOR I=1 TO 2",
+            "30 PRINT K;I",
             "40 NEXT I,K"
         };
 
@@ -104,6 +104,24 @@ public class FlowControlTest
         controller.ReadOutputLine().Should().Be(" 1  2 ");
         controller.ReadOutputLine().Should().Be(" 2  1 ");
         controller.ReadOutputLine().Should().Be(" 2  2 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Executes_Outer_Loop_With_Trace_And_Multiple_Next()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 TRON",
+            "20 FOR K=1 TO 3",
+            "30 FOR I=1 TO 1",
+            "40 NEXT I,K",
+            "50 TROFF"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("(20)(30)(40)(30)(40)(30)(40)(50)");
         controller.IsEndOfRun().Should().BeTrue();
     }
 

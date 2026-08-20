@@ -636,9 +636,10 @@ public class Interpreter : IInterpreter
 
                 current = IncrementIndexer(statement.Identifier, step);
 
-                if (current > end && nextIndex > 0)
+                if (current > end && nextIndex >= 0 &&
+                    nextIndex < lan.Next.IdentifierNames.Count - 1)
                     throw new LoopAfterNext(new Next(
-                        lan.Next.IdentifierNames.Take(nextIndex).ToList()));
+                        lan.Next.IdentifierNames.Skip(nextIndex + 1).ToList()));
             }
         while ((!_machine.ExecutionHalted) &&
             step > 0 && current <= end || step < 0 && current >= end);
