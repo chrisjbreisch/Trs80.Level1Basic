@@ -14,11 +14,14 @@ public static class ExceptionHandler
         switch (ex)
         {
             case ScanException se:
-                trs80.WriteLine("?SN ERROR");
+                trs80.WriteLine(settings.BasicLevel == BasicLanguageLevel.Level1 ? "WHAT?" : "?SN ERROR");
                 ScanError(trs80, se, settings.DetailedErrors);
                 break;
             case ParseException pe:
-                trs80.WriteLine(pe.LineNumber >= 0 ? $"?SN ERROR IN {pe.LineNumber}" : "?SN ERROR");
+                string parseLabel = settings.BasicLevel == BasicLanguageLevel.Level1
+                    ? "WHAT?"
+                    : pe.LineNumber >= 0 ? $"?SN ERROR IN {pe.LineNumber}" : "?SN ERROR";
+                trs80.WriteLine(parseLabel);
                 BaseError(trs80, pe, settings.DetailedErrors);
                 if (pe.LineNumber >= 0)
                     pendingEdit?.Request(pe.LineNumber);

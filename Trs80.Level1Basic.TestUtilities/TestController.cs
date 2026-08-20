@@ -68,8 +68,8 @@ public class TestController : DisposableBase
         Parser = new Parser(Trs80, natives, appSettings);
         IProgram program = new BasicProgram(Scanner, Parser);
         Program = program;
-        IMachine environment = new Machine(Trs80, program);
         BasicLanguageLevel activeLevel = appSettings?.BasicLevel ?? BasicLanguageLevel.Level2;
+        IMachine environment = new Machine(Trs80, program, activeLevel);
         ITrs80Api trs80Api = new Trs80Api(program, environment, Trs80, activeLevel);
         Trs80Api.ResetRng();
         _interpreter = new Interpreter(host, Trs80, trs80Api, environment, program, appSettings, PendingEdit);

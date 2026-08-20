@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
+using Trs80.Level1Basic.Common;
 
 namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
 
@@ -22,18 +23,22 @@ public class Environment
     private readonly Dictionary<string, int[]> _arrayDimensions = new();
     private readonly Dictionary<string, VariableType> _declaredTypes = new();
     private readonly HashSet<string> _assignedVariables = new();
+    private readonly BasicLanguageLevel _basicLevel;
     private bool _initializingVariables;
     private const string names = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     public int VariableMemorySize => _assignedVariables.Count * 7;
 
-    public Environment()
+    public Environment(BasicLanguageLevel basicLevel = BasicLanguageLevel.Level2)
     {
+        _basicLevel = basicLevel;
         foreach (char name in names)
         {
             Define(name.ToString(), 0);
             Define($"{name}$", "");
             DefineArray(name.ToString());
-            _declaredTypes[name.ToString()] = VariableType.Single;
+            _declaredTypes[name.ToString()] = basicLevel == BasicLanguageLevel.Level1
+                ? VariableType.Integer
+                : VariableType.Single;
             _declaredTypes[$"{name}$"] = VariableType.String;
         }
 
@@ -191,7 +196,7 @@ public class Environment
         if (_declaredTypes.TryGetValue($"{normalizedName}$", out VariableType stringDeclaredType))
             return stringDeclaredType;
 
-        return VariableType.Single;
+        return _basicLevel == BasicLanguageLevel.Level1 ? VariableType.Integer : VariableType.Single;
     }
 
     private dynamic ValidateValue(dynamic value, bool isString)

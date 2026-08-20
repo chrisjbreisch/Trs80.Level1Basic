@@ -17,7 +17,7 @@ public class Level1SyntaxGatingTest
 
         controller.ExecuteLine("DEFINT A");
 
-        controller.ReadOutputLine().Should().Be("?SN ERROR");
+        controller.ReadOutputLine().Should().Be("WHAT?");
     }
 
     [TestMethod]
@@ -40,7 +40,7 @@ public class Level1SyntaxGatingTest
 
         controller.ExecuteLine(source);
 
-        controller.ReadOutputLine().Should().Be("?SN ERROR IN 10");
+        controller.ReadOutputLine().Should().Be("WHAT?");
     }
 
     [TestMethod]
@@ -71,7 +71,7 @@ public class Level1SyntaxGatingTest
 
         controller.ExecuteLine(source);
 
-        controller.ReadOutputLine().Should().Be("?SN ERROR IN 10");
+        controller.ReadOutputLine().Should().Be("WHAT?");
     }
 
     [TestMethod]
@@ -85,5 +85,25 @@ public class Level1SyntaxGatingTest
         controller.ExecuteLine("40 A$=\"ABC\":MID$(A$,2,1)=\"X\"");
 
         controller.ReadOutputLine().Should().BeNull();
+    }
+
+    [TestMethod]
+    public void Level1_Uses_Integer_Default_For_Unsuffixed_Variables()
+    {
+        using var controller = new TestController(BasicLanguageLevel.Level1);
+        controller.ExecuteLine("A=3.9");
+        controller.ExecuteLine("PRINT A");
+
+        controller.ReadOutputLine().Should().Be(" 3 ");
+    }
+
+    [TestMethod]
+    public void Level2_Uses_Single_Default_For_Unsuffixed_Variables()
+    {
+        using var controller = new TestController(BasicLanguageLevel.Level2);
+        controller.ExecuteLine("A=3.9");
+        controller.ExecuteLine("PRINT A");
+
+        controller.ReadOutputLine().Should().Be(" 3.9 ");
     }
 }

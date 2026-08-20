@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 
+using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
 using Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 using Trs80.Level1Basic.VirtualMachine.Scanner;
@@ -10,7 +11,7 @@ namespace Trs80.Level1Basic.VirtualMachine.Machine;
 
 public class Machine : IMachine
 {
-    private readonly Interpreter.Environment _globals = new();
+    private readonly Interpreter.Environment _globals;
     private readonly ITrs80 _trs80;
     private IStatement _nextStatement;
 
@@ -21,10 +22,11 @@ public class Machine : IMachine
     public int VariableMemorySize => _globals.VariableMemorySize;
     public bool ExecutionHalted { get; set; }
 
-    public Machine(ITrs80 trs80, IProgram program)
+    public Machine(ITrs80 trs80, IProgram program, BasicLanguageLevel basicLevel = BasicLanguageLevel.Level2)
     {
         _trs80 = trs80 ?? throw new ArgumentNullException(nameof(trs80));
         Program = program ?? throw new ArgumentNullException(nameof(program));
+        _globals = new Interpreter.Environment(basicLevel);
 
         Console.CancelKeyPress += delegate (object _, ConsoleCancelEventArgs e)
         {

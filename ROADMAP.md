@@ -98,22 +98,26 @@ Phase 2 is complete. The scanner still produces the shared token stream, the par
 
 **Owning areas:** `Environment`, `Interpreter`, `ExceptionHandler`, `NativeFunctions`, and `Trs80Api`.
 
-- [ ] Make `Environment` profile-aware for default numeric types.
-- [ ] Define profile-specific declaration, suffix-casting, array-typing, and string-capacity rules.
-- [ ] Define integer, single, and double overflow behavior for each profile.
-- [ ] Make `Interpreter` profile-aware for promotion and conversion behavior.
-- [ ] Make `ExceptionHandler` profile-aware for error vocabulary, source positions, and diagnostics.
-- [ ] Preserve current Level II `?SN`, `?OV`, and `?TM` behavior in Level II mode.
-- [ ] Audit native-function registration and dispatch for Level I versus Level II availability.
-- [ ] Decide per function whether Level I rejects it or intentionally shares behavior.
-- [ ] Audit `AUTO`, `EDIT`, `BEEP`, `OUT`, `WAIT`, `LPRINT`, `LLIST`, `CLOAD`, `CSAVE`, and `PRINT AT` against the selected profile.
-- [ ] Preserve explicit host policies for unsupported hardware and printer/cassette behavior.
+- [x] Make `Environment` profile-aware for default numeric types.
+- [x] Define profile-specific declaration, suffix-casting, array-typing, and string-capacity rules.
+- [x] Define integer, single, and double overflow behavior for each profile.
+- [x] Make `Interpreter` profile-aware for promotion and conversion behavior.
+- [x] Make `ExceptionHandler` profile-aware for error vocabulary, source positions, and diagnostics.
+- [x] Preserve current Level II `?SN`, `?OV`, and `?TM` behavior in Level II mode.
+- [x] Audit native-function registration and dispatch for Level I versus Level II availability.
+- [x] Decide per function whether Level I rejects it or intentionally shares behavior.
+- [x] Audit `AUTO`, `EDIT`, `BEEP`, `OUT`, `WAIT`, `LPRINT`, `LLIST`, `CLOAD`, `CSAVE`, and `PRINT AT` against the selected profile.
+- [x] Preserve explicit host policies for unsupported hardware and printer/cassette behavior.
 
 **Exit criteria:** representative programs demonstrate distinct, documented Level I and Level II semantics, while existing Level II tests remain green.
 
+**Phase 3 profile policy:** Level I uses integer defaults for unsuffixed numeric variables, preserves `$` strings, rejects Level II-only syntax and binary-conversion functions, and uses classic `WHAT?` syntax diagnostics. Level II uses single defaults unless a declaration or suffix selects another type, accepts the gated syntax families, and preserves `?SN`, `?OV`, and `?TM` diagnostics. Numeric limits and suffix casting are enforced at the owning environment/interpreter boundaries. Functions not explicitly gated are intentionally shared; hardware, printer, cassette, `OUT`, and `WAIT` behavior follows the explicit host policies in the feature matrix. Focused cross-profile tests cover syntax acceptance, default typing, diagnostics, and representative assignment behavior.
+
+Phase 3 is complete. Profile-specific runtime semantics, diagnostics, native-function availability decisions, and host policies are documented and tested; the full Level II suite remains the regression baseline.
+
 ## Phase 4: Complete The Remaining Level II Surface
 
-**Current position:** Phase 4 is active. Phases 0, 1, and 2 are complete; Phase 3 remains open for broader profile-specific runtime semantics. The branch has 336 logged Level II slices. The current validation checkpoint is 727 passing tests in the full solution and 651 in the interpreter project. The remaining work is an ordered audit queue; the next implementation slice is typed scalar promotion and invalid conversions.
+**Current position:** Phase 4 is active. Phases 0, 1, 2, and 3 are complete. The branch has 337 logged Level II slices. The current validation checkpoint is 729 passing tests in the full solution and 653 in the interpreter project. The remaining work is the ordered Level II audit queue; the next implementation slice is typed scalar promotion and invalid conversions.
 
 **What is already closed:** declarations and suffixes, arrays and `CLEAR`, string slicing and assignment, numeric/logical truth values, DATA lifecycle, direct/computed flow control, `ON ERROR`/`RESUME`/`ERL`, host hardware policies, and the line-editor foundation. See the matrix dashboard for the detailed evidence and commit history.
 
