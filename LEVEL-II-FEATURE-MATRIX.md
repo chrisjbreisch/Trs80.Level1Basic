@@ -409,6 +409,7 @@ Recent Level II slices, in order:
 329. Set `ERL` from numbered program syntax errors so a `RUN` failure at line 10 is followed by `PRINT ERL` returning `10`.
 330. Verified `NEW` clears both `ERL` and active `ON ERROR` handler state.
 331. Verified `LOAD` clears stale `ERL` and active `ON ERROR` handler state during program replacement.
+332. Added `?FC ERROR IN line` handling for `RESUME` without an active error, with source-position coverage.
 ## Next Slice Queue
 
 Work in this order unless manual research changes the dependency:

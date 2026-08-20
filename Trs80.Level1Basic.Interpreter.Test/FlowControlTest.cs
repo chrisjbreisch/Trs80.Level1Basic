@@ -625,6 +625,20 @@ public class FlowControlTest
     }
 
     [TestMethod]
+    public void Interpreter_Reports_Resume_Without_Active_Error()
+    {
+        using var controller = new TestController();
+        controller.RunProgram(new List<string> {
+            "10 RESUME"
+        });
+
+        controller.ReadOutputLine().Should().Be("?FC ERROR IN 10");
+        controller.ReadErrorLine().Should().Be(" 10  ?RESUME");
+        controller.ReadOutputLine();
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Executes_Return_After_Then()
     {
         using var controller = new TestController();

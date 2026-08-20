@@ -1012,6 +1012,10 @@ public class Interpreter : IInterpreter
 
     public Void VisitResumeStatement(Resume statement)
     {
+        if (_errorResumeStatement is null)
+            throw new FlowControlException(statement.LineNumber, statement.SourceLine,
+                0, "RESUME without an active error.");
+
         _machine.SetNextStatement(_errorResumeStatement);
         _errorResumeStatement = null;
         _handlingError = false;
