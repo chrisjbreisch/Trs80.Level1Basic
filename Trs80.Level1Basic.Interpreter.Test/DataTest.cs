@@ -103,6 +103,22 @@ public class DataTest
     }
 
     [TestMethod]
+    public void Interpreter_Reports_Out_Of_Data()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DATA 1",
+            "20 READ A,B"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("?OD ERROR");
+        controller.ReadOutputLine();
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Read_Strings()
     {
         using var controller = new TestController();

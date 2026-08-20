@@ -27,6 +27,10 @@ public static class ExceptionHandler
                 trs80.WriteLine("?TM ERROR");
                 BaseError(trs80, tme, settings.DetailedErrors);
                 break;
+            case OutOfDataException ode:
+                trs80.WriteLine("?OD ERROR");
+                BaseError(trs80, ode, settings.DetailedErrors);
+                break;
             case RuntimeExpressionException ree:
                 trs80.WriteLine("WHAT?");
                 BaseError(trs80, ree, settings.DetailedErrors);

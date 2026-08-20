@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using Trs80.Level1Basic.VirtualMachine.Exceptions;
+
 namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
 
 public class DataElements
@@ -22,7 +24,7 @@ public class DataElements
     {
         return _listIndex < _dataElements.Count
             ? _dataElements[_listIndex++]
-            : throw new IndexOutOfRangeException();
+            : throw new OutOfDataException(-1, string.Empty, 0, "No more DATA elements are available.");
     }
 
     public void Clear()
