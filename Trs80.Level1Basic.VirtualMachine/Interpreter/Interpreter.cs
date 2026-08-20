@@ -727,8 +727,10 @@ public class Interpreter : IInterpreter
         string[] values = (_trs80.ReadLine() ?? string.Empty).Split(',');
         for (int index = 0; index < variables.Count; index++)
         {
-            string value = index < values.Length ? values[index].Trim() : string.Empty;
-            AssignInputValue(variables[index], value);
+            if (index < values.Length && !string.IsNullOrWhiteSpace(values[index]))
+                AssignInputValue(variables[index], values[index].Trim());
+            else
+                GetInputValue(variables[index]);
         }
 
         return true;

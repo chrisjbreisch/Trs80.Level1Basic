@@ -111,6 +111,22 @@ public class InputTest
     }
 
     [TestMethod]
+    public void Interpreter_Prompts_For_Missing_Comma_Separated_Input_Value()
+    {
+        using var controller = new TestController();
+        controller.Input = new StringReader("1000\n10\n");
+        var program = new List<string> {
+            "10 INPUT D,N",
+            "20 PRINT D;N"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("?? 1000  10 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Keeps_Semicolon_Input_As_Separate_Reads()
     {
         using var controller = new TestController();
