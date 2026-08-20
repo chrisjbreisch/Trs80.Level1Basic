@@ -583,6 +583,48 @@ public class ErrorTest
     }
 
     [TestMethod]
+    public void Interpreter_Handles_OnGosub_Outside_Range()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A = 0",
+            "20 ON A GOSUB 100, 200",
+            "30 PRINT 30",
+            "40 END",
+            "100 PRINT 100",
+            "110 RETURN",
+            "200 PRINT 200",
+            "210 RETURN"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 30 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Handles_OnGosub_Above_Range()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A = 3",
+            "20 ON A GOSUB 100, 200",
+            "30 PRINT 30",
+            "40 END",
+            "100 PRINT 100",
+            "110 RETURN",
+            "200 PRINT 200",
+            "210 RETURN"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 30 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Handles_Invalid_Read()
     {
         using var controller = new TestController();
