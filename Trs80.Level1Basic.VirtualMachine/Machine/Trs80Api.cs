@@ -105,7 +105,7 @@ public class Trs80Api : ITrs80Api
         if (string.IsNullOrWhiteSpace(value))
             return 0;
 
-        string text = value.Trim();
+        string text = value.Trim().Replace('D', 'E').Replace('d', 'e');
         for (int length = text.Length; length > 0; length--)
         {
             string candidate = text[..length];

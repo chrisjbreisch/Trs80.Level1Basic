@@ -79,7 +79,7 @@ An `Implemented` matrix row means the common behavior has focused tests; it does
 
 | Area | Status | Implemented now | Remaining work and evidence |
 | --- | --- | --- | --- |
-| String inspection and slicing | Partial | `CHR$`, `ASC`, `LEN`, `LEFT$`, `RIGHT$`, `MID$`, `INSTR`, `STR$`, `VAL`, and case/trim helpers exist. `CHR$` and `STRING$` truncate fractional character codes and reject values outside the TRS-80 byte range; `INSTR` supports its optional start position; `MID$` supports both `(source$, start)` and `(source$, start, length)`; empty-string behavior is covered; and `VAL` consumes a leading numeric prefix. | Audit remaining conversion and exact error behavior. Existing anchor: `NativeFunctionTest`. |
+| String inspection and slicing | Partial | `CHR$`, `ASC`, `LEN`, `LEFT$`, `RIGHT$`, `MID$`, `INSTR`, `STR$`, `VAL`, and case/trim helpers exist. `CHR$` and `STRING$` truncate fractional character codes and reject values outside the TRS-80 byte range; `INSTR` supports its optional start position; `MID$` supports both `(source$, start)` and `(source$, start, length)`; empty-string behavior is covered; and `VAL` consumes leading numeric prefixes including Level II `D` exponents. | Audit remaining conversion and exact error behavior. Existing anchor: `NativeFunctionTest`. |
 | `MID$` assignment | Implemented | Supports `MID$(A$, start, length) = value$` and optional length. Replacement is fixed-length, does not expand the target, ignores out-of-range starts and nonpositive arguments, and requires a string target. | Keep as a regression anchor while the broader string-function row is completed. |
 | Numeric conversion | Implemented | `CINT`, `CSNG`, `CDBL`, `FIX`, and `INT` exist. `CINT`, `FIX`, and `INT` avoid unnecessary `float` narrowing for double inputs. Unsuffixed numeric constants with more than seven significant mantissa digits are classified as double precision, while explicit `!` retains single precision. Ordinary large doubles use round-trip fixed formatting when an exponent is unnecessary; extreme magnitudes remain scientific. | Verify remaining overflow, exact midpoint rounding, and conversion from strings. Existing anchors: `NativeFunctionTest`, `ExpressionTest`, `PrintTest`. |
 | Math functions | Implemented | `SQR`, `SIN`, `COS`, `TAN`, `ATN`, `LOG`, and `EXP` are registered and callable. | Confirm domain errors, precision, and Level II output expectations. |
@@ -448,6 +448,7 @@ Recent Level II slices, in order:
 332. Added `?FC ERROR IN line` handling for `RESUME` without an active error, with source-position coverage.
 333. Verified `ERL` remains set to the last faulting line after `RESUME` returns to the interrupted program.
 334. Verified a runtime fault inside an `ON ERROR` handler does not recursively re-enter that handler and falls back to normal `HOW?` reporting.
+335. Extended `VAL` leading-prefix parsing to accept Level II `D`/`d` exponent markers with focused coverage.
 ## Next Slice Queue
 
 The detailed queue is maintained in the [Phase 4 Dashboard](#phase-4-dashboard). Start with typed scalar promotion and invalid conversions, then work downward through typed arrays, conversions, numeric formatting, DATA/error lifecycle, host edges, and editor/corpus expansion. The queue is intentionally ordered so shared type and runtime rules settle before broader compatibility-program work.

@@ -384,6 +384,20 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Call_Val_With_Double_Exponent()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT VAL(\"1.5D+2 volts\")"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 150 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Instr_And_Space()
     {
         using var controller = new TestController();
