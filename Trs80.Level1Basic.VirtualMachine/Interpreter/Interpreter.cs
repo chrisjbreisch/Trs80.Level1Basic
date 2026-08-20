@@ -161,11 +161,11 @@ public class Interpreter : IInterpreter
             TokenType.Mod => right == 0 ? throw new ValueOutOfRangeException(_program.CurrentStatement.LineNumber, _program.CurrentStatement.SourceLine, "Divide by zero") : left % right,
             TokenType.Star => (left is bool && right is bool) ? left && right : left * right,
             TokenType.Caret => Math.Pow(Convert.ToDouble(left), Convert.ToDouble(right)),
-            TokenType.And => IsTruthy(left) && IsTruthy(right),
-            TokenType.Or => IsTruthy(left) || IsTruthy(right),
-            TokenType.Xor => IsTruthy(left) ^ IsTruthy(right),
-            TokenType.Eqv => IsTruthy(left) == IsTruthy(right),
-            TokenType.Imp => !IsTruthy(left) || IsTruthy(right),
+            TokenType.And => TruthValue(IsTruthy(left) && IsTruthy(right)),
+            TokenType.Or => TruthValue(IsTruthy(left) || IsTruthy(right)),
+            TokenType.Xor => TruthValue(IsTruthy(left) ^ IsTruthy(right)),
+            TokenType.Eqv => TruthValue(IsTruthy(left) == IsTruthy(right)),
+            TokenType.Imp => TruthValue(!IsTruthy(left) || IsTruthy(right)),
             TokenType.GreaterThan => TruthValue(left > right),
             TokenType.GreaterThanOrEqual => TruthValue(left >= right),
             TokenType.LessThan => TruthValue(left < right),
@@ -255,7 +255,7 @@ public class Interpreter : IInterpreter
         dynamic right = Evaluate(expression.Right);
 
         if (expression.UnaryOperator.Type == TokenType.Not)
-            return IsTruthy(right) ? 0 : 1;
+            return TruthValue(!IsTruthy(right));
 
         CheckNumericOperand(expression.UnaryOperator, right);
         return expression.UnaryOperator.Type == TokenType.Plus ? right : -1 * right;
