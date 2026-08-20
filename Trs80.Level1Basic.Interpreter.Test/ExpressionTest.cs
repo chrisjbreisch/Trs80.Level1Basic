@@ -358,6 +358,22 @@ public class ExpressionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Use_An_Implicit_Array()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 A(5) = 7",
+            "20 PRINT A(5);A(6)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 7  0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Rejects_Array_Index_Outside_Dimension()
     {
         using var controller = new TestController();
