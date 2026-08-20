@@ -80,7 +80,7 @@ public class Interpreter : IInterpreter
     public dynamic VisitArrayExpression(Array expression)
     {
         dynamic index = Evaluate(expression.Index);
-        if (index > _trs80Api.Mem() / 4 - 1)
+        if (index > _trs80Api.GetMaxArrayIndex())
             throw new ProgramTooLargeException(_program.CurrentStatement.LineNumber,
                 _program.CurrentStatement.SourceLine, expression.LinePosition, "Insufficient memory.");
 
@@ -88,7 +88,7 @@ public class Interpreter : IInterpreter
             return _machine.Get(expression.Name.Lexeme, index);
 
         dynamic index2 = Evaluate(expression.Index2);
-        if (index2 > _trs80Api.Mem() / 4 - 1)
+        if (index2 > _trs80Api.GetMaxArrayIndex())
             throw new ProgramTooLargeException(_program.CurrentStatement.LineNumber,
                 _program.CurrentStatement.SourceLine, expression.LinePosition, "Insufficient memory.");
 

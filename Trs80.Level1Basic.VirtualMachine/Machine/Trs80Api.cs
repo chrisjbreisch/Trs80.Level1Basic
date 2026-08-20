@@ -17,6 +17,8 @@ public class Trs80Api : ITrs80Api
     public const int AdditionalMem = 12 * 1024 - 300;
     public const int BaseMem = 3584;
     public const int TotalMemory = BaseMem + AdditionalMem;
+    public const int MaxArrayIndex = 3962;
+    public int GetMaxArrayIndex() => MaxArrayIndex - _machine.VariableMemorySize / 7;
 
     public Trs80Api(IProgram program, IMachine machine, ITrs80 trs80, BasicLanguageLevel basicLevel)
     {
@@ -123,9 +125,11 @@ public class Trs80Api : ITrs80Api
     {
         double numericValue = Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture);
         double roundedValue = Math.Round(numericValue, MidpointRounding.AwayFromZero);
-        if (roundedValue < short.MinValue || roundedValue > short.MaxValue)
+        bool isDoublePrecision = value is double;
+        double minimum = isDoublePrecision ? int.MinValue : short.MinValue;
+        double maximum = isDoublePrecision ? int.MaxValue : short.MaxValue;
+        if (roundedValue < minimum || roundedValue > maximum)
             throw new ValueOutOfRangeException(-1, string.Empty, "Integer value out of range.");
-
         return (int)roundedValue;
     }
 

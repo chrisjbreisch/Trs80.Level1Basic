@@ -132,6 +132,8 @@ public class EnvironmentTest
         controller.ReadOutputLine().Should().Be("READY");
         controller.ReadOutputLine().Should().Be(" 10  I = 3");
         controller.ReadOutputLine().Should().Be(" 30  PRINT I");
+        controller.ReadOutputLine().Should().BeEmpty();
+        controller.ReadOutputLine().Should().Be("READY");
         controller.ReadOutputLine().Should().BeNull();
     }
 }

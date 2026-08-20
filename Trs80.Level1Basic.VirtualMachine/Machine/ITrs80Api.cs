@@ -4,6 +4,7 @@ public interface ITrs80Api
 {
     int Int(dynamic value);
     dynamic Mem();
+    int GetMaxArrayIndex();
     dynamic Fre(dynamic value);
     dynamic Abs(dynamic value);
     dynamic Chr(dynamic value);
