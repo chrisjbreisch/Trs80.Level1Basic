@@ -609,6 +609,23 @@ public class FlowControlTest
     }
 
     [TestMethod]
+    public void Interpreter_Does_Not_Reenter_A_Faulting_On_Error_Handler()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 ON ERROR GO TO 80",
+            "20 X=1/0",
+            "30 END",
+            "80 X=1/0"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HOW?");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_New_Clears_Erl_And_On_Error_State()
     {
         using var controller = new TestController();
