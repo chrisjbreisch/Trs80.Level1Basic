@@ -633,7 +633,11 @@ public class Interpreter : IInterpreter
     public Void VisitGotoStatement(Goto statement)
     {
         IStatement jumpToStatement = GetJumpToStatement(statement, statement.Location, statement.LinePosition, "GOTO");
-        _machine.SetNextStatement(jumpToStatement);
+        if (statement.LineNumber < 0)
+            _machine.RunStatementList(jumpToStatement, this);
+        else
+            _machine.SetNextStatement(jumpToStatement);
+
         return null!;
     }
 

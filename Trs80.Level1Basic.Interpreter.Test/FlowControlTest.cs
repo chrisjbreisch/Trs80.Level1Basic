@@ -29,6 +29,20 @@ public class FlowControlTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Execute_Immediate_Go_To_Into_Loaded_Program()
+    {
+        using var controller = new TestController();
+        controller.ExecuteStatements(new List<string> {
+            "10 PRINT \"LINE 10\":END",
+            "20 PRINT \"LINE 20\":END"
+        });
+
+        controller.ExecuteLine("GO TO 10");
+
+        controller.ReadOutputLine().Should().Be("LINE 10");
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Execute_Spaced_Go_To_Program()
     {
         using var controller = new TestController();

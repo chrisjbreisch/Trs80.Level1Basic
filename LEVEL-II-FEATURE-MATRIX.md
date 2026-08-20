@@ -395,6 +395,7 @@ Recent Level II slices, in order:
 315. Added focused implicit string-array creation, assignment, and empty-element default coverage.
 316. Verified explicit integer and string array suffixes override conflicting `DEFSTR` and `DEFINT` declarations.
 317. Added spaced `ON ... GO TO` parsing with focused computed-transfer coverage.
+318. Made immediate-mode `GOTO` and spaced `GO TO` execute from their target line in the loaded program.
 ## Next Slice Queue
 
 Work in this order unless manual research changes the dependency:
