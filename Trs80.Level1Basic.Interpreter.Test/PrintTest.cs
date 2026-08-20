@@ -1091,6 +1091,18 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Does_Not_Print_Before_Missing_Parenthesis_Syntax_Error()
+    {
+        using var controller = new TestController();
+
+        controller.ExecuteLine("PRINT NOT (5<3");
+
+        controller.ReadOutputLine().Should().Be("?SN ERROR");
+        controller.ReadOutputLine().Should().BeEmpty();
+        controller.ReadOutputLine().Should().Be("READY");
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_First_Order_Negative_Value()
     {
         using var controller = new TestController();

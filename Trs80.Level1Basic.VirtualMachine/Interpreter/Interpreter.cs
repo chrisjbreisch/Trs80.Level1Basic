@@ -930,6 +930,9 @@ public class Interpreter : IInterpreter
 
     public Void VisitPrintStatement(Print statement)
     {
+        if (statement.ParseException?.Message.Contains("Expected ')'", StringComparison.Ordinal) == true)
+            throw statement.ParseException;
+
         if (statement.AtPosition != null)
             PrintAt(statement.AtPosition);
 
