@@ -71,6 +71,7 @@ public class TestController : DisposableBase
         IMachine environment = new Machine(Trs80, program);
         BasicLanguageLevel activeLevel = appSettings?.BasicLevel ?? BasicLanguageLevel.Level2;
         ITrs80Api trs80Api = new Trs80Api(program, environment, Trs80, activeLevel);
+        Trs80Api.ResetRng();
         _interpreter = new Interpreter(host, Trs80, trs80Api, environment, program, appSettings, PendingEdit);
     }
 

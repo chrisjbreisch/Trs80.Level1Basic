@@ -475,6 +475,13 @@ public class Trs80Api : ITrs80Api
         return LastRandom;
     }
 
+    public static void ResetRng()
+    {
+        Rand = new Random();
+        LastRandom = 0;
+        HasLastRandom = false;
+    }
+
     public string Tab(dynamic value)
     {
         int position = (int)Convert.ToSingle(value, System.Globalization.CultureInfo.InvariantCulture);
