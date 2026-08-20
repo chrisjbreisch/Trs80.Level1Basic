@@ -913,7 +913,14 @@ public class Interpreter : IInterpreter
         var locations = statement.Locations.Select(location => Evaluate(location)).ToList();
         System.Collections.Generic.List<int> linePositions = statement.LinePositions;
 
-        if (selector >= locations.Count || selector < 0) return null!;
+        if (selector >= locations.Count || selector < 0)
+        {
+            if (statement.LineNumber >= 0)
+                throw new FlowControlException(statement.LineNumber, statement.SourceLine,
+                    statement.Selector.LinePosition, "ON selector is outside the target list.");
+
+            return null!;
+        }
 
         if (statement.IsGosub)
         {

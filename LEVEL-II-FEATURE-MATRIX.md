@@ -387,7 +387,7 @@ Recent Level II slices, in order:
 307. Extended `?UL ERROR` handling to undefined computed `ON ... GOTO` targets with selected-entry source coverage.
 308. Verified `?UL ERROR` handling for undefined computed `ON ... GOSUB` targets with selected-entry source coverage.
 309. Verified out-of-range `ON ... GOTO` selectors below zero and above the target list fall through to the next statement.
-310. Verified out-of-range `ON ... GOSUB` selectors below zero and above the target list fall through without creating a return frame.
+310. Program-mode out-of-range `ON ... GOSUB` selectors now report `?FC ERROR`; immediate-mode selectors still fall through without creating a return frame.
 311. Added explicit `RESTORE line` targeting with DATA source-line metadata and focused lifecycle coverage.
 312. Added typed-array dimensionality coverage for rejecting one-subscript/two-dimensional and two-subscript/one-dimensional mismatches.
 313. Fixed `CLEAR` to reset two-dimensional array storage and added focused value-reset coverage.
@@ -397,6 +397,7 @@ Recent Level II slices, in order:
 317. Added spaced `ON ... GO TO` parsing with focused computed-transfer coverage.
 318. Made immediate-mode `GOTO` and spaced `GO TO` execute from their target line in the loaded program.
 319. Made immediate-mode `ON ... GO TO` execute from its selected target line in the loaded program.
+320. Added `?FC ERROR IN line` diagnostics for program-mode `ON ... GOTO/GOSUB` selectors outside their target lists; the negative-selector loaded-program case now emits no branch output.
 ## Next Slice Queue
 
 Work in this order unless manual research changes the dependency:

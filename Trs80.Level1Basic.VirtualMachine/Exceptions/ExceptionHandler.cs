@@ -43,6 +43,10 @@ public static class ExceptionHandler
                 trs80.WriteLine("?UL ERROR");
                 BaseError(trs80, ule, settings.DetailedErrors);
                 break;
+            case FlowControlException fce:
+                trs80.WriteLine(fce.LineNumber >= 0 ? $"?FC ERROR IN {fce.LineNumber}" : "?FC ERROR");
+                BaseError(trs80, fce, settings.DetailedErrors);
+                break;
             case ValueOutOfRangeException voore:
                 trs80.WriteLine(IsNumericOverflow(voore) ? "?OV ERROR" : "HOW?");
                 ValueOutOfRangeError(trs80, voore, settings.DetailedErrors);

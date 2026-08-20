@@ -555,7 +555,9 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 30 ");
+        controller.ReadOutputLine().Should().Be("?FC ERROR IN 20");
+        controller.ReadErrorLine().Should().Be(" 20  ON A ?GOTO 100, 200, 300");
+        controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -578,8 +580,31 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 30 ");
+        controller.ReadOutputLine().Should().Be("?FC ERROR IN 20");
+        controller.ReadErrorLine().Should().Be(" 20  ON A ?GOTO 100, 200, 300");
+        controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Reports_Flow_Control_Error_For_Negative_On_Selector()
+    {
+        using var controller = new TestController();
+        controller.ExecuteStatements(new List<string> {
+            "10 ON Z GOTO 30, 50, 40",
+            "15 PRINT \"I SHOULDN'T BE HERE.\"",
+            "30 PRINT \"TRANSFER TO LINE 30 WITH Z=\";Z:END",
+            "40 PRINT \"TRANSFER TO LINE 40 WITH Z=\";Z:END",
+            "50 PRINT \"TRANSFER TO LINE 50 WITH Z=\";Z:END"
+        });
+
+        controller.ExecuteLine("Z=-5");
+        controller.ExecuteLine("GO TO 10");
+
+        controller.ReadOutputLine().Should().Be("?FC ERROR IN 10");
+        controller.ReadErrorLine().Should().Be(" 10  ON Z ?GOTO 30, 50, 40");
+        controller.ReadOutputLine().Should().BeEmpty();
+        controller.ReadOutputLine().Should().Be("READY");
     }
 
     [TestMethod]
@@ -599,7 +624,9 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 30 ");
+        controller.ReadOutputLine().Should().Be("?FC ERROR IN 20");
+        controller.ReadErrorLine().Should().Be(" 20  ON A ?GOSUB 100, 200");
+        controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -620,7 +647,9 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 30 ");
+        controller.ReadOutputLine().Should().Be("?FC ERROR IN 20");
+        controller.ReadErrorLine().Should().Be(" 20  ON A ?GOSUB 100, 200");
+        controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
     }
 
