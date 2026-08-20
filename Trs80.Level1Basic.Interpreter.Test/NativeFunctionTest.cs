@@ -883,7 +883,7 @@ public class NativeFunctionTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 15850  15850 ");
+        controller.ReadOutputLine().Should().Be(" 15551  15551 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 

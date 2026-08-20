@@ -347,8 +347,8 @@ public class Interpreter : IInterpreter
         {
             case 0:
                 return "0";
-            case < .01 and > -.01:
-                return value.ToString("0.######E+00");
+            case < .05 and > -.05:
+                return value.ToString("0.#####E+00");
             case < 1 and > -1:
                 return value.ToString(".#######");
             default:
@@ -370,7 +370,7 @@ public class Interpreter : IInterpreter
         {
             case 0:
                 return "0";
-            case < .01f and > -.01f:
+            case < .05f and > -.05f:
                 return value.ToString("0.#####E+00");
             case < 1 and > -1:
                 return value.ToString(".######");
