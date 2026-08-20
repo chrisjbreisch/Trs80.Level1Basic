@@ -1,5 +1,6 @@
 ﻿using System;
 
+using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
 using Trs80.Level1Basic.VirtualMachine.Interpreter;
 
@@ -12,15 +13,17 @@ public class Trs80Api : ITrs80Api
     private readonly IProgram _program;
     private readonly IMachine _machine;
     private readonly ITrs80 _trs80;
+    private readonly BasicLanguageLevel _basicLevel;
     public const int AdditionalMem = 12 * 1024;
-    public const int BaseMem = 3284;
+    public const int BaseMem = 3584;
     public const int TotalMemory = BaseMem + AdditionalMem;
 
-    public Trs80Api(IProgram program, IMachine machine, ITrs80 trs80)
+    public Trs80Api(IProgram program, IMachine machine, ITrs80 trs80, BasicLanguageLevel basicLevel)
     {
         _program = program ?? throw new ArgumentNullException(nameof(program));
         _machine = machine ?? throw new ArgumentNullException(nameof(machine));
         _trs80 = trs80 ?? throw new ArgumentNullException(nameof(trs80));
+        _basicLevel = basicLevel;
     }
 
     public int Int(dynamic value)
