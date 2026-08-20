@@ -64,6 +64,7 @@ public class Parser : IParser
         }
 
         RejectLevel1NumericSuffixes();
+        RejectLevel1DoubleExponent();
 
         if (lineNumber.Type != TokenType.Number) return Compound();
 
@@ -127,11 +128,17 @@ public class Parser : IParser
             return GotoStatement();
         }
         if (Match(TokenType.Beep))
+        {
+            RejectLevel1Feature("BEEP");
             return BeepStatement();
+        }
         if (Match(TokenType.Clear))
             return ClearStatement();
         if (IsMidAssignment())
+        {
+            RejectLevel1Feature("MID$ assignment");
             return MidAssignmentStatement();
+        }
         if (Match(TokenType.Cls))
             return ClsStatement();
         if (Match(TokenType.Cont))
@@ -164,9 +171,15 @@ public class Parser : IParser
         if (Match(TokenType.List))
             return ListStatement();
         if (Match(TokenType.Llist))
+        {
+            RejectLevel1Feature("LLIST");
             return LlistStatement();
+        }
         if (Match(TokenType.Lprint))
+        {
+            RejectLevel1Feature("LPRINT");
             return LprintStatement();
+        }
         if (Match(TokenType.Load))
             return LoadStatement();
         if (Match(TokenType.Merge))
@@ -180,11 +193,17 @@ public class Parser : IParser
         if (Match(TokenType.On))
             return OnStatement();
         if (Match(TokenType.Out))
+        {
+            RejectLevel1Feature("OUT");
             return OutStatement();
+        }
         if (Match(TokenType.Poke))
             return PokeStatement();
         if (Match(TokenType.Wait))
+        {
+            RejectLevel1Feature("WAIT");
             return WaitStatement();
+        }
         if (Match(TokenType.Print))
             return PrintStatement();
         if (Match(TokenType.Read))
@@ -256,6 +275,26 @@ public class Parser : IParser
 
         throw new ParseException(_lineNumber, _source, Previous().LinePosition,
             "Type declarations are not available in Level I mode.");
+    }
+
+    private void RejectLevel1Feature(string feature)
+    {
+        if (_appSettings.BasicLevel == BasicLanguageLevel.Level1)
+            throw new ParseException(_lineNumber, _source, Previous().LinePosition,
+                $"{feature} is not available in Level I mode.");
+    }
+
+    private void RejectLevel1DoubleExponent()
+    {
+        if (_appSettings.BasicLevel == BasicLanguageLevel.Level1 &&
+            _tokens.Any(token => token.Type == TokenType.Number &&
+                token.Lexeme.Contains('D', StringComparison.OrdinalIgnoreCase)))
+        {
+            Token exponentToken = _tokens.First(token => token.Type == TokenType.Number &&
+                token.Lexeme.Contains('D', StringComparison.OrdinalIgnoreCase));
+            throw new ParseException(_lineNumber, _source, exponentToken.LinePosition,
+                "Double exponent literals are not available in Level I mode.");
+        }
     }
 
     private void RejectLevel1NumericSuffixes()
@@ -348,6 +387,8 @@ public class Parser : IParser
             if (dimension is not Array)
                 _parseException = new ParseException(_lineNumber, _source,
                     Peek().LinePosition, "Expected array declaration after 'DIM'.");
+            if (dimension is Array { Index2: not null })
+                RejectLevel1Feature("Multidimensional DIM");
 
             dimensions.Add(dimension);
         } while (Match(TokenType.Comma));
@@ -959,6 +1000,9 @@ public class Parser : IParser
             }
 #pragma warning restore S1066 // Collapsible "if" statements should be merged
 
+    if (atPosition is not null)
+        RejectLevel1Feature("PRINT AT");
+
         while (!IsAtStatementEnd())
         {
             Expression value = Expression();
@@ -1124,6 +1168,7 @@ public class Parser : IParser
         if (!Match(TokenType.Caret)) return left;
 
         Token operatorType = Previous();
+        RejectLevel1Feature("Exponentiation");
         Expression right = Power();
         return new Binary(left, operatorType, right, operatorType.LinePosition);
     }
@@ -1234,6 +1279,10 @@ public class Parser : IParser
         Consume(TokenType.RightParen, "Expected ')' after arguments");
         
         Callable callee = callees.FirstOrDefault(f => f.Arity == arguments.Count);
+
+        if (_appSettings.BasicLevel == BasicLanguageLevel.Level1 &&
+            name.Lexeme.ToLowerInvariant() is "cvi" or "cvs" or "cvd" or "mki$" or "mks$" or "mkd$")
+            RejectLevel1Feature(name.Lexeme);
 
         ParseException pe = null;
         if (callee == null)

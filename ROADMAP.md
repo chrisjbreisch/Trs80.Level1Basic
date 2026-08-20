@@ -75,12 +75,12 @@ Phase 1 is complete. Configuration selects Level1 or Level2, the resolved profil
 
 **Owning areas:** `Scanner`, `Parser`, and parser-focused tests.
 
-- [ ] Confirm the Level I manual boundary for each Level II-only syntax form before implementation.
+- [x] Confirm the Level I manual boundary for each Level II-only syntax form before implementation.
 - [x] Identify and classify type declarations (`DEFINT`, `DEFSNG`, `DEFDBL`, `DEFSTR`) and numeric suffixes (`%`, `!`, `#`); preserve Level I-compatible `$` string suffixes.
-- [ ] Identify and classify double-exponent literals and exponentiation.
-- [ ] Identify and classify multidimensional `DIM` forms.
-- [ ] Identify and classify `MID$` assignment and other Level II-only statement forms.
-- [ ] Identify and classify Level II-only built-ins and commands.
+- [x] Identify and classify double-exponent literals and exponentiation.
+- [x] Identify and classify multidimensional `DIM` forms.
+- [x] Identify and classify `MID$` assignment and other Level II-only statement forms.
+- [x] Identify and classify Level II-only built-ins and commands.
 - [x] Keep tokenization in `Scanner`; make parser acceptance profile-aware.
 - [x] Reject type declaration statements in Level I with the existing syntax diagnostic.
 - [x] Reject type declarations and numeric suffixes in Level I with the existing syntax diagnostic.
@@ -89,6 +89,10 @@ Phase 1 is complete. Configuration selects Level1 or Level2, the resolved profil
 - [x] Verify Level I-compatible string suffixes remain accepted.
 
 **Exit criteria:** the parser has a documented and tested acceptance policy for Level I and Level II without duplicating the grammar.
+
+**Phase 2 boundary policy:** tokenization remains shared, while the parser rejects the following forms in Level I with `?SN ERROR` and accepts them in Level II: type declarations; numeric `%`/`!`/`#` suffixes; `D`/`d` exponent literals; exponentiation; multidimensional `DIM`; `MID$` assignment; `BEEP`, `OUT`, `WAIT`, `LPRINT`, and `LLIST`; `PRINT AT`; and binary-conversion functions `CVI`, `CVS`, `CVD`, `MKI$`, `MKS$`, and `MKD$`. One-dimensional `DIM`, `$` string suffixes, and the shared Level I statement families remain accepted. The policy is covered by `Level1SyntaxGatingTest` data-driven tests and the existing Level II parser/interpreter suite.
+
+Phase 2 is complete. The scanner still produces the shared token stream, the parser owns profile acceptance, Level I rejection and Level II acceptance are tested for every gated syntax family, and the full interpreter project remains green.
 
 ## Phase 3: Apply Level-Specific Runtime Semantics
 

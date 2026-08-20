@@ -21,9 +21,9 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Branch | `level2/type-declarations` |
 | Baseline | Level I interpreter with existing command, expression, file, input, and control-flow suites |
 | Recent focus | Type declarations, arrays, numeric precision, Level II built-ins, `CLEAR`, `MID$` assignment, user-defined functions, string-function compatibility, and scanner/parser keyword coverage |
-| Latest implementation commit | `a8620e0 Prevent recursive ON ERROR handlers` |
+| Latest implementation commit | Phase 2 syntax-gating closure (this checkpoint) |
 | Latest documentation checkpoint | Phase 4 dashboard and next-slice queue |
-| Validation baseline | Full solution: `714 passed`; interpreter project: `634 passed` |
+| Validation baseline | Full solution: `727 passed`; interpreter project: `651 passed` |
 | Validation habit | Run the narrowest affected test first, then the affected test class, then the full project for shared changes |
 
 ## Phase 4 Dashboard
@@ -449,6 +449,7 @@ Recent Level II slices, in order:
 333. Verified `ERL` remains set to the last faulting line after `RESUME` returns to the interrupted program.
 334. Verified a runtime fault inside an `ON ERROR` handler does not recursively re-enter that handler and falls back to normal `HOW?` reporting.
 335. Extended `VAL` leading-prefix parsing to accept Level II `D`/`d` exponent markers with focused coverage.
+336. Completed Phase 2 parser gating for Level I/Level II syntax boundaries with data-driven acceptance/rejection coverage.
 ## Next Slice Queue
 
 The detailed queue is maintained in the [Phase 4 Dashboard](#phase-4-dashboard). Start with typed scalar promotion and invalid conversions, then work downward through typed arrays, conversions, numeric formatting, DATA/error lifecycle, host edges, and editor/corpus expansion. The queue is intentionally ordered so shared type and runtime rules settle before broader compatibility-program work.
