@@ -523,6 +523,42 @@ public class ExpressionTest
     }
 
     [TestMethod]
+    public void Interpreter_Array_Integer_Suffix_Overrides_Defstr()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DEFSTR A",
+            "20 DIM A%(2)",
+            "30 A%(1) = 3.9",
+            "40 PRINT A%(1)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 3 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Array_String_Suffix_Overrides_Defint()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DEFINT A",
+            "20 DIM A$(2)",
+            "30 A$(1) = \"YES\"",
+            "40 PRINT A$(1)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("YES");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Initializes_String_Array_Elements_To_Empty()
     {
         using var controller = new TestController();
