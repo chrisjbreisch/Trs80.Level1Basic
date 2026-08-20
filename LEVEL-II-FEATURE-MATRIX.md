@@ -389,6 +389,7 @@ Recent Level II slices, in order:
 309. Verified out-of-range `ON ... GOTO` selectors below zero and above the target list fall through to the next statement.
 310. Verified out-of-range `ON ... GOSUB` selectors below zero and above the target list fall through without creating a return frame.
 311. Added explicit `RESTORE line` targeting with DATA source-line metadata and focused lifecycle coverage.
+312. Added typed-array dimensionality coverage for rejecting one-subscript/two-dimensional and two-subscript/one-dimensional mismatches.
 ## Next Slice Queue
 
 Work in this order unless manual research changes the dependency:

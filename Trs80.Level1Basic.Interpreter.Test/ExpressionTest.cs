@@ -390,6 +390,38 @@ public class ExpressionTest
     }
 
     [TestMethod]
+    public void Interpreter_Rejects_Two_Subscripts_On_One_Dimensional_Array()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DIM A(2)",
+            "20 PRINT A(1,1)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HOW?");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Rejects_One_Subscript_On_Two_Dimensional_Array()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DIM A(2,2)",
+            "20 PRINT A(1)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HOW?");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Rejects_Negative_Array_Index()
     {
         using var controller = new TestController();
