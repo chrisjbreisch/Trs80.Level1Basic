@@ -109,18 +109,20 @@ Phase 1 is complete. Configuration selects Level1 or Level2, the resolved profil
 
 ## Phase 4: Complete The Remaining Level II Surface
 
+**Current position:** Phase 4 is active. The branch has completed the parser/runtime profile boundary and 334 logged Level II slices. The current validation checkpoint is 714 passing tests in the full solution and 634 in the interpreter project. The remaining work is an ordered audit queue; the next implementation slice is typed scalar promotion and invalid conversions.
+
+**What is already closed:** declarations and suffixes, arrays and `CLEAR`, string slicing and assignment, numeric/logical truth values, DATA lifecycle, direct/computed flow control, `ON ERROR`/`RESUME`/`ERL`, host hardware policies, and the line-editor foundation. See the matrix dashboard for the detailed evidence and commit history.
+
 Work through [LEVEL-II-FEATURE-MATRIX.md](LEVEL-II-FEATURE-MATRIX.md) in dependency order:
 
-1. Manual checklist and remaining function inventory.
-2. Type declarations, promotion, conversion, and overflow edge cases.
-3. Array dimensions, implicit arrays, redeclaration, and `CLEAR` interactions.
-4. String-function boundaries and conversion errors.
-5. Logical precedence and mixed numeric behavior.
-6. DATA/READ/RESTORE exhaustion and lifecycle cases.
-7. Error diagnostics and source-position accuracy.
-8. Hardware and display policies.
-9. Richer `EDIT` and `AUTO` forms.
-10. Compatibility programs for each completed family.
+1. **Typed scalar promotion and invalid conversions.** Inspect `Environment`, `Interpreter.CheckOperands`, and native conversion dispatch. Add mixed `%`/`!`/`#` assignments, string-to-number conversions, type mismatches, and overflow cases.
+2. **Remaining typed-array rules.** Inspect `Environment.ValidateArrayIndex` and declaration/cast paths. Cover higher dimensions, suffix-driven type changes, redeclaration combinations, and bounds after `CLEAR`.
+3. **String conversion and error boundaries.** Audit `CHR$`, `ASC`, `VAL`, `STR$`, `CVI`/`CVS`/`CVD`, and `MK*` for empty, malformed, invalid-length, and overflow inputs.
+4. **Numeric promotion and formatting.** Audit mixed arithmetic, exact midpoint rounding, exponent thresholds, and conversions across `int`, `float`, and `double` in `Interpreter` and `Trs80Api`.
+5. **DATA and error lifecycle.** Complete `RESTORE` target errors, `READ` exhaustion after `CLEAR`, `ON ERROR` state across `MERGE`/`CONT`, and remaining `ERL`/source-position cases.
+6. **Random and keyboard compatibility.** Define remaining `RND` controls and the TRS-80 extended-key policy for `INKEY$`; cover end-of-input interaction with `INPUT$`.
+7. **Hardware/display closure.** Finish explicit policies and tests for `PRINT AT`, cursor functions, graphics bounds, printer behavior, cassette aliases, `OUT`, and `WAIT`.
+8. **Editor and compatibility corpus.** Add richer `EDIT`/`AUTO` forms and one deterministic executable compatibility program for each completed family.
 
 For every slice:
 
@@ -131,6 +133,8 @@ For every slice:
 - [ ] Update the feature matrix.
 - [ ] Run the full interpreter project after shared parser, environment, interpreter, host, or runtime changes.
 - [ ] Commit and push the slice separately.
+
+**Phase 4 working rule:** do not mark a row `Implemented` from code presence alone. Close a slice only when its policy is stated, its focused regression passes, the affected project passes, the matrix and completion log are updated, and the commit is pushed.
 
 **Exit criteria:** every matrix row is either `Implemented` with focused evidence or explicitly `Intentionally limited` with a documented policy and test.
 

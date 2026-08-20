@@ -21,9 +21,45 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Branch | `level2/type-declarations` |
 | Baseline | Level I interpreter with existing command, expression, file, input, and control-flow suites |
 | Recent focus | Type declarations, arrays, numeric precision, Level II built-ins, `CLEAR`, `MID$` assignment, user-defined functions, string-function compatibility, and scanner/parser keyword coverage |
-| Latest implementation commit | `a3f1bdb Report scalar assignment type mismatches` |
-| Latest documentation checkpoint | This update: add a compatibility program for scalar type-mismatch diagnostics |
+| Latest implementation commit | `a8620e0 Prevent recursive ON ERROR handlers` |
+| Latest documentation checkpoint | Phase 4 dashboard and next-slice queue |
+| Validation baseline | Full solution: `714 passed`; interpreter project: `634 passed` |
 | Validation habit | Run the narrowest affected test first, then the affected test class, then the full project for shared changes |
+
+## Phase 4 Dashboard
+
+Phase 4 is active and is being completed as small, independently validated Level II slices. The language core, parser gates, runtime error state, and most common statement families are already implemented. The remaining work is primarily audit, boundary coverage, manual-policy decisions, and compatibility programs rather than a single large feature branch.
+
+### Completed Through The Current Checkpoint
+
+- Type declarations, numeric suffixes, typed scalar casting, numeric limits, and Level I/Level II syntax/runtime gates.
+- One- and two-dimensional arrays, implicit arrays, duplicate `DIM` rejection, dimensionality checks, suffix precedence, and `CLEAR` resets.
+- String slicing, `MID$` assignment, character-code limits, string comparisons, and numeric-prefix `VAL` behavior.
+- Numeric truth values: relational and logical true results are `-1`; false results are `0`.
+- `DATA`/`READ`/`RESTORE`, including `RESTORE line`, type mismatches, `?OD ERROR`, and source locations.
+- Direct, spaced, and computed `GOTO`/`GOSUB` forms, immediate-mode transfers, `ON` selector policies, and `?UL`/`?FC` diagnostics.
+- `ON ERROR GO TO`, `ON ERROR GO TO 0`, `RESUME`, `ERL`, handler re-arming, handler-fault fallback, and `NEW`/`LOAD` state resets.
+- Hardware and host policies for graphics, memory wrapping, `BEEP`, printer output, cassette aliases, `OUT`, `WAIT`, and `PRINT AT`.
+- Line editing foundations, `AUTO`, `EDIT`, history recall, cancellation, and command abbreviations.
+
+### Remaining Phase 4 Queue
+
+The next slice is the first unchecked item. Each item names the intended owner and the smallest useful validation target.
+
+| Order | Slice | Owning abstraction | First validation target | Exit evidence |
+| --- | --- | --- | --- | --- |
+| 1 | Typed scalar promotion and invalid conversions | `Environment`, `Interpreter.CheckOperands`, `NativeFunctions` | Add mixed `%`/`!`/`#` assignment and string-to-number conversion cases | Promotion, truncation, type mismatch, and overflow rules are explicit and tested |
+| 2 | Remaining typed-array rules | `Environment.ValidateArrayIndex`, declaration/cast paths | Cover higher dimensions, array type changes, redeclaration with suffixes, and post-`CLEAR` bounds | Every supported array shape/type has a boundary and lifecycle regression |
+| 3 | String conversion/error boundaries | `Trs80Api`, `NativeFunctions` | Audit `ASC`, `VAL`, `STR$`, `CVI`/`CVS`/`CVD`, and `MK*` invalid lengths/ranges | Each conversion has valid, empty, malformed, and overflow behavior documented |
+| 4 | Numeric promotion and formatting audit | `Interpreter`, `Trs80Api` | Cover mixed arithmetic, midpoint rounding, exponent thresholds, and string conversion | Numeric results and printed forms match the selected Level II policy |
+| 5 | DATA and error lifecycle completion | `DataElements`, `Interpreter`, `ExceptionHandler` | Cover `RESTORE` missing targets, `READ` exhaustion after `CLEAR`, and handler state after `MERGE`/`CONT` | DATA position, `ERL`, `RESUME`, and diagnostics have explicit lifecycle tests |
+| 6 | Random and keyboard edges | `Trs80Api.Rnd`, `IHost`, `INKEY$`/`INPUT$` | Cover zero/negative/large controls, end-of-input, control keys, and extended-key policy | Deterministic host behavior and intentional unsupported-key policy are recorded |
+| 7 | Hardware/display policy closure | `Host`, `Trs80Api`, `Interpreter` | Audit `PRINT AT`, `POS`, `CSRLIN`, graphics bounds, printer, cassette, `OUT`, and `WAIT` | Each operation is implemented, approximated, rejected, or intentionally limited with a test |
+| 8 | Editor and compatibility corpus expansion | `InputCommand`, `LineEditorBuffer`, `Level2CompatibilityTest` | Add richer `EDIT`/`AUTO` cases and one short executable program per completed family | User-facing editor behavior and the manual checklist have executable evidence |
+
+### How To Read The Queue
+
+An `Implemented` matrix row means the common behavior has focused tests; it does not mean every manual boundary is closed. `Partial` rows remain in the queue until their listed policy is either implemented and tested or explicitly marked `Intentionally limited`. Hardware and host-dependent behavior stays separate from language semantics. Each completed item should add one numbered completion-log entry, one focused test, a narrow validation run, and a separate commit pushed to the active branch.
 
 ## Language Core
 
@@ -414,12 +450,7 @@ Recent Level II slices, in order:
 334. Verified a runtime fault inside an `ON ERROR` handler does not recursively re-enter that handler and falls back to normal `HOW?` reporting.
 ## Next Slice Queue
 
-Work in this order unless manual research changes the dependency:
-
-1. Define and test hardware-dependent behavior.
-2. Add short Level II compatibility programs.
-3. Implement the line editor as a separate subsystem, then revisit `AUTO` and `EDIT`.
-4. Complete statement and command families one at a time as manual gaps are found.
+The detailed queue is maintained in the [Phase 4 Dashboard](#phase-4-dashboard). Start with typed scalar promotion and invalid conversions, then work downward through typed arrays, conversions, numeric formatting, DATA/error lifecycle, host edges, and editor/corpus expansion. The queue is intentionally ordered so shared type and runtime rules settle before broader compatibility-program work.
 
 ## Ordered Completion Checklist
 
