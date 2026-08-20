@@ -351,6 +351,9 @@ public class Interpreter : IInterpreter
                 return value.ToString("0.#####E+00");
             case < 1 and > -1:
                 return value.ToString(".#######");
+            case >= 1e20 or <= -1e20:
+                // Use limited precision scientific notation for extremely large numbers
+                return value.ToString("0.#####E+00");
             default:
                 return value.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
         }
