@@ -535,6 +535,20 @@ public class FlowControlTest
     }
 
     [TestMethod]
+    public void Interpreter_Accepts_On_Error_Go_To_And_Resume()
+    {
+        using var controller = new TestController();
+        controller.ExecuteStatements(new List<string> {
+            "10 ON ERROR GO TO 80",
+            "70 ON ERROR GO TO 0",
+            "80 PRINT \"WARNING\"",
+            "90 RESUME"
+        });
+
+        controller.ReadOutputLine().Should().BeNull();
+    }
+
+    [TestMethod]
     public void Interpreter_Executes_Return_After_Then()
     {
         using var controller = new TestController();

@@ -946,6 +946,16 @@ public class Interpreter : IInterpreter
         return null!;
     }
 
+    public Void VisitOnErrorStatement(OnError statement)
+    {
+        return null!;
+    }
+
+    public Void VisitResumeStatement(Resume statement)
+    {
+        return null!;
+    }
+
     private void ExecuteGosub(IStatement jumpToStatement, IStatement resumeStatement)
     {
         try

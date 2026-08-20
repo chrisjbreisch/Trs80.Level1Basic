@@ -113,6 +113,13 @@ public class Parser : IParser
     {
         if (IsDefFunction())
             return DefFunctionStatement();
+        if (IsOnErrorStatement())
+            return OnErrorStatement();
+        if (IsResumeStatement())
+        {
+            Advance();
+            return StatementWrapper(new Resume());
+        }
         if (IsSpacedGoto())
         {
             Advance();
@@ -442,6 +449,34 @@ public class Parser : IParser
             Peek().LinePosition, "Expected 'GOTO' or 'GOSUB' after variable in 'ON'");
 
         return StatementWrapper(new On(selector, locations, linePositions, isGosub));
+    }
+
+    private bool IsOnErrorStatement()
+    {
+        return Peek().Type == TokenType.On
+            && PeekNext().Type == TokenType.Identifier
+            && string.Equals(PeekNext().Lexeme, "ERROR", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private IStatement OnErrorStatement()
+    {
+        Advance();
+        Advance();
+        if (IsSpacedGoto())
+        {
+            Advance();
+            Advance();
+        }
+        else
+            Consume(TokenType.Goto, "Expected 'GOTO' after 'ON ERROR'.");
+
+        return StatementWrapper(new OnError(Expression()));
+    }
+
+    private bool IsResumeStatement()
+    {
+        return Peek().Type == TokenType.Identifier
+            && string.Equals(Peek().Lexeme, "RESUME", StringComparison.OrdinalIgnoreCase);
     }
 
     private IStatement OutStatement()

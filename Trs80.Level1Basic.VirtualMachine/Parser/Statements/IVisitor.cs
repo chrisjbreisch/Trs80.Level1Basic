@@ -34,6 +34,7 @@ public interface IVisitor<out T>
     T VisitNewStatement(New statement);
     T VisitNextStatement(Next statement);
     T VisitOnStatement(On statement);
+    T VisitOnErrorStatement(OnError statement);
     T VisitOutStatement(Out statement);
     T VisitPokeStatement(PokeStatement statement);
     T VisitPrintStatement(Print statement);
@@ -43,6 +44,7 @@ public interface IVisitor<out T>
     T VisitResetStatement(ResetStatement statement);
     T VisitRestoreStatement(Restore statement);
     T VisitReturnStatement(Return statement);
+    T VisitResumeStatement(Resume statement);
     T VisitRunStatement(Run statement);
     T VisitSaveStatement(Save statement);
     T VisitSetStatement(SetStatement statement);
