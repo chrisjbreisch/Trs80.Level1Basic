@@ -165,7 +165,7 @@ public class LogicalTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.ReadOutputLine().Should().Be("-1 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -179,7 +179,7 @@ public class LogicalTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.ReadOutputLine().Should().Be("-1 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -193,7 +193,7 @@ public class LogicalTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.ReadOutputLine().Should().Be("-1 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -207,7 +207,7 @@ public class LogicalTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.ReadOutputLine().Should().Be("-1 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -221,7 +221,7 @@ public class LogicalTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.ReadOutputLine().Should().Be("-1 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -235,7 +235,7 @@ public class LogicalTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.ReadOutputLine().Should().Be("-1 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -249,7 +249,7 @@ public class LogicalTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.ReadOutputLine().Should().Be("-1 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
@@ -263,7 +263,7 @@ public class LogicalTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 1 ");
+        controller.ReadOutputLine().Should().Be("-1 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 

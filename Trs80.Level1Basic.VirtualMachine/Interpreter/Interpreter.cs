@@ -166,12 +166,12 @@ public class Interpreter : IInterpreter
             TokenType.Xor => IsTruthy(left) ^ IsTruthy(right),
             TokenType.Eqv => IsTruthy(left) == IsTruthy(right),
             TokenType.Imp => !IsTruthy(left) || IsTruthy(right),
-            TokenType.GreaterThan => left > right,
-            TokenType.GreaterThanOrEqual => left >= right,
-            TokenType.LessThan => left < right,
-            TokenType.LessThanOrEqual => left <= right,
-            TokenType.NotEqual => !IsEqual(left, right),
-            TokenType.Equal => IsEqual(left, right),
+            TokenType.GreaterThan => TruthValue(left > right),
+            TokenType.GreaterThanOrEqual => TruthValue(left >= right),
+            TokenType.LessThan => TruthValue(left < right),
+            TokenType.LessThanOrEqual => TruthValue(left <= right),
+            TokenType.NotEqual => TruthValue(!IsEqual(left, right)),
+            TokenType.Equal => TruthValue(IsEqual(left, right)),
             _ => null
         };
     }
@@ -311,6 +311,8 @@ public class Interpreter : IInterpreter
             _ => false
         };
     }
+
+    private static int TruthValue(bool value) => value ? -1 : 0;
 
     private static bool IsEqual(dynamic left, dynamic right)
     {

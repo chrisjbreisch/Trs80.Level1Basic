@@ -251,7 +251,7 @@ public class ExpressionTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 1  1  1  1 ");
+        controller.ReadOutputLine().Should().Be("-1 -1 -1 -1 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
