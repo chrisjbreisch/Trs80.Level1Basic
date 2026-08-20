@@ -520,6 +520,21 @@ public class FlowControlTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Execute_Immediate_On_Gosub_Into_Loaded_Program()
+    {
+        using var controller = new TestController();
+        controller.ExecuteStatements(new List<string> {
+            "100 PRINT \"SUBROUTINE 100\":RETURN",
+            "200 PRINT \"SUBROUTINE 200\":RETURN"
+        });
+
+        controller.ExecuteLine("A=2");
+        controller.ExecuteLine("ON A GOSUB 100, 200");
+
+        controller.ReadOutputLine().Should().Be("SUBROUTINE 200");
+    }
+
+    [TestMethod]
     public void Interpreter_Executes_Return_After_Then()
     {
         using var controller = new TestController();

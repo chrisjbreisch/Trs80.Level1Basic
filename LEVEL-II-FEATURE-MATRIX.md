@@ -398,6 +398,7 @@ Recent Level II slices, in order:
 318. Made immediate-mode `GOTO` and spaced `GO TO` execute from their target line in the loaded program.
 319. Made immediate-mode `ON ... GO TO` execute from its selected target line in the loaded program.
 320. Added `?FC ERROR IN line` diagnostics for program-mode `ON ... GOTO/GOSUB` selectors outside their target lists; the negative-selector loaded-program case now emits no branch output.
+321. Verified immediate-mode `ON ... GOSUB` executes the selected loaded subroutine and returns without an enclosing program frame.
 ## Next Slice Queue
 
 Work in this order unless manual research changes the dependency:
