@@ -404,6 +404,7 @@ Recent Level II slices, in order:
 324. Added immediate divide-by-zero `?/0 ERROR` output, `ERL=65535` tracking, `NEW` reset behavior, and reserved-variable memory accounting.
 325. Counted `ERL` as a permanent 7-byte system variable and raised the base reservation by 7 bytes so total memory and the established array ceiling remain stable.
 326. Set `ERL` to the faulting program line before redirecting to an `ON ERROR` handler, with focused handler output coverage.
+327. Verified `ON ERROR GO TO 0` disables the handler so a later runtime error uses normal error reporting.
 ## Next Slice Queue
 
 Work in this order unless manual research changes the dependency:

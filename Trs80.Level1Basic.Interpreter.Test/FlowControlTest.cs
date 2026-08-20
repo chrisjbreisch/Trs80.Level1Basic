@@ -568,6 +568,26 @@ public class FlowControlTest
     }
 
     [TestMethod]
+    public void Interpreter_Disables_On_Error_Handler_With_Zero_Target()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 ON ERROR GO TO 80",
+            "20 X=1/0",
+            "30 ON ERROR GO TO 0",
+            "40 X=1/0",
+            "50 END",
+            "80 PRINT \"HANDLED\":RESUME"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HANDLED");
+        controller.ReadOutputLine().Should().Be("HOW?");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Executes_Return_After_Then()
     {
         using var controller = new TestController();
