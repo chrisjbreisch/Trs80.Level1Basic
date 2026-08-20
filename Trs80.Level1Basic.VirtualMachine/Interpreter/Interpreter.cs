@@ -723,17 +723,15 @@ public class Interpreter : IInterpreter
         if (!hasOnlyVariablesAndSeparators)
             return false;
 
-        _trs80.Write("?");
+        _trs80.Write("? ");
         string[] values = (_trs80.ReadLine() ?? string.Empty).Split(',');
         for (int index = 0; index < variables.Count; index++)
         {
             if (index < values.Length && !string.IsNullOrWhiteSpace(values[index]))
                 AssignInputValue(variables[index], values[index].Trim());
             else
-                GetInputValue(variables[index], false);
+                GetInputValue(variables[index], "?? ");
         }
-
-            _trs80.Write(" ");
 
         return true;
     }
@@ -754,9 +752,9 @@ public class Interpreter : IInterpreter
         }
     }
 
-    private void GetInputValue(Expression identifier, bool includeTrailingSpace = true)
+    private void GetInputValue(Expression identifier, string prompt = "? ")
     {
-        _trs80.Write(includeTrailingSpace ? "? " : "?");
+        _trs80.Write(prompt);
 
         string value = _trs80.ReadLine();
         AssignInputValue(identifier, value);

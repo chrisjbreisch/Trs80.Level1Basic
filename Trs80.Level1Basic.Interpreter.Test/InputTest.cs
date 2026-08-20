@@ -122,7 +122,7 @@ public class InputTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("??  1000  10 ");
+        controller.ReadOutputLine().Should().Be("? ??  1000  10 ");
         controller.IsEndOfRun().Should().BeTrue();
     }
 
