@@ -385,6 +385,7 @@ Recent Level II slices, in order:
 305. Added spaced `GO TO` parsing with focused execution coverage for a multi-line branch program.
 306. Added `?UL ERROR` handling for undefined direct and spaced `GOTO` targets with source-position coverage.
 307. Extended `?UL ERROR` handling to undefined computed `ON ... GOTO` targets with selected-entry source coverage.
+308. Verified `?UL ERROR` handling for undefined computed `ON ... GOSUB` targets with selected-entry source coverage.
 ## Next Slice Queue
 
 Work in this order unless manual research changes the dependency:

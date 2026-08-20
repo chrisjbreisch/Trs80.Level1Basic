@@ -472,6 +472,25 @@ public class ErrorTest
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
     }
+
+    [TestMethod]
+    public void Interpreter_Reports_Undefined_OnGosub_Line()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A=2",
+            "20 ON A GOSUB 100, 200",
+            "30 END",
+            "100 RETURN"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("?UL ERROR");
+        controller.ReadErrorLine().Should().Be(" 20  ON A GOSUB 100, 200?");
+        controller.ReadOutputLine();
+        controller.IsEndOfRun().Should().BeTrue();
+    }
     
     [TestMethod]
     public void Interpreter_Handles_Invalid_OnGoto()
