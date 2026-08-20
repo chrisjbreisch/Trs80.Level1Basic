@@ -191,6 +191,10 @@ public class Parser : IParser
             return NewStatement();
         if (Match(TokenType.Next))
             return NextStatement();
+        if (Match(TokenType.Tron))
+            return StatementWrapper(new Tron());
+        if (Match(TokenType.Troff))
+            return StatementWrapper(new Troff());
         if (Match(TokenType.On))
             return OnStatement();
         if (Match(TokenType.Out))
@@ -579,14 +583,31 @@ public class Parser : IParser
         if (IsAtStatementEnd())
             return StatementWrapper(new Next(null, null));
 
+        var identifierNames = new List<string>();
         Token identifierName = Peek();
         if (Peek().Type != TokenType.Identifier)
             _parseException = new ParseException(_lineNumber, _source, Peek().LinePosition,
                 "Expected variable name after 'NEXT'.");
 
         Expression identifier = Identifier();
+        identifierNames.Add(identifierName.Lexeme);
+        while (Match(TokenType.Comma))
+        {
+            Token nextIdentifier = Peek();
+            if (nextIdentifier.Type != TokenType.Identifier)
+            {
+                _parseException = new ParseException(_lineNumber, _source, nextIdentifier.LinePosition,
+                    "Expected variable name after 'NEXT'.");
+                break;
+            }
 
-        return StatementWrapper(new Next(identifierName, identifier));
+            Identifier();
+            identifierNames.Add(nextIdentifier.Lexeme);
+        }
+
+        return identifierNames.Count == 1
+            ? StatementWrapper(new Next(identifierName, identifier))
+            : StatementWrapper(new Next(identifierNames));
     }
 
     private IStatement ForStatement()

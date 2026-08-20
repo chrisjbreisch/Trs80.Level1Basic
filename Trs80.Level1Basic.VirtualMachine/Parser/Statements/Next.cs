@@ -17,11 +17,20 @@ public class Next : Statement
 {
     public Token IdentifierName { get; init; }
     public Expression Identifier { get; init; }
+    public List<string> IdentifierNames { get; init; }
 
     public Next(Token identifierName, Expression identifier)
     {
         IdentifierName = identifierName;
         Identifier = identifier;
+        IdentifierNames = identifierName is null ? new List<string>() : new List<string> { identifierName.Lexeme };
+    }
+
+    public Next(List<string> identifierNames)
+    {
+        IdentifierNames = identifierNames;
+        IdentifierName = null;
+        Identifier = null;
     }
 
     public override T Accept<T>(IVisitor<T> visitor)

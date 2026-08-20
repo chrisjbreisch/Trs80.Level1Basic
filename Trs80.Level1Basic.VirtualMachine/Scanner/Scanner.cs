@@ -172,6 +172,7 @@ public class Scanner : IScanner
                     {"STEP", TokenType.Step},
                     {"STOP", TokenType.Stop},
                     {"THEN", TokenType.Then},
+                    {"TRON", TokenType.Tron},
                     {"WAIT", TokenType.Wait},
                 }
             },
@@ -181,6 +182,7 @@ public class Scanner : IScanner
                     {"CLEAR", TokenType.Clear},
                     {"CLOAD", TokenType.Load},
                     {"GOSUB", TokenType.Gosub},
+                    {"TROFF", TokenType.Troff},
                     {"INPUT", TokenType.Input},
                     {"LLIST", TokenType.Llist},
                     {"MERGE", TokenType.Merge},

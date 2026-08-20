@@ -33,6 +33,7 @@ public class Interpreter : IInterpreter
     private IStatement _errorHandlerStatement;
     private IStatement _errorResumeStatement;
     private bool _handlingError;
+    private bool _traceEnabled;
 
     public Interpreter(IHost host, ITrs80 trs80, ITrs80Api trs80Api,
         IMachine machine, IProgram program, IAppSettings appSettings,
@@ -443,6 +444,8 @@ public class Interpreter : IInterpreter
     public void Execute(IStatement statement)
     {
         _program.CurrentStatement = statement;
+        if (_traceEnabled && statement.LineNumber >= 0)
+            _trs80.WriteLine($" {statement.LineNumber}");
         try
         {
             statement.Accept(this);
@@ -494,6 +497,7 @@ public class Interpreter : IInterpreter
             _machine.Initialize();
             RegisterUserFunctions();
             ResetErrorState();
+            _traceEnabled = false;
         }
 
         _machine.RunStatementList(statement, this);
@@ -624,11 +628,17 @@ public class Interpreter : IInterpreter
             }
             catch (LoopAfterNext lan)
             {
-                if (lan.Next.IdentifierName is not null &&
-                    lan.Next.IdentifierName.Lexeme != statement.IdentifierName.Lexeme)
+                int nextIndex = lan.Next.IdentifierNames.FindIndex(identifierName =>
+                    string.Equals(identifierName, statement.IdentifierName.Lexeme,
+                        StringComparison.OrdinalIgnoreCase));
+                if (lan.Next.IdentifierNames.Count > 0 && nextIndex < 0)
                     throw;
 
                 current = IncrementIndexer(statement.Identifier, step);
+
+                if (current > end && nextIndex > 0)
+                    throw new LoopAfterNext(new Next(
+                        lan.Next.IdentifierNames.Take(nextIndex).ToList()));
             }
         while ((!_machine.ExecutionHalted) &&
             step > 0 && current <= end || step < 0 && current >= end);
@@ -964,6 +974,18 @@ public class Interpreter : IInterpreter
     public Void VisitNextStatement(Next statement)
     {
         throw new LoopAfterNext(statement);
+    }
+
+    public Void VisitTronStatement(Tron statement)
+    {
+        _traceEnabled = true;
+        return null!;
+    }
+
+    public Void VisitTroffStatement(Troff statement)
+    {
+        _traceEnabled = false;
+        return null!;
     }
 
     private dynamic IncrementIndexer(Expression identifier, int step)

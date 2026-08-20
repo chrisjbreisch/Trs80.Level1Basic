@@ -82,6 +82,8 @@ public enum TokenType
     T,
     Then,
     To,
+    Tron,
+    Troff,
     Wait,
     Xor,
 

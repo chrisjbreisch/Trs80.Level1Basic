@@ -33,6 +33,8 @@ public interface IVisitor<out T>
     T VisitMidAssignmentStatement(MidAssignment statement);
     T VisitNewStatement(New statement);
     T VisitNextStatement(Next statement);
+    T VisitTronStatement(Tron statement);
+    T VisitTroffStatement(Troff statement);
     T VisitOnStatement(On statement);
     T VisitOnErrorStatement(OnError statement);
     T VisitOutStatement(Out statement);

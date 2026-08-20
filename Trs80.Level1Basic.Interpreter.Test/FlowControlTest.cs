@@ -88,6 +88,46 @@ public class FlowControlTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Execute_Multiple_Next_Variables()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 FOR I=1 TO 2",
+            "20 FOR K=1 TO 2",
+            "30 PRINT I;K",
+            "40 NEXT I,K"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1  1 ");
+        controller.ReadOutputLine().Should().Be(" 1  2 ");
+        controller.ReadOutputLine().Should().Be(" 2  1 ");
+        controller.ReadOutputLine().Should().Be(" 2  2 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Can_Toggle_Trace_With_Tron_And_Troff()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 TRON",
+            "20 PRINT \"ON\"",
+            "30 TROFF",
+            "40 PRINT \"OFF\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 20");
+        controller.ReadOutputLine().Should().Be("ON");
+        controller.ReadOutputLine().Should().Be(" 30");
+        controller.ReadOutputLine().Should().Be("OFF");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Execute_Immediate_Go_To_Into_Loaded_Program()
     {
         using var controller = new TestController();
