@@ -317,6 +317,9 @@ public class Environment
             Set(name, 0);
             Set($"{name}$", "");
         }
+        foreach (string name in _matrixArrays.Keys)
+            _matrixArrays[name] = new Dictionary<string, dynamic>();
+
         _initializingVariables = false;
     }
 
