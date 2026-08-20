@@ -166,10 +166,10 @@ public class Interpreter : IInterpreter
             TokenType.Xor => TruthValue(IsTruthy(left) ^ IsTruthy(right)),
             TokenType.Eqv => TruthValue(IsTruthy(left) == IsTruthy(right)),
             TokenType.Imp => TruthValue(!IsTruthy(left) || IsTruthy(right)),
-            TokenType.GreaterThan => TruthValue(left > right),
-            TokenType.GreaterThanOrEqual => TruthValue(left >= right),
-            TokenType.LessThan => TruthValue(left < right),
-            TokenType.LessThanOrEqual => TruthValue(left <= right),
+            TokenType.GreaterThan => TruthValue(CompareValues(left, right) > 0),
+            TokenType.GreaterThanOrEqual => TruthValue(CompareValues(left, right) >= 0),
+            TokenType.LessThan => TruthValue(CompareValues(left, right) < 0),
+            TokenType.LessThanOrEqual => TruthValue(CompareValues(left, right) <= 0),
             TokenType.NotEqual => TruthValue(!IsEqual(left, right)),
             TokenType.Equal => TruthValue(IsEqual(left, right)),
             _ => null
@@ -281,7 +281,7 @@ public class Interpreter : IInterpreter
         switch (left)
         {
             case bool when right is bool:
-            case string when right is string && operatorType.Type == TokenType.Plus:
+            case string when right is string && (operatorType.Type == TokenType.Plus || IsRelational(operatorType.Type)):
             case float when right is float:
             case float when right is int:
             case float when right is double:
@@ -313,6 +313,22 @@ public class Interpreter : IInterpreter
     }
 
     private static int TruthValue(bool value) => value ? -1 : 0;
+
+    private static bool IsRelational(TokenType type)
+    {
+        return type is TokenType.GreaterThan or TokenType.GreaterThanOrEqual
+            or TokenType.LessThan or TokenType.LessThanOrEqual
+            or TokenType.NotEqual or TokenType.Equal;
+    }
+
+    private static int CompareValues(dynamic left, dynamic right)
+    {
+        if (left is string leftString && right is string rightString)
+            return string.CompareOrdinal(leftString, rightString);
+
+        return Convert.ToDouble(left, System.Globalization.CultureInfo.InvariantCulture)
+            .CompareTo(Convert.ToDouble(right, System.Globalization.CultureInfo.InvariantCulture));
+    }
 
     private static bool IsEqual(dynamic left, dynamic right)
     {

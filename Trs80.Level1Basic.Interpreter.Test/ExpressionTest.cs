@@ -241,6 +241,21 @@ public class ExpressionTest
     }
 
     [TestMethod]
+    public void Interpreter_Compares_Strings_By_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 PRINT \"YES\" > \"NO\""
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("-1 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Orders_Different_Numeric_Types_By_Value()
     {
         using var controller = new TestController();
