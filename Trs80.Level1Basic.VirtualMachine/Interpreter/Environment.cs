@@ -118,6 +118,19 @@ public class Environment
             : new[] { dimension1 };
     }
 
+    public void SetArrayDimensions(string name, int dimension1, int dimension2, int dimension3)
+    {
+        if (dimension1 < 0 || dimension2 < 0 || dimension3 < 0)
+            throw new ValueOutOfRangeException(-1, string.Empty, "Array dimension cannot be negative.");
+
+        string normalizedName = NormalizeName(name);
+        EnsureArrayExists(normalizedName);
+        if (_arrayDimensions.ContainsKey(normalizedName))
+            throw new ValueOutOfRangeException(-1, string.Empty, "Array has already been dimensioned.");
+
+        _arrayDimensions[normalizedName] = new[] { dimension1, dimension2, dimension3 };
+    }
+
     internal dynamic Set(string name, dynamic value)
     {
         string normalizedName = string.Equals(name, "ERL", StringComparison.OrdinalIgnoreCase)
@@ -260,6 +273,20 @@ public class Environment
         return value;
     }
 
+    public dynamic AssignArray(string name, int index, int index2, int index3, dynamic value)
+    {
+        string normalizedName = NormalizeName(name);
+        ValidateArrayIndex(normalizedName, index, index2, index3);
+        EnsureArrayExists(normalizedName);
+
+        string matrixKey = BuildMatrixKey(index, index2, index3);
+        Dictionary<string, dynamic> matrix = GetMatrixArray(normalizedName);
+        value = CastValue(value, GetDeclaredType(normalizedName));
+
+        matrix[matrixKey] = value;
+        return value;
+    }
+
     private Dictionary<int, dynamic> GetArray(string name)
     {
         string normalizedName = NormalizeName(name);
@@ -278,6 +305,11 @@ public class Environment
     private string BuildMatrixKey(int index, int index2)
     {
         return $"{index},{index2}";
+    }
+
+    private string BuildMatrixKey(int index, int index2, int index3)
+    {
+        return $"{index},{index2},{index3}";
     }
 
     private void DefineArray(string name)
@@ -384,6 +416,21 @@ public class Environment
         return matrix[matrixKey];
     }
 
+    public dynamic GetArrayValue(string name, int index, int index2, int index3)
+    {
+        string normalizedName = NormalizeName(name);
+        ValidateArrayIndex(normalizedName, index, index2, index3);
+        EnsureArrayExists(normalizedName);
+
+        string matrixKey = BuildMatrixKey(index, index2, index3);
+        Dictionary<string, dynamic> matrix = GetMatrixArray(normalizedName);
+
+        if (!matrix.ContainsKey(matrixKey))
+            matrix.Add(matrixKey, DefaultArrayValue(normalizedName));
+
+        return matrix[matrixKey];
+    }
+
     private dynamic DefaultArrayValue(string name)
     {
         return GetDeclaredType(name) == VariableType.String ? string.Empty : 0;
@@ -401,6 +448,18 @@ public class Environment
             throw new ValueOutOfRangeException(-1, string.Empty, "Array subscript out of range.");
 
         if (index2.HasValue && index2.Value > dimensions[1])
+            throw new ValueOutOfRangeException(-1, string.Empty, "Array subscript out of range.");
+    }
+
+    private void ValidateArrayIndex(string name, int index, int index2, int index3)
+    {
+        if (index < 0 || index2 < 0 || index3 < 0)
+            throw new ValueOutOfRangeException(-1, string.Empty, "Array subscript out of range.");
+
+        if (!_arrayDimensions.TryGetValue(name, out int[] dimensions))
+            return;
+
+        if (dimensions.Length != 3 || index > dimensions[0] || index2 > dimensions[1] || index3 > dimensions[2])
             throw new ValueOutOfRangeException(-1, string.Empty, "Array subscript out of range.");
     }
 }

@@ -110,6 +110,16 @@ public class Interpreter : IInterpreter
                 throw new ProgramTooLargeException(_program.CurrentStatement.LineNumber,
                     _program.CurrentStatement.SourceLine, expression.LinePosition, "Insufficient memory.");
 
+            if (expression.Index3 is not null)
+            {
+                dynamic index3 = Evaluate(expression.Index3);
+                if (index3 > _trs80Api.GetMaxArrayIndex())
+                    throw new ProgramTooLargeException(_program.CurrentStatement.LineNumber,
+                        _program.CurrentStatement.SourceLine, expression.LinePosition, "Insufficient memory.");
+
+                return _machine.Get(expression.Name.Lexeme, index, index2, index3);
+            }
+
             return _machine.Get(expression.Name.Lexeme, index, index2);
         }
         catch (ValueOutOfRangeException exception)
@@ -150,7 +160,13 @@ public class Interpreter : IInterpreter
                             }
 
                             dynamic index2 = Evaluate(array.Index2);
-                            _machine.Set(array.Name.Lexeme, index, index2, value);
+                            if (array.Index3 is not null)
+                            {
+                                dynamic index3 = Evaluate(array.Index3);
+                                _machine.Set(array.Name.Lexeme, index, index2, index3, value);
+                            }
+                            else
+                                _machine.Set(array.Name.Lexeme, index, index2, value);
                     }
                         catch (ValueOutOfRangeException exception)
                         {
@@ -570,6 +586,14 @@ public class Interpreter : IInterpreter
             }
 
             int index2 = (int)Evaluate(array.Index2);
+            if (array.Index3 is not null)
+            {
+                int index3 = (int)Evaluate(array.Index3);
+                _machine.SetArrayDimensions(name, index, index2, index3);
+                _machine.Set(name, index, index2, index3, 0);
+                continue;
+            }
+
             _machine.SetArrayDimensions(name, index, index2);
             if (!_machine.Exists(name))
                 _machine.Set(name, index, index2, 0);

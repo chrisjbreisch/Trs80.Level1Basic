@@ -991,15 +991,22 @@ public class Parser : IParser
 
         Expression index = Expression();
         Expression index2 = null;
+        Expression index3 = null;
         if (Match(TokenType.Comma))
+        {
             index2 = Expression();
+            if (Match(TokenType.Comma))
+                index3 = Expression();
+        }
 
         Token previous = Previous();
         int linePosition = previous.LinePosition + previous.Lexeme.Length;
 
         Consume(TokenType.RightParen, "Expected ')' after array index");
 
-        return index2 == null ? new Array(current, index, linePosition) : new Array(current, index, index2, linePosition);
+        return index3 is not null
+            ? new Array(current, index, index2, index3, linePosition)
+            : index2 == null ? new Array(current, index, linePosition) : new Array(current, index, index2, linePosition);
     }
 
     private bool IsAtStatementEnd()
@@ -1337,8 +1344,13 @@ public class Parser : IParser
     {
         Expression index = Expression();
         Expression index2 = null;
+        Expression index3 = null;
         if (Match(TokenType.Comma))
+        {
             index2 = Expression();
+            if (Match(TokenType.Comma))
+                index3 = Expression();
+        }
 
         Token previous = Previous();
         int linePosition = previous.LinePosition + previous.Lexeme.Length;
@@ -1346,7 +1358,9 @@ public class Parser : IParser
         Consume(TokenType.RightParen,
             "Expected ')' after arguments");
 
-        return index2 == null ? new Array(name, index, linePosition) : new Array(name, index, index2, linePosition);
+        return index3 is not null
+            ? new Array(name, index, index2, index3, linePosition)
+            : index2 == null ? new Array(name, index, linePosition) : new Array(name, index, index2, linePosition);
     }
 
     private Expression Primary()

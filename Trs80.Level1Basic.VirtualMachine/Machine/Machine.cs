@@ -77,6 +77,11 @@ public class Machine : IMachine
         return _globals.AssignArray(name, index, index2, value);
     }
 
+    public dynamic Set(string name, int index, int index2, int index3, dynamic value)
+    {
+        return _globals.AssignArray(name, index, index2, index3, value);
+    }
+
     public void SetArrayDimensions(string name, int dimension1)
     {
         _globals.SetArrayDimensions(name, dimension1);
@@ -85,6 +90,11 @@ public class Machine : IMachine
     public void SetArrayDimensions(string name, int dimension1, int dimension2)
     {
         _globals.SetArrayDimensions(name, dimension1, dimension2);
+    }
+
+    public void SetArrayDimensions(string name, int dimension1, int dimension2, int dimension3)
+    {
+        _globals.SetArrayDimensions(name, dimension1, dimension2, dimension3);
     }
 
     public bool Exists(string name)
@@ -240,5 +250,10 @@ public class Machine : IMachine
     public dynamic Get(string name, int index, int index2)
     {
         return _globals.GetArrayValue(name, index, index2);
+    }
+
+    public dynamic Get(string name, int index, int index2, int index3)
+    {
+        return _globals.GetArrayValue(name, index, index2, index3);
     }
 }
