@@ -14,7 +14,7 @@ public class Trs80Api : ITrs80Api
     private readonly IMachine _machine;
     private readonly ITrs80 _trs80;
     private readonly BasicLanguageLevel _basicLevel;
-    public const int AdditionalMem = 12 * 1024;
+    public const int AdditionalMem = 12 * 1024 - 300;
     public const int BaseMem = 3584;
     public const int TotalMemory = BaseMem + AdditionalMem;
 
