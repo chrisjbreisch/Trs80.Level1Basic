@@ -158,6 +158,27 @@ public class ExpressionTest
     }
 
     [TestMethod]
+    public void Interpreter_Promotes_And_Narrows_Mixed_Scalar_Assignments()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DEFDBL A",
+            "20 DEFSNG B",
+            "30 A = 1.23456789012345",
+            "40 B = A",
+            "50 DEFDBL C",
+            "60 C = B",
+            "70 PRINT B;C"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1.23457  1.2345678806304932 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Preserves_High_Precision_Literal_Assigned_Through_Defdbl()
     {
         using var controller = new TestController();
