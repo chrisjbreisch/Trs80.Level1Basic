@@ -15,9 +15,9 @@ public class Trs80Api : ITrs80Api
     private readonly ITrs80 _trs80;
     private readonly BasicLanguageLevel _basicLevel;
     public const int AdditionalMem = 12 * 1024 - 300;
-    public const int BaseMem = 3584;
+    public const int BaseMem = 3591;
     public const int TotalMemory = BaseMem + AdditionalMem;
-    public const int MaxArrayIndex = 3962;
+    public const int MaxArrayIndex = 3963;
     public int GetMaxArrayIndex() => MaxArrayIndex - _machine.VariableMemorySize / 7;
 
     public Trs80Api(IProgram program, IMachine machine, ITrs80 trs80, BasicLanguageLevel basicLevel)

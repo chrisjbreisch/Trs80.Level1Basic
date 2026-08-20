@@ -36,6 +36,9 @@ public class Environment
             _declaredTypes[name.ToString()] = VariableType.Single;
             _declaredTypes[$"{name}$"] = VariableType.String;
         }
+
+        Define("ERL", 0);
+        _assignedVariables.Add("ERL");
     }
 
     private bool IsString(string name)
@@ -117,7 +120,7 @@ public class Environment
             throw new ValueOutOfRangeException(-1, string.Empty, "Integer value out of range.");
 
         _variables[normalizedName] = value;
-        if (!_initializingVariables && !string.Equals(normalizedName, "ERL", StringComparison.Ordinal))
+        if (!_initializingVariables)
             _assignedVariables.Add(normalizedName);
 
         if (normalizedName.Length == 1 && targetType == VariableType.String)
@@ -314,6 +317,7 @@ public class Environment
     public void InitializeVariables()
     {
         _assignedVariables.Clear();
+        _assignedVariables.Add("ERL");
         _initializingVariables = true;
         foreach (string name in _arrays.Keys)
         {
