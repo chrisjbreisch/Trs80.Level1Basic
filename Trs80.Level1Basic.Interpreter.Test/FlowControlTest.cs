@@ -29,6 +29,25 @@ public class FlowControlTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Execute_Spaced_Go_To_Program()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A=1",
+            "15 B=10",
+            "20 GO TO 40",
+            "30 PRINT \"LINE 30 A=\";A",
+            "40 PRINT \"LINE 40 B=\";B",
+            "50 END"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("LINE 40 B= 10 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Execute_End()
     {
         using var controller = new TestController();

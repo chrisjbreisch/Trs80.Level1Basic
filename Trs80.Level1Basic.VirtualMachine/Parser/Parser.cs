@@ -113,6 +113,12 @@ public class Parser : IParser
     {
         if (IsDefFunction())
             return DefFunctionStatement();
+        if (IsSpacedGoto())
+        {
+            Advance();
+            Advance();
+            return GotoStatement();
+        }
         if (Match(TokenType.Beep))
             return BeepStatement();
         if (Match(TokenType.Clear))
@@ -436,6 +442,13 @@ public class Parser : IParser
         Consume(TokenType.Comma, "Expected ',' after OUT port.");
         Expression value = Expression();
         return StatementWrapper(new Out(port, value));
+    }
+
+    private bool IsSpacedGoto()
+    {
+        return Peek().Type == TokenType.Identifier
+            && string.Equals(Peek().Lexeme, "GO", StringComparison.OrdinalIgnoreCase)
+            && PeekNext().Type == TokenType.To;
     }
 
     private IStatement WaitStatement()
