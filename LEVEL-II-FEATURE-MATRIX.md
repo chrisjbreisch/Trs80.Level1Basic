@@ -405,6 +405,7 @@ Recent Level II slices, in order:
 325. Counted `ERL` as a permanent 7-byte system variable and raised the base reservation by 7 bytes so total memory and the established array ceiling remain stable.
 326. Set `ERL` to the faulting program line before redirecting to an `ON ERROR` handler, with focused handler output coverage.
 327. Verified `ON ERROR GO TO 0` disables the handler so a later runtime error uses normal error reporting.
+328. Verified `RESUME` clears the active fault state so subsequent runtime errors re-enter the configured handler with updated `ERL` values.
 ## Next Slice Queue
 
 Work in this order unless manual research changes the dependency:

@@ -588,6 +588,27 @@ public class FlowControlTest
     }
 
     [TestMethod]
+    public void Interpreter_Resumes_And_Rearms_On_Error_Handler()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 ON ERROR GO TO 80",
+            "20 X=1/0",
+            "30 X=1/0",
+            "40 PRINT \"DONE\":END",
+            "80 PRINT \"HANDLED\";ERL",
+            "90 RESUME"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HANDLED 20 ");
+        controller.ReadOutputLine().Should().Be("HANDLED 30 ");
+        controller.ReadOutputLine().Should().Be("DONE");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Executes_Return_After_Then()
     {
         using var controller = new TestController();
