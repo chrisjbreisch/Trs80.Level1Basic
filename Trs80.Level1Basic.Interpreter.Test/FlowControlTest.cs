@@ -120,10 +120,8 @@ public class FlowControlTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be(" 20");
-        controller.ReadOutputLine().Should().Be("ON");
-        controller.ReadOutputLine().Should().Be(" 30");
-        controller.ReadOutputLine().Should().Be("OFF");
+        controller.ReadOutputLine().Should().Be("(20)ON");
+        controller.ReadOutputLine().Should().Be("(30)OFF");
         controller.IsEndOfRun().Should().BeTrue();
     }
 

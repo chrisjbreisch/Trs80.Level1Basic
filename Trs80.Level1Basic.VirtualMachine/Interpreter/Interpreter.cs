@@ -445,7 +445,7 @@ public class Interpreter : IInterpreter
     {
         _program.CurrentStatement = statement;
         if (_traceEnabled && statement.LineNumber >= 0)
-            _trs80.WriteLine($" {statement.LineNumber}");
+            _trs80.Write($"({statement.LineNumber})");
         try
         {
             statement.Accept(this);
