@@ -1460,7 +1460,7 @@ public class Level2CompatibilityTest
             "30 INPUT D,N",
             "35 B=D*(1+R)^N",
             "40 PRINT \"THE BALANCE AFTER\";N;\"YEARS IS $\";B",
-            "45 PRINT \"THE TOTAL INTEREST PAID IS $\";CINT((B-D)*100)/100"
+            "45 PRINT \"THE TOTAL INTEREST PAID IS $\";FIX((B-D)*100+0.5)/100"
         };
 
         controller.RunProgram(program);
