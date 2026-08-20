@@ -344,6 +344,22 @@ public class ExpressionTest
     }
 
     [TestMethod]
+    public void Interpreter_Rejects_Redimensioning_An_Array()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DIM A(2)",
+            "20 DIM A(3)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HOW?");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Rejects_Negative_Array_Index()
     {
         using var controller = new TestController();

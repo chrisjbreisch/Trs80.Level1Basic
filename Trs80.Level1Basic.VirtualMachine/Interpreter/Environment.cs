@@ -95,6 +95,9 @@ public class Environment
 
         string normalizedName = NormalizeName(name);
         EnsureArrayExists(normalizedName);
+        if (_arrayDimensions.ContainsKey(normalizedName))
+            throw new ValueOutOfRangeException(-1, string.Empty, "Array has already been dimensioned.");
+
         _arrayDimensions[normalizedName] = dimension2.HasValue
             ? new[] { dimension1, dimension2.Value }
             : new[] { dimension1 };
