@@ -489,7 +489,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("HOW?");
+        controller.ReadOutputLine().Should().Be("?UL ERROR");
         controller.ReadErrorLine().Should().Be(" 20  ON A GOTO 100, 200, 300?");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
@@ -511,7 +511,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("HOW?");
+        controller.ReadOutputLine().Should().Be("?UL ERROR");
         controller.ReadErrorLine().Should().Be(" 20  ON A GOTO 100, 200?, 300");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();

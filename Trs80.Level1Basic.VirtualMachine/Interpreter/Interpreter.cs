@@ -924,7 +924,7 @@ public class Interpreter : IInterpreter
         IStatement nextStatement = GetStatementByLineNumber(locations[selector]);
 
         if (nextStatement is null)
-            throw new RuntimeStatementException(statement.LineNumber, statement.SourceLine,
+            throw new UndefinedLineException(statement.LineNumber, statement.SourceLine,
                 linePositions[selector], $"Can't 'GOTO' line {locations[selector]}.");
 
         _machine.SetNextStatement(nextStatement);
