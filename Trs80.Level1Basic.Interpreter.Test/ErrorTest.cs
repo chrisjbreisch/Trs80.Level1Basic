@@ -244,6 +244,22 @@ public class ErrorTest
     }
 
     [TestMethod]
+    public void Interpreter_Sets_Erl_For_Numbered_Program_Syntax_Error()
+    {
+        using var controller = new TestController();
+
+        controller.ExecuteLine("10 A+B=C");
+        controller.ExecuteLine("RUN");
+        controller.ExecuteLine("PRINT ERL");
+
+        controller.ReadOutputLine().Should().Be("?SN ERROR IN 10");
+        controller.ReadErrorLine().Should().Be(" 10  A?+B=C");
+        controller.ReadOutputLine();
+        controller.ReadOutputLine().Should().Be("READY");
+        controller.ReadOutputLine().Should().Be(" 10 ");
+    }
+
+    [TestMethod]
     public void Program_Syntax_Error_Reports_The_Program_Line_Number()
     {
         using var controller = new TestController();

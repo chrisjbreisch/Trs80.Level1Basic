@@ -70,6 +70,9 @@ public class Interpreter : IInterpreter
         }
         catch (Exception ex)
         {
+            if (ex is ParseException parseException && parseException.LineNumber >= 0)
+                _machine.Set("ERL", parseException.LineNumber);
+
             if (statement.LineNumber < 0 && statement is not Run
                 && ex is ValueOutOfRangeException valueOutOfRange
                 && valueOutOfRange.Message == "Divide by zero")
