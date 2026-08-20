@@ -407,6 +407,7 @@ Recent Level II slices, in order:
 327. Verified `ON ERROR GO TO 0` disables the handler so a later runtime error uses normal error reporting.
 328. Verified `RESUME` clears the active fault state so subsequent runtime errors re-enter the configured handler with updated `ERL` values.
 329. Set `ERL` from numbered program syntax errors so a `RUN` failure at line 10 is followed by `PRINT ERL` returning `10`.
+330. Verified `NEW` clears both `ERL` and active `ON ERROR` handler state.
 ## Next Slice Queue
 
 Work in this order unless manual research changes the dependency:

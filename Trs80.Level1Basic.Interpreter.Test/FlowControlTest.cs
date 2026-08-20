@@ -609,6 +609,22 @@ public class FlowControlTest
     }
 
     [TestMethod]
+    public void Interpreter_New_Clears_Erl_And_On_Error_State()
+    {
+        using var controller = new TestController();
+        controller.ExecuteStatements(new List<string> {
+            "80 PRINT \"HANDLED\":RESUME"
+        });
+        controller.ExecuteLine("ON ERROR GO TO 80");
+        controller.ExecuteLine("PRINT ERL");
+        controller.ExecuteLine("NEW");
+        controller.ExecuteLine("PRINT ERL");
+
+        controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.ReadOutputLine().Should().Be(" 0 ");
+    }
+
+    [TestMethod]
     public void Interpreter_Executes_Return_After_Then()
     {
         using var controller = new TestController();

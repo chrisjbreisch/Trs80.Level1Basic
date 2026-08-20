@@ -927,6 +927,9 @@ public class Interpreter : IInterpreter
         _machine.Program.Clear();
         _machine.SetNextStatement(null);
         _machine.Set("ERL", 0);
+        _errorHandlerStatement = null;
+        _errorResumeStatement = null;
+        _handlingError = false;
         _userFunctions.Clear();
 
         return null!;
