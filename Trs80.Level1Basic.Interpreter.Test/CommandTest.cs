@@ -572,7 +572,7 @@ public class CommandTest
             "90 PRINT 9", "100 PRINT 10", "110 PRINT 11", "120 PRINT 12",
             "130 PRINT 13"
         });
-        controller.Host.EnqueueKey(new ConsoleKeyInfo('\0', ConsoleKey.UpArrow, false, false, false));
+        controller.Host.EnqueueKey(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false));
 
         controller.ExecuteLine("LIST");
 

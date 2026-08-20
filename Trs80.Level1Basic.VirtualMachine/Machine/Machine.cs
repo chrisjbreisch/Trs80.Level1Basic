@@ -115,8 +115,8 @@ public class Machine : IMachine
 
                 if (key.Key == ConsoleKey.Enter)
                 {
-                    _trs80.WriteLine();
-                    return;
+                    linesOnPage = 0;
+                    break;
                 }
 
                 if (key.Key == ConsoleKey.UpArrow)
