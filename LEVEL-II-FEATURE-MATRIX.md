@@ -410,6 +410,7 @@ Recent Level II slices, in order:
 330. Verified `NEW` clears both `ERL` and active `ON ERROR` handler state.
 331. Verified `LOAD` clears stale `ERL` and active `ON ERROR` handler state during program replacement.
 332. Added `?FC ERROR IN line` handling for `RESUME` without an active error, with source-position coverage.
+333. Verified `ERL` remains set to the last faulting line after `RESUME` returns to the interrupted program.
 ## Next Slice Queue
 
 Work in this order unless manual research changes the dependency:
