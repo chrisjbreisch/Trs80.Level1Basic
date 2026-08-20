@@ -70,6 +70,15 @@ public class Interpreter : IInterpreter
         }
         catch (Exception ex)
         {
+            if (statement.LineNumber < 0 && statement is not Run
+                && ex is ValueOutOfRangeException valueOutOfRange
+                && valueOutOfRange.Message == "Divide by zero")
+            {
+                _machine.Set("ERL", 65535);
+                _trs80.WriteLine("?/0 ERROR");
+                return;
+            }
+
             ExceptionHandler.HandleError(_trs80, _appSettings, ex, _pendingEdit);
         }
 
@@ -913,6 +922,7 @@ public class Interpreter : IInterpreter
     {
         _machine.Program.Clear();
         _machine.SetNextStatement(null);
+        _machine.Set("ERL", 0);
         _userFunctions.Clear();
 
         return null!;

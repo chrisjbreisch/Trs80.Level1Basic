@@ -387,7 +387,22 @@ public class ErrorTest
 
         controller.ExecuteLine(statement);
 
-        controller.ReadOutputLine().Should().Be("HOW?");
+        controller.ReadOutputLine().Should().Be("?/0 ERROR");
+    }
+
+    [TestMethod]
+    public void Interpreter_Reports_Immediate_Divide_By_Zero_And_Sets_Erl()
+    {
+        using var controller = new TestController();
+
+        controller.ExecuteLine("NEW");
+        controller.ExecuteLine("PRINT ERL");
+        controller.ExecuteLine("S=1/A");
+        controller.ExecuteLine("PRINT ERL");
+
+        controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.ReadOutputLine().Should().Be("?/0 ERROR");
+        controller.ReadOutputLine().Should().Be(" 65535 ");
     }
 
     [TestMethod]

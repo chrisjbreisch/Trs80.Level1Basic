@@ -105,7 +105,9 @@ public class Environment
 
     internal dynamic Set(string name, dynamic value)
     {
-        string normalizedName = NormalizeName(name);
+        string normalizedName = string.Equals(name, "ERL", StringComparison.OrdinalIgnoreCase)
+            ? "ERL"
+            : NormalizeName(name);
         if (string.IsNullOrEmpty(normalizedName)) return value;
 
         VariableType targetType = GetDeclaredType(normalizedName);
@@ -115,7 +117,7 @@ public class Environment
             throw new ValueOutOfRangeException(-1, string.Empty, "Integer value out of range.");
 
         _variables[normalizedName] = value;
-        if (!_initializingVariables)
+        if (!_initializingVariables && !string.Equals(normalizedName, "ERL", StringComparison.Ordinal))
             _assignedVariables.Add(normalizedName);
 
         if (normalizedName.Length == 1 && targetType == VariableType.String)
@@ -283,7 +285,9 @@ public class Environment
 
     internal dynamic Get(string name)
     {
-        string normalizedName = NormalizeName(name);
+        string normalizedName = string.Equals(name, "ERL", StringComparison.OrdinalIgnoreCase)
+            ? "ERL"
+            : NormalizeName(name);
         if (string.IsNullOrEmpty(normalizedName)) return null;
 
         if (normalizedName.EndsWith('$'))
