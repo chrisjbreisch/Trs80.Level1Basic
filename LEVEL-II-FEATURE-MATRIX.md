@@ -21,7 +21,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 | Branch | `level2/type-declarations` |
 | Baseline | Level I interpreter with existing command, expression, file, input, and control-flow suites |
 | Recent focus | Type declarations, arrays, numeric precision, Level II built-ins, `CLEAR`, `MID$` assignment, user-defined functions, string-function compatibility, and scanner/parser keyword coverage |
-| Latest implementation commit | Phase 2 syntax-gating closure (this checkpoint) |
+| Latest implementation commit | `1c15d67 Complete Phase 2 syntax gating` |
 | Latest documentation checkpoint | Phase 4 dashboard and next-slice queue |
 | Validation baseline | Full solution: `727 passed`; interpreter project: `651 passed` |
 | Validation habit | Run the narrowest affected test first, then the affected test class, then the full project for shared changes |

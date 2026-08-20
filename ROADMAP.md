@@ -113,7 +113,7 @@ Phase 2 is complete. The scanner still produces the shared token stream, the par
 
 ## Phase 4: Complete The Remaining Level II Surface
 
-**Current position:** Phase 4 is active. The branch has completed the parser/runtime profile boundary and 334 logged Level II slices. The current validation checkpoint is 714 passing tests in the full solution and 634 in the interpreter project. The remaining work is an ordered audit queue; the next implementation slice is typed scalar promotion and invalid conversions.
+**Current position:** Phase 4 is active. Phases 0, 1, and 2 are complete; Phase 3 remains open for broader profile-specific runtime semantics. The branch has 336 logged Level II slices. The current validation checkpoint is 727 passing tests in the full solution and 651 in the interpreter project. The remaining work is an ordered audit queue; the next implementation slice is typed scalar promotion and invalid conversions.
 
 **What is already closed:** declarations and suffixes, arrays and `CLEAR`, string slicing and assignment, numeric/logical truth values, DATA lifecycle, direct/computed flow control, `ON ERROR`/`RESUME`/`ERL`, host hardware policies, and the line-editor foundation. See the matrix dashboard for the detailed evidence and commit history.
 
