@@ -27,6 +27,7 @@ public class Interpreter : IInterpreter
     private readonly IProgram _program;
     private readonly IHost _host;
     private readonly IAppSettings _appSettings;
+    private readonly BasicLanguageLevel _basicLevel;
     private readonly PendingEditRequest _pendingEdit;
     private bool _omitBlankLineBeforePrompt;
 
@@ -40,7 +41,20 @@ public class Interpreter : IInterpreter
         _machine = machine ?? throw new ArgumentNullException(nameof(machine));
         _program = program ?? throw new ArgumentNullException(nameof(program));
         _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
+        _basicLevel = _appSettings.BasicLevel;
         _pendingEdit = pendingEdit ?? throw new ArgumentNullException(nameof(pendingEdit));
+    }
+
+    private dynamic Divide(dynamic left, dynamic right)
+    {
+        if (right == 0)
+            throw new ValueOutOfRangeException(_program.CurrentStatement.LineNumber,
+                _program.CurrentStatement.SourceLine, "Divide by zero");
+
+        if (_basicLevel == BasicLanguageLevel.Level1)
+            return (float)left / right;
+
+        return left is double || right is double ? (double)left / right : (float)left / right;
     }
 
     public void Interpret(IStatement statement)
@@ -127,7 +141,7 @@ public class Interpreter : IInterpreter
         {
             TokenType.Plus => (left is bool && right is bool) ? left || right : left + right,
             TokenType.Minus => left - right,
-            TokenType.Slash => right == 0 ? throw new ValueOutOfRangeException(_program.CurrentStatement.LineNumber, _program.CurrentStatement.SourceLine, "Divide by zero") : left is double || right is double ? (double)left / right : (float)left / right,
+            TokenType.Slash => Divide(left, right),
             TokenType.Mod => right == 0 ? throw new ValueOutOfRangeException(_program.CurrentStatement.LineNumber, _program.CurrentStatement.SourceLine, "Divide by zero") : left % right,
             TokenType.Star => (left is bool && right is bool) ? left && right : left * right,
             TokenType.Caret => Math.Pow(Convert.ToDouble(left), Convert.ToDouble(right)),
@@ -685,6 +699,11 @@ public class Interpreter : IInterpreter
                 Assign(identifier, value);
             }
             catch (ValueOutOfRangeException)
+            {
+                _trs80.WriteLine("WHAT?");
+                GetInputValue(identifier);
+            }
+            catch (TypeMismatchException)
             {
                 _trs80.WriteLine("WHAT?");
                 GetInputValue(identifier);
