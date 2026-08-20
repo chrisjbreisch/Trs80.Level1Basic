@@ -83,6 +83,25 @@ public class DataTest
     }
 
     [TestMethod]
+    public void Interpreter_Executes_Restore_At_Explicit_Data_Line()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DATA 1",
+            "20 DATA 2",
+            "30 READ A",
+            "40 RESTORE 20",
+            "50 READ B",
+            "60 PRINT A;B"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1  2 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Clear_Resets_Data_Read_Position()
     {
         using var controller = new TestController();

@@ -373,7 +373,8 @@ public class Parser : IParser
 
     private IStatement RestoreStatement()
     {
-        return StatementWrapper(new Restore());
+        Expression location = IsAtStatementEnd() ? null : Expression();
+        return StatementWrapper(new Restore(location));
     }
 
     private IStatement ReadStatement()

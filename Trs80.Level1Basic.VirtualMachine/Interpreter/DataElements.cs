@@ -7,12 +7,12 @@ namespace Trs80.Level1Basic.VirtualMachine.Interpreter;
 
 public class DataElements
 {
-    private readonly List<dynamic> _dataElements = new();
+    private readonly List<(dynamic Value, int LineNumber)> _dataElements = new();
     private int _listIndex;
 
-    public void Add(dynamic value)
+    public void Add(dynamic value, int lineNumber)
     {
-        _dataElements.Add(value);
+        _dataElements.Add((value, lineNumber));
     }
 
     public void MoveFirst()
@@ -20,10 +20,17 @@ public class DataElements
         _listIndex = 0;
     }
 
+    public void MoveToLine(int lineNumber)
+    {
+        _listIndex = _dataElements.FindIndex(element => element.LineNumber >= lineNumber);
+        if (_listIndex < 0)
+            _listIndex = _dataElements.Count;
+    }
+
     public dynamic GetNext()
     {
         return _listIndex < _dataElements.Count
-            ? _dataElements[_listIndex++]
+            ? _dataElements[_listIndex++].Value
             : throw new OutOfDataException(-1, string.Empty, 0, "No more DATA elements are available.");
     }
 

@@ -479,7 +479,7 @@ public class Interpreter : IInterpreter
     public Void VisitDataStatement(Data statement)
     {
         foreach (Expression element in statement.DataElements)
-            _machine.Data.Add(Evaluate(element));
+            _machine.Data.Add(Evaluate(element), statement.LineNumber);
 
         return null!;
     }
@@ -1034,10 +1034,13 @@ public class Interpreter : IInterpreter
     }
 
 #pragma warning disable S927 // Parameter names should match base declaration and other partial definitions
-    public Void VisitRestoreStatement(Restore _)
+    public Void VisitRestoreStatement(Restore statement)
 #pragma warning restore S927 // Parameter names should match base declaration and other partial definitions
     {
-        _machine.Data.MoveFirst();
+        if (statement.Location is null)
+            _machine.Data.MoveFirst();
+        else
+            _machine.Data.MoveToLine((int)Evaluate(statement.Location));
 
         return null!;
     }
