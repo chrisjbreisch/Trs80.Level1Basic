@@ -2,7 +2,7 @@
 
 This roadmap covers two connected goals:
 
-1. Complete the Level II BASIC compatibility surface tracked by [LEVEL-II-FEATURE-MATRIX.md](LEVEL-II-FEATURE-MATRIX.md).
+1. Complete the Level II BASIC compatibility surface tracked by [LEVEL-II-FEATURE-MATRIX.md](LEVEL-II-FEATURE-MATRIX.md), while keeping the strict Level I profile documented in [LEVEL-I-FEATURE-MATRIX.md](LEVEL-I-FEATURE-MATRIX.md).
 2. Add a runtime language-profile toggle so the application can run in strict Level I or Level II mode.
 
 The current interpreter is a unified Level II-aware engine. Level I programs generally run as a subset of that behavior, but there is no explicit runtime mode today. The roadmap preserves the existing Level II behavior as the default while introducing an injected profile boundary instead of duplicating the scanner, parser, and interpreter.
@@ -177,6 +177,7 @@ For every slice:
 
 - `ROADMAP.md` — this roadmap and completion record.
 - `LEVEL-II-FEATURE-MATRIX.md` — Level II capability status, completed slices, and manual gaps.
+- `LEVEL-I-FEATURE-MATRIX.md` — strict Level I profile behavior, rejected Level II syntax, diagnostics, host policies, and remaining audit work.
 - `copilot-instructions.md` — repository workflow and validation rules.
 - `Trs80.Level1Basic.Common/IAppSettings.cs` and `AppSettings.cs` — configuration contract.
 - `Trs80.Level1Basic.Application/Bootstrapper.cs` — configuration binding and dependency injection.

@@ -2,6 +2,8 @@
 
 This document is the working implementation map for the `level2/type-declarations` branch. It tracks language capability, compatibility confidence, and the next small implementation slice.
 
+For the strict Level I profile, see [LEVEL-I-FEATURE-MATRIX.md](LEVEL-I-FEATURE-MATRIX.md).
+
 The project already has a mature Level I interpreter. Level II work is being added incrementally on top of that baseline. A feature is not considered complete merely because a method or token exists: the behavior needs a focused interpreter test and must preserve the Level I suite.
 
 ## Status Legend
