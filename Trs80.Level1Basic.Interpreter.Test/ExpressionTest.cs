@@ -241,6 +241,21 @@ public class ExpressionTest
     }
 
     [TestMethod]
+    public void Interpreter_Orders_Different_Numeric_Types_By_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 PRINT 1 < 1.5; 2! > 1#; 3# >= 3; 4! <= 4#"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 1  1  1  1 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Use_Defstr_Alias_After_Declaration()
     {
         using var controller = new TestController();
