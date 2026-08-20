@@ -735,7 +735,7 @@ public class ErrorTest
     }
 
     [TestMethod]
-    public void Interpreter_Handles_Bad_Next()
+    public void Interpreter_Allows_Bare_Next_In_A_For_Loop()
     {
         using var controller = new TestController();
         var program = new List<string> {
@@ -745,9 +745,7 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("?SN ERROR IN 20");
-        controller.ReadErrorLine().Should().Be(" 20  NEXT?");
-        controller.ReadOutputLine();
+        controller.ReadOutputLine().Should().BeEmpty();
         controller.IsEndOfRun().Should().BeTrue();
     }
 

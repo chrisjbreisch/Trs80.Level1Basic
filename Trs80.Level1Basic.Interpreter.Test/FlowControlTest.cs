@@ -33,6 +33,24 @@ public class FlowControlTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Execute_Bare_Next()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 FOR M=32 TO 34",
+            "20 PRINT M;M*M;M^3",
+            "30 NEXT"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 32  1024  32768 ");
+        controller.ReadOutputLine().Should().Be(" 33  1089  35937 ");
+        controller.ReadOutputLine().Should().Be(" 34  1156  39304 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Execute_Immediate_Go_To_Into_Loaded_Program()
     {
         using var controller = new TestController();

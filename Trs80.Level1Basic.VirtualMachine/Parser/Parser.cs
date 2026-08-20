@@ -576,6 +576,9 @@ public class Parser : IParser
 
     private IStatement NextStatement()
     {
+        if (IsAtStatementEnd())
+            return StatementWrapper(new Next(null, null));
+
         Token identifierName = Peek();
         if (Peek().Type != TokenType.Identifier)
             _parseException = new ParseException(_lineNumber, _source, Peek().LinePosition,

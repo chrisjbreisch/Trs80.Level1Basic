@@ -458,6 +458,7 @@ Recent Level II slices, in order:
 340. Made comma-separated `INPUT` prompt separately for missing values, preserving one-line comma input and covering the `INPUT D,N` second-prompt case.
 341. Standardized INPUT prompt spacing to `? ` and contiguous `?? ` for a missing comma-separated value.
 342. Made Enter continue paginated `LIST` output when another page remains, instead of terminating the listing early.
+343. Made the variable after `NEXT` optional, defaulting bare `NEXT` to the innermost active `FOR` loop variable.
 ## Next Slice Queue
 
 The detailed queue is maintained in the [Phase 4 Dashboard](#phase-4-dashboard). Start with typed scalar promotion and invalid conversions, then work downward through typed arrays, conversions, numeric formatting, DATA/error lifecycle, host edges, and editor/corpus expansion. The queue is intentionally ordered so shared type and runtime rules settle before broader compatibility-program work.

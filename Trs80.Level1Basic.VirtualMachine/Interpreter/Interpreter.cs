@@ -628,7 +628,8 @@ public class Interpreter : IInterpreter
             }
             catch (LoopAfterNext lan)
             {
-                if (lan.Next.IdentifierName.Lexeme != statement.IdentifierName.Lexeme)
+                if (lan.Next.IdentifierName is not null &&
+                    lan.Next.IdentifierName.Lexeme != statement.IdentifierName.Lexeme)
                     throw;
 
                 current = IncrementIndexer(statement.Identifier, step);
