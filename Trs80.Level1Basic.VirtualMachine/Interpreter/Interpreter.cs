@@ -619,7 +619,7 @@ public class Interpreter : IInterpreter
         IStatement jumpToStatement = GetStatementByLineNumber(jumpToLineNumber);
 
         if (jumpToStatement is null)
-            throw new RuntimeStatementException(statement.LineNumber, statement.SourceLine,
+            throw new UndefinedLineException(statement.LineNumber, statement.SourceLine,
                 linePosition, $"Can't {jumpType} line {jumpToLineNumber}");
 
         return jumpToStatement;

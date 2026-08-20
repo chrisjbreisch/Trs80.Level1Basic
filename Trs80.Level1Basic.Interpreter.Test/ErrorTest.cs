@@ -449,8 +449,26 @@ public class ErrorTest
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("HOW?");
+        controller.ReadOutputLine().Should().Be("?UL ERROR");
         controller.ReadErrorLine().Should().Be(" 10  GOTO 100?");
+        controller.ReadOutputLine();
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Reports_Undefined_Spaced_Goto_Line()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A=1",
+            "20 GO TO 25",
+            "30 END"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("?UL ERROR");
+        controller.ReadErrorLine().Should().Be(" 20  GO TO 25?");
         controller.ReadOutputLine();
         controller.IsEndOfRun().Should().BeTrue();
     }
