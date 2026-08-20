@@ -124,15 +124,23 @@ public class Interpreter : IInterpreter
                             array.LinePosition,
                             "Assignment target and value types do not match.");
 
-                    dynamic index = Evaluate(array.Index);
-                    if (array.Index2 == null)
+                        try
                     {
-                        _machine.Set(array.Name.Lexeme, index, value);
-                        break;
-                    }
+                            dynamic index = Evaluate(array.Index);
+                            if (array.Index2 == null)
+                            {
+                                _machine.Set(array.Name.Lexeme, index, value);
+                                break;
+                            }
 
-                    dynamic index2 = Evaluate(array.Index2);
-                    _machine.Set(array.Name.Lexeme, index, index2, value);
+                            dynamic index2 = Evaluate(array.Index2);
+                            _machine.Set(array.Name.Lexeme, index, index2, value);
+                    }
+                        catch (ValueOutOfRangeException exception)
+                        {
+                            throw new RuntimeStatementException(_program.CurrentStatement.LineNumber,
+                                _program.CurrentStatement.SourceLine, array.LinePosition, exception.Message);
+                        }
                     break;
                 }
         }

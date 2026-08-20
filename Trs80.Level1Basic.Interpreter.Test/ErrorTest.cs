@@ -46,6 +46,23 @@ public class ErrorTest
     }
 
     [TestMethod]
+    public void Interpreter_Reports_Array_Assignment_Bound_Error_Position()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 DIM A(2)",
+            "20 A(3) = 1"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HOW?");
+        controller.ReadErrorLine().Should().Be(" 20  A(3?) = 1");
+        controller.ReadOutputLine();
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Handles_Invalid_Identifier_In_For()
     {
         using var controller = new TestController();
