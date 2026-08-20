@@ -560,6 +560,29 @@ public class ErrorTest
     }
 
     [TestMethod]
+    public void Interpreter_Handles_OnGoto_Below_Range()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A = 0",
+            "20 ON A GOTO 100, 200, 300",
+            "30 PRINT 30",
+            "40 END",
+            "100 PRINT 100",
+            "110 END",
+            "200 PRINT 200",
+            "210 END",
+            "300 PRINT 300",
+            "310 END"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 30 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Handles_Invalid_Read()
     {
         using var controller = new TestController();
