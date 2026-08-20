@@ -43,7 +43,7 @@ The project already has a mature Level I interpreter. Level II work is being add
 
 | Area | Status | Implemented now | Remaining work and evidence |
 | --- | --- | --- | --- |
-| String inspection and slicing | Partial | `CHR$`, `ASC`, `LEN`, `LEFT$`, `RIGHT$`, `MID$`, `INSTR`, `STR$`, `VAL`, and case/trim helpers exist. `CHR$` truncates fractional codes and rejects values outside the TRS-80 byte range; fractional numeric arguments truncate consistently, including `STRING$` character codes; `INSTR` supports its optional start position; `MID$` supports both `(source$, start)` and `(source$, start, length)`; empty-string behavior is covered; and `VAL` consumes a leading numeric prefix. | Audit remaining conversion and exact error behavior. Existing anchor: `NativeFunctionTest`. |
+| String inspection and slicing | Partial | `CHR$`, `ASC`, `LEN`, `LEFT$`, `RIGHT$`, `MID$`, `INSTR`, `STR$`, `VAL`, and case/trim helpers exist. `CHR$` and `STRING$` truncate fractional character codes and reject values outside the TRS-80 byte range; `INSTR` supports its optional start position; `MID$` supports both `(source$, start)` and `(source$, start, length)`; empty-string behavior is covered; and `VAL` consumes a leading numeric prefix. | Audit remaining conversion and exact error behavior. Existing anchor: `NativeFunctionTest`. |
 | `MID$` assignment | Implemented | Supports `MID$(A$, start, length) = value$` and optional length. Replacement is fixed-length, does not expand the target, ignores out-of-range starts and nonpositive arguments, and requires a string target. | Keep as a regression anchor while the broader string-function row is completed. |
 | Numeric conversion | Implemented | `CINT`, `CSNG`, `CDBL`, `FIX`, and `INT` exist. `CINT`, `FIX`, and `INT` avoid unnecessary `float` narrowing for double inputs. Unsuffixed numeric constants with more than seven significant mantissa digits are classified as double precision, while explicit `!` retains single precision. Ordinary large doubles use round-trip fixed formatting when an exponent is unnecessary; extreme magnitudes remain scientific. | Verify remaining overflow, exact midpoint rounding, and conversion from strings. Existing anchors: `NativeFunctionTest`, `ExpressionTest`, `PrintTest`. |
 | Math functions | Implemented | `SQR`, `SIN`, `COS`, `TAN`, `ATN`, `LOG`, and `EXP` are registered and callable. | Confirm domain errors, precision, and Level II output expectations. |
@@ -372,6 +372,7 @@ Recent Level II slices, in order:
 292. Added focused DATA lifecycle coverage proving `CLEAR` resets the `READ` stream position, so a subsequent `READ` restarts from the first DATA element without requiring explicit `RESTORE`.
 293. Rejected duplicate `DIM` declarations with focused `HOW?` runtime coverage instead of silently replacing array dimensions.
 294. Enforced the `CHR$` byte range with fractional truncation and focused out-of-range coverage.
+295. Applied the same byte-range policy to `STRING$` with focused out-of-range coverage.
 ## Next Slice Queue
 
 Work in this order unless manual research changes the dependency:

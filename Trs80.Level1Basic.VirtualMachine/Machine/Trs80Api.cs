@@ -390,9 +390,18 @@ public class Trs80Api : ITrs80Api
 
         char character = value is string text
             ? string.IsNullOrEmpty(text) ? '\0' : text[0]
-            : (char)(int)Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture);
+            : GetCharacterCode(value);
 
         return character == '\0' ? string.Empty : new string(character, count);
+    }
+
+    private static char GetCharacterCode(dynamic value)
+    {
+        int characterCode = (int)Math.Truncate(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
+        if (characterCode is < 0 or > byte.MaxValue)
+            throw new ValueOutOfRangeException(-1, string.Empty, "Character code out of range.");
+
+        return (char)characterCode;
     }
 
     public string Space(int length)

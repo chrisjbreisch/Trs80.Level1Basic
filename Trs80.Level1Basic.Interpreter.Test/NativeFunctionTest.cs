@@ -209,6 +209,20 @@ public class NativeFunctionTest
     }
 
     [TestMethod]
+    public void Interpreter_Rejects_String_Character_Code_Outside_Byte_Range()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT STRING$(1, 256)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("HOW?");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Call_Int()
     {
         using var controller = new TestController();
