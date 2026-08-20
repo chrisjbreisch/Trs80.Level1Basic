@@ -556,13 +556,13 @@ public class FlowControlTest
             "10 ON ERROR GO TO 80",
             "20 X=1/0",
             "30 PRINT \"AFTER ERROR\":END",
-            "80 PRINT \"HANDLED\"",
+            "80 PRINT \"HANDLED\";ERL",
             "90 RESUME"
         };
 
         controller.RunProgram(program);
 
-        controller.ReadOutputLine().Should().Be("HANDLED");
+        controller.ReadOutputLine().Should().Be("HANDLED 20 ");
         controller.ReadOutputLine().Should().Be("AFTER ERROR");
         controller.IsEndOfRun().Should().BeTrue();
     }

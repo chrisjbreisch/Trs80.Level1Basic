@@ -446,6 +446,7 @@ public class Interpreter : IInterpreter
         }
         catch (Exception exception) when (CanHandleError(statement, exception))
         {
+            _machine.Set("ERL", statement.LineNumber);
             _errorResumeStatement = _machine.GetNextStatement(statement);
             _handlingError = true;
             _machine.SetNextStatement(_errorHandlerStatement);
