@@ -652,7 +652,7 @@ public class FlowControlTest
     public void Interpreter_Handles_Integer_Input_Overflow()
     {
         using var controller = new TestController();
-        controller.Input = new StringReader("404195481\r\n");
+        controller.Input = new StringReader("123456789\r\n");
         var program = new List<string> {
             "100 ON ERROR GOTO 200",
             "110 INPUT \"CUSTOMER'S NUMBER\";A%",
