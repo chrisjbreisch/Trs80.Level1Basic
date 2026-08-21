@@ -16,12 +16,19 @@ namespace Trs80.Level1Basic.VirtualMachine.Parser.Statements;
 public class Print : Statement
 {
     public Expression AtPosition { get; init; }
+    public Expression UsingFormat { get; init; }
     public List<Expression> Expressions { get; init; }
     public bool WriteNewline { get; init; }
 
     public Print(Expression atPosition, List<Expression> expressions, bool writeNewline)
+        : this(atPosition, null, expressions, writeNewline)
+    {
+    }
+
+    public Print(Expression atPosition, Expression usingFormat, List<Expression> expressions, bool writeNewline)
     {
         AtPosition = atPosition;
+        UsingFormat = usingFormat;
         Expressions = expressions;
         WriteNewline = writeNewline;
     }

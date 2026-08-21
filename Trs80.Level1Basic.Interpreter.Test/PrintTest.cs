@@ -56,6 +56,26 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Print_Using_Currency_Image()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 A=27.216: B=351.951: C=5",
+            "20 IMAGE$=\"$$####.##\"",
+            "30 PRINT USING IMAGE$; A",
+            "40 PRINT USING IMAGE$; B",
+            "50 PRINT USING IMAGE$; C"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("  $27.22");
+        controller.ReadOutputLine().Should().Be(" $351.95");
+        controller.ReadOutputLine().Should().Be("   $5.00");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_Positive_Unary_Number()
     {
         using var controller = new TestController();

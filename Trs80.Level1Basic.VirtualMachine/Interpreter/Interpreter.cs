@@ -1122,7 +1122,14 @@ public class Interpreter : IInterpreter
         if (statement.AtPosition != null)
             PrintAt(statement.AtPosition);
 
-        if (statement.Expressions is { Count: > 0 })
+        if (statement.UsingFormat is not null)
+        {
+            string image = Convert.ToString(Evaluate(statement.UsingFormat),
+                System.Globalization.CultureInfo.InvariantCulture) ?? string.Empty;
+            foreach (Expression expression in statement.Expressions)
+                _trs80.Write(FormatUsing(image, Evaluate(expression)));
+        }
+        else if (statement.Expressions is { Count: > 0 })
             foreach (Expression expression in statement.Expressions)
                 _trs80.Write(Stringify(Evaluate(expression)));
 
@@ -1136,6 +1143,77 @@ public class Interpreter : IInterpreter
             throw statement.ParseException;
 
         return null!;
+    }
+
+    private string FormatUsing(string image, dynamic value)
+    {
+        if (value is string)
+            return FormatUsingString(image, (string)value);
+
+        int firstDigit = image.IndexOf('#');
+        if (firstDigit < 0)
+            return image;
+
+        int lastDigit = image.LastIndexOf('#');
+        int decimalPoint = image.IndexOf('.', firstDigit, lastDigit - firstDigit + 1);
+        int fractionalDigits = decimalPoint < 0 ? 0 : image[(decimalPoint + 1)..(lastDigit + 1)].Count(character => character == '#');
+        int integerDigits = image[firstDigit..(decimalPoint < 0 ? lastDigit + 1 : decimalPoint)]
+            .Count(character => character == '#');
+
+        decimal number = Convert.ToDecimal(value, System.Globalization.CultureInfo.InvariantCulture);
+        bool negative = number < 0;
+        number = Math.Round(Math.Abs(number), fractionalDigits, MidpointRounding.AwayFromZero);
+        string numeric = number.ToString($"F{fractionalDigits}", System.Globalization.CultureInfo.InvariantCulture);
+        string[] parts = numeric.Split('.');
+        if (parts[0].Length > integerDigits)
+            return new string('%', lastDigit - firstDigit + 1);
+
+        string integerPart = parts[0].PadLeft(integerDigits);
+        if (image.Contains(','))
+            integerPart = AddUsingCommas(integerPart);
+
+        string result = image[..firstDigit] + integerPart;
+        if (fractionalDigits > 0)
+            result += "." + parts[1];
+        result += image[(lastDigit + 1)..];
+
+        if (image.Contains("$$", StringComparison.Ordinal))
+        {
+            result = result.Replace("$$", "$", StringComparison.Ordinal);
+            int currencyPosition = result.IndexOf('$');
+            result = result.Remove(currencyPosition, 1);
+            result = result.Insert(result.IndexOfAny("0123456789".ToCharArray()), "$");
+        }
+
+        if (negative)
+            result = result.Insert(0, "-");
+
+        return result;
+    }
+
+    private static string AddUsingCommas(string integerPart)
+    {
+        int firstDigit = integerPart.IndexOfAny("0123456789".ToCharArray());
+        if (firstDigit < 0) return integerPart;
+
+        string digits = integerPart[firstDigit..];
+        for (int index = digits.Length - 3; index > 0; index -= 3)
+            digits = digits.Insert(index, ",");
+
+        return integerPart[..firstDigit] + digits;
+    }
+
+    private static string FormatUsingString(string image, string value)
+    {
+        int width = image switch
+        {
+            "!" => 1,
+            "%%" => 2,
+            _ when image.StartsWith('%') && image.EndsWith('%') => image.Length - 2,
+            _ => 0
+        };
+
+        return width > 0 ? value.PadRight(width)[..width] : image;
     }
 
     private void PrintAt(Expression position)

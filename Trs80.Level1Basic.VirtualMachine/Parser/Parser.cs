@@ -1037,6 +1037,15 @@ public class Parser : IParser
     if (atPosition is not null)
         RejectLevel1Feature("PRINT AT");
 
+        Expression usingFormat = null;
+        if (Peek().Type == TokenType.Identifier &&
+            string.Equals(Peek().Lexeme, "USING", StringComparison.OrdinalIgnoreCase))
+        {
+            Advance();
+            usingFormat = Expression();
+            Consume(TokenType.Semicolon, "Expected ';' after PRINT USING format.");
+        }
+
         if (Match(TokenType.Comma))
             values.Add(new Call(_padQuadrant, new List<Expression>(), 0));
 
@@ -1067,7 +1076,7 @@ public class Parser : IParser
 
         }
 
-        return StatementWrapper(new Print(atPosition, values, newline));
+        return StatementWrapper(new Print(atPosition, usingFormat, values, newline));
     }
 
     private IStatement LprintStatement()
