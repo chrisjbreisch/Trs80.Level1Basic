@@ -76,6 +76,20 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Print_Using_Direct_Image_Literal()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT USING \"$$####.##\"; 27.216"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("  $27.22");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_Positive_Unary_Number()
     {
         using var controller = new TestController();
