@@ -492,6 +492,40 @@ public class ExpressionTest
     }
 
     [TestMethod]
+    public void Interpreter_Initializes_Three_Dimensional_String_Array_Elements_To_Empty()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DIM A$(2,2,2)",
+            "20 PRINT A$(1,1,1)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().BeEmpty();
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Interpreter_Clear_Resets_Three_Dimensional_Array_Values()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DIM A(2,2,2)",
+            "20 A(1,1,1)=7",
+            "30 CLEAR",
+            "40 PRINT A(1,1,1)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be(" 0 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Clear_Resets_Two_Dimensional_Array_Values()
     {
         using var controller = new TestController();
