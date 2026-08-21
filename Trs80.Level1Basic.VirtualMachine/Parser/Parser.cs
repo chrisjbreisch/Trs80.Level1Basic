@@ -1037,6 +1037,9 @@ public class Parser : IParser
     if (atPosition is not null)
         RejectLevel1Feature("PRINT AT");
 
+        if (Match(TokenType.Comma))
+            values.Add(new Call(_padQuadrant, new List<Expression>(), 0));
+
         while (!IsAtStatementEnd())
         {
             Expression value = Expression();

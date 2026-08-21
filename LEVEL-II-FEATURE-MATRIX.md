@@ -463,6 +463,7 @@ Recent Level II slices, in order:
 345. Corrected scanner keyword boundaries so `OUTER`/`INNER` remain valid identifiers, `GONE` is rejected for its reserved `GO` prefix, and compact `IF`/`TO` plus dotted abbreviations remain supported.
 346. Added `TRON`/`TROFF` trace toggles and comma-separated `NEXT I,K` loop unwinding with focused coverage.
 347. Added declared three-dimensional numeric array parsing, bounds validation, assignment, reads, and focused coverage for `DIM A(2,2,2)`.
+348. Accepted a leading comma in `PRINT` as an initial 16-column zone separator, covering `PRINT ,N$(1),N$(2),N$(3)`.
 ## Next Slice Queue
 
 The detailed queue is maintained in the [Phase 4 Dashboard](#phase-4-dashboard). Start with typed scalar promotion and invalid conversions, then work downward through typed arrays, conversions, numeric formatting, DATA/error lifecycle, host edges, and editor/corpus expansion. The queue is intentionally ordered so shared type and runtime rules settle before broader compatibility-program work.

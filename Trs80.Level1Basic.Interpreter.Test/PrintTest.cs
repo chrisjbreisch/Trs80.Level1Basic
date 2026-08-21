@@ -41,6 +41,21 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Print_With_A_Leading_Comma()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 N$(1)=\"ERIC\":N$(2)=\"RON\":N$(3)=\"JEFF\"",
+            "20 PRINT ,N$(1),N$(2),N$(3)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("                ERIC            RON             JEFF");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_Positive_Unary_Number()
     {
         using var controller = new TestController();
