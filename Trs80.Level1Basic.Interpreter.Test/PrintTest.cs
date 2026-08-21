@@ -122,6 +122,20 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Reports_Print_Using_Field_Overflow_With_Value()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT ###.#, 1234.5"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("%1234.5");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_Positive_Unary_Number()
     {
         using var controller = new TestController();

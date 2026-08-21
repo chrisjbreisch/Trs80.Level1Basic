@@ -1166,7 +1166,7 @@ public class Interpreter : IInterpreter
         string numeric = number.ToString($"F{fractionalDigits}", System.Globalization.CultureInfo.InvariantCulture);
         string[] parts = numeric.Split('.');
         if (parts[0].Length > integerDigits)
-            return new string('%', lastDigit - firstDigit + 1);
+            return $"%{numeric}";
 
         string integerPart = parts[0].PadLeft(integerDigits);
         if (image.Contains(','))
