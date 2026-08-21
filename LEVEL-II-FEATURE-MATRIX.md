@@ -469,6 +469,7 @@ Recent Level II slices, in order:
 351. Added `PRINT USING` leading and trailing `+`/`-` sign fields for quoted format images.
 352. Corrected undersized `PRINT USING` fields to emit `%` followed by the rounded value, such as `%1234.5` for `PRINT USING "###.#"; 1234.5`.
 353. Reset array dimension metadata at fresh `RUN`/`NEW` initialization while preserving dimensions for in-program `CLEAR`, allowing DIM-containing programs to run repeatedly.
+354. Preserved raw text for string `INPUT` targets before numeric parsing, so comma-separated inputs such as `INPUT M$(I),D$(I)` accept `MARCH,5` and continue to the following numeric prompt.
 ## Next Slice Queue
 
 The detailed queue is maintained in the [Phase 4 Dashboard](#phase-4-dashboard). Start with typed scalar promotion and invalid conversions, then work downward through typed arrays, conversions, numeric formatting, DATA/error lifecycle, host edges, and editor/corpus expansion. The queue is intentionally ordered so shared type and runtime rules settle before broader compatibility-program work.

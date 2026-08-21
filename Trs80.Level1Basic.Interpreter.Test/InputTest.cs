@@ -111,6 +111,24 @@ public class InputTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Read_Comma_Separated_String_Array_Inputs()
+    {
+        using var controller = new TestController();
+        controller.Input = new StringReader("MARCH,5\n100\nEND,END\n");
+        var program = new List<string> {
+            "10 DIM D$(10),M$(10)",
+            "20 INPUT M$(1),D$(1)",
+            "30 INPUT TRANS(1)",
+            "40 PRINT M$(1);D$(1);TRANS(1)"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("? ? MARCH5 100 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Prompts_For_Missing_Comma_Separated_Input_Value()
     {
         using var controller = new TestController();

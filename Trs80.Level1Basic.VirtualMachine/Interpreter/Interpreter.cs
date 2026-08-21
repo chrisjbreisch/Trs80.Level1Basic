@@ -798,6 +798,8 @@ public class Interpreter : IInterpreter
         {
             if (value is null)
                 Assign(identifier, null);
+            else if (IsStringInputTarget(identifier))
+                Assign(identifier, value);
             else if (int.TryParse(value, out int intValue))
             {
                 string targetName = identifier switch
@@ -841,6 +843,18 @@ public class Interpreter : IInterpreter
             _trs80.WriteLine("WHAT?");
             GetInputValue(identifier);
         }
+    }
+
+    private bool IsStringInputTarget(Expression identifier)
+    {
+        string targetName = identifier switch
+        {
+            Identifier variable => variable.Name.Lexeme,
+            Array array => array.Name.Lexeme,
+            _ => string.Empty
+        };
+
+        return _machine.IsStringVariable(targetName);
     }
 
     public Void VisitLetStatement(Let statement)
