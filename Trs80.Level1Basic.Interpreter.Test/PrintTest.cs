@@ -90,6 +90,20 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Print_Using_Unquoted_Image()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT ###.#, 123.45"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("123.5");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_Positive_Unary_Number()
     {
         using var controller = new TestController();
