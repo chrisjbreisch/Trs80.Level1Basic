@@ -104,6 +104,24 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Print_Using_Explicit_Sign_Images()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT USING \"+##.#\"; 12.3",
+            "20 PRINT USING \"##.#+\"; 12.3",
+            "30 PRINT USING \"##.#-\"; -12.3"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("+12.3");
+        controller.ReadOutputLine().Should().Be("12.3+");
+        controller.ReadOutputLine().Should().Be("12.3-");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_Positive_Unary_Number()
     {
         using var controller = new TestController();

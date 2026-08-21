@@ -466,6 +466,7 @@ Recent Level II slices, in order:
 348. Accepted a leading comma in `PRINT` as an initial 16-column zone separator, covering `PRINT ,N$(1),N$(2),N$(3)`.
 349. Added `PRINT USING` numeric image formatting for `#`, decimal precision, `$$` currency placement, comma grouping, and basic `!`/`%%`/`%...%` string fields with focused currency coverage; unquoted images such as `PRINT ###.#, 123.45` are also accepted.
 350. Audited three-dimensional array lifecycle behavior: typed string elements default empty, and `CLEAR` resets 3D values while preserving declared bounds.
+351. Added `PRINT USING` leading and trailing `+`/`-` sign fields, including unquoted images that begin with an explicit sign.
 ## Next Slice Queue
 
 The detailed queue is maintained in the [Phase 4 Dashboard](#phase-4-dashboard). Start with typed scalar promotion and invalid conversions, then work downward through typed arrays, conversions, numeric formatting, DATA/error lifecycle, host edges, and editor/corpus expansion. The queue is intentionally ordered so shared type and runtime rules settle before broader compatibility-program work.

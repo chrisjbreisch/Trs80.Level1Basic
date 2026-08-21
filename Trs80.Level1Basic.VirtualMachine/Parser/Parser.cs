@@ -1087,7 +1087,13 @@ public class Parser : IParser
 
     private bool IsDirectUsingImageStart()
     {
-        return Peek().Type is TokenType.Hash or TokenType.Dollar or TokenType.Star;
+        if (Peek().Type is TokenType.Hash or TokenType.Dollar or TokenType.Star)
+            return true;
+
+        return Peek().Type is TokenType.Plus or TokenType.Minus &&
+            PeekNext().Type is TokenType.Hash or TokenType.Dollar or TokenType.Star ||
+            Peek().Type is TokenType.Plus or TokenType.Minus &&
+            PeekNext().Type == TokenType.Identifier && PeekNext().Lexeme == ".";
     }
 
     private Expression ParseDirectUsingImage()

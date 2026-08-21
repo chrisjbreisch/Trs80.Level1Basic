@@ -1172,10 +1172,20 @@ public class Interpreter : IInterpreter
         if (image.Contains(','))
             integerPart = AddUsingCommas(integerPart);
 
-        string result = image[..firstDigit] + integerPart;
+        string prefix = image[..firstDigit];
+        string suffix = image[(lastDigit + 1)..];
+        bool leadingSign = prefix.EndsWith('+') || prefix.EndsWith('-');
+        bool trailingSign = suffix.StartsWith('+') || suffix.StartsWith('-');
+        string sign = negative ? "-" : "+";
+        if (leadingSign)
+            prefix = prefix[..^1] + (negative || prefix[^1] == '+' ? sign : " ");
+        if (trailingSign)
+            suffix = (negative || suffix[0] == '+' ? sign : " ") + suffix[1..];
+
+        string result = prefix + integerPart;
         if (fractionalDigits > 0)
             result += "." + parts[1];
-        result += image[(lastDigit + 1)..];
+        result += suffix;
 
         if (image.Contains("$$", StringComparison.Ordinal))
         {
@@ -1185,7 +1195,7 @@ public class Interpreter : IInterpreter
             result = result.Insert(result.IndexOfAny("0123456789".ToCharArray()), "$");
         }
 
-        if (negative)
+        if (negative && !leadingSign && !trailingSign)
             result = result.Insert(0, "-");
 
         return result;
