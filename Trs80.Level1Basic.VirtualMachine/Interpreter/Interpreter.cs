@@ -1141,7 +1141,9 @@ public class Interpreter : IInterpreter
             string image = Convert.ToString(Evaluate(statement.UsingFormat),
                 System.Globalization.CultureInfo.InvariantCulture) ?? string.Empty;
             foreach (Expression expression in statement.Expressions)
-                _trs80.Write(FormatUsing(image, Evaluate(expression)));
+                _trs80.Write(expression is Call { IsPrintZoneSeparator: true }
+                    ? Convert.ToString(Evaluate(expression), System.Globalization.CultureInfo.InvariantCulture)
+                    : FormatUsing(image, Evaluate(expression)));
         }
         else if (statement.Expressions is { Count: > 0 })
             foreach (Expression expression in statement.Expressions)

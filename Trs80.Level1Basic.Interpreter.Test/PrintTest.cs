@@ -122,6 +122,20 @@ public class PrintTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Print_Using_Two_Values_With_A_Comma()
+    {
+        using var controller = new TestController();
+        var program = new List<string> {
+            "10 PRINT USING \"##,###.##-\"; -55,945"
+        };
+
+        controller.RunProgram(program);
+
+        controller.ReadOutputLine().Should().Be("   55.00-         945.00 ");
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Can_Print_Positive_Unary_Number()
     {
         using var controller = new TestController();

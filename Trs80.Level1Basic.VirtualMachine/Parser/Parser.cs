@@ -659,9 +659,7 @@ public class Parser : IParser
 
             if (Match(TokenType.Comma))
                 values.Add(
-                    new Call(_padQuadrant,
-                        new List<Expression>(),
-                        0));
+                    new Call(_padQuadrant, new List<Expression>(), 0));
         }
 
         return StatementWrapper(new Input(values));
@@ -1046,7 +1044,7 @@ public class Parser : IParser
             Consume(TokenType.Semicolon, "Expected ';' after PRINT USING format.");
         }
         if (Match(TokenType.Comma))
-            values.Add(new Call(_padQuadrant, new List<Expression>(), 0));
+            values.Add(new Call(_padQuadrant, new List<Expression>(), 0, true));
 
         while (!IsAtStatementEnd())
         {
@@ -1069,9 +1067,7 @@ public class Parser : IParser
                 newline = false;
             if (Match(TokenType.Comma))
                 values.Add(
-                    new Call(_padQuadrant,
-                        new List<Expression>(),
-                        0));
+                    new Call(_padQuadrant, new List<Expression>(), 0, true));
 
         }
 

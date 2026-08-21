@@ -18,11 +18,18 @@ public class Call : Expression
     public string Name { get; init; }
     public Callable Callee { get; init; }
     public List<Expression> Arguments { get; init; }
+    public bool IsPrintZoneSeparator { get; init; }
 
-    public Call(Callable callee, List<Expression> arguments, int linePosition) : base(linePosition)
+    public Call(Callable callee, List<Expression> arguments, int linePosition)
+        : this(callee, arguments, linePosition, false)
+    {
+    }
+
+    public Call(Callable callee, List<Expression> arguments, int linePosition, bool isPrintZoneSeparator) : base(linePosition)
     {
         Callee = callee;
         Arguments = arguments;
+        IsPrintZoneSeparator = isPrintZoneSeparator;
     }
 
     public Call(string name, List<Expression> arguments, int linePosition) : base(linePosition)
