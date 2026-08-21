@@ -42,5 +42,5 @@ public interface IMachine
     void LoadData(IInterpreter interpreter);
     IStatement GetNextStatement();
     IStatement GetNextStatement(IStatement statement);
-    void Initialize();
+    void Initialize(bool resetArrayDimensions = false);
 }

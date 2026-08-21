@@ -159,7 +159,7 @@ public class Machine : IMachine
     {
         Program.Clear();
         _nextStatement = null;
-        Initialize();
+        Initialize(true);
     }
 
     public void RunStatementList(IStatement statement, IInterpreter interpreter)
@@ -231,9 +231,9 @@ public class Machine : IMachine
         return _nextStatement;
     }
 
-    public void Initialize()
+    public void Initialize(bool resetArrayDimensions = false)
     {
-        _globals.InitializeVariables();
+        _globals.InitializeVariables(resetArrayDimensions);
         Data.MoveFirst();
     }
 

@@ -365,8 +365,11 @@ public class Environment
         return suffix == '\0' ? baseName : $"{baseName}{suffix}";
     }
 
-    public void InitializeVariables()
+    public void InitializeVariables(bool resetArrayDimensions = false)
     {
+        if (resetArrayDimensions)
+            _arrayDimensions.Clear();
+
         _assignedVariables.Clear();
         _assignedVariables.Add("ERL");
         _initializingVariables = true;

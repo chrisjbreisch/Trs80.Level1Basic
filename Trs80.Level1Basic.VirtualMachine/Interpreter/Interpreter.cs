@@ -510,7 +510,7 @@ public class Interpreter : IInterpreter
     {
         if (initialize)
         {
-            _machine.Initialize();
+            _machine.Initialize(true);
             RegisterUserFunctions();
             ResetErrorState();
             _traceEnabled = false;

@@ -526,6 +526,33 @@ public class ExpressionTest
     }
 
     [TestMethod]
+    public void Interpreter_Can_Run_Dimensioned_Array_Program_Twice()
+    {
+        using var controller = new TestController();
+        var program = new List<string>
+        {
+            "10 DIM A(2)",
+            "20 A(0)=7",
+            "30 PRINT A(0)"
+        };
+
+        controller.ExecuteLine("NEW");
+        controller.ExecuteStatements(program);
+        controller.ExecuteLine("RUN");
+        controller.ExecuteLine("RUN");
+
+        int printedValues = 0;
+        while (printedValues < 2)
+        {
+            if (controller.ReadOutputLine() == " 7 ")
+                printedValues++;
+        }
+
+        printedValues.Should().Be(2);
+        controller.IsEndOfRun().Should().BeTrue();
+    }
+
+    [TestMethod]
     public void Interpreter_Clear_Resets_Two_Dimensional_Array_Values()
     {
         using var controller = new TestController();

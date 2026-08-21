@@ -468,6 +468,7 @@ Recent Level II slices, in order:
 350. Audited three-dimensional array lifecycle behavior: typed string elements default empty, and `CLEAR` resets 3D values while preserving declared bounds.
 351. Added `PRINT USING` leading and trailing `+`/`-` sign fields for quoted format images.
 352. Corrected undersized `PRINT USING` fields to emit `%` followed by the rounded value, such as `%1234.5` for `PRINT USING "###.#"; 1234.5`.
+353. Reset array dimension metadata at fresh `RUN`/`NEW` initialization while preserving dimensions for in-program `CLEAR`, allowing DIM-containing programs to run repeatedly.
 ## Next Slice Queue
 
 The detailed queue is maintained in the [Phase 4 Dashboard](#phase-4-dashboard). Start with typed scalar promotion and invalid conversions, then work downward through typed arrays, conversions, numeric formatting, DATA/error lifecycle, host edges, and editor/corpus expansion. The queue is intentionally ordered so shared type and runtime rules settle before broader compatibility-program work.
