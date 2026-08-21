@@ -90,20 +90,6 @@ public class PrintTest
     }
 
     [TestMethod]
-    public void Interpreter_Can_Print_Using_Unquoted_Image()
-    {
-        using var controller = new TestController();
-        var program = new List<string> {
-            "10 PRINT ###.#, 123.45"
-        };
-
-        controller.RunProgram(program);
-
-        controller.ReadOutputLine().Should().Be("123.5");
-        controller.IsEndOfRun().Should().BeTrue();
-    }
-
-    [TestMethod]
     public void Interpreter_Can_Print_Using_Explicit_Sign_Images()
     {
         using var controller = new TestController();
@@ -126,7 +112,7 @@ public class PrintTest
     {
         using var controller = new TestController();
         var program = new List<string> {
-            "10 PRINT ###.#, 1234.5"
+            "10 PRINT USING \"###.#\"; 1234.5"
         };
 
         controller.RunProgram(program);

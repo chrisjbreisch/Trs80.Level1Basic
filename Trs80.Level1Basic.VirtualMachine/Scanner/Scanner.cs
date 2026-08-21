@@ -249,12 +249,6 @@ public class Scanner : IScanner
             case '-':
                 AddToken(TokenType.Minus);
                 break;
-            case '#':
-                AddToken(TokenType.Hash);
-                break;
-            case '$':
-                AddToken(TokenType.Dollar);
-                break;
             case '+':
                 AddToken(TokenType.Plus);
                 break;

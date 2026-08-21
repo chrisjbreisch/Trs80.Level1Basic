@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using Trs80.Level1Basic.Common;
 using Trs80.Level1Basic.VirtualMachine.Exceptions;
@@ -1046,12 +1045,6 @@ public class Parser : IParser
             usingFormat = Expression();
             Consume(TokenType.Semicolon, "Expected ';' after PRINT USING format.");
         }
-        else if (IsDirectUsingImageStart())
-        {
-            usingFormat = ParseDirectUsingImage();
-            Consume(TokenType.Comma, "Expected ',' after PRINT image.");
-        }
-
         if (Match(TokenType.Comma))
             values.Add(new Call(_padQuadrant, new List<Expression>(), 0));
 
@@ -1083,36 +1076,6 @@ public class Parser : IParser
         }
 
         return StatementWrapper(new Print(atPosition, usingFormat, values, newline));
-    }
-
-    private bool IsDirectUsingImageStart()
-    {
-        if (Peek().Type is TokenType.Hash or TokenType.Dollar or TokenType.Star)
-            return true;
-
-        return Peek().Type is TokenType.Plus or TokenType.Minus &&
-            PeekNext().Type is TokenType.Hash or TokenType.Dollar or TokenType.Star ||
-            Peek().Type is TokenType.Plus or TokenType.Minus &&
-            PeekNext().Type == TokenType.Identifier && PeekNext().Lexeme == ".";
-    }
-
-    private Expression ParseDirectUsingImage()
-    {
-        var image = new StringBuilder();
-        int linePosition = Peek().LinePosition;
-
-        while (Peek().Type is TokenType.Hash or TokenType.Dollar or TokenType.Star or TokenType.Plus or TokenType.Minus ||
-            Peek().Type == TokenType.Identifier && Peek().Lexeme == ".")
-        {
-            Advance();
-            image.Append(Previous().Lexeme);
-        }
-
-        if (image.Length == 0)
-            _parseException = new ParseException(_lineNumber, _source, linePosition,
-                "Expected PRINT image.");
-
-        return new Literal(image.ToString(), image.ToString(), linePosition);
     }
 
     private IStatement LprintStatement()

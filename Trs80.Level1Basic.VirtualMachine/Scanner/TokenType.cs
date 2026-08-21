@@ -8,8 +8,6 @@ public enum TokenType
     Caret,
     LeftParen,
     Minus,
-    Hash,
-    Dollar,
     Plus,
     RightParen,
     Semicolon,
