@@ -55,7 +55,7 @@ The ledger follows the first contiguous form of the standard: clauses 1 through 
 | Clause | Status | Evidence and boundary |
 | --- | --- | --- |
 | 6 Lexical elements | 🚧 | Scanner and identifier behavior are broadly tested, but line-number and exhaustive character-set boundaries remain. |
-| 6.1 | 🚧 | `Scanner.cs` and `TokenType.cs` recognize the supported letters, digits, punctuation, and whitespace; `ScannerTest.cs` does not constitute an exhaustive character inventory. |
+| 6.1 | ✅ | `Scanner.cs` and `TokenType.cs` recognize the required letters, digits, punctuation, and whitespace, including standalone LF; `ScannerTest.Scanner_Accepts_Clause_6_1_Character_Set` and `ScannerTest.Scanner_Accepts_Clause_6_1_Newline_Characters` provide focused coverage. |
 | 6.2 | ✅ | Keyword/identifier normalization and string-case preservation are exercised by `ScannerTest.cs` and string cases in `ExpressionTest.cs`. |
 | 6.3 | ✅ | `Parser.GetLineNumberValue` accepts 0 through 65529 and rejects values above 65529; `ParserTest.Parser_Accepts_The_Maximum_Program_Line_Number` covers 65529, and `ParserTest.Parser_Rejects_Reserved_Program_Line_Numbers` covers 65530 and 65535. |
 | 6.4 | ✅ | Colon-separated statement lists are parsed and executed by `Parser.cs`; `StatementListTest.cs` is the focused anchor. |

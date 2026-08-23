@@ -239,4 +239,35 @@ public class ScannerTest
         tokens[0].Type.Should().Be(TokenType.Number);
         tokens[1].Type.Should().Be(TokenType.Poke);
     }
+
+    [TestMethod]
+    public void Scanner_Accepts_Clause_6_1_Character_Set()
+    {
+        using var controller = new TestController();
+        IScanner scanner = controller.Scanner;
+
+        string[] sourceFragments =
+        [
+            "A", "z", "0", "9", "+", "-", "*", "/", "^", "(", ")", ",", ";", ":", "=", "?", " ", "\t", ".", "\""
+        ];
+
+        foreach (string sourceFragment in sourceFragments)
+        {
+            List<Token>? tokens = scanner.ScanTokens(new SourceLine($"10 PRINT {sourceFragment}"));
+            tokens.Should().NotBeNull();
+        }
+    }
+
+    [TestMethod]
+    public void Scanner_Accepts_Clause_6_1_Newline_Characters()
+    {
+        using var controller = new TestController();
+        IScanner scanner = controller.Scanner;
+
+        foreach (string newline in new[] { "\r", "\n", "\r\n" })
+        {
+            List<Token>? tokens = scanner.ScanTokens(new SourceLine($"10 PRINT 1{newline}"));
+            tokens.Should().NotBeNull();
+        }
+    }
 }

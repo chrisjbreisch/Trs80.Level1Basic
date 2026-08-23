@@ -90,7 +90,7 @@ public class Scanner : IScanner
     private void GetCurrentLine()
     {
         string currentString = _source[TokenStart..];
-        int endOfLine = currentString.IndexOf("\r\n", StringComparison.Ordinal);
+        int endOfLine = currentString.IndexOfAny(['\r', '\n']);
         _currentLine = endOfLine < 0 ? currentString : currentString[..endOfLine];
     }
 
@@ -303,6 +303,9 @@ public class Scanner : IScanner
             case '\r':
                 if (Match('\n'))
                     _currentLine = null;
+                break;
+            case '\n':
+                _currentLine = null;
                 break;
             default:
                 if (c == '.' && !IsDigit(Peek()))
