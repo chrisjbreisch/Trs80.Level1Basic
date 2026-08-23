@@ -54,4 +54,30 @@ public class ParserTest
         value = literal.UpperValue;
         value.Should().Be("HELLO, WORLD!");
     }
+
+    [TestMethod]
+    public void Parser_Accepts_The_Maximum_Program_Line_Number()
+    {
+        using var controller = new TestController();
+
+        IStatement? statement = controller.Parser.Parse(
+            controller.Scanner.ScanTokens(new SourceLine("65529 PRINT 1")));
+
+        statement.Should().NotBeNull();
+        statement!.LineNumber.Should().Be(65529);
+    }
+
+    [TestMethod]
+    public void Parser_Rejects_Reserved_Program_Line_Numbers()
+    {
+        using var controller = new TestController();
+
+        foreach (int lineNumber in new[] { 65530, 65535 })
+        {
+            IStatement? statement = controller.Parser.Parse(
+                controller.Scanner.ScanTokens(new SourceLine($"{lineNumber} PRINT 1")));
+
+            statement.Should().BeNull();
+        }
+    }
 }

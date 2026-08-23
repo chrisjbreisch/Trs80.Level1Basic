@@ -14,6 +14,7 @@ namespace Trs80.Level1Basic.VirtualMachine.Parser;
 
 public class Parser : IParser
 {
+    private const int MaxProgramLineNumber = 65529;
     private List<Token> _tokens;
     private int _current;
     private int _lineNumber;
@@ -1086,8 +1087,8 @@ public class Parser : IParser
 
         if (line == null || line is not int) return -1;
 
-        if (line > short.MaxValue)
-            throw new ValueOutOfRangeException(-1, null, $"Line number cannot exceed {short.MaxValue}.");
+        if (line > MaxProgramLineNumber)
+            throw new ValueOutOfRangeException(-1, null, $"Line number cannot exceed {MaxProgramLineNumber}.");
 
         return line;
     }

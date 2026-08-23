@@ -57,7 +57,7 @@ The ledger follows the first contiguous form of the standard: clauses 1 through 
 | 6 Lexical elements | 🚧 | Scanner and identifier behavior are broadly tested, but line-number and exhaustive character-set boundaries remain. |
 | 6.1 | 🚧 | `Scanner.cs` and `TokenType.cs` recognize the supported letters, digits, punctuation, and whitespace; `ScannerTest.cs` does not constitute an exhaustive character inventory. |
 | 6.2 | ✅ | Keyword/identifier normalization and string-case preservation are exercised by `ScannerTest.cs` and string cases in `ExpressionTest.cs`. |
-| 6.3 | 🚧 | Line-number parsing exists in `Scanner.cs`/`Parser.cs`; exact 65529 acceptance and 65530-65535 reservation need dedicated boundary tests. |
+| 6.3 | ✅ | `Parser.GetLineNumberValue` accepts 0 through 65529 and rejects values above 65529; `ParserTest.Parser_Accepts_The_Maximum_Program_Line_Number` covers 65529, and `ParserTest.Parser_Rejects_Reserved_Program_Line_Numbers` covers 65530 and 65535. |
 | 6.4 | ✅ | Colon-separated statement lists are parsed and executed by `Parser.cs`; `StatementListTest.cs` is the focused anchor. |
 | 6.5 | ✅ | `REM` consumes the remainder of a source line; `ScannerTest.cs` and `ParserTest.cs` cover the behavior. |
 | 6.6 | ✅ | Keyword-containing identifiers are rejected and first-two-character identity is applied in `Scanner.cs`, `Parser.cs`, and `Environment.cs`; identifier regressions are in `ExpressionTest.cs` and `Level1SyntaxGatingTest.cs`. |
