@@ -4,6 +4,8 @@ This document is the working implementation map for the `level2/type-declaration
 
 For the strict Level I profile, see [LEVEL-I-FEATURE-MATRIX.md](LEVEL-I-FEATURE-MATRIX.md).
 
+For evidence organized by the standard's clauses, see [LEVEL-II-COMPATIBILITY-LEDGER.md](LEVEL-II-COMPATIBILITY-LEDGER.md).
+
 The project already has a mature Level I interpreter. Level II work is being added incrementally on top of that baseline. A feature is not considered complete merely because a method or token exists: the behavior needs a focused interpreter test and must preserve the Level I suite.
 
 ## Status Legend
