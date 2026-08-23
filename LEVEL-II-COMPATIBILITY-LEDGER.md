@@ -15,7 +15,156 @@ The standard currently contains a first contiguous 19-clause form with two annex
 | Intentional limit | The behavior is deliberately approximated, unavailable, or host-dependent and is documented as such. |
 | Not evidenced | No trustworthy implementation/test pair has been identified. |
 
-## Clause Ledger
+## Clause-by-Clause Ledger
+
+Each numbered clause below has its own evidence row. `Verified` requires both a concrete implementation path and a focused test anchor for the stated behavior. `Partial` identifies an open boundary or incomplete test. `Intentional limit` identifies a documented host or hardware policy. `Not evidenced` identifies a clause without a reliable implementation/test pair.
+
+| Clause | Requirement under test | Implementation evidence | Test evidence | Status and open point |
+| --- | --- | --- | --- | --- |
+| 1.1 | Specify Level II BASIC syntax and semantics. | `Trs80.Level1Basic.VirtualMachine/Scanner/Scanner.cs`; `Parser/Parser.cs`; `Interpreter/Interpreter.cs`; `Machine/NativeFunctions.cs`. | `Level2CompatibilityTest.cs`; full Interpreter test project. | **Partial:** no single complete conformance test. |
+| 1.2 | Derive the specification from the published references using formal clauses. | `TRS-80-Model-I-Level-II-BASIC-Standard.md`; `LEVEL-II-FEATURE-MATRIX.md`. | No executable test; documentary provenance. | **Documented:** not runtime-verifiable. |
+| 1.3 | Preserve observable language behavior while allowing undocumented ROM/host differences. | `HostMachine/IHost.cs`; `HostMachine/Host.cs`; `Machine/Trs80Api.cs`; feature-matrix policies. | `Trs80Test.cs`; hardware cases in `Level2CompatibilityTest.cs`. | **Partial:** ROM fidelity is intentionally limited. |
+| 1.4 | Treat `shall`, `shall not`, `required`, and `may` as normative terms. | The standard document. | No executable test. | **Documented:** editorial rule. |
+| 2.1 | Identify the language references and repository compatibility target. | References in the standard and repository documentation. | No executable test. | **Documented:** provenance only. |
+| 2.2 | Do not use the repository as authority for undocumented ROM details. | Standard, compatibility ledger, and feature matrix policy statements. | No executable test. | **Documented:** governance rule. |
+| 3.1 | Represent programs as numbered lines executed in line order unless transferred. | Program storage/execution loop in `Interpreter/Interpreter.cs`. | `RunTest.cs`; `FlowControlTest.cs`. | **Verified:** line order and transfers are exercised. |
+| 3.2 | Represent statements as executable syntax in program and immediate mode. | `Parser.Statement()`; immediate/program dispatch in `Interpreter.cs`. | `ParserTest.cs`; `StatementListTest.cs`; `LonghandSmokeTest.cs`. | **Verified for exercised forms.** |
+| 3.3 | Execute unnumbered statements/directives immediately. | Command dispatch in `Trs80.Level1Basic.Command/Commands`; `InputCommand`. | `CommandTest.cs`; `LonghandSmokeTest.cs`. | **Partial:** editor/dialog forms have separate policies. |
+| 3.4 | Store named variables with defined types. | Variable tables, type resolution, and arrays in `Interpreter/Environment.cs`. | `ExpressionTest.cs`; typed compatibility programs. | **Verified for covered scalar/array forms.** |
+| 3.5 | Implement signed 16-bit integers in the stated range. | Integer casting/overflow in `Environment.cs`. | Integer cases in `ExpressionTest.cs`; overflow cases in `ErrorTest.cs`. | **Verified for covered assignment paths.** |
+| 3.6 | Provide single-precision real values. | Single handling in `Environment.cs`; conversions in `Machine/NativeFunctions.cs`. | `ExpressionTest.cs`; `NativeFunctionTest.cs`. | **Partial:** exact precision boundaries remain open. |
+| 3.7 | Provide double-precision real values. | Double handling in `Environment.cs` and `Interpreter.cs`. | `ExpressionTest.cs`; `NativeFunctionTest.cs`; compatibility programs. | **Partial:** exact promotion matrix remains open. |
+| 3.8 | Represent strings from zero through 255 characters. | String storage/capacity in `Environment.cs` and `Trs80Api.cs`. | String assignment and `CLEAR` cases in `ExpressionTest.cs`, `CommandTest.cs`, and `ErrorTest.cs`. | **Partial:** heap exhaustion boundaries are not mapped. |
+| 3.9 | Report conditions that prevent normal execution. | `VirtualMachine/Exceptions/ExceptionHandler.cs`. | `ErrorTest.cs`. | **Verified for core diagnostics;** full code mapping remains open. |
+| 3.10 | Execute unnumbered input when the line is complete. | Immediate input path in `InputCommand`. | `LonghandSmokeTest.cs`; `CommandTest.cs`. | **Verified for exercised commands.** |
+| 4.1 | Accept defined syntax/types/operators/statements/functions and reject malformed forms. | `Scanner.cs`; `Parser.cs`; `Environment.cs`; `Interpreter.cs`; `NativeFunctions.cs`. | `ScannerTest.cs`; `ParserTest.cs`; `Level1SyntaxGatingTest.cs`; focused suites. | **Partial:** decomposed rows retain known gaps. |
+| 4.2 | Permit extensions only when they do not change defined semantics. | `IHost.cs`; `Host.cs`; explicit feature-matrix policies. | `Trs80Test.cs`; Level I regression suite. | **Partial:** extension inventory is not exhaustive. |
+| 4.3 | Require every source line to be syntactically and semantically valid. | Parser diagnostics and statement dispatch in `Parser.cs`. | `ParserTest.cs`; `ErrorTest.cs`; `Level1SyntaxGatingTest.cs`. | **Verified for tested invalid forms.** |
+| 5.1 | Apply the defined optional, repeated, alternative, sequence, reserved-word, and nonterminal notation. | Grammar-consuming code in `Scanner.cs` and `Parser.cs`. | `ScannerTest.cs`; `ParserTest.cs`. | **Partial:** notation itself is not machine-checked. |
+| 5.2 | Apply the abstract grammar for lines, commands, control, declarations, actions, literals, variables, and ranges. | `Parser.Statement()` and expression/declaration methods. | `ParserTest.cs`; `StatementListTest.cs`; `CommandTest.cs`; `ExpressionTest.cs`. | **Partial:** grammar includes forms with limited runtime policy. |
+| 5.3 | Define built-in function syntax through Section 11. | Native call parsing and registry in `Parser.cs` and `NativeFunctions.cs`. | `NativeFunctionTest.cs`; `ParserTest.cs`. | **Partial:** per-function boundary coverage remains open. |
+| 6.1 | Accept the stated letters, digits, punctuation, and whitespace. | Character/token scanning in `Scanner.cs` and `TokenType.cs`. | `ScannerTest.cs`; `ParserTest.cs`. | **Partial:** exhaustive character boundaries are not tested. |
+| 6.2 | Ignore case for keywords/identifiers and preserve string literal case. | Keyword normalization and string tokenization in `Scanner.cs`. | `ScannerTest.cs`; string cases in `ExpressionTest.cs`. | **Verified for tested forms.** |
+| 6.3 | Accept line numbers 0 through 65529 and reserve 65530 through 65535. | Line-number scanning/parsing in `Scanner.cs` and `Parser.cs`. | `ScannerTest.cs`; `ParserTest.cs`. | **Partial:** exact upper/reserved bounds need tests. |
+| 6.4 | Separate same-line statements with `:`. | Statement-list parser in `Parser.cs`. | `StatementListTest.cs`; `ParserTest.cs`. | **Verified.** |
+| 6.5 | Consume `REM` through the source-line end. | REM handling in `Scanner.cs` and `Parser.cs`. | `ScannerTest.cs`; `ParserTest.cs`. | **Verified for tested remarks.** |
+| 6.6 | Reject keyword-containing identifiers and apply first-two-character identity. | Identifier validation in `Scanner.cs`, `Parser.cs`, and `Environment.cs`. | Identifier cases in `ExpressionTest.cs`; `Level1SyntaxGatingTest.cs`; `ShorthandTest.cs`. | **Verified for current policies.** |
+| 7.1 | Provide integer, single, double, and string categories. | `Environment.VariableType` and storage paths. | `ExpressionTest.cs`; typed compatibility programs. | **Verified for exercised categories.** |
+| 7.2 | Enforce signed 16-bit integer representation/range. | Integer cast and overflow paths in `Environment.cs`. | `ErrorTest.cs`; `ExpressionTest.cs`. | **Verified for declaration/assignment cases.** |
+| 7.3 | Represent real values and default unsuffixed numeric variables to single. | Type resolution/evaluation in `Environment.cs` and `Interpreter.cs`. | `ExpressionTest.cs`; `NativeFunctionTest.cs`; compatibility programs. | **Partial:** unsuffixed precision thresholds remain under audit. |
+| 7.4 | Store strings dynamically with lengths 0 through 255. | String heap/value handling in `Environment.cs` and `Trs80Api.cs`. | `ExpressionTest.cs`; `NativeFunctionTest.cs`; `CommandTest.cs`. | **Partial:** exact heap failure behavior is incomplete. |
+| 7.5 | Resolve type by suffix, declaration, or default rule. | Type resolution in `Environment.cs`; declaration parsing in `Parser.cs`. | `ExpressionTest.cs`; declaration cases in `Level2CompatibilityTest.cs`. | **Partial:** conflicting declarations/conversions remain. |
+| 7.6 | Keep numeric and string name spaces distinct. | Variable-key/type handling in `Environment.cs`. | Typed scalar/string cases in `ExpressionTest.cs`. | **Verified for tested suffix forms.** |
+| 7.7 | Default unsuffixed numeric variables to single precision. | Default type logic in `Environment.cs`. | `ExpressionTest.cs`; `Level2CompatibilityTest.cs`. | **Partial:** literal classification/formatting edges remain. |
+| 7.8 | Permit dynamic type changes only when language-consistent. | Assignment/cast paths in `Environment.cs`. | Typed assignment cases in `ExpressionTest.cs`. | **Partial:** invalid conversion policy is incomplete. |
+| 7.9 | Preserve string length and content in dynamic storage. | String assignment/slicing in `Environment.cs` and `Interpreter.cs`. | `NativeFunctionTest.cs`; `ExpressionTest.cs`. | **Verified for covered operations.** |
+| 8.1 | Accept all four `DEF*` declaration forms and ranges. | Declaration parsing in `Parser.cs`; `Environment.SetVariableType`. | Declaration/range cases in `ExpressionTest.cs`; compatibility programs. | **Verified for main forms.** |
+| 8.2 | Apply `DEF*` to unsuffixed variables by initial letter. | `Environment.SetVariableType` and resolution. | `ExpressionTest.cs`; `Level2CompatibilityTest.cs`. | **Verified for covered ranges.** |
+| 8.3 | Interpret `A-Z` as an inclusive range. | Range parsing/storage in `Parser.cs` and `Environment.cs`. | Ranged declaration tests and compatibility programs. | **Verified for covered ranges.** |
+| 8.4 | Define redeclaration replacement and value discard/conversion. | Declaration mutation paths in `Environment.cs`. | No focused conflicting-redeclaration test identified. | **Not evidenced:** add explicit cases. |
+| 8.5 | Apply implicit string typing for `DEFSTR`. | `DEFSTR` resolution in `Environment.cs`. | `ExpressionTest.cs`; `Level2CompatibilityTest.cs`. | **Verified for tested scalar forms.** |
+| 8.6 | Accept signed decimal integer literals. | Numeric scanning/parsing in `Scanner.cs` and `Parser.cs`. | `ScannerTest.cs`; `ExpressionTest.cs`. | **Verified for tested forms.** |
+| 8.7 | Accept fixed/scientific real literals under Level II conversion rules. | Numeric parsing/classification in `Parser.cs` and `Environment.cs`. | `ExpressionTest.cs`; `PrintTest.cs`; numeric compatibility programs. | **Partial:** exact literal policy remains. |
+| 8.8 | Preserve characters inside double-quoted literals. | String tokenization/quote recovery in `Scanner.cs` and `Parser.cs`. | `ScannerTest.cs`; `PrintTest.cs`; malformed-quote regression. | **Partial:** escape/quoting policy is not defined. |
+| 8.9 | Interpret `%`, `!`, and `#` as integer, single, and double suffixes. | Suffix scanning/resolution in `Scanner.cs` and `Environment.cs`. | `ExpressionTest.cs`; typed compatibility programs. | **Verified for tested suffixes.** |
+| 8.10 | Accept permitted exponent notation and reject malformed numeric forms. | Numeric parser and scanner numeric-token handling. | `ScannerTest.cs`; `ExpressionTest.cs`; `ErrorTest.cs`. | **Partial:** complete exponent/error matrix remains. |
+| 9.1 | Evaluate arithmetic, relational, logical, and string expressions. | Expression visitors in `Interpreter.cs`; expression parser in `Parser.cs`. | `ExpressionTest.cs`; `LogicalTest.cs`; `PrintTest.cs`. | **Verified for covered families.** |
+| 9.2 | Implement unary/binary arithmetic and exponentiation. | Unary/binary visitors and precedence methods. | `ExpressionTest.cs`; `PrintTest.cs`. | **Partial:** mixed-type and overflow edges remain. |
+| 9.3 | Implement relational operators with false `0`, true `-1`. | Comparison evaluation in `Interpreter.cs`. | `ExpressionTest.cs`; `LogicalTest.cs`; compatibility programs. | **Verified for covered numeric/string comparisons.** |
+| 9.4 | Implement logical operators with false `0`, true `-1`. | Logical evaluation and precedence in `Interpreter.cs`/`Parser.cs`. | `LogicalTest.cs`; logical compatibility programs. | **Verified for covered operands;** bitwise edges remain. |
+| 9.5 | Concatenate string operands with `+`. | String binary evaluation in `Interpreter.cs`. | String assignment/concatenation cases in `ExpressionTest.cs`. | **Verified.** |
+| 9.6 | Apply the stated operator precedence. | `Parser.Imp`, `Eqv`, `Xor`, `Or`, `And`, `Comparison`, `Term`, `Factor`, `Power`. | `PrintTest.cs`; `LogicalTest.cs`; `ExpressionTest.cs`. | **Verified for covered combinations.** |
+| 9.7 | Promote mixed numeric operands before evaluation. | Numeric promotion in `Interpreter.cs` and `Environment.cs`. | Mixed-type cases in `ExpressionTest.cs`; double programs. | **Partial:** complete promotion matrix is not tested. |
+| 9.8 | Restrict string expressions to valid string operands/calls. | Expression type checks in `Interpreter.cs`. | `ExpressionTest.cs`; `ErrorTest.cs`. | **Partial:** invalid mixed cases need expansion. |
+| 10.1 | Accept `[LET] variable = expression` and string assignment. | Assignment parsing and `Interpreter.Assign`. | `ExpressionTest.cs`; `ParserTest.cs`. | **Verified for covered forms.** |
+| 10.2 | Store a valid computed value in the target. | `Interpreter.Assign`; `Environment.SetVariable`. | `ExpressionTest.cs`; compatibility programs. | **Verified for common targets.** |
+| 10.3 | Convert numeric values to target type. | `Environment.CastValue`. | Typed assignment cases in `ExpressionTest.cs`. | **Partial:** promotion/overflow boundaries remain. |
+| 10.4 | Store strings and reject overlong assignments. | String capacity paths in `Environment.cs`. | String cases in `ExpressionTest.cs`; `ErrorTest.cs`. | **Partial:** focused overlength case needed. |
+| 10.5 | Apply truncation, rounding, double preservation, and valid conversion. | `Environment.CastValue`; native conversion functions. | `ExpressionTest.cs`; `NativeFunctionTest.cs`; `ErrorTest.cs`. | **Partial:** invalid conversion/midpoint policy remains. |
+| 10.6 | Execute numbered statements in line order unless transferred. | Execution loop and transfer visitors in `Interpreter.cs`. | `RunTest.cs`; `FlowControlTest.cs`. | **Verified.** |
+| 10.7 | Execute unnumbered commands/statements immediately. | Immediate-mode path in `InputCommand` and command handlers. | `CommandTest.cs`; `LonghandSmokeTest.cs`. | **Verified for exercised forms.** |
+| 10.8 | Execute colon-separated statements left to right. | Statement-list parser/interpreter loop. | `StatementListTest.cs`. | **Verified.** |
+| 10.9 | Use `.` as current line where a line number is required. | Current-line resolution paths in parser/interpreter. | No dedicated test identified. | **Not evidenced:** add a focused case. |
+| 11.1 | Reject statements/commands with invalid keyword or operand structure. | `Parser.Statement()` and syntax error paths. | `ParserTest.cs`; `ErrorTest.cs`; `Level1SyntaxGatingTest.cs`. | **Verified for tested invalid forms.** |
+| 11.2.1 | Transfer `GOTO` to the target line. | GOTO visitor and line lookup in `Interpreter.cs`. | `FlowControlTest.cs`; compatibility program. | **Verified.** |
+| 11.2.2 | Save return address and transfer `GOSUB`. | GOSUB stack/control state in `Interpreter.cs`. | `FlowControlTest.cs`; compatibility subroutine program. | **Verified.** |
+| 11.2.3 | Return after the most recent `GOSUB`. | RETURN visitor/subroutine stack. | `FlowControlTest.cs`; `RecursionTest.cs`. | **Verified for covered nesting.** |
+| 11.2.4 | Select `ON ... GOTO` target by expression index. | ON dispatch in `Parser.cs`/`Interpreter.cs`. | `FlowControlTest.cs`; compatibility program. | **Verified for exercised policies.** |
+| 11.2.5 | Select `ON ... GOSUB` target by expression index. | ON/GOSUB dispatch and return stack. | `FlowControlTest.cs`; compatibility program. | **Verified.** |
+| 11.2.6 | Execute THEN or ELSE according to truth value. | IF visitor and inline parser handling. | `FlowControlTest.cs`; `LogicalTest.cs`; compatibility program. | **Verified for covered forms.** |
+| 11.2.7 | Initialize loop variable and FOR state. | FOR state and parser handling in `Interpreter.cs`/`Parser.cs`. | `FlowControlTest.cs`; loop compatibility programs. | **Verified.** |
+| 11.2.8 | Increment/terminate NEXT loops correctly. | NEXT visitor and loop-state validation. | `FlowControlTest.cs`; descending-loop program. | **Verified for covered forms.** |
+| 11.2.9 | Halt and report STOP state. | STOP lifecycle in `Interpreter.cs` and host output. | `FlowControlTest.cs`; STOP/CONT compatibility program. | **Verified.** |
+| 11.2.10 | End execution without normal STOP diagnostic. | END visitor and run lifecycle. | `RunTest.cs`; compatibility programs. | **Verified for covered paths.** |
+| 11.2.11 | Resume valid break and reject invalid CONT. | Continuation state/validation in `Interpreter.cs`. | `FlowControlTest.cs`; `ErrorTest.cs`. | **Verified for tested states.** |
+| 11.3.1 | NEW erases program text and variables. | NEW command handler and program reset path. | `RunTest.cs`; `CommandTest.cs`; compatibility NEW program. | **Verified for stored program reset.** |
+| 11.3.2 | CLEAR clears variables and accepts the optional size. | CLEAR handler and string-capacity state in `Interpreter.cs`/`Environment.cs`. | `CommandTest.cs`; `ExpressionTest.cs`; CLEAR compatibility program. | **Verified for covered size/reset paths.** |
+| 11.3.3 | RUN starts at the first or specified line. | RUN command and execution entry in `Interpreter.cs`. | `RunTest.cs`; compatibility RUN program. | **Verified.** |
+| 11.3.4 | LIST writes the selected program range to the display. | LIST command and line-range logic in `LineListTest` owner/command path. | `LineListTest.cs`; `CommandTest.cs`. | **Verified for covered ranges;** pagination/editor boundaries remain. |
+| 11.3.5 | LLIST writes the selected range to the printer. | LLIST command and `IHost.Print` path. | `LineListTest.cs`; `Trs80Test.cs`. | **Intentional limit:** output is host-mediated. |
+| 11.3.6 | LOAD replaces current program/state from a file. | LOAD command/file path in `Command/Commands` and `Interpreter.cs`. | `FileTest.cs`; compatibility round-trip program. | **Verified for quoted/file-fixture paths.** |
+| 11.3.7 | SAVE writes the current program to a file. | SAVE command/file path in `Command/Commands`. | `FileTest.cs`; compatibility round-trip program. | **Verified for quoted/file-fixture paths.** |
+| 11.3.8 | MERGE combines saved lines with current program memory. | MERGE command and line merge path. | `FileTest.cs`; compatibility MERGE program. | **Verified for covered fixture path.** |
+| 11.3.9 | DELETE removes one specified line. | DELETE command and line-store mutation. | `CommandTest.cs`; compatibility DELETE program. | **Verified.** |
+| 11.3.10 | DELETE removes an inclusive line range. | DELETE range parsing and line-store mutation. | `CommandTest.cs`; `LineListTest.cs`. | **Verified for closed/open ranges;** remaining abbreviations are partial. |
+| 11.4.1 | Store DATA literals in program order. | `Interpreter/DataElements.cs`; DATA visitor. | `DataTest.cs`; compatibility data program. | **Verified.** |
+| 11.4.2 | Read successive DATA values into variables. | READ visitor and data pointer in `DataElements.cs`. | `DataTest.cs`; compatibility data program. | **Verified.** |
+| 11.4.3 | Restore DATA position at beginning or selected line. | RESTORE visitor and data-line lookup. | `DataTest.cs`; explicit RESTORE compatibility program. | **Verified for covered targets.** |
+| 11.5.1 | Print expression-list values in order. | PRINT visitor and output API. | `PrintTest.cs`; compatibility console program. | **Verified for common lists.** |
+| 11.5.2 | Treat `?` as PRINT. | Scanner alias and parser dispatch. | `ShorthandTest.cs`; `ScannerTest.cs`; `PrintTest.cs`. | **Verified.** |
+| 11.5.3 | Prompt for and assign INPUT values. | INPUT visitor and host input path. | `InputTest.cs`; compatibility input program. | **Partial:** malformed-input boundaries remain. |
+| 11.5.4 | Send LPRINT to printer/equivalent channel. | `IHost.Print`; LPRINT dispatch. | `Trs80Test.cs`; scanner/parser LPRINT tests. | **Intentional limit:** printer is host-mediated. |
+| 11.5.5 | Move print cursor with TAB. | TAB native function in `NativeFunctions.cs`/`Trs80Api.cs`. | `NativeFunctionTest.cs`; `PrintTest.cs`. | **Verified for covered positions.** |
+| 11.5.6 | Generate blanks with SPC. | SPC native function. | `NativeFunctionTest.cs`; `PrintTest.cs`. | **Verified for covered counts.** |
+| 11.5.7 | Return horizontal position with POS. | POS in `Trs80Api.cs`. | `NativeFunctionTest.cs`; cursor compatibility program. | **Partial:** boundary positions need coverage. |
+| 11.5.8 | Return row position with CSRLIN. | CSRLIN in `Trs80Api.cs`. | `NativeFunctionTest.cs`; cursor compatibility program. | **Partial:** boundary positions need coverage. |
+| 11.6.1 | Set a graphics pixel. | Graphics API in `Host.cs`/`Trs80Api.cs`; dispatch in parser/interpreter. | `Trs80Test.cs`; hardware compatibility program. | **Verified for host wrapping policy.** |
+| 11.6.2 | Reset a graphics pixel. | Graphics API in `Host.cs`/`Trs80Api.cs`. | `Trs80Test.cs`; hardware compatibility program. | **Verified for host wrapping policy.** |
+| 11.6.3 | Query a graphics pixel with POINT. | POINT API in `Trs80Api.cs`. | `Trs80Test.cs`; hardware compatibility program. | **Verified for host wrapping policy.** |
+| 11.6.4 | Write a byte with POKE. | Memory API in `Trs80Api.cs`/`Host.cs`. | `Trs80Test.cs`; hardware compatibility program. | **Verified for tested addresses.** |
+| 11.6.5 | Read a byte with PEEK. | Memory API in `Trs80Api.cs`/`Host.cs`. | `Trs80Test.cs`; hardware compatibility program. | **Verified for tested addresses.** |
+| 11.6.6 | Return free memory with MEM. | MEM implementation in `Trs80Api.cs`. | `NativeFunctionTest.cs`; hardware compatibility program. | **Partial:** exact accounting is host-defined. |
+| 11.6.7 | Return a variable address with VARPTR. | Registry/native-function surface in `NativeFunctions.cs`. | No reliable behavior test identified. | **Not evidenced:** define address semantics and test. |
+| 11.6.8 | Call machine-language routine with USR. | Native-function/host interface references in `NativeFunctions.cs` and `IHost.cs`. | No reliable behavior test identified. | **Intentional limit pending policy:** no machine-code execution. |
+| 11.7.1 | Allocate a one-dimensional array with DIM. | Array declaration/access in `Environment.cs`, `Parser.cs`, and `Interpreter.cs`. | `ExpressionTest.cs`; typed-array compatibility program. | **Verified.** |
+| 11.7.2 | Allocate a two-dimensional array with DIM. | Multidimensional array paths in `Environment.cs`. | `ExpressionTest.cs`; two-dimensional compatibility program. | **Verified.** |
+| 11.7.3 | Reject subscripts outside declared bounds. | Array index validation in `Environment.cs`. | `ExpressionTest.cs`; `ErrorTest.cs`. | **Verified for covered bounds.** |
+| 11.8.1 | Enable trapping and transfer to configured handler. | `Exceptions/ExceptionHandler.cs`; ON ERROR path in `Interpreter.cs`. | `ErrorTest.cs`. | **Verified.** |
+| 11.8.2 | Disable trapping with `ON ERROR GOTO 0`. | Error-state reset in `ExceptionHandler.cs`. | `ErrorTest.cs`. | **Verified.** |
+| 11.8.3 | Resume at failing, next, or specified line. | Resume state in `ExceptionHandler.cs` and `Interpreter.cs`. | `ErrorTest.cs`; trapped-error compatibility cases. | **Verified for covered forms.** |
+| 12.1 | Provide the listed string functions and optional forms. | `Machine/NativeFunctions.cs`; `Machine/Trs80Api.cs`. | `NativeFunctionTest.cs`; string compatibility programs. | **Partial:** conversion/error boundaries remain. |
+| 12.2 | Provide the listed numeric functions. | `NativeFunctions.cs`; `Trs80Api.cs`. | `NativeFunctionTest.cs`; `ExpressionTest.cs`. | **Partial:** domain errors and exact rounding remain. |
+| 12.3 | Implement RND controls and RANDOM seeding. | RND in `Trs80Api.cs`/`NativeFunctions.cs`. | `NativeFunctionTest.cs`; deterministic compatibility programs. | **Partial:** remaining manual control boundaries are open. |
+| 12.4 | Implement CVI/CVS/CVD and MKI$/MKS$/MKD$. | Binary conversions in `NativeFunctions.cs`. | `NativeFunctionTest.cs`; binary compatibility programs. | **Partial:** invalid lengths/ranges need tests. |
+| 12.5 | Implement non-blocking INKEY$ and length-bounded INPUT$. | Keyboard functions in `Trs80Api.cs`; `IHost` key interface. | `NativeFunctionTest.cs`; `InputTest.cs`. | **Partial:** extended-key encoding remains unresolved. |
+| 13.1 | Report BASIC error code and applicable line location. | `ExceptionHandler.cs`; diagnostics in `Interpreter.cs`. | `ErrorTest.cs`; error compatibility programs. | **Partial:** complete error matrix is incomplete. |
+| 13.2 | Recognize every listed standard error category. | Error identifiers/mapping in `ExceptionHandler.cs`. | Core cases in `ErrorTest.cs`. | **Partial:** one-to-one coverage for all listed codes is missing. |
+| 13.3 | Expose ERR and ERL during error handling. | System-variable/error state in `Environment.cs`/`Interpreter.cs`. | `ErrorTest.cs`; compatibility error programs. | **Verified for covered handlers/source lines.** |
+| 13.4 | Transfer to handler rather than terminate when trapping is active. | `ExceptionHandler.cs`; ON ERROR path. | `ErrorTest.cs`. | **Verified.** |
+| 13.5 | Implement RESUME, RESUME NEXT, and RESUME line. | Resume state in `ExceptionHandler.cs`/`Interpreter.cs`. | `ErrorTest.cs`; compatibility trapped-error cases. | **Verified for covered forms.** |
+| 13.6 | Reject CONT outside valid stop/break state. | Continuation validation in `Interpreter.cs`. | `FlowControlTest.cs`; `ErrorTest.cs`. | **Verified.** |
+| 13.7 | Report OD for DATA exhaustion and type diagnostics for bad READ targets. | `DataElements.cs`; type validation/error mapping. | `DataTest.cs`; `ErrorTest.cs`. | **Verified for tested paths.** |
+| 14.1 | Model a 64-column by 16-row text display. | Screen geometry/cursor state in `Host.cs`/`Trs80Api.cs`. | `Trs80Test.cs`; `PrintTest.cs`. | **Partial:** display-edge inventory is incomplete. |
+| 14.2 | Apply PRINT semicolon and comma formatting. | PRINT formatting in `Interpreter.cs`/`Trs80Api.cs`. | `PrintTest.cs`; compatibility formatting program. | **Partial:** line-width boundaries remain. |
+| 14.3 | Treat `?` as PRINT. | Scanner alias and PRINT dispatch. | `ShorthandTest.cs`; `PrintTest.cs`. | **Verified.** |
+| 14.4 | Prompt and assign INPUT values. | INPUT visitor and host input implementation. | `InputTest.cs`; compatibility input program. | **Partial:** malformed/end-of-input boundaries remain. |
+| 14.5 | Direct LPRINT to printer/equivalent output. | `IHost.Print`; LPRINT path. | `Trs80Test.cs`; LPRINT scanner/parser tests. | **Intentional limit:** printer is host-mediated. |
+| 15.1 | Store current program as numbered source lines. | Program model/line store in `Interpreter.cs` and command models. | `RunTest.cs`; `LineListTest.cs`; `FileTest.cs`. | **Verified.** |
+| 15.2 | Store scalar/array variables and dynamic strings. | `Environment.cs`. | `ExpressionTest.cs`; array/string compatibility programs. | **Partial:** exact internal storage is abstracted. |
+| 15.3 | Define string heap size and CLEAR interaction. | CLEAR handling/capacity in `Environment.cs`/`Interpreter.cs`. | `CommandTest.cs`; `ExpressionTest.cs`. | **Partial:** exhaustive heap accounting is not evidenced. |
+| 15.4 | Provide host services while preserving language semantics. | `HostMachine/IHost.cs`; `Host.cs`; `Trs80Api.cs`. | `Trs80Test.cs`; input/print/hardware tests. | **Partial:** ROM/cassette fidelity is intentionally limited. |
+| 16.1 | Document listed implementation-defined formatting, seeding, diagnostics, heap, and hardware behavior. | `LEVEL-II-FEATURE-MATRIX.md`; `Trs80Api.cs`; `Host.cs`; configuration. | Distributed policy tests in `PrintTest.cs`, `NativeFunctionTest.cs`, `ErrorTest.cs`, `InputTest.cs`, and `Trs80Test.cs`. | **Partial:** no exhaustive policy-to-test registry. |
+| 16.2 | Do not change defined semantics because of host capability. | Host abstraction and explicit no-op/approximation policies. | Level I regression suite; hardware/compatibility tests. | **Partial:** policy coverage is not exhaustive. |
+| 17.1 | Recognize every reserved word listed by the standard. | Keyword map in `TokenType.cs`/`Scanner.cs`; parser dispatch. | `ScannerTest.cs`; `ParserTest.cs`; keyword inventory cases. | **Partial:** reserved-but-unimplemented words need policies. |
+| 18.1 | State major Level I/Level II differences. | Standard and Level I/II feature matrices. | `Level1SyntaxGatingTest.cs`; Level II focused tests. | **Documented and partially executable.** |
+| 18.2 | Preserve historical behavior while presenting a formal reference. | Standard, matrices, and compatibility corpus. | `Level2CompatibilityTest.cs`; full interpreter suite. | **Partial:** historical comparison remains an audit. |
+| 19.1 | Satisfy the eight summary requirements through underlying clauses. | Cross-cutting paths cited in clauses 5-17. | Full Interpreter suite plus focused tests. | **Partial:** confidence is bounded by open rows above. |
+| Annex A | Parse and execute the minimal example program exactly as printed. | `Parser.cs`; `Interpreter.cs`; `Environment.cs`. | Equivalent programs exist in `Level2CompatibilityTest.cs`; exact annex text is not named. | **Partial:** add the exact sample as a named regression. |
+| Annex B | Keep the keyword index consistent with scanner recognition. | `TokenType.cs`; `Scanner.cs`. | `ScannerTest.cs`; parser keyword inventory tests. | **Partial:** unsupported/reserved policies remain. |
+
+## Section Rollup
+
+The following summary is retained as a quick navigation index; the numbered table above is authoritative for compatibility decisions.
 
 | Standard clause | Observable requirement | Implementation evidence | Test evidence | Status and open point |
 | --- | --- | --- | --- | --- |
